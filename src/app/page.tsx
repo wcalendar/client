@@ -12,7 +12,7 @@ const Container = styled.main`
 `;
 
 const Title = styled.h1`
-  color: var(--main-blue);
+  color: ${({theme}) => theme.colors.mainBlue};
   font-weight: bold;
   text-align: center;
   font-size: 3.5rem;
@@ -36,7 +36,7 @@ const Description = styled.p`
 
 const Tip = styled.p`
   text-align: center;
-  color: var(--gray);
+  color: ${({theme}) => theme.colors.gray};
   font-size: .875rem;
   margin-bottom: 1rem;
 `;
