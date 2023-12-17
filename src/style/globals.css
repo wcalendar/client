@@ -1,5 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto&display=swap');
+
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+
+  --main-blue: #2b5ee1;
+  --black: #111111;
+  --gray: #adb5bd;
+
+  color: var(--black);
 }
