@@ -5,9 +5,27 @@
   padding: 0;
   margin: 0;
 
-  --main-blue: #2b5ee1;
   --black: #111111;
+  --main-blue: #2b5ee1;
   --gray: #adb5bd;
+  --light-gray: #d9d9d9;
+  --background-white: #ececec;
+
+  /* 범주 */
+  --category1-main: #e4617a;
+  --category1-sub : #f1b0bc;
+  --category2-main: #e0744e;
+  --category2-sub : #dfb9a6;
+  --category3-main: #daa12b;
+  --category3-sub : #ecd095;
+  --category4-main: #26aa85;
+  --category4-sub : #92d4c2;
+  --category5-main: #506ee2;
+  --category5-sub : #a7b6f0;
+  --category6-main: #8d4de2;
+  --category6-sub : #c6a6f0;
+  --category7-main: #777d85;
+  --category7-sub : #bbbec2;
 
   color: var(--black);
 }
