@@ -1,10 +1,10 @@
 const theme = {
   colors: {
     black: '#111111',
-    mainBlue: '#2b5ee1',
+    blue: '#2b5ee1',
     gray: '#adb5bd',
     lightGray: '#d9d9d9',
-    backgroundWhite: '#ececec',
+    white: '#ececec',
 
     /* 범주 */
     category1Main: '#e4617a',
