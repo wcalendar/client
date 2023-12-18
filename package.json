@@ -11,6 +11,8 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@mdi/js": "^7.3.67",
+    "@mdi/react": "^1.6.1",
     "dayjs": "^1.11.10",
     "next": "14.0.4",
     "react": "^18",
