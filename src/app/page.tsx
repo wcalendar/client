@@ -1,6 +1,7 @@
-'use client'
+'use client';
 
-import styled from 'styled-components'
+import Header from '@/components/common/Header';
+import styled from 'styled-components';
 
 const Main = styled.main`
   --main-color: gray;
@@ -14,7 +15,7 @@ const Main = styled.main`
 export default function Home() {
   return (
     <Main>
-
+      <Header />
     </Main>
-  )
+  );
 }
