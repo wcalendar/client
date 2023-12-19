@@ -8,6 +8,7 @@ type Category = {
   color: number;
   // createdAt
   // modifiedAt
+  memo?: string;
 }
 
 type Schedule = {
@@ -129,6 +130,7 @@ const calendarDummyData: MainCalendarDto = {
       name: 'overMonth',
       level: 1,
       color: 3,
+      memo: 'zxcv',
       scheduleList: [
         {
           id: 105,
