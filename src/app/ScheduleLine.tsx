@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { CategoryToRender } from "./page";
 import { DefaultTheme } from "styled-components/dist/types";
 import { useMemo } from "react";
 import { ScheduleWithoutCategory } from "@/dummies/calendar";
+import { CategoryToRender } from "./page";
 
 type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
