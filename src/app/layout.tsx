@@ -1,6 +1,13 @@
-import type { Metadata } from 'next';
-import '../style/globals.css';
-import StyledComponentsRegistry from '@/lib/styled-components-registry';
+import type { Metadata } from 'next'
+import { Roboto } from 'next/font/google';
+import StyleProvider from '@/style/StyleProvider';
+
+const roboto = Roboto({
+  weight: ['400', '700'],
+  style: ['normal'],
+  variable: '--font-roboto',
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
   title: 'W Calendar',
@@ -13,9 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={roboto.className}>
       <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <StyleProvider>
+          {children}
+        </StyleProvider>
       </body>
     </html>
   );
