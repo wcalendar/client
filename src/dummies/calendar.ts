@@ -124,6 +124,32 @@ const calendarDummyData: MainCalendarDto = {
         },
       ],
     },
+    {
+      id: 999,
+      name: 'overMonth',
+      level: 1,
+      color: 3,
+      scheduleList: [
+        {
+          id: 105,
+          title: '지난 달 부터',
+          startDate: new Date(2023, 10, 1),
+          endDate: new Date(2023, 11, 16),
+        },
+        {
+          id: 106,
+          title: '지난 달 부터 다음 달 까지',
+          startDate: new Date(2023, 10, 1),
+          endDate: new Date(2024, 1, 1),
+        },
+        {
+          id: 107,
+          title: '다음 달 까지',
+          startDate: new Date(2023, 11, 14),
+          endDate: new Date(2024, 1, 1),
+        }
+      ],
+    },
     ...newDummyCategory(1, 0),
     ...newDummyCategory(8, 1),
     ...newDummyCategory(15, 2),

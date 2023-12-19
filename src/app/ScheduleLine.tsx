@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { DefaultTheme } from "styled-components/dist/types";
 import { useMemo } from "react";
 import { ScheduleWithoutCategory } from "@/dummies/calendar";
-import { CategoryToRender } from "./page";
+import { CategoryToRender, ScheduleToRender } from "./page";
 
 type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
@@ -40,12 +40,13 @@ const ScheduleItem = styled.div<{ theme: DefaultTheme, $start: number, $end: num
 export default function ScheduleLine({
   categoryToRender,
 }: ScheduleLineProps) {
+  console.log(categoryToRender);
   const { lines, category } = categoryToRender;
   const {} = category;
 
   const schedulesByLine = useMemo(() => {
     return categoryToRender.lines.map(line => {
-      const scheduleList: ScheduleWithoutCategory[] = [];
+      const scheduleList: ScheduleToRender[] = [];
 
       let scheduleId: number | undefined = undefined;
       for(let i=0; i<line.length; i++) {
@@ -65,7 +66,7 @@ export default function ScheduleLine({
       {schedulesByLine.map((line, i) => (
         <Line key={`${category.id}-${i}`}>
           {line.map(schedule => (
-            <ScheduleItem key={schedule.id} $start={schedule.startDate.getDate()} $end={schedule.endDate.getDate()} $color={category.color} $level={category.level}>
+            <ScheduleItem key={schedule.id} $start={schedule.startDay} $end={schedule.endDay} $color={category.color} $level={category.level}>
               {schedule.title}
             </ScheduleItem>
           ))}

@@ -11,27 +11,34 @@ import ScheduleLine from './ScheduleLine';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
+export interface ScheduleToRender extends ScheduleWithoutCategory {
+  startDay: number;
+  endDay: number;
+}
+
 export type CategoryToRender = {
   category: CategoryWithSchedule;
-  lines: (ScheduleWithoutCategory | undefined)[][];
+  lines: (ScheduleToRender | undefined)[][];
 }
 
 /**
  * 서버에서 받은 카테고리 데이터를 화면에 렌더링하기 쉽게 다듬어주는 함수
  * @param categoryList 서버로부터 받은 카테고리 데이터
- * @param lastDayInMonth 카테고리가 포함된 월의 마지막 일
+ * @param currentMonth 현재 월
+ * @param lastDayInMonth 현재 월의 마지막 일
  * @returns 
  */
-const toRenderingData = (categoryList: CategoryWithSchedule[], lastDayInMonth: number): CategoryToRender[] => {
+const toRenderingData = (categoryList: CategoryWithSchedule[], currentDate: Date, lastDayInMonth: number): CategoryToRender[] => {
   return categoryList.map<CategoryToRender>(category => {
-    const lines: (ScheduleWithoutCategory | undefined)[][] = [];
+    const lines: (ScheduleToRender | undefined)[][] = [];
     lines.push(Array(lastDayInMonth));
 
     // Schedule은 반드시 정렬되어있어야 함
     category.scheduleList.forEach(schedule => {
       const lineCount = lines.length;
-      const startDay = schedule.startDate.getDate();
-      const endDay = schedule.endDate.getDate();
+      const { startDate, endDate } = schedule;
+      const startDay = startDate.getFullYear() < currentDate.getFullYear() ? 1 : (startDate.getMonth() < currentDate.getMonth() ? 1 : startDate.getDate()) ;
+      const endDay = endDate.getFullYear() > currentDate.getFullYear() ? lastDayInMonth : (endDate.getMonth() > currentDate.getMonth() ? lastDayInMonth : endDate.getDate());
 
       let isAllocated = false;
       for(let i=0; i<lineCount; i++) {
@@ -41,7 +48,11 @@ const toRenderingData = (categoryList: CategoryWithSchedule[], lastDayInMonth: n
         // 할당된 일정이 없다면 일정 할당
         isAllocated = true;
         for(let day=startDay-1; day<=endDay-1; day++) {
-          lines[i][day] = schedule;
+          lines[i][day] = {
+            ...schedule,
+            startDay,
+            endDay,
+          };
         }
         break;
       }
@@ -50,7 +61,11 @@ const toRenderingData = (categoryList: CategoryWithSchedule[], lastDayInMonth: n
       if(!isAllocated) {
         lines.push(Array(lastDayInMonth));
         for(let day=startDay-1; day<=endDay-1; day++) {
-          lines[lines.length-1][day] = schedule;
+          lines[lines.length-1][day] = {
+            ...schedule,
+            startDay,
+            endDay,
+          };
         }
       }
     });
@@ -148,13 +163,12 @@ export default function Home() {
     const categorySideBody = categoryBody.current!;
     const scheduleSideBody = scheduleBody.current!;
     scheduleSideBody.addEventListener('scroll', () => {
-      console.log('scroll');
       categorySideBody.scrollTop = scheduleSideBody.scrollTop;
     });
 
     // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
     // 임시로 가짜 데이터 사용
-    setCategoryToRenderList(toRenderingData(calendarDummyData.categoryList, lastDayOfMonth));
+    setCategoryToRenderList(toRenderingData(calendarDummyData.categoryList, now, lastDayOfMonth));
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, []);
 
