@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { DefaultTheme } from "styled-components/dist/types";
 import { useMemo } from "react";
-import { ScheduleWithoutCategory } from "@/dummies/calendar";
 import { CategoryToRender, ScheduleToRender } from "./page";
 
 type ScheduleLineProps = {
@@ -30,11 +29,20 @@ const ScheduleItem = styled.div<{ theme: DefaultTheme, $start: number, $end: num
   border-radius: 5px;
   margin-left: 2px;
   margin-right: 2px;
+  vertical-align: middle;
+  display: flex;
+`;
 
+const ScheduleItemText = styled.span`
+  position: sticky;
+  left: 0;
+  width: auto;
+  height: 100%;
   font-size: .75rem;
+  user-select: none;
   line-height: 1.125rem;
   padding-left: 1rem;
-  user-select: none;
+  padding-right: 1rem;
 `;
 
 export default function ScheduleLine({
@@ -67,7 +75,9 @@ export default function ScheduleLine({
         <Line key={`${category.id}-${i}`}>
           {line.map(schedule => (
             <ScheduleItem key={schedule.id} $start={schedule.startDay} $end={schedule.endDay} $color={category.color} $level={category.level}>
-              {schedule.title}
+              <ScheduleItemText>
+                {schedule.title}
+              </ScheduleItemText>
             </ScheduleItem>
           ))}
         </Line>
