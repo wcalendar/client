@@ -12,12 +12,12 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: 'W Calendar',
   description: '',
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="ko" className={roboto.className}>
@@ -27,5 +27,5 @@ export default function RootLayout({
         </StyleProvider>
       </body>
     </html>
-  )
+  );
 }

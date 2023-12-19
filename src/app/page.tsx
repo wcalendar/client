@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import Image from 'next/image';
 import styled from 'styled-components'
@@ -12,7 +12,7 @@ const Container = styled.main`
 `;
 
 const Title = styled.h1`
-  color: ${({theme}) => theme.colors.mainBlue};
+  color: ${({ theme }) => theme.colors.blue};
   font-weight: bold;
   text-align: center;
   font-size: 3.5rem;
@@ -36,7 +36,7 @@ const Description = styled.p`
 
 const Tip = styled.p`
   text-align: center;
-  color: ${({theme}) => theme.colors.gray};
+  color: ${({ theme }) => theme.colors.gray};
   font-size: .875rem;
   margin-bottom: 1rem;
 `;
