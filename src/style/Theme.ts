@@ -1,3 +1,20 @@
+const categoryColors: {[key: string]: string} = {
+  category0Main: '#e4617a',
+  category0Sub : '#f1b0bc',
+  category1Main: '#e0744e',
+  category1Sub : '#dfb9a6',
+  category2Main: '#daa12b',
+  category2Sub : '#ecd095',
+  category3Main: '#26aa85',
+  category3Sub : '#92d4c2',
+  category4Main: '#506ee2',
+  category4Sub : '#a7b6f0',
+  category5Main: '#8d4de2',
+  category5Sub : '#c6a6f0',
+  category6Main: '#777d85',
+  category6Sub : '#bbbec2',
+}
+
 const theme = {
   colors: {
     black: '#111111',
@@ -7,20 +24,29 @@ const theme = {
     white: '#ececec',
 
     /* 범주 */
-    category1Main: '#e4617a',
-    category1Sub : '#f1b0bc',
-    category2Main: '#e0744e',
-    category2Sub : '#dfb9a6',
-    category3Main: '#daa12b',
-    category3Sub : '#ecd095',
-    category4Main: '#26aa85',
-    category4Sub : '#92d4c2',
-    category5Main: '#506ee2',
-    category5Sub : '#a7b6f0',
-    category6Main: '#8d4de2',
-    category6Sub : '#c6a6f0',
-    category7Main: '#777d85',
-    category7Sub : '#bbbec2',
+    category0Main: '#e4617a',
+    category0Sub : '#f1b0bc',
+    category1Main: '#e0744e',
+    category1Sub : '#dfb9a6',
+    category2Main: '#daa12b',
+    category2Sub : '#ecd095',
+    category3Main: '#26aa85',
+    category3Sub : '#92d4c2',
+    category4Main: '#506ee2',
+    category4Sub : '#a7b6f0',
+    category5Main: '#8d4de2',
+    category5Sub : '#c6a6f0',
+    category6Main: '#777d85',
+    category6Sub : '#bbbec2',
+
+    category: (color: number, level: number) => {
+      return categoryColors[`category${color}${level === 0 ? 'Main' : 'Sub'}`];
+    }
+  },
+  sizes: {
+    calendar: {
+      cellWidth: 232,
+    }
   }
 }
 
