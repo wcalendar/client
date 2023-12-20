@@ -122,6 +122,20 @@ const CalendarBody = styled.div<{ theme: DefaultTheme, $day_count: number }>`
   position: relative;
 `;
 
+const SettingCategoryButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.blue};
+  padding: 0 0.5rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  font-size: .75rem;
+  font-weight: bold;
+  color: white;
+`;
+
 const DivideLines = styled.div<{ theme: DefaultTheme, $day_count: number }>`
   position: absolute;
   left: 0;
@@ -138,6 +152,7 @@ const DivideLine = styled.div<{ theme: DefaultTheme }>`
 `;
 
 export default function Home() {
+  const [isAddScheduleModalOpen, setAddScheduleModalOpen] = useState(false);
   const [categoryToRenderList, setCategoryToRenderList] = useState<CategoryToRender[]>([]);
 
   const categoryBody = useRef<HTMLDivElement>(null);
@@ -181,7 +196,9 @@ export default function Home() {
         <CategorySide ref={categoryBody}>
           <CalendarHeader $day_count={1}>
             <Cell isCategory>
-              카테고리 관리
+              <SettingCategoryButton>
+                카테고리 관리
+              </SettingCategoryButton>
             </Cell>
           </CalendarHeader>
           <CalendarBody $day_count={1}>
