@@ -8,6 +8,8 @@ import { DefaultTheme } from 'styled-components/dist/types';
 import Cell from './Cell';
 import CategoryCell from './CategoryCell';
 import ScheduleLine from './ScheduleLine';
+import Icon from '@mdi/react';
+import { mdiPlus } from '@mdi/js';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -151,6 +153,21 @@ const DivideLine = styled.div<{ theme: DefaultTheme }>`
   border-right: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
+const AddScheduleButton = styled.button<{ theme: DefaultTheme, $isOpen: string }>`
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  width: 3.375rem;
+  height: 3.375rem;
+  background-color: ${({ theme }) => theme.colors.black};
+  padding: .5rem;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: transform .25s ease;
+  transform: rotate(${({ $isOpen }) => $isOpen === 'true' ? '45' : '0'}deg);
+`;
+
 export default function Home() {
   const [isAddScheduleModalOpen, setAddScheduleModalOpen] = useState(false);
   const [categoryToRenderList, setCategoryToRenderList] = useState<CategoryToRender[]>([]);
@@ -188,6 +205,14 @@ export default function Home() {
     setCategoryToRenderList(toRenderingData(calendarDummyData.categoryList, now, lastDayOfMonth));
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, []);
+
+  const handleOpenAddScheduleModal = () => {
+    setAddScheduleModalOpen(true);
+  }
+
+  const handleCloseAddScheduleModal = () => {
+    setAddScheduleModalOpen(false);
+  }
 
   return (
     <Container>
@@ -228,6 +253,9 @@ export default function Home() {
         </ScheduleSide>
 
       </Calendar>
+      <AddScheduleButton $isOpen={isAddScheduleModalOpen ? 'true' : 'false'} onClick={handleOpenAddScheduleModal}>
+        <Icon path={mdiPlus} color='white' />
+      </AddScheduleButton>
     </Container>
   );
 }
