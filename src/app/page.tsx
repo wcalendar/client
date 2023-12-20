@@ -1,7 +1,7 @@
 'use client';
 
 import Header from '@/components/common/Header';
-import { CategoryWithSchedule, ScheduleWithoutCategory, calendarDummyData } from '@/dummies/calendar';
+import { CategoryWithSchedule, CategoryWithScheduleDto, ScheduleWithoutCategory, calendarDummyData } from '@/dummies/calendar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components/dist/types';
@@ -11,6 +11,8 @@ import ScheduleLine from './ScheduleLine';
 import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
 import FixedModal from '@/components/common/fixed-modal/FixedModal';
+import time from '@/lib/time';
+import { Dayjs } from 'dayjs';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -31,17 +33,29 @@ export type CategoryToRender = {
  * @param lastDayInMonth 현재 월의 마지막 일
  * @returns 
  */
-const toRenderingData = (categoryList: CategoryWithSchedule[], currentDate: Date, lastDayInMonth: number): CategoryToRender[] => {
+const toRenderingData = (categoryList: CategoryWithScheduleDto[], currentDate: Dayjs, lastDayInMonth: number): CategoryToRender[] => {
   return categoryList.map<CategoryToRender>(category => {
+    const newCategory: CategoryWithSchedule = {
+      ...category,
+      scheduleList: [],
+    };
     const lines: (ScheduleToRender | undefined)[][] = [];
     lines.push(Array(lastDayInMonth));
 
     // Schedule은 반드시 정렬되어있어야 함
     category.scheduleList.forEach(schedule => {
       const lineCount = lines.length;
-      const { startDate, endDate } = schedule;
-      const startDay = startDate.getFullYear() < currentDate.getFullYear() ? 1 : (startDate.getMonth() < currentDate.getMonth() ? 1 : startDate.getDate()) ;
-      const endDay = endDate.getFullYear() > currentDate.getFullYear() ? lastDayInMonth : (endDate.getMonth() > currentDate.getMonth() ? lastDayInMonth : endDate.getDate());
+      const startDate = time.fromDate(schedule.startDate); 
+      const endDate = time.fromDate(schedule.endDate);
+      const newSchedule: ScheduleWithoutCategory = {
+        ...schedule,
+        startDate,
+        endDate,
+      };
+      newCategory.scheduleList.push(newSchedule);
+
+      const startDay = startDate.year() < currentDate.year() ? 1 : (startDate.month() < currentDate.month() ? 1 : startDate.date()) ;
+      const endDay = endDate.year() > currentDate.year() ? lastDayInMonth : (endDate.month() > currentDate.month() ? lastDayInMonth : endDate.date());
 
       let isAllocated = false;
       for(let i=0; i<lineCount; i++) {
@@ -52,7 +66,7 @@ const toRenderingData = (categoryList: CategoryWithSchedule[], currentDate: Date
         isAllocated = true;
         for(let day=startDay-1; day<=endDay-1; day++) {
           lines[i][day] = {
-            ...schedule,
+            ...newSchedule,
             startDay,
             endDay,
           };
@@ -65,7 +79,7 @@ const toRenderingData = (categoryList: CategoryWithSchedule[], currentDate: Date
         lines.push(Array(lastDayInMonth));
         for(let day=startDay-1; day<=endDay-1; day++) {
           lines[lines.length-1][day] = {
-            ...schedule,
+            ...newSchedule,
             startDay,
             endDay,
           };
@@ -74,7 +88,7 @@ const toRenderingData = (categoryList: CategoryWithSchedule[], currentDate: Date
     });
 
     return {
-      category,
+      category: newCategory,
       lines,
     }
   })
@@ -176,10 +190,10 @@ export default function Home() {
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
 
-  const now = new Date();
-  const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  const now = time.now();
+  const lastDayOfMonth = now.daysInMonth();
   const calendarHeaderItems = useMemo(() => {
-    let dayOfTheWeek = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+    let dayOfTheWeek = time.new(now.year(), now.month(), 1).day();
 
     return Array.from({length: lastDayOfMonth}, ((v, i) => i+1)).map(d => {
       const result = `${d}(${dayOfTheWeeks[dayOfTheWeek]})`;
@@ -194,7 +208,6 @@ export default function Home() {
   }, [now]);
 
   useEffect(() => {
-    console.log('useEffect');
     const categorySideBody = categoryBody.current!;
     const scheduleSideBody = scheduleBody.current!;
     scheduleSideBody.addEventListener('scroll', () => {

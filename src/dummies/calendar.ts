@@ -1,9 +1,11 @@
-type Category = {
+import { Dayjs } from "dayjs";
+
+type CategoryDto = {
   id: number;
   // user
   // code: string;
   name: string;
-  parent?: Category;
+  parent?: CategoryDto;
   level: number;
   color: number;
   // createdAt
@@ -11,27 +13,49 @@ type Category = {
   memo?: string;
 }
 
-type Schedule = {
+type ScheduleDto = {
   id: number;
-  category: Category;
+  category: CategoryDto;
   title: string;
   // body: string;
   startDate: Date;
   endDate: Date;
 }
 
-export interface ScheduleWithoutCategory extends Omit<Schedule, 'category'> {}
+export type ScheduleWithoutCategoryDto = {
+  id: number;
+  title: string;
+  // body: string;
+  startDate: Date;
+  endDate: Date;
+}
 
-export interface CategoryWithSchedule extends Category {
+export type ScheduleWithoutCategory = {
+  id: number;
+  title: string;
+  // body: string;
+  startDate: Dayjs;
+  endDate: Dayjs;
+}
+
+export interface CategoryWithScheduleDto extends CategoryDto {
+  scheduleList: ScheduleWithoutCategoryDto[];
+}
+
+export type CategoryWithSchedule = {
+  id: number;
+  name: string;
+  level: number;
+  color: number;
+  memo?: string;
   scheduleList: ScheduleWithoutCategory[];
-  // subCategoryList: CategoryWithSchedule[];
 }
 
 type MainCalendarDto = {
-  categoryList: CategoryWithSchedule[];
+  categoryList: CategoryWithScheduleDto[];
 }
 
-const newDummyCategory = (i: number, color: number): CategoryWithSchedule[] => {
+const newDummyCategory = (i: number, color: number): CategoryWithScheduleDto[] => {
   return [
     {
       id: i,
@@ -42,7 +66,7 @@ const newDummyCategory = (i: number, color: number): CategoryWithSchedule[] => {
         {
           id: i+1,
           title: 'Splash Page',
-          startDate: new Date(2023, 11, 1),
+          startDate:  new Date(2023, 11, 1),
           endDate: new Date(2023, 11, 7),
         }
       ],
