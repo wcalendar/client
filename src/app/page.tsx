@@ -10,6 +10,7 @@ import CategoryCell from './CategoryCell';
 import ScheduleLine from './ScheduleLine';
 import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
+import FixedModal from '@/components/common/fixed-modal/FixedModal';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -256,6 +257,16 @@ export default function Home() {
       <AddScheduleButton $isOpen={isAddScheduleModalOpen ? 'true' : 'false'} onClick={handleOpenAddScheduleModal}>
         <Icon path={mdiPlus} color='white' />
       </AddScheduleButton>
+      {isAddScheduleModalOpen && (
+        <FixedModal
+          width='40%'
+          title='일정 추가'
+          buttonList={[]}
+          onClose={handleCloseAddScheduleModal}
+        >
+          <></>
+        </FixedModal>
+      )}
     </Container>
   );
 }
