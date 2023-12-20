@@ -9,16 +9,17 @@ type ScheduleLineProps = {
 
 const Container = styled.div<{ theme: DefaultTheme, $line_count: number }>`
   width: 100%;
-  height: calc(${({ $line_count }) => 1.125 * $line_count}rem + ${({ $line_count }) => ($line_count - 1) * 2}px);
+  height: calc(${({ $line_count }) => 1.125 * $line_count}rem + ${({ theme, $line_count }) => ($line_count - 1) * theme.sizes.calendar.lineGap}px);
 `;
 
-const Line = styled.div`
+const Line = styled.div<{ theme: DefaultTheme }>`
   position: relative;
   width: 100%;
   height: 1.125rem;
-  margin-top: 2px;
+  margin-top: ${({ theme }) => theme.sizes.calendar.lineGap}px;
 `;
 
+// box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
 const ScheduleItem = styled.div<{ theme: DefaultTheme, $start: number, $end: number, $color: number, $level: number }>`
   position: absolute;
   top: 0;
@@ -31,6 +32,13 @@ const ScheduleItem = styled.div<{ theme: DefaultTheme, $start: number, $end: num
   margin-right: 2px;
   vertical-align: middle;
   display: flex;
+  cursor: pointer;
+  transition: all ease .25s;
+
+  &:hover {
+    transform: translateX(-1px) translateY(-1px);
+    box-shadow: 2px 2px 4px 1px ${({ theme }) => theme.colors.black80};
+  }
 `;
 
 const ScheduleItemText = styled.span`

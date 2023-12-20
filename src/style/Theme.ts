@@ -18,6 +18,7 @@ const categoryColors: {[key: string]: string} = {
 const theme = {
   colors: {
     black: '#111111',
+    black80: `#11111180`,
     blue: '#2b5ee1',
     gray: '#adb5bd',
     lightGray: '#d9d9d9',
@@ -46,6 +47,7 @@ const theme = {
   sizes: {
     calendar: {
       cellWidth: 232,
+      lineGap: 4,
     }
   }
 }

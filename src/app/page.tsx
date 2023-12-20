@@ -89,6 +89,8 @@ const Calendar = styled.main`
 `;
 
 const CategorySide = styled.aside<{ theme: DefaultTheme }>`
+  position: relative;
+  z-index: 2;
   height: 100%;
   width: ${({ theme }) => theme.sizes.calendar.cellWidth + 3}px;
   border-right: 3px solid ${({ theme }) => theme.colors.lightGray};
