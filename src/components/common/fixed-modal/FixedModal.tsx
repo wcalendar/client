@@ -37,6 +37,7 @@ const Box = styled.div<{ theme: DefaultTheme, $width: string }>`
   opacity: 1;
   animation-duration: .25s;
   animation-name: open;
+  background-color: white;
   box-shadow: 0px 2px 4px 2px ${({ theme }) => theme.colors.gray};
 
   @keyframes open {
