@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styled from 'styled-components';
 
 const LogoContainer = styled.div`
@@ -9,13 +10,16 @@ const Title = styled.h1`
   font-weight: 700;
   width: 101px;
   height: 30px;
+  & > a {
+    text-decoration: none;
+  }
 `;
-function Logo() {
+export default function Logo() {
   return (
     <LogoContainer>
-      <Title>W Planner</Title>
+      <Title>
+        <Link href="/">W Planner</Link>
+      </Title>
     </LogoContainer>
   );
 }
-
-export default Logo;
