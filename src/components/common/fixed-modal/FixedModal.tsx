@@ -32,8 +32,10 @@ const Container = styled.div`
 const Box = styled.div<{ theme: DefaultTheme, $width: string }>`
   width: ${({ $width }) => $width};
   height: auto;
+  max-height: 90vh;
   border-radius: 10px;
   overflow: hidden;
+  overflow-y: auto;
   opacity: 1;
   animation-duration: .25s;
   animation-name: open;

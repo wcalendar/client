@@ -1,26 +1,43 @@
+import { CategoryColor } from "@/dummies/calendar";
+
+const categoryColors: {[key: string]: string} = {
+  categoryMainRed: '#e4617a',
+  categorySubRed: '#f1b0bc',
+  categoryMainOrange: '#e0744e',
+  categorySubOrange: '#dfb9a6',
+  categoryMainYellow: '#daa12b',
+  categorySubYellow: '#ecd095',
+  categoryMainGreen: '#26aa85',
+  categorySubGreen: '#92d4c2',
+  categoryMainBlue: '#506ee2',
+  categorySubBlue: '#a7b6f0',
+  categoryMainPurple: '#8d4de2',
+  categorySubPurple: '#c6a6f0',
+  categoryMainGray: '#777d85',
+  categorySubGray: '#bbbec2',
+}
+
 const theme = {
   colors: {
     black: '#111111',
+    black80: `#11111180`,
     blue: '#2b5ee1',
     gray: '#adb5bd',
     lightGray: '#d9d9d9',
     white: '#ececec',
 
     /* 범주 */
-    category1Main: '#e4617a',
-    category1Sub : '#f1b0bc',
-    category2Main: '#e0744e',
-    category2Sub : '#dfb9a6',
-    category3Main: '#daa12b',
-    category3Sub : '#ecd095',
-    category4Main: '#26aa85',
-    category4Sub : '#92d4c2',
-    category5Main: '#506ee2',
-    category5Sub : '#a7b6f0',
-    category6Main: '#8d4de2',
-    category6Sub : '#c6a6f0',
-    category7Main: '#777d85',
-    category7Sub : '#bbbec2',
+    ...categoryColors,
+
+    category: (color: CategoryColor, level: number) => {
+      return categoryColors[`category${level === 0 ? 'Main' : 'Sub'}${color.charAt(0).toUpperCase()}${color.slice(1)}`];
+    }
+  },
+  sizes: {
+    calendar: {
+      cellWidth: 232,
+      lineGap: 4,
+    }
   }
 }
 
