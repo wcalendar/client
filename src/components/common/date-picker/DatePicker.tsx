@@ -11,7 +11,6 @@ type DatePickerProps = {
 
 const Container = styled.div`
   position: relative;
-  height: 30rem;
 `;
 
 const Selector = styled.div`
@@ -26,7 +25,6 @@ const Selector = styled.div`
   user-select: none;
   cursor: pointer;
 `;
-
 
 export default function DatePicker({
   value,

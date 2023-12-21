@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { DefaultTheme } from "styled-components/dist/types";
 import { useMemo } from "react";
 import { CategoryToRender, ScheduleToRender } from "./page";
+import { CategoryColor } from "@/dummies/calendar";
 
 type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
@@ -20,7 +21,7 @@ const Line = styled.div<{ theme: DefaultTheme }>`
 `;
 
 // box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
-const ScheduleItem = styled.div<{ theme: DefaultTheme, $start: number, $end: number, $color: number, $level: number }>`
+const ScheduleItem = styled.div<{ theme: DefaultTheme, $start: number, $end: number, $color: CategoryColor, $level: number }>`
   position: absolute;
   top: 0;
   left: ${({ theme, $start }) => ($start - 1) * (theme.sizes.calendar.cellWidth + 1)}px;
