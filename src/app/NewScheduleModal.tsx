@@ -8,7 +8,6 @@ import styled from "styled-components";
 
 const Container = styled.div`
   height: 30rem;
-  overflow-y: auto;
 `;
 
 const Line = styled.div`

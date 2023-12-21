@@ -1,4 +1,4 @@
-import { CategoryWithSchedule } from "@/dummies/calendar";
+import { CategoryColor, CategoryWithSchedule } from "@/dummies/calendar";
 import styled from "styled-components";
 import { DefaultTheme } from "styled-components/dist/types";
 
@@ -13,7 +13,7 @@ const Container = styled.div<{ theme: DefaultTheme, $line_count: number, }>`
   line-height: 1.125rem;
 `;
 
-const Category = styled.div<{ theme: DefaultTheme, $level: number, $color: number }>`
+const Category = styled.div<{ theme: DefaultTheme, $level: number, $color: CategoryColor }>`
   width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem - 3.375rem);
   height: 1.125rem;
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
@@ -24,7 +24,7 @@ const Category = styled.div<{ theme: DefaultTheme, $level: number, $color: numbe
   user-select: none;
 `;
 
-const Memo = styled.div<{ theme: DefaultTheme, $level: number, $color: number }>`
+const Memo = styled.div<{ theme: DefaultTheme, $level: number, $color: CategoryColor }>`
   width: calc(3.375rem - 1px);
   height: 1.125rem;
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
