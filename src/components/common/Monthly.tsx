@@ -29,7 +29,7 @@ const showCalendar = () => {
 const goNextMonth = () => {
   console.log('2024.01');
 };
-function Monthly() {
+export default function Monthly() {
   return (
     <MonthlyContainer>
       <ArrowButton onClick={goPrevMonth}>
@@ -42,5 +42,3 @@ function Monthly() {
     </MonthlyContainer>
   );
 }
-
-export default Monthly;

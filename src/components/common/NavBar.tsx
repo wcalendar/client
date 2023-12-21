@@ -50,8 +50,6 @@ const getMenus = (menus: NavBarProps[]) => {
     </NavLinks>
   );
 };
-function NavBar() {
+export default function NavBar() {
   return <NavBarContainer>{getMenus(userMenus)}</NavBarContainer>;
 }
-
-export default NavBar;
