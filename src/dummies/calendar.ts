@@ -1,5 +1,7 @@
 import { Dayjs } from "dayjs";
 
+export type CategoryColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'gray';
+
 type CategoryDto = {
   id: number;
   // user
@@ -7,7 +9,7 @@ type CategoryDto = {
   name: string;
   parent?: CategoryDto;
   level: number;
-  color: number;
+  color: CategoryColor;
   // createdAt
   // modifiedAt
   memo?: string;
@@ -46,7 +48,7 @@ export type CategoryWithSchedule = {
   id: number;
   name: string;
   level: number;
-  color: number;
+  color: CategoryColor;
   memo?: string;
   scheduleList: ScheduleWithoutCategory[];
 }
@@ -55,7 +57,7 @@ type MainCalendarDto = {
   categoryList: CategoryWithScheduleDto[];
 }
 
-const newDummyCategory = (i: number, color: number): CategoryWithScheduleDto[] => {
+const newDummyCategory = (i: number, color: CategoryColor): CategoryWithScheduleDto[] => {
   return [
     {
       id: i,
@@ -115,7 +117,7 @@ const calendarDummyData: MainCalendarDto = {
       id: 0,
       name: 'Test',
       level: 0,
-      color: 3,
+      color: 'green',
       scheduleList: [
         {
           id: 100,
@@ -153,7 +155,7 @@ const calendarDummyData: MainCalendarDto = {
       id: 999,
       name: 'overMonth',
       level: 1,
-      color: 3,
+      color: 'green',
       memo: 'zxcv',
       scheduleList: [
         {
@@ -176,14 +178,14 @@ const calendarDummyData: MainCalendarDto = {
         }
       ],
     },
-    ...newDummyCategory(1, 0),
-    ...newDummyCategory(8, 1),
-    ...newDummyCategory(15, 2),
-    ...newDummyCategory(22, 3),
-    ...newDummyCategory(29, 4),
-    ...newDummyCategory(36, 5),
-    ...newDummyCategory(42, 6),
-    ...newDummyCategory(49, 0),
+    ...newDummyCategory(1, 'red'),
+    ...newDummyCategory(8, 'orange'),
+    ...newDummyCategory(15, 'yellow'),
+    ...newDummyCategory(22, 'green'),
+    ...newDummyCategory(29, 'blue'),
+    ...newDummyCategory(36, 'purple'),
+    ...newDummyCategory(42, 'gray'),
+    ...newDummyCategory(49, 'red'),
   ]
 }
 
