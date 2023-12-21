@@ -1,5 +1,6 @@
 'use client';
 
+import CategoryBar from '@/components/category/CategoryBar';
 import Header from '@/components/common/Header';
 import styled from 'styled-components';
 
@@ -13,12 +14,6 @@ const Main = styled.div`
   height: 100%;
 `;
 
-const CategoryContainer = styled.div`
-  width: 20%;
-  height: 100%;
-  background: ${({ theme }) => theme.colors.white};
-  padding: 1rem;
-`;
 const CalendarContainer = styled.div`
   width: 80%;
   height: 100%;
@@ -30,7 +25,7 @@ export default function Home() {
     <Container>
       <Header />
       <Main>
-        <CategoryContainer>Category</CategoryContainer>
+        <CategoryBar />
         <CalendarContainer>Calendar</CalendarContainer>
       </Main>
     </Container>

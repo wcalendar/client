@@ -3,6 +3,7 @@ import Logo from './Logo';
 import NavBar from './NavBar';
 import Monthly from './Monthly';
 import SearchBar from './SearchBar';
+import { usePathname } from 'next/navigation';
 
 const HeaderContainer = styled.header`
   background: white;
@@ -10,6 +11,9 @@ const HeaderContainer = styled.header`
   padding: 0.5rem;
   align-items: center;
   justify-content: space-between;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
   width: 100%;
 `;
 
@@ -18,17 +22,21 @@ const NavContainer = styled.div`
   justify-content: space-between;
   flex-basis: 80%;
 `;
-function Header() {
+
+export default function Header() {
+  const pathName = usePathname();
   return (
     <HeaderContainer>
       <Logo />
-      <NavContainer>
-        <Monthly />
-        <SearchBar />
+      {pathName === '/' ? (
+        <NavContainer>
+          <Monthly />
+          <SearchBar />
+          <NavBar />
+        </NavContainer>
+      ) : (
         <NavBar />
-      </NavContainer>
+      )}
     </HeaderContainer>
   );
 }
-
-export default Header;

@@ -6,7 +6,7 @@ const SearchBarContainer = styled.form`
   align-items: center;
   gap: 1rem;
 `;
-function SearchBar() {
+export default function SearchBar() {
   return (
     <SearchBarContainer>
       <input />
@@ -16,5 +16,3 @@ function SearchBar() {
     </SearchBarContainer>
   );
 }
-
-export default SearchBar;
