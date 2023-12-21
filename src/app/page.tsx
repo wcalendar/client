@@ -13,6 +13,7 @@ import { mdiPlus } from '@mdi/js';
 import FixedModal from '@/components/common/fixed-modal/FixedModal';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
+import NewScheduleModal from './NewScheduleModal';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -277,7 +278,7 @@ export default function Home() {
           buttonList={[]}
           onClose={handleCloseAddScheduleModal}
         >
-          <></>
+          <NewScheduleModal />
         </FixedModal>
       )}
     </Container>
