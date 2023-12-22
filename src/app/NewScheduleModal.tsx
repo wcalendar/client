@@ -1,9 +1,11 @@
+import Dropdown from "@/components/common/Dropdown";
 import DatePicker from "@/components/common/date-picker/DatePicker";
+import { CategoryDto, categoryListDummyData } from "@/dummies/calendar";
 import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -45,6 +47,11 @@ const Interval = styled.div`
   align-items: center;
 `;
 
+const DropDownWrapper = styled.div`
+  width: 60%;
+  height: 100%;
+`;
+
 const Tips = styled.ul`
   margin-top: 2rem;
   padding: 0 1rem;
@@ -55,8 +62,21 @@ const Tip = styled.li`
 `;
 
 export default function NewScheduleModal() {
+  // TODO 카테고리 리스트 구하는 로직 필요
+  const categoryList = useMemo<CategoryDto[]>(() => {
+    return categoryListDummyData;
+  }, []);
+
+  const dropdownValues = useMemo<string[]>(() => {
+    return [
+      '-',
+      ...categoryList.map(category => category.name),
+    ]
+  }, [categoryList]);
+
   const [startDate, setStartDate] = useState<Dayjs>(time.now());
   const [endDate, setEndDate] = useState<Dayjs>(time.now());
+  const [categoryIdx, setCategoryIdx] = useState(0);
 
   const handleStartDateChange = (value: Dayjs) => {
     setStartDate(value);
@@ -64,6 +84,10 @@ export default function NewScheduleModal() {
 
   const handleEndDateChange = (value: Dayjs) => {
     setEndDate(value);
+  }
+
+  const handleCategoryIdxChange = (idx: number) => {
+    setCategoryIdx(idx);
   }
 
   return (
@@ -80,6 +104,9 @@ export default function NewScheduleModal() {
       </Line>
       <Line>
         <Label>카테고리</Label>
+        <DropDownWrapper>
+          <Dropdown values={dropdownValues} selectedIdx={categoryIdx} height='1.75rem' onChange={handleCategoryIdxChange} />
+        </DropDownWrapper>
       </Line>
       <Line>
         <Label>우선순위 추가</Label>

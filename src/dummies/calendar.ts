@@ -2,7 +2,7 @@ import { Dayjs } from "dayjs";
 
 export type CategoryColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'gray';
 
-type CategoryDto = {
+export type CategoryDto = {
   id: number;
   // user
   // code: string;
@@ -189,6 +189,46 @@ const calendarDummyData: MainCalendarDto = {
   ]
 }
 
+const categoryListDummyData: CategoryDto[] = [
+  {
+    id: 1,
+    name: '카테고리 1',
+    level: 0,
+    color: 'red',
+  },
+  {
+    id: 2,
+    name: '카테고리 2',
+    level: 1,
+    color: 'blue',
+  },
+  {
+    id: 3,
+    name: '카테고리 3',
+    level: 2,
+    color: 'red',
+  },
+  {
+    id: 4,
+    name: '카테고리 4',
+    level: 1,
+    color: 'red',
+  },
+  {
+    id: 5,
+    name: '카테고리 5',
+    level: 0,
+    color: 'red',
+  },
+  {
+    id: 6,
+    name: '카테고리 6',
+    level: 1,
+    color: 'red',
+  },
+]
+
 export {
   calendarDummyData,
+  categoryListDummyData,
 }
