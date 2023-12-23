@@ -1,4 +1,5 @@
 import Dropdown from "@/components/common/Dropdown";
+import RadioButton from "@/components/common/RadioButton";
 import DatePicker from "@/components/common/date-picker/DatePicker";
 import { CategoryDto, categoryListDummyData } from "@/dummies/calendar";
 import time from "@/lib/time";
@@ -77,6 +78,7 @@ export default function NewScheduleModal() {
   const [startDate, setStartDate] = useState<Dayjs>(time.now());
   const [endDate, setEndDate] = useState<Dayjs>(time.now());
   const [categoryIdx, setCategoryIdx] = useState(0);
+  const [isPriority, setPriority] = useState(true);
 
   const handleStartDateChange = (value: Dayjs) => {
     setStartDate(value);
@@ -88,6 +90,10 @@ export default function NewScheduleModal() {
 
   const handleCategoryIdxChange = (idx: number) => {
     setCategoryIdx(idx);
+  }
+
+  const handlePriorityChange = (value: boolean) => {
+    setPriority(value);
   }
 
   return (
@@ -110,6 +116,8 @@ export default function NewScheduleModal() {
       </Line>
       <Line>
         <Label>우선순위 추가</Label>
+        <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
+        <RadioButton label="추가하지 않음" checked={!isPriority} onChange={() => handlePriorityChange(false)} />
       </Line>
       <Tips>
         <Tip>카테고리 선택 후 일시 변경시에 카테고리가 없는 '월'로의 이동 및 선택은 불가합니다.</Tip>
