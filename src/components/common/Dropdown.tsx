@@ -96,7 +96,7 @@ export default function Dropdown({
   selectedIdx,
   onChange,
 }: DropdownProps) {
-  const [isListOpen, setListOpen] = useState(true);
+  const [isListOpen, setListOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 

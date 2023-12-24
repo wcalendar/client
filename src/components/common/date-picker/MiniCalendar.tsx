@@ -17,6 +17,7 @@ const Container = styled.div`
   padding: .25rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
   background-color: white;
+  z-index: 1;
   animation-duration: .25s;
   animation-name: open;
 
