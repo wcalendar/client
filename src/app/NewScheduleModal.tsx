@@ -7,7 +7,7 @@ import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
+import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 interface NewScheduleModal extends Omit<FixedModalProps, 'children' | 'buttonList'> {
@@ -72,10 +72,12 @@ export default function NewScheduleModal({
   title,
   onClose,
 }: NewScheduleModal) {
-  // TODO 카테고리 리스트 구하는 로직 필요
-  const categoryList = useMemo<CategoryDto[]>(() => {
-    return categoryListDummyData;
-  }, []);
+  const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
+  const [scheduleTitle, setScheduleTitle] = useState('');
+  const [startDate, setStartDate] = useState<Dayjs>(time.now());
+  const [endDate, setEndDate] = useState<Dayjs>(time.now());
+  const [categoryIdx, setCategoryIdx] = useState(0);
+  const [isPriority, setPriority] = useState(true);
 
   const dropdownValues = useMemo<string[]>(() => {
     return [
@@ -84,11 +86,13 @@ export default function NewScheduleModal({
     ]
   }, [categoryList]);
 
-  const [scheduleTitle, setScheduleTitle] = useState('');
-  const [startDate, setStartDate] = useState<Dayjs>(time.now());
-  const [endDate, setEndDate] = useState<Dayjs>(time.now());
-  const [categoryIdx, setCategoryIdx] = useState(0);
-  const [isPriority, setPriority] = useState(true);
+  // 기간이 변경되면 새 카테고리 리스트를 가져옴
+  useEffect(() => {
+    setCategoryIdx(0);
+
+    // TODO 카테고리 리스트 구하는 로직 필요
+    setCategoryList(categoryListDummyData);
+  }, [startDate, endDate]);
 
   const handleChangeScheduleTitle: ChangeEventHandler<HTMLInputElement> = (e) => {
     setScheduleTitle(e.target.value);
@@ -127,7 +131,12 @@ export default function NewScheduleModal({
       return;
     }
 
+    // Category
+    if(categoryIdx === 0){
+      alert('카테고리를 선택해주세요');
 
+      return;
+    }
 
   }
 
