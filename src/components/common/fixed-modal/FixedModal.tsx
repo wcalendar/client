@@ -7,7 +7,7 @@ export type ModalButton = {
   onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
-type FixedModalProps = {
+export type FixedModalProps = {
   width: string;
   title: string;
   buttonList: ModalButton[];

@@ -10,7 +10,6 @@ import CategoryCell from './CategoryCell';
 import ScheduleLine from './ScheduleLine';
 import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
-import FixedModal from '@/components/common/fixed-modal/FixedModal';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
@@ -272,14 +271,12 @@ export default function Home() {
         <Icon path={mdiPlus} color='white' />
       </AddScheduleButton>
       {isAddScheduleModalOpen && (
-        <FixedModal
+        <NewScheduleModal
           width='40%'
           title='일정 추가'
           buttonList={[]}
           onClose={handleCloseAddScheduleModal}
-        >
-          <NewScheduleModal />
-        </FixedModal>
+        />
       )}
     </Container>
   );
