@@ -1,16 +1,17 @@
 import { ScheduleModalInfo } from "@/app/page";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
 }
 
-const Container = styled.div`
+const Container = styled.div<{ $x: string, $y: number }>`
   position: absolute;
-  left: 500px;
-  top: 300px;
+  left: ${({ $x }) => $x};
+  top: ${({ $y }) => $y}px;
   width: 16.875rem;
   height: auto;
   border: 1px solid ${({ theme }) => theme.colors.white};
@@ -71,10 +72,16 @@ const Button = styled.button`
 export default function ScheduleModal({
   scheduleModalInfo,
 }: ScheduleModalProps) {
+  const { x, y, schedule } = scheduleModalInfo;
+  const renderX = useMemo(() => {
+    if(x > (window.innerWidth / 2)) return `calc(${x}px - 16.875rem)`;
+    else return `${x}px`;
+  }, [x]);
+
   return (
-    <Container>
+    <Container $x={renderX} $y={y}>
       <Header>
-        <Title>{scheduleModalInfo.schedule.title}</Title>
+        <Title>{schedule.title}</Title>
         <CheckBox type='checkbox' />
         <CloseButton>
           <Icon path={mdiClose} />

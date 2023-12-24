@@ -13,6 +13,7 @@ import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
+import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -24,6 +25,12 @@ export interface ScheduleToRender extends ScheduleWithoutCategory {
 export type CategoryToRender = {
   category: CategoryWithSchedule;
   lines: (ScheduleToRender | undefined)[][];
+}
+
+export type ScheduleModalInfo = {
+  x: number,
+  y: number,
+  schedule: ScheduleToRender,
 }
 
 /**
@@ -184,6 +191,7 @@ const AddScheduleButton = styled.button<{ theme: DefaultTheme, $isOpen: string }
 `;
 
 export default function Home() {
+  const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
   const [isAddScheduleModalOpen, setAddScheduleModalOpen] = useState(false);
   const [categoryToRenderList, setCategoryToRenderList] = useState<CategoryToRender[]>([]);
 
@@ -228,6 +236,10 @@ export default function Home() {
     setAddScheduleModalOpen(false);
   }
 
+  const handleScheduleClick = (scheduleModalInfo: ScheduleModalInfo) => {
+    setScheduleModalInfo(scheduleModalInfo);
+  }
+
   return (
     <Container>
       <Header />
@@ -261,7 +273,7 @@ export default function Home() {
               ))}
             </DivideLines>
             {categoryToRenderList.map(categoryToRender => (
-              <ScheduleLine key={`schedule-${categoryToRender.category.id}`} categoryToRender={categoryToRender} />
+              <ScheduleLine key={`schedule-${categoryToRender.category.id}`} categoryToRender={categoryToRender} onScheduleClick={handleScheduleClick} />
             ))}
           </CalendarBody>
         </ScheduleSide>
@@ -277,6 +289,9 @@ export default function Home() {
           buttonList={[]}
           onClose={handleCloseAddScheduleModal}
         />
+      )}
+      {scheduleModalInfo && (
+        <ScheduleModal scheduleModalInfo={scheduleModalInfo} />
       )}
     </Container>
   );

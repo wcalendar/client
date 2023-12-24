@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { DefaultTheme } from "styled-components/dist/types";
-import { useMemo } from "react";
-import { CategoryToRender, ScheduleToRender } from "./page";
+import { MouseEvent, MouseEventHandler, useMemo } from "react";
+import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "./page";
 import { CategoryColor } from "@/dummies/calendar";
 
 type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
+  onScheduleClick: (info: ScheduleModalInfo) => void;
 }
 
 const Container = styled.div<{ theme: DefaultTheme, $line_count: number }>`
@@ -56,6 +57,7 @@ const ScheduleItemText = styled.span`
 
 export default function ScheduleLine({
   categoryToRender,
+  onScheduleClick,
 }: ScheduleLineProps) {
   console.log(categoryToRender);
   const { lines, category } = categoryToRender;
@@ -76,14 +78,24 @@ export default function ScheduleLine({
 
       return scheduleList;
     })
-  }, [categoryToRender])
+  }, [categoryToRender]);
+
+  const handleScheduleClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, schedule: ScheduleToRender) => {
+    const scheduleModalInfo: ScheduleModalInfo = {
+      x: e.clientX,
+      y: e.clientY,
+      schedule,
+    }
+
+    onScheduleClick(scheduleModalInfo);
+  }
 
   return (
     <Container $line_count={lines.length}>
       {schedulesByLine.map((line, i) => (
         <Line key={`${category.id}-${i}`}>
           {line.map(schedule => (
-            <ScheduleItem key={schedule.id} $start={schedule.startDay} $end={schedule.endDay} $color={category.color} $level={category.level}>
+            <ScheduleItem key={schedule.id} $start={schedule.startDay} $end={schedule.endDay} $color={category.color} $level={category.level} onClick={(e) => handleScheduleClick(e, schedule)}>
               <ScheduleItemText>
                 {schedule.title}
               </ScheduleItemText>
