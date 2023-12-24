@@ -7,7 +7,7 @@ import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { ChangeEventHandler, useMemo, useState } from "react";
+import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 
 interface NewScheduleModal extends Omit<FixedModalProps, 'children' | 'buttonList'> {
@@ -94,13 +94,21 @@ export default function NewScheduleModal({
     setScheduleTitle(e.target.value);
   }
 
-  const handleStartDateChange = (value: Dayjs) => {
+  const handleStartDateChange = useCallback((value: Dayjs) => {
     setStartDate(value);
-  }
 
-  const handleEndDateChange = (value: Dayjs) => {
+    if(value.isAfter(endDate)) {
+      setEndDate(value);
+    }
+  }, [endDate]);
+
+  const handleEndDateChange = useCallback((value: Dayjs) => {
     setEndDate(value);
-  }
+
+    if(value.isBefore(startDate)) {
+      setStartDate(value);
+    }
+  }, [startDate]);
 
   const handleCategoryIdxChange = (idx: number) => {
     setCategoryIdx(idx);
