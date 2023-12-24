@@ -1,16 +1,16 @@
 import Dropdown from "@/components/common/Dropdown";
 import RadioButton from "@/components/common/RadioButton";
 import DatePicker from "@/components/common/date-picker/DatePicker";
-import FixedModal, { FixedModalProps } from "@/components/common/fixed-modal/FixedModal";
+import FixedModal, { FixedModalProps, ModalButton } from "@/components/common/fixed-modal/FixedModal";
 import { CategoryDto, categoryListDummyData } from "@/dummies/calendar";
 import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { useMemo, useState } from "react";
+import { ChangeEventHandler, useMemo, useState } from "react";
 import styled from "styled-components";
 
-interface NewScheduleModal extends Omit<FixedModalProps, 'children'> {
+interface NewScheduleModal extends Omit<FixedModalProps, 'children' | 'buttonList'> {
 
 }
 
@@ -70,7 +70,6 @@ const Tip = styled.li`
 export default function NewScheduleModal({
   width,
   title,
-  buttonList,
   onClose,
 }: NewScheduleModal) {
   // TODO 카테고리 리스트 구하는 로직 필요
@@ -85,10 +84,15 @@ export default function NewScheduleModal({
     ]
   }, [categoryList]);
 
+  const [scheduleTitle, setScheduleTitle] = useState('');
   const [startDate, setStartDate] = useState<Dayjs>(time.now());
   const [endDate, setEndDate] = useState<Dayjs>(time.now());
   const [categoryIdx, setCategoryIdx] = useState(0);
   const [isPriority, setPriority] = useState(true);
+
+  const handleChangeScheduleTitle: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setScheduleTitle(e.target.value);
+  }
 
   const handleStartDateChange = (value: Dayjs) => {
     setStartDate(value);
@@ -106,6 +110,30 @@ export default function NewScheduleModal({
     setPriority(value);
   }
 
+  const handleSaveNewScheduleClick = () => {
+    // Title
+    const newTitle = scheduleTitle.trim();
+    if(newTitle.length === 0) {
+      alert('제목을 입력해주세요');
+
+      return;
+    }
+
+
+
+  }
+
+  const buttonList: ModalButton[] = [
+    {
+      text: '저장',
+      onClick: handleSaveNewScheduleClick,
+    },
+    {
+      text: '취소',
+      onClick: onClose,
+    },
+  ];
+
   return (
     <FixedModal
       width={width}
@@ -116,7 +144,7 @@ export default function NewScheduleModal({
       <Container>
         <Line>
           <Label>제목</Label>
-          <Input></Input>
+          <Input maxLength={20} value={scheduleTitle} onChange={handleChangeScheduleTitle}></Input>
         </Line>
         <Line>
           <Label>일시</Label>
