@@ -14,37 +14,37 @@ const categories = [
   {
     title: 'test1',
     period: '23.12-24.01',
-    theme: theme.colors.category1Main,
+    theme: theme.colors.categoryMainRed,
     type: 'Main',
   },
   {
     title: 'test1-1',
     period: '23.12-24.01',
-    theme: theme.colors.category1Main,
+    theme: theme.colors.categoryMainRed,
     type: 'Sub',
   },
   {
     title: 'test2',
     period: '23.12-24.01',
-    theme: theme.colors.category2Main,
+    theme: theme.colors.categoryMainOrange,
     type: 'Main',
   },
   {
     title: 'test3',
     period: '23.12-24.01',
-    theme: theme.colors.category3Main,
+    theme: theme.colors.categoryMainYellow,
     type: 'Main',
   },
   {
     title: 'test4',
     period: '23.12-24.01',
-    theme: theme.colors.category4Main,
+    theme: theme.colors.categoryMainGreen,
     type: 'Main',
   },
   {
     title: 'test5',
     period: '23.12-24.01',
-    theme: theme.colors.category5Main,
+    theme: theme.colors.categoryMainBlue,
     type: 'Main',
   },
 ];
