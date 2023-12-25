@@ -1,6 +1,8 @@
 import { CategoryColor } from "@/dummies/calendar";
 
-const categoryColors: {[key: string]: string} = {
+type Colors = 'Red' | 'Orange' | 'Yellow' | 'Green' | 'Blue' | 'Purple' | 'Gray';
+type CategoryColorsKeys = `category${'Main' | 'Sub'}${Colors}`;
+const categoryColors: {[key in CategoryColorsKeys]: string} = {
   categoryMainRed: '#e4617a',
   categorySubRed: '#f1b0bc',
   categoryMainOrange: '#e0744e',
@@ -30,7 +32,7 @@ const theme = {
     ...categoryColors,
 
     category: (color: CategoryColor, level: number) => {
-      return categoryColors[`category${level === 0 ? 'Main' : 'Sub'}${color.charAt(0).toUpperCase()}${color.slice(1)}`];
+      return categoryColors[`category${level === 0 ? 'Main' : 'Sub'}${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`];
     }
   },
   sizes: {
