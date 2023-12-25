@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { DefaultTheme } from "styled-components/dist/types";
 
 const Container = styled.div<{ theme: DefaultTheme; $is_category: number; }>`
-  width: ${({ theme, $is_category }) => theme.sizes.calendar.cellWidth + $is_category}px;
+  width: calc(${({ theme, $is_category }) => `${theme.sizes.calendar.cellWidth} + ${$is_category}px`});
   height: 100%;
   border-right: 1px solid ${({ theme }) => theme.colors.lightGray};
   display: flex;

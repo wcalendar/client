@@ -110,13 +110,13 @@ const CategorySide = styled.aside<{ theme: DefaultTheme }>`
   position: relative;
   z-index: 2;
   height: 100%;
-  width: ${({ theme }) => theme.sizes.calendar.cellWidth + 3}px;
+  width: calc(${({ theme }) => `${theme.sizes.calendar.cellWidth} + 3px`});
   border-right: 3px solid ${({ theme }) => theme.colors.lightGray};
   overflow-y: hidden;
 `;
 
 const ScheduleSide = styled.div<{ theme: DefaultTheme }>`
-  width: calc(100% - ${({ theme }) => theme.sizes.calendar.cellWidth + 3}px);
+  width: calc(100% - (${({ theme }) => `${theme.sizes.calendar.cellWidth} + 3px`}));
   height: 100%;
   overflow-x: auto;
   overflow-y: auto;
@@ -125,7 +125,7 @@ const ScheduleSide = styled.div<{ theme: DefaultTheme }>`
 const CalendarHeader = styled.div<{ theme: DefaultTheme, $day_count: number }>`
   position: sticky;
   z-index: 1;
-  width: ${({ theme, $day_count }) => String($day_count * (theme.sizes.calendar.cellWidth + ($day_count === 1 ? 0 : 1)))}px;
+  width: calc(${({ theme, $day_count }) => `${$day_count} * (${theme.sizes.calendar.cellWidth} + ${$day_count === 1 ? 0 : 1}px)`});
   top: 0;
   display: flex;
   justify-content: flex-start;
@@ -136,7 +136,7 @@ const CalendarHeader = styled.div<{ theme: DefaultTheme, $day_count: number }>`
 `;
 
 const CalendarBody = styled.div<{ theme: DefaultTheme, $day_count: number }>`
-  width: ${({ theme, $day_count }) => $day_count * (theme.sizes.calendar.cellWidth + ($day_count === 1 ? 0 : 1))}px;
+  width: calc(${({ theme, $day_count }) => `${$day_count} * (${theme.sizes.calendar.cellWidth} + ${$day_count === 1 ? 0 : 1}px)`});
   position: relative;
 `;
 
@@ -158,13 +158,13 @@ const DivideLines = styled.div<{ theme: DefaultTheme, $day_count: number }>`
   position: absolute;
   left: 0;
   top: -2px;
-  width: ${({ theme, $day_count }) => $day_count * (theme.sizes.calendar.cellWidth + 1)}px;
+  width: calc(${({ theme, $day_count }) => `${$day_count} * (${theme.sizes.calendar.cellWidth} + 1px)`});
   height: calc(100% + 2px);
   display: flex;
 `;
 
 const DivideLine = styled.div<{ theme: DefaultTheme }>`
-  width: ${({ theme }) => theme.sizes.calendar.cellWidth + 1}px;
+  width: calc(${({ theme }) => `${theme.sizes.calendar.cellWidth} + 1px`});
   height: 100%;
   border-right: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;

@@ -37,8 +37,9 @@ const theme = {
   },
   sizes: {
     calendar: {
-      cellWidth: 232,
-      lineGap: 4,
+      cellWidth: '232px',
+      cellHeight: '1.125rem',
+      lineGap: '4px',
     }
   }
 }
