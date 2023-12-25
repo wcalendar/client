@@ -101,15 +101,18 @@ const Container = styled.div`
 
   --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
   --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
+  --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
+    --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.tablet};
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
+    --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.mobile};
   }
 `;
 

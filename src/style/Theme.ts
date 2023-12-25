@@ -53,6 +53,11 @@ const theme = {
         tablet: '1.5rem',
         desktop: '1.125rem',
       },
+      memoWidth: {
+        mobile: '1rem',
+        tablet: '2rem',
+        desktop: '3.375rem',
+      },
       lineGap: '4px',
     }
   }
