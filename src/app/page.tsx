@@ -98,6 +98,19 @@ const toRenderingData = (categoryList: CategoryWithScheduleDto[], currentDate: D
 const Container = styled.div`
   width: 100%;
   overflow: hidden;
+
+  --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
+  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
+    --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
+    --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
+  }
 `;
 
 const Calendar = styled.main`
@@ -106,26 +119,26 @@ const Calendar = styled.main`
   display: flex;
 `;
 
-const CategorySide = styled.aside<{ theme: DefaultTheme }>`
+const CategorySide = styled.aside`
   position: relative;
   z-index: 2;
   height: 100%;
-  width: calc(${({ theme }) => `${theme.sizes.calendar.cellWidth} + 3px`});
+  width: calc(var(--cell-width) + 3px);
   border-right: 3px solid ${({ theme }) => theme.colors.lightGray};
   overflow-y: hidden;
 `;
 
-const ScheduleSide = styled.div<{ theme: DefaultTheme }>`
-  width: calc(100% - (${({ theme }) => `${theme.sizes.calendar.cellWidth} + 3px`}));
+const ScheduleSide = styled.div`
+  width: calc(100% - (var(--cell-width) + 3px));
   height: 100%;
   overflow-x: auto;
   overflow-y: auto;
 `;
 
-const CalendarHeader = styled.div<{ theme: DefaultTheme, $day_count: number }>`
+const CalendarHeader = styled.div<{ $day_count: number }>`
   position: sticky;
   z-index: 1;
-  width: calc(${({ theme, $day_count }) => `${$day_count} * (${theme.sizes.calendar.cellWidth} + ${$day_count === 1 ? 0 : 1}px)`});
+  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
   top: 0;
   display: flex;
   justify-content: flex-start;
@@ -135,8 +148,8 @@ const CalendarHeader = styled.div<{ theme: DefaultTheme, $day_count: number }>`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const CalendarBody = styled.div<{ theme: DefaultTheme, $day_count: number }>`
-  width: calc(${({ theme, $day_count }) => `${$day_count} * (${theme.sizes.calendar.cellWidth} + ${$day_count === 1 ? 0 : 1}px)`});
+const CalendarBody = styled.div<{ $day_count: number }>`
+  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
   position: relative;
 `;
 
@@ -154,22 +167,22 @@ const SettingCategoryButton = styled.button`
   color: white;
 `;
 
-const DivideLines = styled.div<{ theme: DefaultTheme, $day_count: number }>`
+const DivideLines = styled.div<{ $day_count: number }>`
   position: absolute;
   left: 0;
   top: -2px;
-  width: calc(${({ theme, $day_count }) => `${$day_count} * (${theme.sizes.calendar.cellWidth} + 1px)`});
+  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + 1px)`});
   height: calc(100% + 2px);
   display: flex;
 `;
 
-const DivideLine = styled.div<{ theme: DefaultTheme }>`
-  width: calc(${({ theme }) => `${theme.sizes.calendar.cellWidth} + 1px`});
+const DivideLine = styled.div`
+  width: calc(var(--cell-width) + 1px);
   height: 100%;
   border-right: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
-const AddScheduleButton = styled.button<{ theme: DefaultTheme, $isOpen: string }>`
+const AddScheduleButton = styled.button<{ $isOpen: string }>`
   position: fixed;
   right: 1rem;
   bottom: 1rem;

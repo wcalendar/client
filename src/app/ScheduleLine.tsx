@@ -8,25 +8,25 @@ type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
 }
 
-const Container = styled.div<{ theme: DefaultTheme, $line_count: number }>`
+const Container = styled.div<{ $line_count: number }>`
   width: 100%;
-  height: calc(${({ theme, $line_count }) => `(${theme.sizes.calendar.cellHeight} * ${$line_count}) + (${$line_count - 1} * ${theme.sizes.calendar.lineGap})`});
+  height: calc(${({ theme, $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * ${theme.sizes.calendar.lineGap})`});
 `;
 
-const Line = styled.div<{ theme: DefaultTheme }>`
+const Line = styled.div`
   position: relative;
   width: 100%;
-  height: ${({ theme }) => theme.sizes.calendar.cellHeight};
+  height: var(--cell-height);
   margin-top: ${({ theme }) => theme.sizes.calendar.lineGap};
 `;
 
 // box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
-const ScheduleItem = styled.div<{ theme: DefaultTheme, $start: number, $end: number, $color: CategoryColor, $level: number }>`
+const ScheduleItem = styled.div<{ $start: number, $end: number, $color: CategoryColor, $level: number }>`
   position: absolute;
   top: 0;
-  left: calc(${({ theme, $start }) => `${$start - 1} * (${theme.sizes.calendar.cellWidth} + 1px)`});
+  left: calc(${({ $start }) => `${$start - 1} * (var(--cell-width) + 1px)`});
   height: 100%;
-  width: calc(${({ theme, $start, $end }) => `(${$end - $start + 1} * (${theme.sizes.calendar.cellWidth} + 1px)) - 5px`});
+  width: calc(${({ $start, $end }) => `(${$end - $start + 1} * (var(--cell-width) + 1px)) - 5px`});
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-left: 2px;
@@ -49,7 +49,7 @@ const ScheduleItemText = styled.span`
   height: 100%;
   font-size: .75rem;
   user-select: none;
-  line-height: ${({ theme }) => theme.sizes.calendar.cellHeight};
+  line-height: var(--cell-height);
   padding-left: 1rem;
   padding-right: 1rem;
 `;
