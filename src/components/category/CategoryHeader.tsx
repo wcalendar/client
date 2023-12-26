@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import Monthly from '../common/Monthly';
 import ControlButton from '../common/ControlButton';
-import { useRouter } from 'next/navigation';
 
 const CategoryHeaderContainer = styled.div`
   width: 100%;
@@ -13,30 +12,35 @@ const CategoryHeaderContainer = styled.div`
   max-width: 50rem;
 `;
 
+const CategoryHeaderTitle = styled.h2`
+  font-size: 18px;
+`;
+
+const CategoryHeaderButtons = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
 const SAVE = '저장';
 const CANCEL = '취소';
+const CATEGORY_HEADER_TITLE = '카테고리 관리';
 
-export default function CategoryHeader() {
-  const router = useRouter();
-
-  //   TODO
-  const onSaveHandler = () => {
-    router.push('/');
-  };
-
-  //   TODO
-  const onCancelHandler = () => {
-    router.push('/');
-  };
-
+type CategoryHeaderProps = {
+  saveHandler: () => void;
+  cancelHandler: () => void;
+};
+export default function CategoryHeader({
+  saveHandler,
+  cancelHandler,
+}: CategoryHeaderProps) {
   return (
     <CategoryHeaderContainer>
-      <h2>카테고리 관리</h2>
+      <CategoryHeaderTitle>{CATEGORY_HEADER_TITLE}</CategoryHeaderTitle>
       <Monthly />
-      <div>
-        <ControlButton onClick={onSaveHandler} title={SAVE} />
-        <ControlButton onClick={onCancelHandler} title={CANCEL} />
-      </div>
+      <CategoryHeaderButtons>
+        <ControlButton onClick={saveHandler} title={SAVE} />
+        <ControlButton onClick={cancelHandler} title={CANCEL} />
+      </CategoryHeaderButtons>
     </CategoryHeaderContainer>
   );
 }

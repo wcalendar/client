@@ -6,10 +6,12 @@ import CategoryHeader from '@/components/category/CategoryHeader';
 import CategoryList from '@/components/category/CategoryList';
 import CategoryMenuHelperText from '@/components/category/CategoryMenuHelperText';
 import Header from '@/components/common/Header';
+import { Category } from '@/lib/types';
+import { getCategories } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-const Container = styled.main`
-`;
+const Container = styled.main``;
 
 const CategoryContainer = styled.div`
   display: flex;
@@ -31,18 +33,58 @@ const CategoryListContainer = styled.div`
   border: 1px solid black;
   border-radius: 5px;
 `;
+const defaultCategoryList: Category[] = [
+  { id: 0, name: 'Test1', type: 'Main', color: 'green' },
+  { id: 1, name: 'Test2', type: 'Sub', color: 'green' },
+  { id: 2, name: 'Test3', type: 'Main', color: 'green' },
+];
 
-export default function Category() {
+export default function CategoryPage() {
+  const [categoryList, setCategoryList] =
+    useState<Category[]>(defaultCategoryList);
+
+  // useEffect(() => {
+  //   setCategoryList(defaultCategoryList);
+  // }, []);
+
+  const onSaveHandler = () => {
+    console.log('Save btn clicked');
+  };
+
+  const onCancelHandler = () => {
+    console.log('Cancel btn clicked');
+  };
+
+  const onAddHandler = () => {
+    console.log('Add btn clicked');
+  };
+
+  const onDeleteHandler = () => {
+    console.log('Delete btn clicked');
+  };
+
+  const onUpHandler = () => {};
+
+  const onDownHandler = () => {};
+
   return (
     <Container>
       <Header />
-      <CategoryHeader />
+      <CategoryHeader
+        saveHandler={onSaveHandler}
+        cancelHandler={onCancelHandler}
+      />
       <CategoryContainer>
         <CategoryMenuContainer>
-          <CategoryControlButtons />
+          <CategoryControlButtons
+            addHandler={onAddHandler}
+            deleteHandler={onDeleteHandler}
+            upHandler={onUpHandler}
+            downHandler={onDownHandler}
+          />
           <CategoryListContainer>
             <h3>카테고리 전체보기</h3>
-            <CategoryList />
+            <CategoryList categories={categoryList} />
           </CategoryListContainer>
           <CategoryMenuHelperText />
         </CategoryMenuContainer>

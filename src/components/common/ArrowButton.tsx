@@ -3,26 +3,24 @@ import styled from 'styled-components';
 
 type ControlButtonProps = {
   onClick: () => void;
-  title?: string;
   icon?: ReactNode;
 };
 
 const Button = styled.button`
   border: 1px solid gray;
-  border-radius: 4px;
-  background: ${({ theme }) => theme.colors.white};
+  border-radius: 2px;
   cursor: pointer;
-  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
-export default function ControlButton({
+export default function ArrowButton({
   onClick,
-  title,
   icon,
 }: ControlButtonProps) {
   return (
     <Button onClick={onClick}>
-      {title ?? title}
-      {icon ?? icon}
+      {icon}
     </Button>
   );
 }

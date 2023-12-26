@@ -1,11 +1,5 @@
+import { Category } from '@/lib/types';
 import styled from 'styled-components';
-
-type CategoryItemProps = {
-  title: string;
-  period: string;
-  theme: string;
-  type: string;
-};
 
 const CategoryItemContainer = styled.li<{ type: string }>`
   width: 100%;
@@ -27,35 +21,12 @@ const CategoryTitle = styled.span<{ theme: string; type: string }>`
   font-weight: ${({ type }) => (type === 'Main' ? '700' : '400')};
 `;
 
-const CategoryPeriod = styled.span<{ theme: string; type: string }>`
-  width: 20%;
-  height: 100%;
-  font-weight: 400;
-  text-align: center;
-  background: ${({ theme }) => theme};
-  border-radius: 5px;
-  padding: 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const DEFAULT_TEXT = '비고';
-
-export default function CategoryItem({
-  title,
-  period,
-  theme,
-  type,
-}: CategoryItemProps) {
+export default function CategoryItem({ name, color, type }: Category) {
   return (
     <CategoryItemContainer type={type}>
-      <CategoryTitle theme={theme} type={type}>
-        {title}
+      <CategoryTitle theme={color} type={type}>
+        {name}
       </CategoryTitle>
-      <CategoryPeriod theme={theme} type={type}>
-        {type === 'Main' ? DEFAULT_TEXT : period}
-      </CategoryPeriod>
     </CategoryItemContainer>
   );
 }
