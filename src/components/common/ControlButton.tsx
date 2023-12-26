@@ -10,7 +10,8 @@ type ControlButtonProps = {
 const Button = styled.button`
   border: 1px solid gray;
   border-radius: 4px;
-  background: ${({ theme }) => theme.colors.white};
+  background-color: white;
+  font-weight: bold;
   cursor: pointer;
   padding: 0.5rem;
 `;

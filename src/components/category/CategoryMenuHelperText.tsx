@@ -10,7 +10,8 @@ const helperText: string[] = [
 ];
 
 const CategoryHelperTextContainer = styled.ul`
-  font-size: 10px;
+  font-size: 12px;
+  gap: 0.5rem;
   padding: 1rem;
 `;
 export default function CategoryMenuHelperText() {

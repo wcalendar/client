@@ -6,8 +6,8 @@ import CategoryHeader from '@/components/category/CategoryHeader';
 import CategoryList from '@/components/category/CategoryList';
 import CategoryMenuHelperText from '@/components/category/CategoryMenuHelperText';
 import Header from '@/components/common/Header';
-import { Category } from '@/lib/types';
 import { getCategories } from '@/lib/utils';
+import { Category } from '@/types/Category';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -34,18 +34,19 @@ const CategoryListContainer = styled.div`
   border-radius: 5px;
 `;
 const defaultCategoryList: Category[] = [
-  { id: 0, name: 'Test1', type: 'Main', color: 'green' },
-  { id: 1, name: 'Test2', type: 'Sub', color: 'green' },
-  { id: 2, name: 'Test3', type: 'Main', color: 'green' },
+  { id: 0, name: 'Test1', color: 'red', level: 0 },
+  { id: 1, name: 'Test2', color: 'green', level: 1 },
+  { id: 2, name: 'Test3', color: 'green', level: 2 },
 ];
 
 export default function CategoryPage() {
   const [categoryList, setCategoryList] =
     useState<Category[]>(defaultCategoryList);
 
-  // useEffect(() => {
-  //   setCategoryList(defaultCategoryList);
-  // }, []);
+  useEffect(() => {
+    const categories = getCategories();
+    setCategoryList(categories);
+  }, []);
 
   const onSaveHandler = () => {
     console.log('Save btn clicked');

@@ -5,11 +5,18 @@ import ControlButton from '../common/ControlButton';
 const CategoryHeaderContainer = styled.div`
   width: 100%;
   display: flex;
-  padding: 5px;
   align-items: center;
-  justify-content: space-between;
+  border-bottom: 1px solid gray;
+`;
+
+const CategoryHeaderContentsContainer = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 5px;
+  max-width: 1000px;
   gap: 2rem;
-  max-width: 50rem;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const CategoryHeaderTitle = styled.h2`
@@ -35,12 +42,14 @@ export default function CategoryHeader({
 }: CategoryHeaderProps) {
   return (
     <CategoryHeaderContainer>
-      <CategoryHeaderTitle>{CATEGORY_HEADER_TITLE}</CategoryHeaderTitle>
-      <Monthly />
-      <CategoryHeaderButtons>
-        <ControlButton onClick={saveHandler} title={SAVE} />
-        <ControlButton onClick={cancelHandler} title={CANCEL} />
-      </CategoryHeaderButtons>
+      <CategoryHeaderContentsContainer>
+        <CategoryHeaderTitle>{CATEGORY_HEADER_TITLE}</CategoryHeaderTitle>
+        <Monthly />
+        <CategoryHeaderButtons>
+          <ControlButton onClick={saveHandler} title={SAVE} />
+          <ControlButton onClick={cancelHandler} title={CANCEL} />
+        </CategoryHeaderButtons>
+      </CategoryHeaderContentsContainer>
     </CategoryHeaderContainer>
   );
 }

@@ -1,3 +1,4 @@
+import { CategoryColor } from '@/types/Category';
 import styled from 'styled-components';
 
 const CategoryFormContainer = styled.form`
@@ -23,7 +24,24 @@ const CustomSelect = styled.select`
 const TextInput = styled.input`
   width: 344px;
   height: 28px;
+  padding-left: 4px;
 `;
+
+type CategoryOption = {
+  name: string;
+  color: CategoryColor;
+};
+
+const options: CategoryOption[] = [
+  {
+    name: 'Main',
+    color: 'blue',
+  },
+  {
+    name: 'Sub',
+    color: 'green',
+  },
+];
 
 export default function CategoryForm() {
   return (
@@ -34,7 +52,10 @@ export default function CategoryForm() {
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>비고</TitleLabel>
-        <TextInput type="text" />
+        <TextInput
+          type="text"
+          placeholder="카테고리 관련 메모 입력(마감일, 주기 등)"
+        />
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>표시여부</TitleLabel>
@@ -49,16 +70,16 @@ export default function CategoryForm() {
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>범주</TitleLabel>
-        <CustomSelect name="languages" id="lang">
-          <option value="javascript">JavaScript</option>
-          <option value="php">PHP</option>
-          <option value="java">Java</option>
-          <option value="golang">Golang</option>
-          <option value="python">Python</option>
-          <option value="c#">C#</option>
-          <option value="C++">C++</option>
-          <option value="erlang">Erlang</option>
-        </CustomSelect>
+        <section data-role="selectbox">
+          <button>색상 선택</button>
+          <ul>
+            {options.map(option => (
+              <li key={option.name}>
+                <div>{option.name}</div>
+              </li>
+            ))}
+          </ul>
+        </section>
       </ContentContainer>
     </CategoryFormContainer>
   );
