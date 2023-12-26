@@ -12,9 +12,7 @@ export default function Callback() {
   }
 
   useEffect(() => {
-    const jsessionId = Cookies.get('jsession-id');
-    if(jsessionId) callback();
-    else alert('no jsession-id');
+    callback();
   }, []);
 
   return <div></div>
