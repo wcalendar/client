@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { DefaultTheme } from "styled-components/dist/types";
 import { useMemo } from "react";
 import { CategoryToRender, ScheduleToRender } from "./page";
 import { CategoryColor } from "@/dummies/calendar";
@@ -10,14 +9,14 @@ type ScheduleLineProps = {
 
 const Container = styled.div<{ $line_count: number }>`
   width: 100%;
-  height: calc(${({ theme, $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * ${theme.sizes.calendar.lineGap})`});
+  height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
 `;
 
 const Line = styled.div`
   position: relative;
   width: 100%;
   height: var(--cell-height);
-  margin-top: ${({ theme }) => theme.sizes.calendar.lineGap};
+  margin-top: var(--line-gap);
 `;
 
 // box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};

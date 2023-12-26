@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import styled from "styled-components"
-import { DefaultTheme } from "styled-components/dist/types";
 
 const Container = styled.div<{ $is_category: number; }>`
   width: calc(${({ $is_category }) => `var(--cell-width) + ${$is_category}px`});

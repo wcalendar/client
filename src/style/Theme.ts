@@ -58,7 +58,11 @@ const theme = {
         tablet: '2rem',
         desktop: '3.375rem',
       },
-      lineGap: '4px',
+      lineGap: {
+        mobile: '8px',
+        tablet: '6px',
+        desktop: '4px',
+      },
     }
   }
 }

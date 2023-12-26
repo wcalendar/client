@@ -4,7 +4,6 @@ import Header from '@/components/common/Header';
 import { CategoryWithSchedule, CategoryWithScheduleDto, ScheduleWithoutCategory, calendarDummyData } from '@/dummies/calendar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components/dist/types';
 import Cell from './Cell';
 import CategoryCell from './CategoryCell';
 import ScheduleLine from './ScheduleLine';
@@ -102,17 +101,20 @@ const Container = styled.div`
   --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
   --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
   --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
+  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
     --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.tablet};
+    --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.tablet};
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
     --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.mobile};
+    --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.mobile};
   }
 `;
 
