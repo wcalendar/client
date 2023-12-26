@@ -1,11 +1,10 @@
 import { ReactNode } from "react";
 import styled from "styled-components"
-import { DefaultTheme } from "styled-components/dist/types";
 
-const Container = styled.div<{ theme: DefaultTheme; $is_category: number; }>`
-  width: ${({ theme, $is_category }) => theme.sizes.calendar.cellWidth + $is_category}px;
+const Container = styled.div<{ $is_category: number; }>`
+  width: calc(${({ $is_category }) => `var(--cell-width) + ${$is_category}px`});
   height: 100%;
-  border-right: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-right: ${({ theme, $is_category }) => $is_category === 0 ? 'none' : `1px solid ${theme.colors.lightGray}`};
   display: flex;
   justify-content: center;
   align-items: center;

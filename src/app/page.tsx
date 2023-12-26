@@ -4,7 +4,6 @@ import Header from '@/components/common/Header';
 import { CategoryWithSchedule, CategoryWithScheduleDto, ScheduleWithoutCategory, calendarDummyData } from '@/dummies/calendar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components/dist/types';
 import Cell from './Cell';
 import CategoryCell from './CategoryCell';
 import ScheduleLine from './ScheduleLine';
@@ -98,6 +97,25 @@ const toRenderingData = (categoryList: CategoryWithScheduleDto[], currentDate: D
 const Container = styled.div`
   width: 100%;
   overflow: hidden;
+
+  --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
+  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
+  --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
+  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
+    --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
+    --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.tablet};
+    --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.tablet};
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
+    --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
+    --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.mobile};
+    --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.mobile};
+  }
 `;
 
 const Calendar = styled.main`
@@ -106,26 +124,26 @@ const Calendar = styled.main`
   display: flex;
 `;
 
-const CategorySide = styled.aside<{ theme: DefaultTheme }>`
+const CategorySide = styled.aside`
   position: relative;
   z-index: 2;
   height: 100%;
-  width: ${({ theme }) => theme.sizes.calendar.cellWidth + 3}px;
+  width: calc(var(--cell-width) + 3px);
   border-right: 3px solid ${({ theme }) => theme.colors.lightGray};
   overflow-y: hidden;
 `;
 
-const ScheduleSide = styled.div<{ theme: DefaultTheme }>`
-  width: calc(100% - ${({ theme }) => theme.sizes.calendar.cellWidth + 3}px);
+const ScheduleSide = styled.div`
+  width: calc(100% - (var(--cell-width) + 3px));
   height: 100%;
   overflow-x: auto;
   overflow-y: auto;
 `;
 
-const CalendarHeader = styled.div<{ theme: DefaultTheme, $day_count: number }>`
+const CalendarHeader = styled.div<{ $day_count: number }>`
   position: sticky;
   z-index: 1;
-  width: ${({ theme, $day_count }) => String($day_count * (theme.sizes.calendar.cellWidth + ($day_count === 1 ? 0 : 1)))}px;
+  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
   top: 0;
   display: flex;
   justify-content: flex-start;
@@ -135,8 +153,8 @@ const CalendarHeader = styled.div<{ theme: DefaultTheme, $day_count: number }>`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const CalendarBody = styled.div<{ theme: DefaultTheme, $day_count: number }>`
-  width: ${({ theme, $day_count }) => $day_count * (theme.sizes.calendar.cellWidth + ($day_count === 1 ? 0 : 1))}px;
+const CalendarBody = styled.div<{ $day_count: number }>`
+  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
   position: relative;
 `;
 
@@ -154,22 +172,22 @@ const SettingCategoryButton = styled.button`
   color: white;
 `;
 
-const DivideLines = styled.div<{ theme: DefaultTheme, $day_count: number }>`
+const DivideLines = styled.div<{ $day_count: number }>`
   position: absolute;
   left: 0;
   top: -2px;
-  width: ${({ theme, $day_count }) => $day_count * (theme.sizes.calendar.cellWidth + 1)}px;
+  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + 1px)`});
   height: calc(100% + 2px);
   display: flex;
 `;
 
-const DivideLine = styled.div<{ theme: DefaultTheme }>`
-  width: ${({ theme }) => theme.sizes.calendar.cellWidth + 1}px;
+const DivideLine = styled.div`
+  width: calc(var(--cell-width) + 1px);
   height: 100%;
   border-right: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
-const AddScheduleButton = styled.button<{ theme: DefaultTheme, $isOpen: string }>`
+const AddScheduleButton = styled.button<{ $isOpen: string }>`
   position: fixed;
   right: 1rem;
   bottom: 1rem;
