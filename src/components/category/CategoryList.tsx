@@ -8,12 +8,46 @@ const CategoryListContainer = styled.ul`
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  list-style: none;
 `;
 
-type CategoryListProps = {
-  categories: Category[];
-};
+const categories = [
+  {
+    title: 'test1',
+    period: '23.12-24.01',
+    theme: theme.colors.categoryMainRed,
+    type: 'Main',
+  },
+  {
+    title: 'test1-1',
+    period: '23.12-24.01',
+    theme: theme.colors.categoryMainRed,
+    type: 'Sub',
+  },
+  {
+    title: 'test2',
+    period: '23.12-24.01',
+    theme: theme.colors.categoryMainOrange,
+    type: 'Main',
+  },
+  {
+    title: 'test3',
+    period: '23.12-24.01',
+    theme: theme.colors.categoryMainYellow,
+    type: 'Main',
+  },
+  {
+    title: 'test4',
+    period: '23.12-24.01',
+    theme: theme.colors.categoryMainGreen,
+    type: 'Main',
+  },
+  {
+    title: 'test5',
+    period: '23.12-24.01',
+    theme: theme.colors.categoryMainBlue,
+    type: 'Main',
+  },
+];
 
 export default function CategoryList({ categories }: CategoryListProps) {
   return (
