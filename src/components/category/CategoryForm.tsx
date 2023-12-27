@@ -1,5 +1,7 @@
 import { CategoryColor } from '@/types/Category';
 import styled from 'styled-components';
+import CategoryColorSelector from './CategoryColorSelector';
+import { useState } from 'react';
 
 const CategoryFormContainer = styled.form`
   display: flex;
@@ -14,11 +16,12 @@ const ContentContainer = styled.div`
 `;
 
 const TitleLabel = styled.label`
-  width: 4rem;
+  width: 100px;
 `;
 
-const CustomSelect = styled.select`
+const SelectLabel = styled.label`
   display: flex;
+  gap: 8px;
 `;
 
 const TextInput = styled.input`
@@ -43,43 +46,41 @@ const options: CategoryOption[] = [
   },
 ];
 
+const LABEL_TITLE = '제목';
+const LABEL_OPTION = '비고';
+const LABEL_VIEW = '표시 여부';
+const LABEL_COLOR = '범주';
+const OPTION_HELPER_TEXT = '카테고리 관련 메모 입력(마감일, 주기 등)';
+
 export default function CategoryForm() {
+  const [categoryColor, setCategoryColor] = useState<string>('blue');
   return (
     <CategoryFormContainer>
       <ContentContainer>
-        <TitleLabel>제목</TitleLabel>
+        <TitleLabel>{LABEL_TITLE}</TitleLabel>
         <TextInput type="text" />
       </ContentContainer>
       <ContentContainer>
-        <TitleLabel>비고</TitleLabel>
-        <TextInput
-          type="text"
-          placeholder="카테고리 관련 메모 입력(마감일, 주기 등)"
-        />
+        <TitleLabel>{LABEL_OPTION}</TitleLabel>
+        <TextInput type="text" placeholder={OPTION_HELPER_TEXT} />
       </ContentContainer>
       <ContentContainer>
-        <TitleLabel>표시여부</TitleLabel>
-        <label>
-          <input type="radio" name="display" value="show" />
-          표시
-        </label>
-        <label>
+        <TitleLabel>{LABEL_VIEW}</TitleLabel>
+        <SelectLabel>
+          <input type="radio" name="display" value="show" checked />
+          <span>표시</span>
+        </SelectLabel>
+        <SelectLabel>
           <input type="radio" name="display" value="hide" />
-          숨기기
-        </label>
+          <span>숨기기</span>
+        </SelectLabel>
       </ContentContainer>
       <ContentContainer>
-        <TitleLabel>범주</TitleLabel>
-        <section data-role="selectbox">
-          <button>색상 선택</button>
-          <ul>
-            {options.map(option => (
-              <li key={option.name}>
-                <div>{option.name}</div>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <TitleLabel>{LABEL_COLOR}</TitleLabel>
+        <CategoryColorSelector
+          color={categoryColor}
+          setColor={setCategoryColor}
+        />
       </ContentContainer>
     </CategoryFormContainer>
   );

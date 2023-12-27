@@ -25,6 +25,10 @@ const CategoryMenuContainer = styled.div`
   width: 25%;
 `;
 
+const CategoryListHeader = styled.h3`
+  margin-bottom: 1rem;
+`
+
 const CategoryListContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -84,7 +88,7 @@ export default function CategoryPage() {
             downHandler={onDownHandler}
           />
           <CategoryListContainer>
-            <h3>카테고리 전체보기</h3>
+            <CategoryListHeader>카테고리 전체보기</CategoryListHeader>
             <CategoryList categories={categoryList} />
           </CategoryListContainer>
           <CategoryMenuHelperText />
