@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { DefaultTheme } from "styled-components/dist/types";
 import { MouseEvent, MouseEventHandler, useMemo } from "react";
 import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "./page";
 import { CategoryColor } from "@/dummies/calendar";
@@ -9,25 +8,25 @@ type ScheduleLineProps = {
   onScheduleClick: (info: ScheduleModalInfo) => void;
 }
 
-const Container = styled.div<{ theme: DefaultTheme, $line_count: number }>`
+const Container = styled.div<{ $line_count: number }>`
   width: 100%;
-  height: calc(${({ $line_count }) => 1.125 * $line_count}rem + ${({ theme, $line_count }) => ($line_count - 1) * theme.sizes.calendar.lineGap}px);
+  height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
 `;
 
-const Line = styled.div<{ theme: DefaultTheme }>`
+const Line = styled.div`
   position: relative;
   width: 100%;
-  height: 1.125rem;
-  margin-top: ${({ theme }) => theme.sizes.calendar.lineGap}px;
+  height: var(--cell-height);
+  margin-top: var(--line-gap);
 `;
 
 // box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
-const ScheduleItem = styled.div<{ theme: DefaultTheme, $start: number, $end: number, $color: CategoryColor, $level: number }>`
+const ScheduleItem = styled.div<{ $start: number, $end: number, $color: CategoryColor, $level: number }>`
   position: absolute;
   top: 0;
-  left: ${({ theme, $start }) => ($start - 1) * (theme.sizes.calendar.cellWidth + 1)}px;
+  left: calc(${({ $start }) => `${$start - 1} * (var(--cell-width) + 1px)`});
   height: 100%;
-  width: ${({ theme, $start, $end }) => ((($end - $start) + 1) * (theme.sizes.calendar.cellWidth + 1)) - 5}px;
+  width: calc(${({ $start, $end }) => `(${$end - $start + 1} * (var(--cell-width) + 1px)) - 5px`});
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-left: 2px;
@@ -50,7 +49,7 @@ const ScheduleItemText = styled.span`
   height: 100%;
   font-size: .75rem;
   user-select: none;
-  line-height: 1.125rem;
+  line-height: var(--cell-height);
   padding-left: 1rem;
   padding-right: 1rem;
 `;

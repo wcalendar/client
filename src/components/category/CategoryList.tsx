@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import CategoryItem from './CategoryItem';
-import theme from '@/style/Theme';
+import { Category } from '@/types/Category';
 
 const CategoryListContainer = styled.ul`
   display: flex;
@@ -10,56 +10,15 @@ const CategoryListContainer = styled.ul`
   width: 100%;
 `;
 
-const categories = [
-  {
-    title: 'test1',
-    period: '23.12-24.01',
-    theme: theme.colors.category1Main,
-    type: 'Main',
-  },
-  {
-    title: 'test1-1',
-    period: '23.12-24.01',
-    theme: theme.colors.category1Main,
-    type: 'Sub',
-  },
-  {
-    title: 'test2',
-    period: '23.12-24.01',
-    theme: theme.colors.category2Main,
-    type: 'Main',
-  },
-  {
-    title: 'test3',
-    period: '23.12-24.01',
-    theme: theme.colors.category3Main,
-    type: 'Main',
-  },
-  {
-    title: 'test4',
-    period: '23.12-24.01',
-    theme: theme.colors.category4Main,
-    type: 'Main',
-  },
-  {
-    title: 'test5',
-    period: '23.12-24.01',
-    theme: theme.colors.category5Main,
-    type: 'Main',
-  },
-];
+type CategoryListProps = {
+  categories: Category[];
+};
 
-export default function CategoryList() {
+export default function CategoryList({ categories }: CategoryListProps) {
   return (
     <CategoryListContainer>
-      {categories.map(item => (
-        <CategoryItem
-          key={item.title}
-          title={item.title}
-          period={item.period}
-          theme={item.theme}
-          type={item.type}
-        />
+      {categories.map(({ name, color, level }) => (
+        <CategoryItem key={name} name={name} color={color} level={level} />
       ))}
     </CategoryListContainer>
   );
