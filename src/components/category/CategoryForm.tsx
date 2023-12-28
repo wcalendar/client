@@ -30,22 +30,6 @@ const TextInput = styled.input`
   padding-left: 4px;
 `;
 
-type CategoryOption = {
-  name: string;
-  color: CategoryColor;
-};
-
-const options: CategoryOption[] = [
-  {
-    name: 'Main',
-    color: 'blue',
-  },
-  {
-    name: 'Sub',
-    color: 'green',
-  },
-];
-
 const LABEL_TITLE = '제목';
 const LABEL_OPTION = '비고';
 const LABEL_VIEW = '표시 여부';
