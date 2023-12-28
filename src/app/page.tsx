@@ -1,7 +1,12 @@
 'use client';
 
 import Header from '@/components/common/Header';
-import { CategoryWithSchedule, CategoryWithScheduleDto, ScheduleWithoutCategory, calendarDummyData } from '@/dummies/calendar';
+import {
+  CategoryWithSchedule,
+  CategoryWithScheduleDto,
+  ScheduleWithoutCategory,
+  calendarDummyData,
+} from '@/dummies/calendar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
@@ -13,6 +18,7 @@ import FixedModal from '@/components/common/fixed-modal/FixedModal';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
+import { useRouter } from 'next/navigation';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -24,16 +30,20 @@ export interface ScheduleToRender extends ScheduleWithoutCategory {
 export type CategoryToRender = {
   category: CategoryWithSchedule;
   lines: (ScheduleToRender | undefined)[][];
-}
+};
 
 /**
  * 서버에서 받은 카테고리 데이터를 화면에 렌더링하기 쉽게 다듬어주는 함수
  * @param categoryList 서버로부터 받은 카테고리 데이터
  * @param currentMonth 현재 월
  * @param lastDayInMonth 현재 월의 마지막 일
- * @returns 
+ * @returns
  */
-const toRenderingData = (categoryList: CategoryWithScheduleDto[], currentDate: Dayjs, lastDayInMonth: number): CategoryToRender[] => {
+const toRenderingData = (
+  categoryList: CategoryWithScheduleDto[],
+  currentDate: Dayjs,
+  lastDayInMonth: number,
+): CategoryToRender[] => {
   return categoryList.map<CategoryToRender>(category => {
     const newCategory: CategoryWithSchedule = {
       ...category,
@@ -45,7 +55,7 @@ const toRenderingData = (categoryList: CategoryWithScheduleDto[], currentDate: D
     // Schedule은 반드시 정렬되어있어야 함
     category.scheduleList.forEach(schedule => {
       const lineCount = lines.length;
-      const startDate = time.fromDate(schedule.startDate); 
+      const startDate = time.fromDate(schedule.startDate);
       const endDate = time.fromDate(schedule.endDate);
       const newSchedule: ScheduleWithoutCategory = {
         ...schedule,
@@ -54,17 +64,27 @@ const toRenderingData = (categoryList: CategoryWithScheduleDto[], currentDate: D
       };
       newCategory.scheduleList.push(newSchedule);
 
-      const startDay = startDate.year() < currentDate.year() ? 1 : (startDate.month() < currentDate.month() ? 1 : startDate.date()) ;
-      const endDay = endDate.year() > currentDate.year() ? lastDayInMonth : (endDate.month() > currentDate.month() ? lastDayInMonth : endDate.date());
+      const startDay =
+        startDate.year() < currentDate.year()
+          ? 1
+          : startDate.month() < currentDate.month()
+            ? 1
+            : startDate.date();
+      const endDay =
+        endDate.year() > currentDate.year()
+          ? lastDayInMonth
+          : endDate.month() > currentDate.month()
+            ? lastDayInMonth
+            : endDate.date();
 
       let isAllocated = false;
-      for(let i=0; i<lineCount; i++) {
+      for (let i = 0; i < lineCount; i++) {
         // 해당 라인에 이미 할당된 일정이 있다면 다음 라인으로
-        if(lines[i][startDay-1]) continue;
-        
+        if (lines[i][startDay - 1]) continue;
+
         // 할당된 일정이 없다면 일정 할당
         isAllocated = true;
-        for(let day=startDay-1; day<=endDay-1; day++) {
+        for (let day = startDay - 1; day <= endDay - 1; day++) {
           lines[i][day] = {
             ...newSchedule,
             startDay,
@@ -75,10 +95,10 @@ const toRenderingData = (categoryList: CategoryWithScheduleDto[], currentDate: D
       }
 
       // 모든 라인에 할당되어 있으면 새 라인 생성하고 할당
-      if(!isAllocated) {
+      if (!isAllocated) {
         lines.push(Array(lastDayInMonth));
-        for(let day=startDay-1; day<=endDay-1; day++) {
-          lines[lines.length-1][day] = {
+        for (let day = startDay - 1; day <= endDay - 1; day++) {
+          lines[lines.length - 1][day] = {
             ...newSchedule,
             startDay,
             endDay,
@@ -90,9 +110,9 @@ const toRenderingData = (categoryList: CategoryWithScheduleDto[], currentDate: D
     return {
       category: newCategory,
       lines,
-    }
-  })
-}
+    };
+  });
+};
 
 const Container = styled.div`
   width: 100%;
@@ -148,7 +168,7 @@ const CalendarHeader = styled.div<{ $day_count: number }>`
   display: flex;
   justify-content: flex-start;
   height: 2.5rem;
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: bold;
   background-color: ${({ theme }) => theme.colors.white};
 `;
@@ -167,7 +187,7 @@ const SettingCategoryButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
 
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: bold;
   color: white;
 `;
@@ -194,17 +214,19 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
   width: 3.375rem;
   height: 3.375rem;
   background-color: ${({ theme }) => theme.colors.black};
-  padding: .5rem;
+  padding: 0.5rem;
   border: none;
   border-radius: 2rem;
   cursor: pointer;
-  transition: transform .25s ease;
-  transform: rotate(${({ $isOpen }) => $isOpen === 'true' ? '45' : '0'}deg);
+  transition: transform 0.25s ease;
+  transform: rotate(${({ $isOpen }) => ($isOpen === 'true' ? '45' : '0')}deg);
 `;
 
 export default function Home() {
   const [isAddScheduleModalOpen, setAddScheduleModalOpen] = useState(false);
-  const [categoryToRenderList, setCategoryToRenderList] = useState<CategoryToRender[]>([]);
+  const [categoryToRenderList, setCategoryToRenderList] = useState<
+    CategoryToRender[]
+  >([]);
 
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
@@ -214,14 +236,14 @@ export default function Home() {
   const calendarHeaderItems = useMemo(() => {
     let dayOfTheWeek = time.new(now.year(), now.month(), 1).day();
 
-    return Array.from({length: lastDayOfMonth}, ((v, i) => i+1)).map(d => {
+    return Array.from({ length: lastDayOfMonth }, (v, i) => i + 1).map(d => {
       const result = `${d}(${dayOfTheWeeks[dayOfTheWeek]})`;
 
       dayOfTheWeek++;
-      if(dayOfTheWeek >= 7) dayOfTheWeek = 0;
+      if (dayOfTheWeek >= 7) dayOfTheWeek = 0;
 
       return result;
-    } )
+    });
 
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, [now]);
@@ -235,17 +257,24 @@ export default function Home() {
 
     // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
     // 임시로 가짜 데이터 사용
-    setCategoryToRenderList(toRenderingData(calendarDummyData.categoryList, now, lastDayOfMonth));
+    setCategoryToRenderList(
+      toRenderingData(calendarDummyData.categoryList, now, lastDayOfMonth),
+    );
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, []);
 
   const handleOpenAddScheduleModal = () => {
     setAddScheduleModalOpen(true);
-  }
+  };
 
   const handleCloseAddScheduleModal = () => {
     setAddScheduleModalOpen(false);
-  }
+  };
+
+  const router = useRouter();
+  const handleMoveCategoryPage = () => {
+    router.push('/category');
+  };
 
   return (
     <Container>
@@ -254,45 +283,54 @@ export default function Home() {
         <CategorySide ref={categoryBody}>
           <CalendarHeader $day_count={1}>
             <Cell isCategory>
-              <SettingCategoryButton>
+              <SettingCategoryButton onClick={handleMoveCategoryPage}>
                 카테고리 관리
               </SettingCategoryButton>
             </Cell>
           </CalendarHeader>
           <CalendarBody $day_count={1}>
             {categoryToRenderList.map(categoryToRender => (
-              <CategoryCell key={categoryToRender.category.id} category={categoryToRender.category} lineCount={categoryToRender.lines.length} />
+              <CategoryCell
+                key={categoryToRender.category.id}
+                category={categoryToRender.category}
+                lineCount={categoryToRender.lines.length}
+              />
             ))}
           </CalendarBody>
         </CategorySide>
-        <ScheduleSide  ref={scheduleBody}>
+        <ScheduleSide ref={scheduleBody}>
           <CalendarHeader $day_count={lastDayOfMonth}>
-            {calendarHeaderItems.map((headerItem => (
-              <Cell key={headerItem}>
-                {headerItem}
-              </Cell>
-            )))}  
+            {calendarHeaderItems.map(headerItem => (
+              <Cell key={headerItem}>{headerItem}</Cell>
+            ))}
           </CalendarHeader>
           <CalendarBody $day_count={lastDayOfMonth}>
             <DivideLines $day_count={lastDayOfMonth}>
-              {Array.from({length: lastDayOfMonth}, () => null).map((_, i) => (
-                <DivideLine key={`div${i}`}/>
-              ))}
+              {Array.from({ length: lastDayOfMonth }, () => null).map(
+                (_, i) => (
+                  <DivideLine key={`div${i}`} />
+                ),
+              )}
             </DivideLines>
             {categoryToRenderList.map(categoryToRender => (
-              <ScheduleLine key={`schedule-${categoryToRender.category.id}`} categoryToRender={categoryToRender} />
+              <ScheduleLine
+                key={`schedule-${categoryToRender.category.id}`}
+                categoryToRender={categoryToRender}
+              />
             ))}
           </CalendarBody>
         </ScheduleSide>
-
       </Calendar>
-      <AddScheduleButton $isOpen={isAddScheduleModalOpen ? 'true' : 'false'} onClick={handleOpenAddScheduleModal}>
-        <Icon path={mdiPlus} color='white' />
+      <AddScheduleButton
+        $isOpen={isAddScheduleModalOpen ? 'true' : 'false'}
+        onClick={handleOpenAddScheduleModal}
+      >
+        <Icon path={mdiPlus} color="white" />
       </AddScheduleButton>
       {isAddScheduleModalOpen && (
         <FixedModal
-          width='40%'
-          title='일정 추가'
+          width="40%"
+          title="일정 추가"
           buttonList={[]}
           onClose={handleCloseAddScheduleModal}
         >
