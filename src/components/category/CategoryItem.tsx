@@ -1,61 +1,34 @@
+import { Category } from '@/types/Category';
 import styled from 'styled-components';
 
-type CategoryItemProps = {
-  title: string;
-  period: string;
-  theme: string;
-  type: string;
-};
-
-const CategoryItemContainer = styled.li<{ type: string }>`
+const CategoryItemContainer = styled.li<{ level: number }>`
   width: 100%;
   display: flex;
   padding: 0.5rem;
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  `;
+`;
 
-const CategoryTitle = styled.span<{ theme: string; type: string }>`
+const CategoryTitleButton = styled.button<{ theme: string; level: number }>`
   width: 80%;
   height: 100%;
+  border: none;
   background: ${({ theme }) => theme};
   border-radius: 5px;
   padding: 8px;
   overflow: hidden;
-  margin-left: ${({ type }) => (type === 'Main' ? '0' : '1rem')};
-  font-weight: ${({ type }) => (type === 'Main' ? '700' : '400')};
+  margin-left: ${({ level }) =>
+    level === 0 ? '0' : level === 1 ? '1rem' : '2rem'};
+  font-weight: ${({ level }) => (level === 0 ? '700' : '400')};
 `;
 
-const CategoryPeriod = styled.span<{ theme: string; type: string }>`
-  width: 20%;
-  height: 100%;
-  font-weight: 400;
-  text-align: center;
-  background: ${({ theme }) => theme};
-  border-radius: 5px;
-  padding: 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const DEFAULT_TEXT = '비고';
-
-export default function CategoryItem({
-  title,
-  period,
-  theme,
-  type,
-}: CategoryItemProps) {
+export default function CategoryItem({ name, color, level }: Category) {
   return (
-    <CategoryItemContainer type={type}>
-      <CategoryTitle theme={theme} type={type}>
-        {title}
-      </CategoryTitle>
-      <CategoryPeriod theme={theme} type={type}>
-        {type === 'Main' ? DEFAULT_TEXT : period}
-      </CategoryPeriod>
+    <CategoryItemContainer level={level}>
+      <CategoryTitleButton theme={color} level={level}>
+        {name}
+      </CategoryTitleButton>
     </CategoryItemContainer>
   );
 }
