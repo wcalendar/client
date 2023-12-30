@@ -1,4 +1,5 @@
 import { ScheduleModalInfo } from "@/app/page";
+import time from "@/lib/time";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useEffect, useMemo, useRef } from "react";
@@ -52,10 +53,35 @@ const CloseButton = styled.button`
 
 const Body = styled.div`
   width: 100%;
+  padding: .5rem;
+`;
+
+const Line = styled.div`
+  width: 100%;
+  display: flex;
+  padding: 0 1rem;
+  margin-bottom: .5rem;
+`;
+
+const Label = styled.div`
+  flex-basis: 20%;
+  flex-grow: 0;
+  height: 1rem;
+  line-height: 1rem;
+  font-size: .75rem;
+  color: ${({ theme }) => theme.colors.gray};
+`;
+
+const Value = styled.div`
+  height:  1rem;
+  font-size: .75rem;
+  line-height: 1rem;
+`;
+
+const ButtonBox = styled.div`
   display: flex;
   justify-content: center;
   gap: 1rem;
-  padding: .5rem;
 `;
 
 const Button = styled.button`
@@ -107,8 +133,14 @@ export default function ScheduleModal({
         </CloseButton>
       </Header>
       <Body>
-        <Button>수정</Button>
-        <Button>삭제</Button>
+        <Line>
+          <Label>일시</Label>
+          <Value>{`${time.toString(schedule.startDate, 'YYYY.MM.DD')} ~ ${time.toString(schedule.endDate, 'YYYY.MM.DD')}`}</Value>
+        </Line>
+        <ButtonBox>
+          <Button>수정</Button>
+          <Button>삭제</Button>
+        </ButtonBox>
       </Body>
     </Container>
   )
