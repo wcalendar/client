@@ -287,6 +287,10 @@ export default function Home() {
     setScheduleModalInfo(scheduleModalInfo);
   }
 
+  const handleScheduleModalClose = () => {
+    setScheduleModalInfo(null);
+  }
+
   return (
     <Container>
       <Header />
@@ -343,7 +347,7 @@ export default function Home() {
         />
       )}
       {scheduleModalInfo && (
-        <ScheduleModal scheduleModalInfo={scheduleModalInfo} />
+        <ScheduleModal scheduleModalInfo={scheduleModalInfo} onScheduleModalClose={handleScheduleModalClose} />
       )}
     </Container>
   );

@@ -1,11 +1,12 @@
 import { ScheduleModalInfo } from "@/app/page";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 
 type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
+  onScheduleModalClose: () => void;
 }
 
 const Container = styled.div<{ $x: string, $y: number }>`
@@ -71,19 +72,37 @@ const Button = styled.button`
 
 export default function ScheduleModal({
   scheduleModalInfo,
+  onScheduleModalClose,
 }: ScheduleModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+
   const { x, y, schedule } = scheduleModalInfo;
   const renderX = useMemo(() => {
     if(x > (window.innerWidth / 2)) return `calc(${x}px - 16.875rem)`;
     else return `${x}px`;
   }, [x]);
 
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if(modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        onScheduleModalClose();
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    }
+
+  }, []);
+
   return (
-    <Container $x={renderX} $y={y}>
+    <Container $x={renderX} $y={y} ref={modalRef} >
       <Header>
         <Title>{schedule.title}</Title>
         <CheckBox type='checkbox' />
-        <CloseButton>
+        <CloseButton onClick={onScheduleModalClose}>
           <Icon path={mdiClose} />
         </CloseButton>
       </Header>
