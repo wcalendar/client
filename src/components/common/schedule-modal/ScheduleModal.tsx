@@ -19,6 +19,7 @@ const Container = styled.div<{ $x: string, $y: number }>`
   border: 1px solid ${({ theme }) => theme.colors.white};
   border-radius: 10px;
   background-color: white;
+  user-select: none;
 `;
 
 const Header = styled.div`
@@ -49,6 +50,7 @@ const CloseButton = styled.button`
   margin-left: .25rem;
   border: none;
   background: white;
+  cursor: pointer;
 `;
 
 const Body = styled.div`
