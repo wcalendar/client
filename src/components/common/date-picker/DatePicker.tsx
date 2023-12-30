@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import MiniCalendar from "./MiniCalendar";
 import { Dayjs } from "dayjs";
@@ -32,6 +32,22 @@ export default function DatePicker({
 }: DatePickerProps) {
   const [isMiniCalendarOpen, setMiniCalendarOpen] = useState(false);
 
+  const datePickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if(datePickerRef.current && !datePickerRef.current.contains(e.target as Node)) {
+        setMiniCalendarOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    }
+  }, []);
+
   const handleToggleMiniCalendar = () => {
     setMiniCalendarOpen(!isMiniCalendarOpen);
   }
@@ -42,7 +58,7 @@ export default function DatePicker({
   }
 
   return (
-    <Container>
+    <Container ref={datePickerRef}>
       <Selector onClick={handleToggleMiniCalendar}>
         {time.toString(value, 'YYYY.MM.DD')}
       </Selector>
