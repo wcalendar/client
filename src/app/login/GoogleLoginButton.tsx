@@ -1,15 +1,8 @@
-import { MouseEventHandler } from 'react';
 import styles from './GoogleLoginButton.module.css';
 
-type GoogleLoginButtonProps = {
-  onClick: MouseEventHandler<HTMLButtonElement>,
-}
-
-export default function GoogleLoginButton({
-  onClick,
-}: GoogleLoginButtonProps) {
+export default function GoogleLoginButton() {
   return (
-    <button className={styles['gsi-material-button']} style={{ width: '23.75rem', height: '52px', }} onClick={onClick}>
+    <button className={styles['gsi-material-button']} style={{ width: '23.75rem', height: '52px', }}>
       <div className={styles['gsi-material-button-state']}></div>
       <div className={styles['gsi-material-button-content-wrapper']}>
         <div className={styles['gsi-material-button-icon']}>

@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import styled from 'styled-components'
 import GoogleLoginButton from './GoogleLoginButton';
-import axios from 'axios';
 import Link from 'next/link';
 
 const Container = styled.main`
@@ -46,12 +45,6 @@ const Tip = styled.p`
 `;
 
 export default function Login() {
-
-  const handleGoogleLoginClick = async () => {
-    const response = await axios.get('http://localhost:8080/oauth2/authorization/google', { withCredentials: true, headers: {"Cache-control": "no-cache"} });
-    console.log(response);
-  };
-
   return (
     <Container>
       <Title>
@@ -62,8 +55,7 @@ export default function Login() {
       </Title>
       <Description>복잡한 일정과 하루를<br />가장 쉽고 편하게 관리 하는 방법</Description>
       <Tip>카카오톡으로 3초만에 시작하기</Tip>
-      <GoogleLoginButton onClick={handleGoogleLoginClick} />
-      <Link href={'http://localhost:8080/oauth2/authorization/google'}><GoogleLoginButton onClick={() => {}} /></Link>
+      <Link href={'http://localhost:8080/oauth2/authorization/google'}><GoogleLoginButton /></Link>
     </Container>
   )
 }

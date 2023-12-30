@@ -1,14 +1,22 @@
 'use client';
 
 import { useEffect } from "react";
-import Cookies from 'js-cookie';
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Callback() {
+  const router = useRouter();
+
   const callback = async () => {
-    axios.get('http://localhost:8080/api/token/access', {
-      withCredentials: true,
-    })
+    // TODO
+    // const response = await axios.get('http://localhost:8080/api/token/access', {
+    //   withCredentials: true,
+    // });
+
+    // if(response.status < 300) {
+    // }
+
+    router.push('/');
   }
 
   useEffect(() => {
