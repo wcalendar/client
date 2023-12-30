@@ -10,12 +10,12 @@ type ScheduleModalProps = {
   onScheduleModalClose: () => void;
 }
 
-const Container = styled.div<{ $x: string, $y: number }>`
+const Container = styled.div<{ $x: string, $y: string }>`
   position: absolute;
   left: ${({ $x }) => $x};
-  top: ${({ $y }) => $y}px;
+  top: ${({ $y }) => $y};
   width: 16.875rem;
-  height: auto;
+  height: 6.875rem;
   border: 1px solid ${({ theme }) => theme.colors.white};
   border-radius: 10px;
   background-color: white;
@@ -110,6 +110,11 @@ export default function ScheduleModal({
     else return `${x}px`;
   }, [x]);
 
+  const renderY = useMemo(() => {
+    if((y + 150) > window.innerHeight) return `calc(${y}px - 6.875rem)`;
+    else return `${y}px`;
+  }, [y]);
+
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if(modalRef.current && !modalRef.current.contains(e.target as Node)) {
@@ -126,7 +131,7 @@ export default function ScheduleModal({
   }, []);
 
   return (
-    <Container $x={renderX} $y={y} ref={modalRef} >
+    <Container $x={renderX} $y={renderY} ref={modalRef} >
       <Header>
         <Title>{schedule.title}</Title>
         <CheckBox type='checkbox' />
