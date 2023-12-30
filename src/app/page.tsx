@@ -339,7 +339,6 @@ export default function Home() {
         <NewScheduleModal
           width='40%'
           title='일정 추가'
-          buttonList={[]}
           onClose={handleCloseAddScheduleModal}
         />
       )}
