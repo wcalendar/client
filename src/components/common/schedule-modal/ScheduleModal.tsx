@@ -21,6 +21,7 @@ const Container = styled.div<{ $x: string, $y: string }>`
   border-radius: 10px;
   background-color: white;
   user-select: none;
+  z-index: 15;
 `;
 
 const Header = styled.div`

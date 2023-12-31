@@ -296,7 +296,6 @@ export default function Home() {
 
   const handleScheduleFinish = useCallback((categoryIdx: number, lineIdx: number, scheduleIdx: number) => {
     const newCategoryListToRender = [...categoryToRenderList];
-    console.log(newCategoryListToRender[categoryIdx].lines[lineIdx][scheduleIdx]);
     const newIsFinished = !(newCategoryListToRender[categoryIdx].lines[lineIdx][scheduleIdx]!.isFinished);
     newCategoryListToRender[categoryIdx].lines[lineIdx][scheduleIdx]!.isFinished = newIsFinished;
     setCategoryToRenderList(newCategoryListToRender);
