@@ -43,7 +43,7 @@ const ScheduleItem = styled.div<{ $start: number, $end: number, $color: Category
   }
 `;
 
-const ScheduleItemText = styled.span`
+const ScheduleItemText = styled.span<{ $is_finished: number }>`
   position: sticky;
   left: 0;
   width: auto;
@@ -53,6 +53,7 @@ const ScheduleItemText = styled.span`
   line-height: var(--cell-height);
   padding-left: 1rem;
   padding-right: 1rem;
+  ${({ $is_finished }) => $is_finished ? 'text-decoration: line-through;' : '' }
 `;
 
 export default function ScheduleLine({
@@ -105,7 +106,7 @@ export default function ScheduleLine({
               $level={category.level}
               onClick={(e) => handleScheduleClick(e, lineIdx, schedule.startDay-1, schedule)}
             >
-              <ScheduleItemText>
+              <ScheduleItemText $is_finished={schedule.isFinished ? 1 : 0}>
                 {schedule.title}
               </ScheduleItemText>
             </ScheduleItem>
