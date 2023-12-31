@@ -16,7 +16,6 @@ const Container = styled.div<{ $x: string, $y: string }>`
   left: ${({ $x }) => $x};
   top: ${({ $y }) => $y};
   width: 16.875rem;
-  height: 6.875rem;
   border: 1px solid ${({ theme }) => theme.colors.white};
   border-radius: 10px;
   background-color: white;

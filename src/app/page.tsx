@@ -286,9 +286,11 @@ export default function Home() {
     router.push('/category');
   };
 
-  const handleScheduleClick = (scheduleModalInfo: ScheduleModalInfo) => {
-    setScheduleModalInfo(scheduleModalInfo);
-  }
+  const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
+    if(!scheduleModalInfo) {
+      setScheduleModalInfo(newScheduleModalInfo);
+    }
+  }, [scheduleModalInfo]);
 
   const handleScheduleModalClose = () => {
     setScheduleModalInfo(null);
