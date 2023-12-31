@@ -8,6 +8,7 @@ import styled from "styled-components";
 type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
   onScheduleModalClose: () => void;
+  onScheduleFinish: (categoryIdx: number, lineIdx: number, scheduleIdx: number) => void;
 }
 
 const Container = styled.div<{ $x: string, $y: string }>`
@@ -30,10 +31,11 @@ const Header = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.white};
 `;
 
-const Title = styled.div`
+const Title = styled.div<{ $is_finished: number }>`
   flex-grow: 1;
   font-size: .875rem;
   font-weight: bold;
+  ${({ $is_finished }) => $is_finished ? `text-decoration: line-through;` : ''}
 `;
 
 const CheckBox = styled.input`
@@ -101,10 +103,11 @@ const Button = styled.button`
 export default function ScheduleModal({
   scheduleModalInfo,
   onScheduleModalClose,
+  onScheduleFinish,
 }: ScheduleModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const { x, y, schedule } = scheduleModalInfo;
+  const { x, y, categoryIdx, lineIdx, scheduleIdx, schedule } = scheduleModalInfo;
   const renderX = useMemo(() => {
     if(x > (window.innerWidth / 2)) return `calc(${x}px - 16.875rem)`;
     else return `${x}px`;
@@ -133,8 +136,8 @@ export default function ScheduleModal({
   return (
     <Container $x={renderX} $y={renderY} ref={modalRef} >
       <Header>
-        <Title>{schedule.title}</Title>
-        <CheckBox type='checkbox' />
+        <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.title}</Title>
+        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(categoryIdx, lineIdx, scheduleIdx)} />
         <CloseButton onClick={onScheduleModalClose}>
           <Icon path={mdiClose} />
         </CloseButton>

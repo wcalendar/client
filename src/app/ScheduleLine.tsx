@@ -4,6 +4,7 @@ import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "./page";
 import { CategoryColor } from "@/dummies/calendar";
 
 type ScheduleLineProps = {
+  categoryIdx: number;
   categoryToRender: CategoryToRender;
   onScheduleClick: (info: ScheduleModalInfo) => void;
 }
@@ -55,12 +56,11 @@ const ScheduleItemText = styled.span`
 `;
 
 export default function ScheduleLine({
+  categoryIdx,
   categoryToRender,
   onScheduleClick,
 }: ScheduleLineProps) {
-  console.log(categoryToRender);
   const { lines, category } = categoryToRender;
-  const {} = category;
 
   const schedulesByLine = useMemo(() => {
     return categoryToRender.lines.map(line => {
@@ -79,8 +79,11 @@ export default function ScheduleLine({
     })
   }, [categoryToRender]);
 
-  const handleScheduleClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, schedule: ScheduleToRender) => {
+  const handleScheduleClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, lineIdx: number, scheduleIdx: number, schedule: ScheduleToRender) => {
     const scheduleModalInfo: ScheduleModalInfo = {
+      categoryIdx,
+      lineIdx,
+      scheduleIdx,
       x: e.clientX,
       y: e.clientY,
       schedule,
@@ -91,10 +94,17 @@ export default function ScheduleLine({
 
   return (
     <Container $line_count={lines.length}>
-      {schedulesByLine.map((line, i) => (
-        <Line key={`${category.id}-${i}`}>
-          {line.map(schedule => (
-            <ScheduleItem key={schedule.id} $start={schedule.startDay} $end={schedule.endDay} $color={category.color} $level={category.level} onClick={(e) => handleScheduleClick(e, schedule)}>
+      {schedulesByLine.map((line, lineIdx) => (
+        <Line key={`${category.id}-${lineIdx}`}>
+          {line.map((schedule) => (
+            <ScheduleItem
+              key={schedule.id}
+              $start={schedule.startDay}
+              $end={schedule.endDay}
+              $color={category.color}
+              $level={category.level}
+              onClick={(e) => handleScheduleClick(e, lineIdx, schedule.startDay-1, schedule)}
+            >
               <ScheduleItemText>
                 {schedule.title}
               </ScheduleItemText>

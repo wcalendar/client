@@ -7,7 +7,7 @@ import {
   ScheduleWithoutCategory,
   calendarDummyData,
 } from '@/dummies/calendar';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
 import CategoryCell from './CategoryCell';
@@ -35,6 +35,9 @@ export type CategoryToRender = {
 export type ScheduleModalInfo = {
   x: number,
   y: number,
+  categoryIdx: number,
+  lineIdx: number,
+  scheduleIdx: number,
   schedule: ScheduleToRender,
 }
 
@@ -291,6 +294,18 @@ export default function Home() {
     setScheduleModalInfo(null);
   }
 
+  const handleScheduleFinish = useCallback((categoryIdx: number, lineIdx: number, scheduleIdx: number) => {
+    const newCategoryListToRender = [...categoryToRenderList];
+    console.log(newCategoryListToRender[categoryIdx].lines[lineIdx][scheduleIdx]);
+    const newIsFinished = !(newCategoryListToRender[categoryIdx].lines[lineIdx][scheduleIdx]!.isFinished);
+    newCategoryListToRender[categoryIdx].lines[lineIdx][scheduleIdx]!.isFinished = newIsFinished;
+    setCategoryToRenderList(newCategoryListToRender);
+
+    const newScheduleModalInfo = {...scheduleModalInfo!};
+    newScheduleModalInfo.schedule.isFinished = newIsFinished;
+    setScheduleModalInfo(newScheduleModalInfo);
+  }, [categoryToRenderList, scheduleModalInfo]);
+
   return (
     <Container>
       <Header />
@@ -327,8 +342,13 @@ export default function Home() {
                 ),
               )}
             </DivideLines>
-            {categoryToRenderList.map(categoryToRender => (
-              <ScheduleLine key={`schedule-${categoryToRender.category.id}`} categoryToRender={categoryToRender} onScheduleClick={handleScheduleClick} />
+            {categoryToRenderList.map((categoryToRender, i) => (
+              <ScheduleLine
+                key={`schedule-${categoryToRender.category.id}`}
+                categoryToRender={categoryToRender}
+                onScheduleClick={handleScheduleClick}
+                categoryIdx={i}
+              />
             ))}
           </CalendarBody>
         </ScheduleSide>
@@ -347,7 +367,11 @@ export default function Home() {
         />
       )}
       {scheduleModalInfo && (
-        <ScheduleModal scheduleModalInfo={scheduleModalInfo} onScheduleModalClose={handleScheduleModalClose} />
+        <ScheduleModal
+          scheduleModalInfo={scheduleModalInfo}
+          onScheduleModalClose={handleScheduleModalClose}
+          onScheduleFinish={handleScheduleFinish}
+        />
       )}
     </Container>
   );
