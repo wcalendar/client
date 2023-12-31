@@ -35,9 +35,7 @@ export type CategoryToRender = {
 export type ScheduleModalInfo = {
   x: number,
   y: number,
-  categoryIdx: number,
-  lineIdx: number,
-  scheduleIdx: number,
+  categoryId: number,
   schedule: ScheduleToRender,
 }
 
@@ -296,10 +294,34 @@ export default function Home() {
     setScheduleModalInfo(null);
   }
 
-  const handleScheduleFinish = useCallback((categoryIdx: number, lineIdx: number, scheduleIdx: number) => {
+  const handleScheduleFinish = useCallback((categoryId: number, scheduleId: number) => {
     const newCategoryListToRender = [...categoryToRenderList];
-    const newIsFinished = !(newCategoryListToRender[categoryIdx].lines[lineIdx][scheduleIdx]!.isFinished);
-    newCategoryListToRender[categoryIdx].lines[lineIdx][scheduleIdx]!.isFinished = newIsFinished;
+    const category = newCategoryListToRender.find(c => c.category.id === categoryId);
+    if(!category) {
+      alert('존재하지 않는 일정입니다.');
+      return;
+    }
+
+    let schedule: ScheduleToRender | undefined;
+    let isScheduleFound = false;
+    for(const l of category.lines) {
+      for(const s of l) {
+        if(s && s.id === scheduleId) {
+          isScheduleFound = true;
+          schedule = s;
+          break;
+        }
+      }
+
+      if(isScheduleFound) break;
+    }
+    if(!schedule) {
+      alert('존재하지 않는 일정입니다.');
+      return;
+    }
+
+    const newIsFinished = !(schedule.isFinished);
+    schedule.isFinished = newIsFinished;
     setCategoryToRenderList(newCategoryListToRender);
 
     const newScheduleModalInfo = {...scheduleModalInfo!};
@@ -348,7 +370,6 @@ export default function Home() {
                 key={`schedule-${categoryToRender.category.id}`}
                 categoryToRender={categoryToRender}
                 onScheduleClick={handleScheduleClick}
-                categoryIdx={i}
               />
             ))}
           </CalendarBody>
