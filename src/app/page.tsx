@@ -36,7 +36,7 @@ export type ScheduleModalInfo = {
   x: number,
   y: number,
   categoryId: number,
-  schedule: ScheduleToRender,
+  schedule: ScheduleWithoutCategory,
 }
 
 /**
