@@ -6,6 +6,7 @@ export type CategoryColor =
   | 'blue'
   | 'purple'
   | 'gray';
+
 export type Category = {
   id?: number;
   name: string;

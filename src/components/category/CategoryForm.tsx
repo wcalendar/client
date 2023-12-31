@@ -1,4 +1,3 @@
-import { CategoryColor } from '@/types/Category';
 import styled from 'styled-components';
 import CategoryColorSelector from './CategoryColorSelector';
 import { useState } from 'react';
@@ -35,6 +34,8 @@ const LABEL_OPTION = '비고';
 const LABEL_VIEW = '표시 여부';
 const LABEL_COLOR = '범주';
 const OPTION_HELPER_TEXT = '카테고리 관련 메모 입력(마감일, 주기 등)';
+const LABEL_SHOW = '표시';
+const LABEL_HIDE = '숨기기';
 
 export default function CategoryForm() {
   const [categoryColor, setCategoryColor] = useState<string>('blue');
@@ -51,12 +52,12 @@ export default function CategoryForm() {
       <ContentContainer>
         <TitleLabel>{LABEL_VIEW}</TitleLabel>
         <SelectLabel>
-          <input type="radio" name="display" value="show" checked />
-          <span>표시</span>
+          <input type="radio" name="display" value="show" defaultChecked />
+          <span>{LABEL_SHOW}</span>
         </SelectLabel>
         <SelectLabel>
           <input type="radio" name="display" value="hide" />
-          <span>숨기기</span>
+          <span>{LABEL_HIDE}</span>
         </SelectLabel>
       </ContentContainer>
       <ContentContainer>

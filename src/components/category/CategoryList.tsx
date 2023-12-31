@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import CategoryItem from './CategoryItem';
-import { Category } from '@/types/Category';
+import { Category } from '@/types';
 
 const CategoryListContainer = styled.ul`
   display: flex;
@@ -17,9 +16,6 @@ type CategoryListProps = {
 export default function CategoryList({ categories }: CategoryListProps) {
   return (
     <CategoryListContainer>
-      {categories.map(({ name, color, level }) => (
-        <CategoryItem key={name} name={name} color={color} level={level} />
-      ))}
     </CategoryListContainer>
   );
 }

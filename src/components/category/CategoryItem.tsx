@@ -1,10 +1,9 @@
-import { Category } from '@/types/Category';
+import { Category } from '@/types';
 import styled from 'styled-components';
 
 const CategoryItemContainer = styled.li<{ level: number }>`
   width: 100%;
   display: flex;
-  padding: 0.5rem;
   align-items: center;
   gap: 8px;
   font-size: 12px;
