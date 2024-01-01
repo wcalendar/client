@@ -37,22 +37,40 @@ const OPTION_HELPER_TEXT = '카테고리 관련 메모 입력(마감일, 주기 
 const LABEL_SHOW = '표시';
 const LABEL_HIDE = '숨기기';
 
-export default function CategoryForm() {
-  const [categoryColor, setCategoryColor] = useState<string>('blue');
+type CategoryFormProps = {
+  isActive: boolean;
+  color: string;
+  name: string;
+  description: string;
+};
+
+export default function CategoryForm({ isActive, color }: CategoryFormProps) {
+  const handleColorChange = (selectedColor: string) => {
+    console.log(`Selected Color: ${selectedColor}`);
+  };
+
+  const onSubmitHandler = () => {
+    console.log('Submit btn clicked');
+  };
+
   return (
-    <CategoryFormContainer>
+    <CategoryFormContainer onSubmit={onSubmitHandler}>
       <ContentContainer>
         <TitleLabel>{LABEL_TITLE}</TitleLabel>
-        <TextInput type="text" />
+        <TextInput type="text" disabled={!isActive} />
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_OPTION}</TitleLabel>
-        <TextInput type="text" placeholder={OPTION_HELPER_TEXT} />
+        <TextInput
+          type="text"
+          placeholder={OPTION_HELPER_TEXT}
+          disabled={!isActive}
+        />
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_VIEW}</TitleLabel>
         <SelectLabel>
-          <input type="radio" name="display" value="show" defaultChecked />
+          <input type="radio" name="display" value="show" />
           <span>{LABEL_SHOW}</span>
         </SelectLabel>
         <SelectLabel>
@@ -62,10 +80,7 @@ export default function CategoryForm() {
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_COLOR}</TitleLabel>
-        <CategoryColorSelector
-          color={categoryColor}
-          setColor={setCategoryColor}
-        />
+        <CategoryColorSelector onColorChange={handleColorChange} />
       </ContentContainer>
     </CategoryFormContainer>
   );

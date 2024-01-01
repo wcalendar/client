@@ -7,7 +7,7 @@ import CategoryList from '@/components/category/CategoryList';
 import CategoryMenuHelperText from '@/components/category/CategoryMenuHelperText';
 import Header from '@/components/common/Header';
 import { getCategories } from '@/lib/utils';
-import { Category } from '@/types/Category';
+import { Category } from '@/types';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -27,7 +27,7 @@ const CategoryMenuContainer = styled.div`
 
 const CategoryListHeader = styled.h3`
   margin-bottom: 1rem;
-`
+`;
 
 const CategoryListContainer = styled.div`
   display: flex;
@@ -37,15 +37,16 @@ const CategoryListContainer = styled.div`
   border: 1px solid black;
   border-radius: 5px;
 `;
-const defaultCategoryList: Category[] = [
-  { id: 0, name: 'Test1', color: 'red', level: 0 },
-  { id: 1, name: 'Test2', color: 'green', level: 1 },
-  { id: 2, name: 'Test3', color: 'green', level: 2 },
-];
 
 export default function CategoryPage() {
-  const [categoryList, setCategoryList] =
-    useState<Category[]>(defaultCategoryList);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [isActive, setIsActive] = useState(true);
+  const mainCategoryList = categoryList.filter(
+    category => category.level === 0,
+  );
+  if (mainCategoryList.length === 10) {
+    setIsActive(false);
+  }
 
   useEffect(() => {
     const categories = getCategories();
@@ -93,7 +94,12 @@ export default function CategoryPage() {
           </CategoryListContainer>
           <CategoryMenuHelperText />
         </CategoryMenuContainer>
-        <CategoryForm />
+        <CategoryForm
+          isActive={isActive}
+          color={''}
+          name={''}
+          description={''}
+        />
       </CategoryContainer>
     </Container>
   );
