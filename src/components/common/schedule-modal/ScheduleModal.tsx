@@ -1,4 +1,5 @@
 import { ScheduleModalInfo } from "@/app/page";
+import { Schedule } from "@/dummies/calendar";
 import time from "@/lib/time";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
@@ -9,6 +10,7 @@ type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
   onScheduleModalClose: () => void;
   onScheduleFinish: (categoryId: number, scheduleId: number) => void;
+  onUpdateClick: (schedule: Schedule) => void;
 }
 
 const Container = styled.div<{ $x: string, $y: string }>`
@@ -104,6 +106,7 @@ export default function ScheduleModal({
   scheduleModalInfo,
   onScheduleModalClose,
   onScheduleFinish,
+  onUpdateClick,
 }: ScheduleModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -148,7 +151,7 @@ export default function ScheduleModal({
           <Value>{`${time.toString(schedule.startDate, 'YYYY.MM.DD')} ~ ${time.toString(schedule.endDate, 'YYYY.MM.DD')}`}</Value>
         </Line>
         <ButtonBox>
-          <Button>수정</Button>
+          <Button onClick={() => onUpdateClick(schedule)}>수정</Button>
           <Button>삭제</Button>
         </ButtonBox>
       </Body>

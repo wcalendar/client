@@ -231,7 +231,7 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
 
 export default function Home() {
   const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
-  const [isAddScheduleModalOpen, setAddScheduleModalOpen] = useState(false);
+  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<boolean | Schedule>(false);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
   >([]);
@@ -274,11 +274,11 @@ export default function Home() {
   }, []);
 
   const handleOpenAddScheduleModal = () => {
-    setAddScheduleModalOpen(true);
+    setNewScheduleModalOpen(true);
   };
 
   const handleCloseAddScheduleModal = () => {
-    setAddScheduleModalOpen(false);
+    setNewScheduleModalOpen(false);
   };
 
   const router = useRouter();
@@ -294,6 +294,11 @@ export default function Home() {
 
   const handleScheduleModalClose = () => {
     setScheduleModalInfo(null);
+  }
+
+  const handleUpdateScheduleClick = (schedule: Schedule) => {
+    setScheduleModalInfo(null);
+    setNewScheduleModalOpen(schedule);
   }
 
   const handleScheduleFinish = useCallback((categoryId: number, scheduleId: number) => {
@@ -378,16 +383,17 @@ export default function Home() {
         </ScheduleSide>
       </Calendar>
       <AddScheduleButton
-        $isOpen={isAddScheduleModalOpen ? 'true' : 'false'}
+        $isOpen={isNewScheduleModalOpen ? 'true' : 'false'}
         onClick={handleOpenAddScheduleModal}
       >
         <Icon path={mdiPlus} color="white" />
       </AddScheduleButton>
-      {isAddScheduleModalOpen && (
+      {isNewScheduleModalOpen && (
         <NewScheduleModal
           width='40%'
           title='일정 추가'
           onClose={handleCloseAddScheduleModal}
+          schedule={isNewScheduleModalOpen === true ? undefined : isNewScheduleModalOpen}
         />
       )}
       {scheduleModalInfo && (
@@ -395,6 +401,7 @@ export default function Home() {
           scheduleModalInfo={scheduleModalInfo}
           onScheduleModalClose={handleScheduleModalClose}
           onScheduleFinish={handleScheduleFinish}
+          onUpdateClick={handleUpdateScheduleClick}
         />
       )}
     </Container>
