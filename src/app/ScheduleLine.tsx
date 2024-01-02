@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MouseEvent, MouseEventHandler, useCallback, useMemo } from "react";
+import { MouseEvent, useCallback, useMemo } from "react";
 import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "./page";
 import { CategoryColor } from "@/dummies/calendar";
 
@@ -96,14 +96,14 @@ export default function ScheduleLine({
           {line.map((schedule) => (
             <ScheduleItem
               key={schedule.id}
-              $start={schedule.startDay}
-              $end={schedule.endDay}
+              $start={schedule.startDate.date()}
+              $end={schedule.endDate.date()}
               $color={category.color}
               $level={category.level}
               onClick={(e) => handleScheduleClick(e, schedule)}
             >
               <ScheduleItemText $is_finished={schedule.isFinished ? 1 : 0}>
-                {schedule.title}
+                {schedule.content}
               </ScheduleItemText>
             </ScheduleItem>
           ))}
