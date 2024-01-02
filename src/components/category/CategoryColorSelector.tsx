@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import styled from 'styled-components';
 
 type CategoryColorSelectorProps = {
+  isActive: boolean;
   onColorChange: (selectedColor: string) => void;
 };
 
@@ -23,10 +24,12 @@ const colorOptions = [
 
 export default function CategoryColorSelector({
   onColorChange,
+  isActive,
 }: CategoryColorSelectorProps) {
   const [selectedColor, setSelectedColor] = useState<string>(
     colorOptions[0].color,
   );
+  console.log(isActive);
 
   const handleColorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const color = event.target.value;
@@ -35,7 +38,11 @@ export default function CategoryColorSelector({
   };
   return (
     <div style={{ display: 'flex' }}>
-      <TestSelect value={selectedColor} onChange={handleColorChange}>
+      <TestSelect
+        value={selectedColor}
+        onChange={handleColorChange}
+        disabled={isActive}
+      >
         {colorOptions.map(option => (
           <option
             key={option.label}

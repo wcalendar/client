@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import CategoryColorSelector from './CategoryColorSelector';
-import { useState } from 'react';
 
 const CategoryFormContainer = styled.form`
   display: flex;
@@ -36,6 +35,7 @@ const LABEL_COLOR = '범주';
 const OPTION_HELPER_TEXT = '카테고리 관련 메모 입력(마감일, 주기 등)';
 const LABEL_SHOW = '표시';
 const LABEL_HIDE = '숨기기';
+const MAX_TEXT_COUNT = 20;
 
 type CategoryFormProps = {
   isActive: boolean;
@@ -57,7 +57,11 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
     <CategoryFormContainer onSubmit={onSubmitHandler}>
       <ContentContainer>
         <TitleLabel>{LABEL_TITLE}</TitleLabel>
-        <TextInput type="text" disabled={!isActive} />
+        <TextInput
+          type="text"
+          disabled={!isActive}
+          maxLength={MAX_TEXT_COUNT}
+        />
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_OPTION}</TitleLabel>
@@ -65,22 +69,36 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
           type="text"
           placeholder={OPTION_HELPER_TEXT}
           disabled={!isActive}
+          maxLength={MAX_TEXT_COUNT}
         />
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_VIEW}</TitleLabel>
         <SelectLabel>
-          <input type="radio" name="display" value="show" />
+          <input
+            type="radio"
+            name="display"
+            value="show"
+            disabled={!isActive}
+          />
           <span>{LABEL_SHOW}</span>
         </SelectLabel>
         <SelectLabel>
-          <input type="radio" name="display" value="hide" />
+          <input
+            type="radio"
+            name="display"
+            value="hide"
+            disabled={!isActive}
+          />
           <span>{LABEL_HIDE}</span>
         </SelectLabel>
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_COLOR}</TitleLabel>
-        <CategoryColorSelector onColorChange={handleColorChange} />
+        <CategoryColorSelector
+          onColorChange={handleColorChange}
+          isActive={!isActive}
+        />
       </ContentContainer>
     </CategoryFormContainer>
   );

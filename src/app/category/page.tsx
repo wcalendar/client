@@ -38,20 +38,25 @@ const CategoryListContainer = styled.div`
   border-radius: 5px;
 `;
 
+const getMainLength = (categoryList: Category[]): number => {
+  const mainCategoryList = categoryList.filter(
+    category => category.level === 1,
+  );
+  return mainCategoryList.length;
+};
+
 export default function CategoryPage() {
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [isActive, setIsActive] = useState(true);
-  const mainCategoryList = categoryList.filter(
-    category => category.level === 0,
-  );
-  if (mainCategoryList.length === 10) {
-    setIsActive(false);
-  }
 
   useEffect(() => {
     const categories = getCategories();
     setCategoryList(categories);
-  }, []);
+    const mainLength = getMainLength(categoryList);
+    if (mainLength === 10) {
+      setIsActive(false);
+    }
+  }, [categoryList]);
 
   const onSaveHandler = () => {
     console.log('Save btn clicked');
