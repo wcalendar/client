@@ -7,7 +7,7 @@ import {
   ScheduleWithoutCategory,
   calendarDummyData,
 } from '@/dummies/calendar';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
 import CategoryCell from './CategoryCell';
@@ -17,6 +17,7 @@ import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
+import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
@@ -30,6 +31,13 @@ export type CategoryToRender = {
   category: CategoryWithSchedule;
   lines: (ScheduleToRender | undefined)[][];
 };
+
+export type ScheduleModalInfo = {
+  x: number,
+  y: number,
+  categoryId: number,
+  schedule: ScheduleWithoutCategory,
+}
 
 /**
  * 서버에서 받은 카테고리 데이터를 화면에 렌더링하기 쉽게 다듬어주는 함수
@@ -222,6 +230,7 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
 `;
 
 export default function Home() {
+  const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
   const [isAddScheduleModalOpen, setAddScheduleModalOpen] = useState(false);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
@@ -275,6 +284,51 @@ export default function Home() {
     router.push('/category');
   };
 
+  const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
+    if(!scheduleModalInfo) {
+      setScheduleModalInfo(newScheduleModalInfo);
+    }
+  }, [scheduleModalInfo]);
+
+  const handleScheduleModalClose = () => {
+    setScheduleModalInfo(null);
+  }
+
+  const handleScheduleFinish = useCallback((categoryId: number, scheduleId: number) => {
+    const newCategoryListToRender = [...categoryToRenderList];
+    const category = newCategoryListToRender.find(c => c.category.id === categoryId);
+    if(!category) {
+      alert('존재하지 않는 일정입니다.');
+      return;
+    }
+
+    let schedule: ScheduleToRender | undefined;
+    let isScheduleFound = false;
+    for(const l of category.lines) {
+      for(const s of l) {
+        if(s && s.id === scheduleId) {
+          isScheduleFound = true;
+          schedule = s;
+          break;
+        }
+      }
+
+      if(isScheduleFound) break;
+    }
+    if(!schedule) {
+      alert('존재하지 않는 일정입니다.');
+      return;
+    }
+
+    const newIsFinished = !(schedule.isFinished);
+    schedule.isFinished = newIsFinished;
+    setCategoryToRenderList(newCategoryListToRender);
+
+    const newScheduleModalInfo = {...scheduleModalInfo!};
+    newScheduleModalInfo.schedule.isFinished = newIsFinished;
+    setScheduleModalInfo(newScheduleModalInfo);
+  }, [categoryToRenderList, scheduleModalInfo]);
+
   return (
     <Container>
       <Header />
@@ -311,10 +365,11 @@ export default function Home() {
                 ),
               )}
             </DivideLines>
-            {categoryToRenderList.map(categoryToRender => (
+            {categoryToRenderList.map((categoryToRender, i) => (
               <ScheduleLine
                 key={`schedule-${categoryToRender.category.id}`}
                 categoryToRender={categoryToRender}
+                onScheduleClick={handleScheduleClick}
               />
             ))}
           </CalendarBody>
@@ -331,6 +386,13 @@ export default function Home() {
           width='40%'
           title='일정 추가'
           onClose={handleCloseAddScheduleModal}
+        />
+      )}
+      {scheduleModalInfo && (
+        <ScheduleModal
+          scheduleModalInfo={scheduleModalInfo}
+          onScheduleModalClose={handleScheduleModalClose}
+          onScheduleFinish={handleScheduleFinish}
         />
       )}
     </Container>
