@@ -136,7 +136,7 @@ export default function ScheduleModal({
   return (
     <Container $x={renderX} $y={renderY} ref={modalRef} >
       <Header>
-        <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.title}</Title>
+        <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
         <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(categoryId, schedule.id)} />
         <CloseButton onClick={onScheduleModalClose}>
           <Icon path={mdiClose} />

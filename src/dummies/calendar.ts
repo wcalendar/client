@@ -198,7 +198,7 @@ const calendarDummyData: CalendarResDto = {
           finished: false,
         }),
         ...range(y, m, 11, 20, {
-          scheduleId: 102,
+          scheduleId: 105,
           categoryId: 100,
           scheduleContent: "가운데 중간 일정2",
           schedulePriority: 999,

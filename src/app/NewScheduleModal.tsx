@@ -82,7 +82,7 @@ export default function NewScheduleModal({
   const dropdownValues = useMemo<string[]>(() => {
     return [
       '-',
-      ...categoryList.map(category => category.name),
+      ...categoryList.map(category => category.categoryName),
     ]
   }, [categoryList]);
 
