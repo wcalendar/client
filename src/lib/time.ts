@@ -22,6 +22,10 @@ const time = {
    */
   toString: (date: Dayjs, format?: string): string => {
     return format ? date.format(format) : date.toISOString();
+  },
+  fromString: (date: string): Dayjs => {
+    const splitedDate = date.split('-');
+    return dayjs(new Date(parseInt(splitedDate[0]), parseInt(splitedDate[1])-1, parseInt(splitedDate[2])));
   }
 }
 
