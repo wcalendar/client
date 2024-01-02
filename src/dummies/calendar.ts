@@ -1,28 +1,28 @@
+import time from "@/lib/time";
 import { Dayjs } from "dayjs";
 
 export type CategoryColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'gray';
 
-export type CategoryDto = {
-  id: number;
-  // user
-  // code: string;
-  name: string;
-  parent?: CategoryDto;
-  level: number;
-  color: CategoryColor;
-  // createdAt
-  // modifiedAt
-  memo?: string;
+export type ScheduleDto = {
+  scheduleId: number;
+  categoryId: number;
+  scheduleContent: string;
+  scheduleDate: string;
+  schedulePriority: number;
+  finished: boolean;
 }
 
-type ScheduleDto = {
-  id: number;
-  category: CategoryDto;
-  title: string;
-  // body: string;
-  startDate: Date;
-  endDate: Date;
-  isFinished: boolean;
+export type CategoryDto = {
+  categoryId: number;
+  categoryName: string;
+  categoryLevel: number;
+  categoryColor: CategoryColor;
+  categoryStartDate: string;
+  categoryEndDate: string;
+  categoryDescription: string;
+  categoryVisible: boolean;
+  schedules: ScheduleDto[];
+  children: CategoryDto[];
 }
 
 export type ScheduleWithoutCategoryDto = {
@@ -56,141 +56,156 @@ export type CategoryWithSchedule = {
   scheduleList: ScheduleWithoutCategory[];
 }
 
-type MainCalendarDto = {
-  categoryList: CategoryWithScheduleDto[];
+type CalendarResDto = {
+  resultMessage: string;
+  resultBody: CategoryDto[];
 }
 
-const newDummyCategory = (i: number, color: CategoryColor): CategoryWithScheduleDto[] => {
+const range = (y: number, m: number, fd: number, td: number, schedule: Omit<ScheduleDto, 'scheduleDate'>): ScheduleDto[] => {
+  const result: ScheduleDto[] = [];
+
+  for(let i=fd; i<=td; i++) {
+    result.push({
+      ...schedule,
+      scheduleDate: time.toString(time.new(y, m, i), 'YYYY-MM-DD'),
+    });
+  }
+
+  return result;
+}
+
+const y = time.now().year();
+const m = time.now().month();
+
+const newDummyCategory = (i: number, color: CategoryColor): CategoryDto[] => {
   return [
     {
-      id: i,
-      name: 'W Calendar',
-      level: 0,
-      color,
-      scheduleList: [
-        {
-          id: i+1,
-          title: 'Splash Page',
-          startDate:  new Date(2023, 11, 1),
-          endDate: new Date(2023, 11, 7),
-          isFinished: false,
-        }
+      categoryId: i,
+      categoryName: "W Calendar",
+      categoryLevel: 0,
+      categoryColor: color,
+      categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+      categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+      categoryDescription: "W calendar is good", // is this memo?
+      categoryVisible: true, // invisible case?
+      schedules: [
+        ...range(y, m, 1, 7, {
+          scheduleId: i+1,
+          categoryId: i,
+          scheduleContent: "Splash Page",
+          schedulePriority: 999, // priority 가 없으면?
+          finished: false,
+        }),
       ],
-    },
-    {
-      id: i+2,
-      name: 'Test',
-      level: 1,
-      color,
-      scheduleList: [
+      children: [
         {
-          id: i+3,
-          title: 'Splash Test',
-          startDate: new Date(2023, 11, 4),
-          endDate: new Date(2023, 11, 7),
-          isFinished: true,
+          categoryId: i+2,
+          categoryName: 'Test',
+          categoryLevel: 1,
+          categoryColor: color,
+          categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+          categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+          categoryDescription: "It is test",
+          categoryVisible: true,
+          schedules: [
+            ...range(y, m, 4, 7, {
+              scheduleId: i+3,
+              categoryId: i+2,
+              scheduleContent: "Splash Test",
+              schedulePriority: 999,
+              finished: false,
+            }),
+          ],
+          children: [],
         },
-      ],
-    },
-    {
-      id: i+4,
-      name: 'Deploy',
-      level: 1,
-      color,
-      scheduleList: [],
-    },
-    {
-      id: i+5,
-      name: 'AWS',
-      level: 2,
-      color,
-      scheduleList: [
         {
-          id: i+6,
-          title: '배포하기',
-          startDate: new Date(2023, 11, 31),
-          endDate: new Date(2023, 11, 31),
-          isFinished: false,
+          categoryId: i+4,
+          categoryName: 'Deploy',
+          categoryLevel: 1,
+          categoryColor: color,
+          categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+          categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+          categoryDescription: "How to Deploy",
+          categoryVisible: true,
+          schedules: [],
+          children: [
+            {
+              categoryId: i+5,
+              categoryName: 'AWS',
+              categoryLevel: 2,
+              categoryColor: color,
+              categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+              categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+              categoryDescription: "AWS is hard",
+              categoryVisible: true,
+              schedules: [
+                ...range(y, m, 27, 27, {
+                  scheduleId: i+5,
+                  categoryId: i+4,
+                  scheduleContent: "배포하기",
+                  schedulePriority: 999,
+                  finished: false,
+                })
+              ],
+              children: [],
+            }
+          ],
         },
-      ],
+      ]
     },
   ]
 }
 
-const calendarDummyData: MainCalendarDto = {
-  categoryList: [
+const calendarDummyData: CalendarResDto = {
+  resultMessage: 'success',
+  resultBody: [
     {
-      id: 0,
-      name: 'Test',
-      level: 0,
-      color: 'green',
-      scheduleList: [
-        {
-          id: 100,
-          title: '긴 일정',
-          startDate: new Date(2023, 11, 2),
-          endDate: new Date(2023, 11, 29),
-          isFinished: false,
-        },
-        {
-          id: 101,
-          title: '중간 일정',
-          startDate: new Date(2023, 11, 2),
-          endDate: new Date(2023, 11, 16),
-          isFinished: false,
-        },
-        {
-          id: 102,
-          title: '짧은 일정',
-          startDate: new Date(2023, 11, 2),
-          endDate: new Date(2023, 11, 3),
-          isFinished: false,
-        },
-        {
-          id: 103,
-          title: '가운데 중간 일정',
-          startDate: new Date(2023, 11, 16),
-          endDate: new Date(2023, 11, 29),
-          isFinished: false,
-        },
-        {
-          id: 104,
-          title: '가운데 중간 일정2',
-          startDate: new Date(2023, 11, 17),
-          endDate: new Date(2023, 11, 28),
-          isFinished: false,
-        },
+      categoryId: 100,
+      categoryName: 'Test',
+      categoryLevel: 0,
+      categoryColor: 'green',
+      categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+      categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+      categoryDescription: "하하",
+      categoryVisible: true,
+      schedules: [
+        ...range(y, m, 2, 20, {
+          scheduleId: 101,
+          categoryId: 100,
+          scheduleContent: "긴 일정",
+          schedulePriority: 999,
+          finished: false,
+        }),
+        ...range(y, m, 2, 10, {
+          scheduleId: 102,
+          categoryId: 100,
+          scheduleContent: "중간 일정",
+          schedulePriority: 999,
+          finished: false,
+        }),
+        ...range(y, m, 2, 3, {
+          scheduleId: 103,
+          categoryId: 100,
+          scheduleContent: "짧은 일정",
+          schedulePriority: 999,
+          finished: false,
+        }),
+        ...range(y, m, 10, 20, {
+          scheduleId: 104,
+          categoryId: 100,
+          scheduleContent: "가운데 중간 일정",
+          schedulePriority: 999,
+          finished: false,
+        }),
+        ...range(y, m, 11, 20, {
+          scheduleId: 102,
+          categoryId: 100,
+          scheduleContent: "가운데 중간 일정2",
+          schedulePriority: 999,
+          finished: false,
+        }),
       ],
-    },
-    {
-      id: 999,
-      name: 'overMonth',
-      level: 1,
-      color: 'green',
-      memo: 'zxcv',
-      scheduleList: [
-        {
-          id: 105,
-          title: '지난 달 부터',
-          startDate: new Date(2023, 10, 1),
-          endDate: new Date(2023, 11, 16),
-          isFinished: false,
-        },
-        {
-          id: 106,
-          title: '지난 달 부터 다음 달 까지',
-          startDate: new Date(2023, 10, 1),
-          endDate: new Date(2024, 1, 1),
-          isFinished: false,
-        },
-        {
-          id: 107,
-          title: '다음 달 까지',
-          startDate: new Date(2023, 11, 14),
-          endDate: new Date(2024, 1, 1),
-          isFinished: false,
-        }
-      ],
+      children: [],
     },
     ...newDummyCategory(1, 'red'),
     ...newDummyCategory(8, 'orange'),
@@ -200,45 +215,81 @@ const calendarDummyData: MainCalendarDto = {
     ...newDummyCategory(36, 'purple'),
     ...newDummyCategory(42, 'gray'),
     ...newDummyCategory(49, 'red'),
-  ]
+  ],
 }
 
 const categoryListDummyData: CategoryDto[] = [
   {
-    id: 1,
-    name: '카테고리 1',
-    level: 0,
-    color: 'red',
+    categoryId: 1,
+    categoryName: '카테고리 1',
+    categoryLevel: 0,
+    categoryColor: 'red',
+    categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+    categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+    categoryDescription: "하하",
+    categoryVisible: true,
+    schedules: [],
+    children: [],
   },
   {
-    id: 2,
-    name: '카테고리 2',
-    level: 1,
-    color: 'blue',
+    categoryId: 2,
+    categoryName: '카테고리 2',
+    categoryLevel: 1,
+    categoryColor: 'blue',
+    categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+    categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+    categoryDescription: "하하",
+    categoryVisible: true,
+    schedules: [],
+    children: [],
   },
   {
-    id: 3,
-    name: '카테고리 3',
-    level: 2,
-    color: 'red',
+    categoryId: 3,
+    categoryName: '카테고리 3',
+    categoryLevel: 2,
+    categoryColor: 'blue',
+    categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+    categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+    categoryDescription: "하하",
+    categoryVisible: true,
+    schedules: [],
+    children: [],
   },
   {
-    id: 4,
-    name: '카테고리 4',
-    level: 1,
-    color: 'red',
+    categoryId: 4,
+    categoryName: '카테고리 4',
+    categoryLevel: 1,
+    categoryColor: 'blue',
+    categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+    categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+    categoryDescription: "하하",
+    categoryVisible: true,
+    schedules: [],
+    children: [],
   },
   {
-    id: 5,
-    name: '카테고리 5',
-    level: 0,
-    color: 'red',
+    categoryId: 5,
+    categoryName: '카테고리 5',
+    categoryLevel: 0,
+    categoryColor: 'blue',
+    categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+    categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+    categoryDescription: "하하",
+    categoryVisible: true,
+    schedules: [],
+    children: [],
   },
   {
-    id: 6,
-    name: '카테고리 6',
-    level: 1,
-    color: 'red',
+    categoryId: 6,
+    categoryName: '카테고리 6',
+    categoryLevel: 1,
+    categoryColor: 'blue',
+    categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
+    categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
+    categoryDescription: "하하",
+    categoryVisible: true,
+    schedules: [],
+    children: [],
   },
 ]
 
