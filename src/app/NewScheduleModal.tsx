@@ -11,7 +11,7 @@ import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "r
 import styled from "styled-components";
 
 interface NewScheduleModal extends Omit<FixedModalProps, 'children' | 'buttonList'> {
-
+  
 }
 
 const Container = styled.div`

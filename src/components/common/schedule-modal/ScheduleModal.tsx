@@ -107,7 +107,7 @@ export default function ScheduleModal({
 }: ScheduleModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const { x, y, categoryId, schedule } = scheduleModalInfo;
+  const { x, y, schedule } = scheduleModalInfo;
   const renderX = useMemo(() => {
     if(x > (window.innerWidth / 2)) return `calc(${x}px - 16.875rem)`;
     else return `${x}px`;
@@ -137,7 +137,7 @@ export default function ScheduleModal({
     <Container $x={renderX} $y={renderY} ref={modalRef} >
       <Header>
         <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.title}</Title>
-        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(categoryId, schedule.id)} />
+        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(schedule.categoryId, schedule.id)} />
         <CloseButton onClick={onScheduleModalClose}>
           <Icon path={mdiClose} />
         </CloseButton>

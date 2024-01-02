@@ -4,7 +4,7 @@ import Header from '@/components/common/Header';
 import {
   CategoryWithSchedule,
   CategoryWithScheduleDto,
-  ScheduleWithoutCategory,
+  Schedule,
   calendarDummyData,
 } from '@/dummies/calendar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -22,7 +22,7 @@ import { useRouter } from 'next/navigation';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
-export interface ScheduleToRender extends ScheduleWithoutCategory {
+export interface ScheduleToRender extends Schedule {
   startDay: number;
   endDay: number;
 }
@@ -35,8 +35,7 @@ export type CategoryToRender = {
 export type ScheduleModalInfo = {
   x: number,
   y: number,
-  categoryId: number,
-  schedule: ScheduleWithoutCategory,
+  schedule: Schedule,
 }
 
 /**
@@ -64,8 +63,9 @@ const toRenderingData = (
       const lineCount = lines.length;
       const startDate = time.fromDate(schedule.startDate);
       const endDate = time.fromDate(schedule.endDate);
-      const newSchedule: ScheduleWithoutCategory = {
+      const newSchedule: Schedule = {
         ...schedule,
+        categoryId: category.id,
         startDate,
         endDate,
       };
@@ -235,6 +235,8 @@ export default function Home() {
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
   >([]);
+
+  console.log(categoryToRenderList);
 
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);

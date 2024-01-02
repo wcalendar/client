@@ -80,7 +80,6 @@ export default function ScheduleLine({
 
   const handleScheduleClick = useCallback((e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, schedule: ScheduleToRender) => {
     const scheduleModalInfo: ScheduleModalInfo = {
-      categoryId: category.id,
       x: e.clientX,
       y: e.clientY,
       schedule,
