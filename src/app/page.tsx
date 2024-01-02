@@ -391,7 +391,6 @@ export default function Home() {
       {isNewScheduleModalOpen && (
         <NewScheduleModal
           width='40%'
-          title='일정 추가'
           onClose={handleCloseAddScheduleModal}
           schedule={isNewScheduleModalOpen === true ? undefined : isNewScheduleModalOpen}
         />

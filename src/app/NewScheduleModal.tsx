@@ -10,7 +10,7 @@ import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-interface NewScheduleModal extends Omit<FixedModalProps, 'children' | 'buttonList'> {
+interface NewScheduleModal extends Omit<FixedModalProps, 'children' | 'buttonList' | 'title'> {
   schedule?: Schedule;
 }
 
@@ -69,7 +69,6 @@ const Tip = styled.li`
 
 export default function NewScheduleModal({
   width,
-  title,
   onClose,
   schedule,
 }: NewScheduleModal) {
@@ -155,7 +154,7 @@ export default function NewScheduleModal({
   return (
     <FixedModal
       width={width}
-      title={title}
+      title={schedule ? '일정 수정' : '일정 등록'}
       buttonList={buttonList}
       onClose={onClose}
     >
