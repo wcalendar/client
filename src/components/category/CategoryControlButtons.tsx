@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import ControlButton from '../common/ControlButton';
 import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 import ArrowButton from '../common/ArrowButton';
 
@@ -15,10 +14,20 @@ const ButtonsContainer = styled.div`
   display: flex;
   gap: 0.5rem;
 `;
+
+const ControlButton = styled.button`
+  background-color: white;
+  border: 1px solid black;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+`;
+
 const ADD_TEXT = '추가';
 const DELETE_TEXT = '삭제';
 
 type CategoryControlButtonsProps = {
+  isActive: boolean;
   addHandler: () => void;
   deleteHandler: () => void;
   upHandler: () => void;
@@ -30,18 +39,19 @@ export default function CategoryControlButtons({
   deleteHandler,
   upHandler,
   downHandler,
+  isActive,
 }: CategoryControlButtonsProps) {
+  
   return (
     <ControlButtonsContainer>
       <ButtonsContainer>
-        <ControlButton onClick={addHandler} title={ADD_TEXT} />
-        <ControlButton onClick={deleteHandler} title={DELETE_TEXT} />
+        <ControlButton onClick={addHandler} disabled={!isActive}>
+          {ADD_TEXT}
+        </ControlButton>
+        <ControlButton onClick={deleteHandler}>{DELETE_TEXT}</ControlButton>
       </ButtonsContainer>
       <ButtonsContainer>
-        <ArrowButton
-          onClick={upHandler}
-          icon={<RiArrowUpSLine size={24} />}
-        />
+        <ArrowButton onClick={upHandler} icon={<RiArrowUpSLine size={24} />} />
         <ArrowButton
           onClick={downHandler}
           icon={<RiArrowDownSLine size={24} />}

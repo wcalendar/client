@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Monthly from '../common/Monthly';
 import ControlButton from '../common/ControlButton';
+import { FormEvent } from 'react';
 
 const CategoryHeaderContainer = styled.div`
   width: 100%;
@@ -28,12 +29,21 @@ const CategoryHeaderButtons = styled.div`
   gap: 1rem;
 `;
 
+const Button = styled.button`
+  border: 1px solid gray;
+  border-radius: 4px;
+  background-color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.5rem;
+`;
+
 const SAVE = '저장';
 const CANCEL = '취소';
 const CATEGORY_HEADER_TITLE = '카테고리 관리';
 
 type CategoryHeaderProps = {
-  saveHandler: () => void;
+  saveHandler: (event: FormEvent<HTMLFormElement>) => void;
   cancelHandler: () => void;
 };
 export default function CategoryHeader({
@@ -46,7 +56,14 @@ export default function CategoryHeader({
         <CategoryHeaderTitle>{CATEGORY_HEADER_TITLE}</CategoryHeaderTitle>
         <Monthly />
         <CategoryHeaderButtons>
-          <ControlButton onClick={saveHandler} title={SAVE} />
+          <Button
+            type="submit"
+            onClick={() => {
+              saveHandler;
+            }}
+          >
+            {SAVE}
+          </Button>
           <ControlButton onClick={cancelHandler} title={CANCEL} />
         </CategoryHeaderButtons>
       </CategoryHeaderContentsContainer>

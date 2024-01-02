@@ -1,11 +1,15 @@
+import { FormEvent, useState } from 'react';
 import styled from 'styled-components';
-import CategoryColorSelector from './CategoryColorSelector';
 
 const CategoryFormContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding: 2rem;
+  border: 1px solid gray;
+  margin-left: 32px;
+  border-radius: 8px;
+  height: fit-content;
 `;
 
 const ContentContainer = styled.div`
@@ -28,6 +32,18 @@ const TextInput = styled.input`
   padding-left: 4px;
 `;
 
+const CategoryColorSelector = styled.div``;
+
+const CategorySelect = styled.select``;
+
+const FormButtons = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  gap: 1rem;
+`;
+
 const LABEL_TITLE = '제목';
 const LABEL_OPTION = '비고';
 const LABEL_VIEW = '표시 여부';
@@ -44,23 +60,30 @@ type CategoryFormProps = {
   description: string;
 };
 
-export default function CategoryForm({ isActive, color }: CategoryFormProps) {
-  const handleColorChange = (selectedColor: string) => {
-    console.log(`Selected Color: ${selectedColor}`);
-  };
+const colorOptions = [
+  { label: 'Color 1', color: '#FF0000' },
+  { label: 'Color 2', color: '#FFA500' },
+  { label: 'Color 3', color: '#FFFF00' },
+  { label: 'Color 4', color: '#008000' },
+  { label: 'Color 5', color: '#0000FF' },
+  { label: 'Color 6', color: '#4B0082' },
+  { label: 'Color 7', color: '#9400D3' },
+];
 
-  const onSubmitHandler = () => {
-    console.log('Submit btn clicked');
-  };
+export default function CategoryForm({ isActive, color }: CategoryFormProps) {
+  const [selectedColor, setSelectedColor] = useState<string>(
+    colorOptions[4].color,
+  );
 
   return (
-    <CategoryFormContainer onSubmit={onSubmitHandler}>
+    <CategoryFormContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_TITLE}</TitleLabel>
         <TextInput
           type="text"
           disabled={!isActive}
           maxLength={MAX_TEXT_COUNT}
+          required
         />
       </ContentContainer>
       <ContentContainer>
@@ -70,6 +93,7 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
           placeholder={OPTION_HELPER_TEXT}
           disabled={!isActive}
           maxLength={MAX_TEXT_COUNT}
+          required
         />
       </ContentContainer>
       <ContentContainer>
@@ -80,6 +104,7 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
             name="display"
             value="show"
             disabled={!isActive}
+            defaultChecked
           />
           <span>{LABEL_SHOW}</span>
         </SelectLabel>
@@ -95,10 +120,26 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_COLOR}</TitleLabel>
-        <CategoryColorSelector
-          onColorChange={handleColorChange}
-          isActive={!isActive}
-        />
+        <CategoryColorSelector>
+          <CategorySelect
+            defaultValue={colorOptions[4].color}
+            onChange={e => {
+              setSelectedColor(e.target.value);
+            }}
+          >
+            {colorOptions.map(option => (
+              <option
+                key={option.label}
+                value={option.color}
+                style={{
+                  backgroundColor: option.color,
+                }}
+              >
+                {option.label}
+              </option>
+            ))}
+          </CategorySelect>
+        </CategoryColorSelector>
       </ContentContainer>
     </CategoryFormContainer>
   );

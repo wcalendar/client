@@ -1,8 +1,20 @@
+export type CategoryColor =
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'green'
+  | 'blue'
+  | 'purple'
+  | 'gray';
+
 export type Category = {
-  id?: number;
-  name: string;
-  color: string;
-  parent?: Category;
-  level: number;
-  memo?: string;
+  categoryId?: number;
+  categoryName: string;
+  categoryColor: CategoryColor;
+  categoryLevel: number;
+  categoryDescription?: string;
+  categoryVisible: boolean;
+  categoryStartDate: string;
+  categoryEndDate: string;
+  children?: Category;
 };
