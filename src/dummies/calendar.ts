@@ -22,6 +22,7 @@ type ScheduleDto = {
   // body: string;
   startDate: Date;
   endDate: Date;
+  isFinished: boolean;
 }
 
 export type ScheduleWithoutCategoryDto = {
@@ -30,6 +31,7 @@ export type ScheduleWithoutCategoryDto = {
   // body: string;
   startDate: Date;
   endDate: Date;
+  isFinished: boolean;
 }
 
 export type ScheduleWithoutCategory = {
@@ -38,6 +40,7 @@ export type ScheduleWithoutCategory = {
   // body: string;
   startDate: Dayjs;
   endDate: Dayjs;
+  isFinished: boolean;
 }
 
 export interface CategoryWithScheduleDto extends CategoryDto {
@@ -70,6 +73,7 @@ const newDummyCategory = (i: number, color: CategoryColor): CategoryWithSchedule
           title: 'Splash Page',
           startDate:  new Date(2023, 11, 1),
           endDate: new Date(2023, 11, 7),
+          isFinished: false,
         }
       ],
     },
@@ -84,6 +88,7 @@ const newDummyCategory = (i: number, color: CategoryColor): CategoryWithSchedule
           title: 'Splash Test',
           startDate: new Date(2023, 11, 4),
           endDate: new Date(2023, 11, 7),
+          isFinished: true,
         },
       ],
     },
@@ -105,6 +110,7 @@ const newDummyCategory = (i: number, color: CategoryColor): CategoryWithSchedule
           title: '배포하기',
           startDate: new Date(2023, 11, 31),
           endDate: new Date(2023, 11, 31),
+          isFinished: false,
         },
       ],
     },
@@ -124,30 +130,35 @@ const calendarDummyData: MainCalendarDto = {
           title: '긴 일정',
           startDate: new Date(2023, 11, 2),
           endDate: new Date(2023, 11, 29),
+          isFinished: false,
         },
         {
           id: 101,
           title: '중간 일정',
           startDate: new Date(2023, 11, 2),
           endDate: new Date(2023, 11, 16),
+          isFinished: false,
         },
         {
           id: 102,
           title: '짧은 일정',
           startDate: new Date(2023, 11, 2),
           endDate: new Date(2023, 11, 3),
+          isFinished: false,
         },
         {
           id: 103,
           title: '가운데 중간 일정',
           startDate: new Date(2023, 11, 16),
           endDate: new Date(2023, 11, 29),
+          isFinished: false,
         },
         {
           id: 104,
           title: '가운데 중간 일정2',
           startDate: new Date(2023, 11, 17),
           endDate: new Date(2023, 11, 28),
+          isFinished: false,
         },
       ],
     },
@@ -163,18 +174,21 @@ const calendarDummyData: MainCalendarDto = {
           title: '지난 달 부터',
           startDate: new Date(2023, 10, 1),
           endDate: new Date(2023, 11, 16),
+          isFinished: false,
         },
         {
           id: 106,
           title: '지난 달 부터 다음 달 까지',
           startDate: new Date(2023, 10, 1),
           endDate: new Date(2024, 1, 1),
+          isFinished: false,
         },
         {
           id: 107,
           title: '다음 달 까지',
           startDate: new Date(2023, 11, 14),
           endDate: new Date(2024, 1, 1),
+          isFinished: false,
         }
       ],
     },
