@@ -63,6 +63,11 @@ const theme = {
         tablet: '6px',
         desktop: '4px',
       },
+      PriorityCount: {
+        mobile: '4',
+        tablet: '4',
+        desktop: '4',
+      },
     }
   }
 }

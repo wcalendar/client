@@ -187,12 +187,14 @@ const Container = styled.div`
   --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
   --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
   --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
+  --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
     --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.tablet};
     --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.tablet};
+    --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.tablet};
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
@@ -200,6 +202,7 @@ const Container = styled.div`
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
     --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.mobile};
     --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.mobile};
+    --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.mobile};
   }
 `;
 
@@ -230,12 +233,33 @@ const CalendarHeader = styled.div<{ $day_count: number }>`
   z-index: 1;
   width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
   top: 0;
+`;
+
+const HeaderSection = styled.div`
   display: flex;
   justify-content: flex-start;
+  width: 100%;
   height: 2.5rem;
   font-size: 0.75rem;
   font-weight: bold;
   background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const PrioritySection = styled.div`
+  width: 100%;
+  height: calc((var(--cell-height) + var(--line-gap)) * var(--priority-count));
+  position: relative;
+  background: white;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+`;
+
+const PriorityLabel = styled.div`
+  width: 100%;
+  height: 100%;
+  line-height: calc((var(--cell-height) + var(--line-gap)) * var(--priority-count));
+  font-size: .75rem;
+  font-weight: bold;
+  text-align: center;
 `;
 
 const CalendarBody = styled.div<{ $day_count: number }>`
@@ -398,11 +422,19 @@ export default function Home() {
       <Calendar>
         <CategorySide ref={categoryBody}>
           <CalendarHeader $day_count={1}>
-            <Cell isCategory>
-              <SettingCategoryButton onClick={handleMoveCategoryPage}>
-                카테고리 관리
-              </SettingCategoryButton>
-            </Cell>
+            <HeaderSection>
+              <Cell isCategory>
+                <SettingCategoryButton onClick={handleMoveCategoryPage}>
+                  카테고리 관리
+                </SettingCategoryButton>
+              </Cell>
+
+            </HeaderSection>
+            <PrioritySection>
+              <PriorityLabel>
+                우선순위
+              </PriorityLabel>
+            </PrioritySection>
           </CalendarHeader>
           <CalendarBody $day_count={1}>
             {categoryToRenderList.map(categoryToRender => (
@@ -416,9 +448,20 @@ export default function Home() {
         </CategorySide>
         <ScheduleSide ref={scheduleBody}>
           <CalendarHeader $day_count={lastDayOfMonth}>
-            {calendarHeaderItems.map(headerItem => (
-              <Cell key={headerItem}>{headerItem}</Cell>
-            ))}
+            <HeaderSection>
+              {calendarHeaderItems.map(headerItem => (
+                <Cell key={headerItem}>{headerItem}</Cell>
+              ))}
+            </HeaderSection>
+            <PrioritySection>
+              <DivideLines $day_count={lastDayOfMonth}>
+                {Array.from({ length: lastDayOfMonth }, () => null).map(
+                  (_, i) => (
+                    <DivideLine key={`div${i}`} />
+                  ),
+                )}
+              </DivideLines>
+            </PrioritySection>
           </CalendarHeader>
           <CalendarBody $day_count={lastDayOfMonth}>
             <DivideLines $day_count={lastDayOfMonth}>
