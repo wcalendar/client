@@ -2,16 +2,17 @@ import Dropdown from "@/components/common/Dropdown";
 import RadioButton from "@/components/common/RadioButton";
 import DatePicker from "@/components/common/date-picker/DatePicker";
 import FixedModal, { FixedModalProps, ModalButton } from "@/components/common/fixed-modal/FixedModal";
-import { CategoryDto, Schedule, categoryListDummyData } from "@/dummies/calendar";
+import { CategoryDto, categoryListDummyData } from "@/dummies/calendar";
 import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { ScheduleToRender } from "./page";
 
 interface NewScheduleModal extends Omit<FixedModalProps, 'children' | 'buttonList' | 'title'> {
-  schedule?: Schedule;
+  schedule?: ScheduleToRender;
 }
 
 const Container = styled.div`
@@ -73,7 +74,7 @@ export default function NewScheduleModal({
   schedule,
 }: NewScheduleModal) {
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
-  const [scheduleTitle, setScheduleTitle] = useState(schedule ? schedule.title : '');
+  const [scheduleTitle, setScheduleTitle] = useState(schedule ? schedule.content : '');
   const [startDate, setStartDate] = useState<Dayjs>(schedule ? schedule.startDate : time.now());
   const [endDate, setEndDate] = useState<Dayjs>(schedule ? schedule.endDate : time.now());
   const [categoryIdx, setCategoryIdx] = useState(0);
@@ -82,7 +83,7 @@ export default function NewScheduleModal({
   const dropdownValues = useMemo<string[]>(() => {
     return [
       '-',
-      ...categoryList.map(category => category.name),
+      ...categoryList.map(category => category.categoryName),
     ]
   }, [categoryList]);
 

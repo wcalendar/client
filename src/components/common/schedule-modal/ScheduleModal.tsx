@@ -1,5 +1,4 @@
-import { ScheduleModalInfo } from "@/app/page";
-import { Schedule } from "@/dummies/calendar";
+import { ScheduleModalInfo, ScheduleToRender } from "@/app/page";
 import time from "@/lib/time";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
@@ -10,7 +9,7 @@ type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
   onScheduleModalClose: () => void;
   onScheduleFinish: (categoryId: number, scheduleId: number) => void;
-  onUpdateClick: (schedule: Schedule) => void;
+  onUpdateClick: (schedule: ScheduleToRender) => void;
 }
 
 const Container = styled.div<{ $x: string, $y: string }>`
@@ -139,7 +138,7 @@ export default function ScheduleModal({
   return (
     <Container $x={renderX} $y={renderY} ref={modalRef} >
       <Header>
-        <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.title}</Title>
+        <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
         <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(schedule.categoryId, schedule.id)} />
         <CloseButton onClick={onScheduleModalClose}>
           <Icon path={mdiClose} />
