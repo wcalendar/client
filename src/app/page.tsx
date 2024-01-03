@@ -53,131 +53,18 @@ export type CategoryToRender = {
   lines: (ScheduleToRender | undefined)[][];
 };
 
+type Priority = {
+  scheduleId: number;
+  day: number;
+  priority: number;
+  isFinished: boolean;
+};
+
 export type ScheduleModalInfo = {
   x: number,
   y: number,
   schedule: ScheduleToRender,
 }
-
-/**
- * 서버에서 받은 카테고리 데이터를 화면에 렌더링하기 쉽게 다듬어주는 함수
- * @param categoryList 서버로부터 받은 카테고리 데이터
- * @param currentMonth 현재 월
- * @param lastDayInMonth 현재 월의 마지막 일
- * @returns
- */
-const toRenderingData = (
-  categoryList: CategoryDto[],
-  lastDayInMonth: number,
-): CategoryToRender[] => {
-  const result: CategoryToRender[] = [];
-
-  const toCategoryRender = (category: CategoryDto): CategoryToRender => {
-    const newCategory: Category = {
-      id: category.categoryId,
-      name: category.categoryName,
-      level: category.categoryLevel,
-      color: category.categoryColor,
-      startDate: time.fromString(category.categoryStartDate),
-      endDate: time.fromString(category.categoryEndDate),
-      description: category.categoryDescription,
-      isVisible: category.categoryVisible,
-      schedules: [],
-    };
-    const lines: (ScheduleToRender | undefined)[][] = [];
-    lines.push(Array(lastDayInMonth));
-
-    const rangeSchedules: ScheduleToRender[] = [];
-
-    let scheduleId = -1;
-    let startDate: Dayjs | undefined;
-    let lastSchedule: ScheduleDto | undefined;
-    category.schedules.forEach(schedule => {
-      const date = time.fromString(schedule.scheduleDate);
-
-      if(schedule.scheduleId !== scheduleId) {
-        scheduleId = schedule.scheduleId;
-        
-        if(startDate && lastSchedule) {
-          rangeSchedules.push({
-            id: lastSchedule.scheduleId,
-            categoryId: lastSchedule.categoryId,
-            content: lastSchedule.scheduleContent,
-            startDate,
-            endDate: time.fromString(lastSchedule.scheduleDate),
-            priority: lastSchedule.schedulePriority,
-            isFinished: lastSchedule.finished,
-          });
-        }
-
-        startDate = date;
-      }
-
-      lastSchedule = schedule;
-    });
-    if(startDate && lastSchedule) {
-      rangeSchedules.push({
-        id: lastSchedule.scheduleId,
-        categoryId: lastSchedule.categoryId,
-        content: lastSchedule.scheduleContent,
-        startDate,
-        endDate: time.fromString(lastSchedule.scheduleDate),
-        priority: lastSchedule.schedulePriority,
-        isFinished: lastSchedule.finished,
-      });
-    }
-
-    rangeSchedules.forEach(schedule => {
-      const lineCount = lines.length;
-      const {startDate, endDate} = schedule;
-      newCategory.schedules.push(schedule);
-
-      let isAllocated = false;
-      for (let i = 0; i < lineCount; i++) {
-        // 해당 라인에 이미 할당된 일정이 있다면 다음 라인으로
-        if (lines[i][startDate.date() - 1]) continue;
-
-        // 할당된 일정이 없다면 일정 할당
-        isAllocated = true;
-        for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
-          lines[i][day] = schedule;
-        }
-        break;
-      }
-
-      // 모든 라인에 할당되어 있으면 새 라인 생성하고 할당
-      if (!isAllocated) {
-        lines.push(Array(lastDayInMonth));
-        for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
-          lines[lines.length - 1][day] = schedule;
-        }
-      }
-    });
-
-    return {
-      category: newCategory,
-      lines,
-    };
-  }
-
-  categoryList.forEach(c0 => {
-    result.push(toCategoryRender(c0));
-
-    if(c0.children.length > 0) {
-      c0.children.forEach(c1 => {
-        result.push(toCategoryRender(c1));
-
-        if(c1.children.length > 0) {
-          c1.children.forEach(c2 => {
-            result.push(toCategoryRender(c2));
-          })
-        }
-      })
-    }
-  })
-
-  return result;
-};
 
 const Container = styled.div`
   width: 100%;
@@ -317,6 +204,9 @@ export default function Home() {
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
   >([]);
+  const [priorities, setPriorities] = useState<Priority[][]>([]);
+
+  console.log(priorities);
 
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
@@ -338,6 +228,134 @@ export default function Home() {
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, [now]);
 
+  /**
+   * 서버에서 받은 카테고리 데이터를 화면에 렌더링하기 쉽게 다듬어주는 함수
+   * @param categoryList 서버로부터 받은 카테고리 데이터
+   * @param lastDayInMonth 현재 월의 마지막 일
+   * @returns
+   */
+  const toRenderingData = (
+    categoryList: CategoryDto[],
+    lastDayInMonth: number,
+  ) => {
+    const newCategoryToRenderList: CategoryToRender[] = [];
+    const newPriorities: Priority[][] = Array.from({length: lastDayInMonth}, () => []);
+
+    const toCategoryRender = (category: CategoryDto): CategoryToRender => {
+      const newCategory: Category = {
+        id: category.categoryId,
+        name: category.categoryName,
+        level: category.categoryLevel,
+        color: category.categoryColor,
+        startDate: time.fromString(category.categoryStartDate),
+        endDate: time.fromString(category.categoryEndDate),
+        description: category.categoryDescription,
+        isVisible: category.categoryVisible,
+        schedules: [],
+      };
+      const lines: (ScheduleToRender | undefined)[][] = [];
+      lines.push(Array(lastDayInMonth));
+
+      const rangeSchedules: ScheduleToRender[] = [];
+
+      let scheduleId = -1;
+      let startDate: Dayjs | undefined;
+      let lastSchedule: ScheduleDto | undefined;
+      category.schedules.forEach(schedule => {
+        const date = time.fromString(schedule.scheduleDate);
+        newPriorities[date.date()-1].push({
+          scheduleId: schedule.scheduleId,
+          day: date.date(),
+          priority: schedule.schedulePriority,
+          isFinished: schedule.finished,
+        });
+
+        if(schedule.scheduleId !== scheduleId) {
+          scheduleId = schedule.scheduleId;
+          
+          if(startDate && lastSchedule) {
+            rangeSchedules.push({
+              id: lastSchedule.scheduleId,
+              categoryId: lastSchedule.categoryId,
+              content: lastSchedule.scheduleContent,
+              startDate,
+              endDate: time.fromString(lastSchedule.scheduleDate),
+              priority: lastSchedule.schedulePriority,
+              isFinished: lastSchedule.finished,
+            });
+          }
+
+          startDate = date;
+        }
+
+        lastSchedule = schedule;
+      });
+      if(startDate && lastSchedule) {
+        rangeSchedules.push({
+          id: lastSchedule.scheduleId,
+          categoryId: lastSchedule.categoryId,
+          content: lastSchedule.scheduleContent,
+          startDate,
+          endDate: time.fromString(lastSchedule.scheduleDate),
+          priority: lastSchedule.schedulePriority,
+          isFinished: lastSchedule.finished,
+        });
+      }
+
+      rangeSchedules.forEach(schedule => {
+        const lineCount = lines.length;
+        const {startDate, endDate} = schedule;
+        newCategory.schedules.push(schedule);
+
+        let isAllocated = false;
+        for (let i = 0; i < lineCount; i++) {
+          // 해당 라인에 이미 할당된 일정이 있다면 다음 라인으로
+          if (lines[i][startDate.date() - 1]) continue;
+
+          // 할당된 일정이 없다면 일정 할당
+          isAllocated = true;
+          for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
+            lines[i][day] = schedule;
+          }
+          break;
+        }
+
+        // 모든 라인에 할당되어 있으면 새 라인 생성하고 할당
+        if (!isAllocated) {
+          lines.push(Array(lastDayInMonth));
+          for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
+            lines[lines.length - 1][day] = schedule;
+          }
+        }
+      });
+
+      return {
+        category: newCategory,
+        lines,
+      };
+    }
+
+    categoryList.forEach(c0 => {
+      newCategoryToRenderList.push(toCategoryRender(c0));
+
+      if(c0.children.length > 0) {
+        c0.children.forEach(c1 => {
+          newCategoryToRenderList.push(toCategoryRender(c1));
+
+          if(c1.children.length > 0) {
+            c1.children.forEach(c2 => {
+              newCategoryToRenderList.push(toCategoryRender(c2));
+            })
+          }
+        })
+      }
+    })
+
+    newPriorities.forEach(priorityList => priorityList.sort((a, b) => a.priority - b.priority));
+    setPriorities(newPriorities);
+    setCategoryToRenderList(newCategoryToRenderList);
+  };
+
   useEffect(() => {
     const categorySideBody = categoryBody.current!;
     const scheduleSideBody = scheduleBody.current!;
@@ -347,9 +365,7 @@ export default function Home() {
 
     // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
     // 임시로 가짜 데이터 사용
-    setCategoryToRenderList(
-      toRenderingData(calendarDummyData.resultBody, lastDayOfMonth),
-    );
+    toRenderingData(calendarDummyData.resultBody, lastDayOfMonth);
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, []);
 
