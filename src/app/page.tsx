@@ -19,6 +19,7 @@ import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
+import PriorityList from './PriorityList';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -53,11 +54,14 @@ export type CategoryToRender = {
   lines: (ScheduleToRender | undefined)[][];
 };
 
-type Priority = {
+export type Priority = {
   scheduleId: number;
   day: number;
   priority: number;
   isFinished: boolean;
+  color: CategoryColor;
+  level: number;
+  content: string;
 };
 
 export type ScheduleModalInfo = {
@@ -134,10 +138,11 @@ const HeaderSection = styled.div`
 
 const PrioritySection = styled.div`
   width: 100%;
-  height: calc((var(--cell-height) + var(--line-gap)) * var(--priority-count));
+  height: calc(((var(--cell-height) + var(--line-gap)) * var(--priority-count)) + var(--line-gap));
   position: relative;
   background: white;
   border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+  display: flex;
 `;
 
 const PriorityLabel = styled.div`
@@ -268,6 +273,9 @@ export default function Home() {
           day: date.date(),
           priority: schedule.schedulePriority,
           isFinished: schedule.finished,
+          color: category.categoryColor,
+          level: category.categoryLevel,
+          content: schedule.scheduleContent,
         });
 
         if(schedule.scheduleId !== scheduleId) {
@@ -444,7 +452,6 @@ export default function Home() {
                   카테고리 관리
                 </SettingCategoryButton>
               </Cell>
-
             </HeaderSection>
             <PrioritySection>
               <PriorityLabel>
@@ -477,6 +484,9 @@ export default function Home() {
                   ),
                 )}
               </DivideLines>
+              {priorities.map((priority, i) => (
+                <PriorityList key={`pl-${i}`} priorities={priority} />
+              ))}
             </PrioritySection>
           </CalendarHeader>
           <CalendarBody $day_count={lastDayOfMonth}>
