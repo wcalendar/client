@@ -134,14 +134,15 @@ const HeaderSection = styled.div`
   font-size: 0.75rem;
   font-weight: bold;
   background-color: ${({ theme }) => theme.colors.white};
+  border-bottom: 3px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
 const PrioritySection = styled.div`
   width: 100%;
   height: calc(((var(--cell-height) + var(--line-gap)) * var(--priority-count)) + var(--line-gap));
   position: relative;
-  background: white;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+  background: ${({ theme }) => theme.colors.lightBlue};
+  border-bottom: 3px solid ${({ theme }) => theme.colors.lightGray};
   display: flex;
 `;
 

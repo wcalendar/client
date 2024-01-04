@@ -32,6 +32,7 @@ const theme = {
     gray: '#adb5bd',
     lightGray: '#d9d9d9',
     white: '#ececec',
+    lightBlue: '#eaeffc',
 
     /* 범주 */
     ...categoryColors,
