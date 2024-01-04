@@ -149,12 +149,22 @@ const PrioritySection = styled.div<{ $priority_count: number }>`
 `;
 
 const PriorityLabel = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
-  line-height: calc((var(--cell-height) + var(--line-gap)) * var(--priority-count));
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: .75rem;
   font-weight: bold;
-  text-align: center;
+  user-select: none;
+`;
+
+const PriorityTip = styled.div`
+  position: absolute;
+  left: 1rem;
+  bottom: 0;
+  color: ${({ theme }) => theme.colors.blue};
 `;
 
 const CalendarBody = styled.div<{ $day_count: number }>`
@@ -498,7 +508,8 @@ export default function Home() {
             </HeaderSection>
             <PrioritySection $priority_count={prioritiesSize}>
               <PriorityLabel>
-                우선순위
+                일정 우선순위
+                <PriorityTip>{`* Drag&Drop으로 순서 변경이 가능`}</PriorityTip>
               </PriorityLabel>
             </PrioritySection>
           </CalendarHeader>
