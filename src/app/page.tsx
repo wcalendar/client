@@ -7,7 +7,7 @@ import {
   ScheduleDto,
   calendarDummyData,
 } from '@/dummies/calendar';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
 import CategoryCell from './CategoryCell';
@@ -55,6 +55,7 @@ export type CategoryToRender = {
 };
 
 export type Priority = {
+  categoryId: number;
   scheduleId: number;
   day: number;
   priority: number;
@@ -270,6 +271,7 @@ export default function Home() {
       category.schedules.forEach(schedule => {
         const date = time.fromString(schedule.scheduleDate);
         newPriorities[date.date()-1].push({
+          categoryId: category.categoryId,
           scheduleId: schedule.scheduleId,
           day: date.date(),
           priority: schedule.schedulePriority,
@@ -455,6 +457,28 @@ export default function Home() {
     setPriorities(newPriorities);
   }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, priorities]);
 
+  const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => {
+    const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
+    if(!category) {
+      alert('존재하지 않는 일정입니다.');
+      return;
+    }
+
+    const schedule = category.schedules.find(s => s.id === scheduleId);
+    if(!schedule) {
+      alert('존재하지 않는 일정입니다.');
+      return;
+    }
+
+    const newScheduleModalInfo: ScheduleModalInfo = {
+      x: e.clientX,
+      y: e.clientY,
+      schedule,
+    };
+
+    handleScheduleClick(newScheduleModalInfo);
+  };
+
   const handlePrioritiesResize = (size: number) => {
     setPrioritiesSize(size);
   }
@@ -504,7 +528,13 @@ export default function Home() {
                 )}
               </DivideLines>
               {priorities.map((priority, i) => (
-                <PriorityList key={`pl-${i}`} priorities={priority} prioritiesSize={prioritiesSize} onResize={handlePrioritiesResize} />
+                <PriorityList
+                  key={`pl-${i}`}
+                  priorities={priority}
+                  prioritiesSize={prioritiesSize}
+                  onResize={handlePrioritiesResize}
+                  onPriorityItemClick={handlePriorityClick}
+                />
               ))}
             </PrioritySection>
           </CalendarHeader>

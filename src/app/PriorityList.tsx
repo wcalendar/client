@@ -3,12 +3,13 @@ import { Priority } from "./page";
 import PriorityItem from "./PriorityItem";
 import Icon from "@mdi/react";
 import { mdiChevronDown } from "@mdi/js";
-import { useMemo } from "react";
+import { MouseEvent, useMemo } from "react";
 
 type PriorityListProps = {
   priorities: Priority[];
   prioritiesSize: number;
   onResize: (size: number) => void;
+  onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => void;
 }
 
 const Container = styled.div`
@@ -55,6 +56,7 @@ export default function PriorityList({
   priorities,
   prioritiesSize,
   onResize,
+  onPriorityItemClick,
 }: PriorityListProps) {
   const priorityCount = priorities.length;
 
@@ -70,6 +72,7 @@ export default function PriorityList({
           <PriorityItem
             key={`pi-${priority.scheduleId}`}
             priority={priority}
+            onClick={onPriorityItemClick}
           />
         ))}
       </List>
