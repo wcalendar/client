@@ -76,7 +76,7 @@ export default function NewScheduleModal({
 }: NewScheduleModal) {
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [scheduleTitle, setScheduleTitle] = useState(schedule ? schedule.content : '');
-  const [isDuration, setDuration] = useState(false);
+  const [isDuration, setDuration] = useState(schedule ? !schedule.startDate.isSame(schedule.endDate) : false);
   const [startDate, setStartDate] = useState<Dayjs>(schedule ? schedule.startDate : time.now());
   const [endDate, setEndDate] = useState<Dayjs>(schedule ? schedule.endDate : time.now());
   const [categoryIdx, setCategoryIdx] = useState(0);
