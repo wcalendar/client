@@ -11,13 +11,13 @@ type CategoryListProps = {
 export default function CategoryList({
   categories,
   getCategory,
-}: CategoryListProps) {  
-  
+}: CategoryListProps) {
   return (
     <CategoryListContainer>
-      {categories.map((category, index) => (
+      {categories.map((category) => (
         <CategoryItem
           key={category.categoryName}
+          categoryId={category.categoryId}
           categoryName={category.categoryName}
           categoryColor={category.categoryColor}
           categoryLevel={category.categoryLevel}

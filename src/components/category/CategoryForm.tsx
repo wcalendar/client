@@ -74,6 +74,8 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
             <CategorySelect
               key={label}
               $color={color}
+              type="button"
+              disabled={!isActive}
               onClick={() => {
                 setSelectedColor(color);
               }}
@@ -128,14 +130,19 @@ const TextInput = styled.input`
 
 const CategoryColorSelectContainer = styled.ul`
   display: flex;
-  gap: 8px;
+  gap: 16px;
   list-style: none;
 `;
 
-const CategorySelect = styled.li<{ $color: string }>`
+const CategorySelect = styled.button<{ $color: string }>`
   background-color: ${({ $color }) => $color};
   width: 24px;
   height: 24px;
   border-radius: 4px;
+  border: none;
   cursor: pointer;
+  &:focus {
+    border: 2px solid black;
+    padding: 4px;
+  }
 `;
