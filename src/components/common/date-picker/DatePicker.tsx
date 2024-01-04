@@ -7,10 +7,12 @@ import time from "@/lib/time";
 type DatePickerProps = {
   value: Dayjs;
   onChange: (value: Dayjs) => void;
+  invisible?: boolean;
 }
 
-const Container = styled.div`
+const Container = styled.div<{ $invisible: number }>`
   position: relative;
+  visibility: ${({ $invisible }) => $invisible ? 'hidden' : 'visible'};
 `;
 
 const Selector = styled.div`
@@ -29,6 +31,7 @@ const Selector = styled.div`
 export default function DatePicker({
   value,
   onChange,
+  invisible,
 }: DatePickerProps) {
   const [isMiniCalendarOpen, setMiniCalendarOpen] = useState(false);
 
@@ -58,7 +61,7 @@ export default function DatePicker({
   }
 
   return (
-    <Container ref={datePickerRef}>
+    <Container ref={datePickerRef} $invisible={invisible ? 1 : 0}>
       <Selector onClick={handleToggleMiniCalendar}>
         {time.toString(value, 'YYYY.MM.DD')}
       </Selector>

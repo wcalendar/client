@@ -44,7 +44,7 @@ const Input = styled.input`
   }
 `;
 
-const Interval = styled.div`
+const Interval = styled.div<{ $invisible: number }>`
   width: 1rem;
   margin: 0 .5rem;
   height: 100%;
@@ -52,6 +52,7 @@ const Interval = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  visibility: ${({ $invisible }) => $invisible ? 'hidden' : 'visible'};
 `;
 
 const DropDownWrapper = styled.div`
@@ -75,6 +76,7 @@ export default function NewScheduleModal({
 }: NewScheduleModal) {
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [scheduleTitle, setScheduleTitle] = useState(schedule ? schedule.content : '');
+  const [isDuration, setDuration] = useState(false);
   const [startDate, setStartDate] = useState<Dayjs>(schedule ? schedule.startDate : time.now());
   const [endDate, setEndDate] = useState<Dayjs>(schedule ? schedule.endDate : time.now());
   const [categoryIdx, setCategoryIdx] = useState(0);
@@ -114,6 +116,10 @@ export default function NewScheduleModal({
       setStartDate(value);
     }
   }, [startDate]);
+
+  const handleDurationChange = (value: boolean) => {
+    setDuration(value);
+  }
 
   const handleCategoryIdxChange = (idx: number) => {
     setCategoryIdx(idx);
@@ -167,8 +173,11 @@ export default function NewScheduleModal({
         <Line>
           <Label>일시</Label>
           <DatePicker value={startDate} onChange={handleStartDateChange} />
-          <Interval><Icon path={mdiMinus} /></Interval>
-          <DatePicker value={endDate} onChange={handleEndDateChange} />
+          <Interval $invisible={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
+          <DatePicker value={endDate} onChange={handleEndDateChange} invisible={!isDuration} />
+          <div style={{width: '1rem'}} />
+          <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
+          <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
         </Line>
         <Line>
           <Label>카테고리</Label>
