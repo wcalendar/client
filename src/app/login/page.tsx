@@ -55,7 +55,7 @@ export default function Login() {
       </Title>
       <Description>복잡한 일정과 하루를<br />가장 쉽고 편하게 관리 하는 방법</Description>
       <Tip>카카오톡으로 3초만에 시작하기</Tip>
-      <Link href={'http://localhost:8080/oauth2/authorization/google'}><GoogleLoginButton /></Link>
+      <Link href={'https://wplanner.co.kr/oauth2/authorization/google'}><GoogleLoginButton /></Link>
     </Container>
   )
 }
