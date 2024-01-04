@@ -11,35 +11,6 @@ import { Category } from '@/types';
 import { FormEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-const Container = styled.main``;
-
-const CategoryContainer = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 1rem;
-  @media screen and (max-width: 500px) {
-    flex-direction: column;
-  }
-`;
-
-const CategoryMenuContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 400px;
-`;
-
-const CategoryListHeader = styled.h3`
-  margin-bottom: 1rem;
-`;
-
-const CategoryListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border: 1px solid black;
-  border-radius: 5px;
-`;
-
 export default function CategoryPage() {
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [isActive, setIsActive] = useState(true);
@@ -80,7 +51,9 @@ export default function CategoryPage() {
 
   const onDownHandler = () => {};
 
-  const getCategoryDetail = () => {};
+  const getCategoryDetail = () => {
+    console.log('btn clicked');
+  };
 
   return (
     <Container>
@@ -101,7 +74,6 @@ export default function CategoryPage() {
             isActive={!isActive}
           />
           <CategoryListContainer>
-            <CategoryListHeader>카테고리 전체보기</CategoryListHeader>
             <CategoryList
               categories={categoryList}
               getCategory={getCategoryDetail}
@@ -119,3 +91,37 @@ export default function CategoryPage() {
     </Container>
   );
 }
+
+const Container = styled.main`
+  position: relative;
+  --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
+  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
+  --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
+  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
+`;
+
+const CategoryContainer = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 1rem;
+  padding-top: 50px;
+  z-index: 10;
+  @media screen and (max-width: 500px) {
+    flex-direction: column;
+  }
+`;
+
+const CategoryMenuContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+`;
+
+const CategoryListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  padding-right: 40px;
+  border: 1px solid black;
+  border-radius: 5px;
+`;

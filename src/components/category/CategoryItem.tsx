@@ -1,49 +1,13 @@
 import { CategoryColor } from '@/dummies/calendar';
+import { useFocus } from '@/hooks/useFocus';
 import { Category } from '@/types';
+import { RefObject, useEffect } from 'react';
 import styled from 'styled-components';
-
-const CategoryItemContainer = styled.li<{ level: number }>`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  justify-content: flex-start;
-  cursor: pointer;
-`;
 
 type CategoryItemProps = Category & {
   getCategory: () => void;
+  useFocus: () => { categoryRef: RefObject<HTMLLIElement | null> , focusItem:()=> void };
 };
-
-const CategoryName = styled.div<{ $level: number; $color: CategoryColor }>`
-  width: calc(
-    100% - ${({ $level }) => 1 + $level * 0.5}rem - var(--memo-width)
-  );
-  height: var(--cell-height);
-  line-height: var(--cell-height);
-  background-color: ${({ theme, $color, $level }) =>
-    theme.colors.category($color, $level)};
-  border-radius: 5px;
-  margin-right: 1px;
-  padding: 4px;
-  min-width: 80%;
-  color: white;
-`;
-
-const CategoryDescription = styled.div<{
-  $color: CategoryColor;
-  $level: number;
-}>`
-  width: calc(var(--memo-width) - 1px);
-  height: var(--cell-height);
-  line-height: var(--cell-height);
-  background-color: ${({ theme, $color, $level }) =>
-    theme.colors.category($color, $level)};
-  border-radius: 5px;
-  padding: 4px;
-  color: white;
-`;
 
 export default function CategoryItem({
   categoryName,
@@ -52,8 +16,19 @@ export default function CategoryItem({
   categoryDescription,
   getCategory,
 }: CategoryItemProps) {
+  const { categoryRef, focusItem } = useFocus();
+
+  useEffect(() => {
+    focusItem();
+  }, [focusItem]);
+
   return (
-    <CategoryItemContainer level={categoryLevel} onClick={getCategory}>
+    <CategoryItemContainer
+      // tabIndex={categoryRef.current?.}
+      $level={categoryLevel}
+      ref={categoryRef}
+      onClick={getCategory}
+    >
       <CategoryName $color={categoryColor} $level={categoryLevel}>
         {categoryName}
       </CategoryName>
@@ -63,3 +38,44 @@ export default function CategoryItem({
     </CategoryItemContainer>
   );
 }
+
+const CategoryItemContainer = styled.li<{ $level: number }>`
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  &:focus {
+    border: 1px solid black;
+    background-color: gray;
+  }
+`;
+
+const CategoryContent = styled.span`
+  border-radius: 5px;
+  margin-right: 1px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  color: white;
+`;
+
+const CategoryName = styled(CategoryContent)<{
+  $level: number;
+  $color: CategoryColor;
+}>`
+  width: calc(
+    100% - ${({ $level }) => 1 + $level * 0.5}rem - var(--memo-width)
+  );
+  background-color: ${({ theme, $color, $level }) =>
+    theme.colors.category($color, $level)};
+`;
+
+const CategoryDescription = styled(CategoryName)<{
+  $color: CategoryColor;
+  $level: number;
+}>`
+  width: calc(var(--memo-width) - 1px);
+  background-color: ${({ theme, $color, $level }) =>
+    theme.colors.category($color, $level)};
+`;

@@ -1,18 +1,7 @@
 import styled from 'styled-components';
 import { Category } from '@/types';
 import CategoryItem from './CategoryItem';
-
-const CategoryListContainer = styled.ul`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  list-style: none;
-  max-height: 300px;
-  overflow-y: scroll;
-  gap: 2px;
-`;
+import { useFocus } from '@/hooks/useFocus';
 
 type CategoryListProps = {
   categories: Category[];
@@ -22,32 +11,36 @@ type CategoryListProps = {
 export default function CategoryList({
   categories,
   getCategory,
-}: CategoryListProps) {
+}: CategoryListProps) {  
+  
   return (
     <CategoryListContainer>
-      {categories.map(
-        ({
-          categoryName,
-          categoryColor,
-          categoryLevel,
-          categoryDescription,
-          categoryVisible,
-          categoryStartDate,
-          categoryEndDate,
-        }) => (
-          <CategoryItem
-            key={categoryName}
-            categoryName={categoryName}
-            categoryColor={categoryColor}
-            categoryLevel={categoryLevel}
-            categoryDescription={categoryDescription}
-            categoryVisible={categoryVisible}
-            getCategory={getCategory}
-            categoryStartDate={categoryStartDate}
-            categoryEndDate={categoryEndDate}
-          />
-        ),
-      )}
+      {categories.map((category, index) => (
+        <CategoryItem
+          key={category.categoryName}
+          categoryName={category.categoryName}
+          categoryColor={category.categoryColor}
+          categoryLevel={category.categoryLevel}
+          categoryDescription={category.categoryDescription}
+          categoryVisible={category.categoryVisible}
+          getCategory={getCategory}
+          categoryStartDate={category.categoryStartDate}
+          categoryEndDate={category.categoryEndDate}
+          useFocus={useFocus}
+        />
+      ))}
     </CategoryListContainer>
   );
 }
+
+const CategoryListContainer = styled.ul`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  list-style: none;
+  max-height: 300px;
+  overflow-y: scroll;
+  gap: 2px;
+  padding-right: 40px;
+`;

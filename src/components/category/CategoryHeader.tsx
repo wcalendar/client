@@ -2,12 +2,48 @@ import styled from 'styled-components';
 import Monthly from '../common/Monthly';
 import ControlButton from '../common/ControlButton';
 import { FormEvent } from 'react';
+import { ButtonText, LabelText } from './constants';
+
+type CategoryHeaderProps = {
+  saveHandler: (event: FormEvent<HTMLFormElement>) => void;
+  cancelHandler: () => void;
+};
+
+export default function CategoryHeader({
+  saveHandler,
+  cancelHandler,
+}: CategoryHeaderProps) {
+  return (
+    <CategoryHeaderContainer>
+      <CategoryHeaderContentsContainer>
+        <CategoryHeaderTitle>{LabelText.pageTitle}</CategoryHeaderTitle>
+        <Monthly />
+        <CategoryHeaderButtons>
+          <Button
+            type="submit"
+            form="category-form"
+            onClick={() => {
+              saveHandler;
+            }}
+          >
+            {ButtonText.save}
+          </Button>
+          <ControlButton onClick={cancelHandler} title={ButtonText.cancel} />
+        </CategoryHeaderButtons>
+      </CategoryHeaderContentsContainer>
+    </CategoryHeaderContainer>
+  );
+}
 
 const CategoryHeaderContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   border-bottom: 1px solid gray;
+  position: fixed;
+  top: 40px;
+  background-color: white;
+  margin-top: 8px;
 `;
 
 const CategoryHeaderContentsContainer = styled.div`
@@ -37,37 +73,3 @@ const Button = styled.button`
   cursor: pointer;
   padding: 0.5rem;
 `;
-
-const SAVE = '저장';
-const CANCEL = '취소';
-const CATEGORY_HEADER_TITLE = '카테고리 관리';
-
-type CategoryHeaderProps = {
-  saveHandler: (event: FormEvent<HTMLFormElement>) => void;
-  cancelHandler: () => void;
-};
-export default function CategoryHeader({
-  saveHandler,
-  cancelHandler,
-}: CategoryHeaderProps) {
-  return (
-    <CategoryHeaderContainer>
-      <CategoryHeaderContentsContainer>
-        <CategoryHeaderTitle>{CATEGORY_HEADER_TITLE}</CategoryHeaderTitle>
-        <Monthly />
-        <CategoryHeaderButtons>
-          <Button
-            type="submit"
-            form='category-form'
-            onClick={() => {
-              saveHandler;
-            }}
-          >
-            {SAVE}
-          </Button>
-          <ControlButton onClick={cancelHandler} title={CANCEL} />
-        </CategoryHeaderButtons>
-      </CategoryHeaderContentsContainer>
-    </CategoryHeaderContainer>
-  );
-}

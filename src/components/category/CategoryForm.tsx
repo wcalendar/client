@@ -1,5 +1,101 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { LabelText, InputMaxLength, ButtonText } from './constants';
+
+type CategoryFormProps = {
+  isActive: boolean;
+  color: string;
+  name: string;
+  description: string;
+};
+
+const colorOptions = [
+  { label: 'Color 1', color: '#FF0000' },
+  { label: 'Color 2', color: '#FFA500' },
+  { label: 'Color 3', color: '#FFFF00' },
+  { label: 'Color 4', color: '#008000' },
+  { label: 'Color 5', color: '#0000FF' },
+  { label: 'Color 6', color: '#4B0082' },
+  { label: 'Color 7', color: '#9400D3' },
+];
+
+export default function CategoryForm({ isActive, color }: CategoryFormProps) {
+  const [selectedColor, setSelectedColor] = useState<string>(
+    color ?? colorOptions[4].color,
+  );
+
+  return (
+    <CategoryFormContainer id="category-form">
+      <ContentContainer>
+        <TitleLabel>{LabelText.title}</TitleLabel>
+        <TextInput
+          type="text"
+          disabled={!isActive}
+          maxLength={InputMaxLength}
+          required
+        />
+      </ContentContainer>
+      <ContentContainer>
+        <TitleLabel>{LabelText.description}</TitleLabel>
+        <TextInput
+          type="text"
+          placeholder={LabelText.descriptionPlaceHolder}
+          disabled={!isActive}
+          maxLength={InputMaxLength}
+          required
+        />
+      </ContentContainer>
+      <ContentContainer>
+        <TitleLabel>{LabelText.isVisible}</TitleLabel>
+        <SelectLabel>
+          <input
+            type="radio"
+            name="display"
+            value="show"
+            disabled={!isActive}
+            defaultChecked
+          />
+          <span>{LabelText.show}</span>
+        </SelectLabel>
+        <SelectLabel>
+          <input
+            type="radio"
+            name="display"
+            value="hide"
+            disabled={!isActive}
+          />
+          <span>{LabelText.hide}</span>
+        </SelectLabel>
+      </ContentContainer>
+      <ContentContainer>
+        <TitleLabel>{LabelText.color}</TitleLabel>
+        <CategoryColorSelectContainer>
+          {colorOptions.map(({ label, color }) => (
+            <CategorySelect
+              key={label}
+              $color={color}
+              onClick={() => {
+                setSelectedColor(color);
+              }}
+            ></CategorySelect>
+          ))}
+        </CategoryColorSelectContainer>
+      </ContentContainer>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          width: '100%',
+          gap: '8px',
+        }}
+      >
+        <button type="submit">{ButtonText.save}</button>
+        <button>{ButtonText.cancel}</button>
+      </div>
+    </CategoryFormContainer>
+  );
+}
 
 const CategoryFormContainer = styled.form`
   display: flex;
@@ -30,102 +126,16 @@ const TextInput = styled.input`
   padding-left: 4px;
 `;
 
-const CategoryColorSelectContainer = styled.div``;
+const CategoryColorSelectContainer = styled.ul`
+  display: flex;
+  gap: 8px;
+  list-style: none;
+`;
 
-const CategorySelect = styled.select``;
-
-const LABEL_TITLE = '제목';
-const LABEL_OPTION = '비고';
-const LABEL_VIEW = '표시 여부';
-const LABEL_COLOR = '범주';
-const OPTION_HELPER_TEXT = '카테고리 관련 메모 입력(마감일, 주기 등)';
-const LABEL_SHOW = '표시';
-const LABEL_HIDE = '숨기기';
-const MAX_TEXT_COUNT = 20;
-
-type CategoryFormProps = {
-  isActive: boolean;
-  color: string;
-  name: string;
-  description: string;
-};
-
-const colorOptions = [
-  { label: 'Color 1', color: '#FF0000' },
-  { label: 'Color 2', color: '#FFA500' },
-  { label: 'Color 3', color: '#FFFF00' },
-  { label: 'Color 4', color: '#008000' },
-  { label: 'Color 5', color: '#0000FF' },
-  { label: 'Color 6', color: '#4B0082' },
-  { label: 'Color 7', color: '#9400D3' },
-];
-
-export default function CategoryForm({ isActive, color }: CategoryFormProps) {
-  const [selectedColor, setSelectedColor] = useState<string>(
-    colorOptions[4].color,
-  );
-
-  return (
-    <CategoryFormContainer id="category-form">
-      <ContentContainer>
-        <TitleLabel>{LABEL_TITLE}</TitleLabel>
-        <TextInput
-          type="text"
-          disabled={!isActive}
-          maxLength={MAX_TEXT_COUNT}
-          required
-        />
-      </ContentContainer>
-      <ContentContainer>
-        <TitleLabel>{LABEL_OPTION}</TitleLabel>
-        <TextInput
-          type="text"
-          placeholder={OPTION_HELPER_TEXT}
-          disabled={!isActive}
-          maxLength={MAX_TEXT_COUNT}
-          required
-        />
-      </ContentContainer>
-      <ContentContainer>
-        <TitleLabel>{LABEL_VIEW}</TitleLabel>
-        <SelectLabel>
-          <input
-            type="radio"
-            name="display"
-            value="show"
-            disabled={!isActive}
-            defaultChecked
-          />
-          <span>{LABEL_SHOW}</span>
-        </SelectLabel>
-        <SelectLabel>
-          <input
-            type="radio"
-            name="display"
-            value="hide"
-            disabled={!isActive}
-          />
-          <span>{LABEL_HIDE}</span>
-        </SelectLabel>
-      </ContentContainer>
-      <ContentContainer>
-        <TitleLabel>{LABEL_COLOR}</TitleLabel>
-        <CategoryColorSelectContainer>
-          <ul style={{ display: 'flex', gap: '8px', listStyle: 'none' }}>
-            {colorOptions.map(({ label, color }) => (
-              <li
-                key={label}
-                style={{
-                  backgroundColor: color,
-                  width: '24px',
-                  height: '24px',
-                }}
-                onClick={() => setSelectedColor(color)}
-              ></li>
-            ))}
-          </ul>
-        </CategoryColorSelectContainer>
-      </ContentContainer>
-    </CategoryFormContainer>
-  );
-}
+const CategorySelect = styled.li<{ $color: string }>`
+  background-color: ${({ $color }) => $color};
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+`;
