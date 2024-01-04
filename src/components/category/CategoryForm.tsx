@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const CategoryFormContainer = styled.form`
@@ -6,9 +6,7 @@ const CategoryFormContainer = styled.form`
   flex-direction: column;
   gap: 2rem;
   padding: 2rem;
-  border: 1px solid gray;
   margin-left: 32px;
-  border-radius: 8px;
   height: fit-content;
 `;
 
@@ -32,17 +30,9 @@ const TextInput = styled.input`
   padding-left: 4px;
 `;
 
-const CategoryColorSelector = styled.div``;
+const CategoryColorSelectContainer = styled.div``;
 
 const CategorySelect = styled.select``;
-
-const FormButtons = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: center;
-  gap: 1rem;
-`;
 
 const LABEL_TITLE = '제목';
 const LABEL_OPTION = '비고';
@@ -76,7 +66,7 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
   );
 
   return (
-    <CategoryFormContainer>
+    <CategoryFormContainer id="category-form">
       <ContentContainer>
         <TitleLabel>{LABEL_TITLE}</TitleLabel>
         <TextInput
@@ -120,26 +110,21 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
       </ContentContainer>
       <ContentContainer>
         <TitleLabel>{LABEL_COLOR}</TitleLabel>
-        <CategoryColorSelector>
-          <CategorySelect
-            defaultValue={colorOptions[4].color}
-            onChange={e => {
-              setSelectedColor(e.target.value);
-            }}
-          >
-            {colorOptions.map(option => (
-              <option
-                key={option.label}
-                value={option.color}
+        <CategoryColorSelectContainer>
+          <ul style={{ display: 'flex', gap: '8px', listStyle: 'none' }}>
+            {colorOptions.map(({ label, color }) => (
+              <li
+                key={label}
                 style={{
-                  backgroundColor: option.color,
+                  backgroundColor: color,
+                  width: '24px',
+                  height: '24px',
                 }}
-              >
-                {option.label}
-              </option>
+                onClick={() => setSelectedColor(color)}
+              ></li>
             ))}
-          </CategorySelect>
-        </CategoryColorSelector>
+          </ul>
+        </CategoryColorSelectContainer>
       </ContentContainer>
     </CategoryFormContainer>
   );

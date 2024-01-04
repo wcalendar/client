@@ -14,7 +14,7 @@ const CategoryHeaderContentsContainer = styled.div`
   display: flex;
   width: 100%;
   padding: 5px;
-  max-width: 1000px;
+  max-width: 768px;
   gap: 2rem;
   justify-content: space-between;
   align-items: center;
@@ -58,6 +58,7 @@ export default function CategoryHeader({
         <CategoryHeaderButtons>
           <Button
             type="submit"
+            form='category-form'
             onClick={() => {
               saveHandler;
             }}
