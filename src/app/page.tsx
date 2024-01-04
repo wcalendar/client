@@ -56,7 +56,6 @@ export type CategoryToRender = {
 export type ScheduleModalInfo = {
   x: number,
   y: number,
-  categoryId: number,
   schedule: ScheduleToRender,
 }
 
@@ -69,10 +68,8 @@ export type ScheduleModalInfo = {
  */
 const toRenderingData = (
   categoryList: CategoryDto[],
-  currentDate: Dayjs,
   lastDayInMonth: number,
 ): CategoryToRender[] => {
-  console.log(categoryList);
   const result: CategoryToRender[] = [];
 
   const toCategoryRender = (category: CategoryDto): CategoryToRender => {
@@ -292,7 +289,7 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
 
 export default function Home() {
   const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
-  const [isAddScheduleModalOpen, setAddScheduleModalOpen] = useState(false);
+  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<boolean | ScheduleToRender>(false);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
   >([]);
@@ -327,17 +324,17 @@ export default function Home() {
     // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
     // 임시로 가짜 데이터 사용
     setCategoryToRenderList(
-      toRenderingData(calendarDummyData.resultBody, now, lastDayOfMonth),
+      toRenderingData(calendarDummyData.resultBody, lastDayOfMonth),
     );
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, []);
 
   const handleOpenAddScheduleModal = () => {
-    setAddScheduleModalOpen(true);
+    setNewScheduleModalOpen(true);
   };
 
   const handleCloseAddScheduleModal = () => {
-    setAddScheduleModalOpen(false);
+    setNewScheduleModalOpen(false);
   };
 
   const router = useRouter();
@@ -353,6 +350,11 @@ export default function Home() {
 
   const handleScheduleModalClose = () => {
     setScheduleModalInfo(null);
+  }
+
+  const handleUpdateScheduleClick = (schedule: ScheduleToRender) => {
+    setScheduleModalInfo(null);
+    setNewScheduleModalOpen(schedule);
   }
 
   const handleScheduleFinish = useCallback((categoryId: number, scheduleId: number) => {
@@ -437,16 +439,16 @@ export default function Home() {
         </ScheduleSide>
       </Calendar>
       <AddScheduleButton
-        $isOpen={isAddScheduleModalOpen ? 'true' : 'false'}
+        $isOpen={isNewScheduleModalOpen ? 'true' : 'false'}
         onClick={handleOpenAddScheduleModal}
       >
         <Icon path={mdiPlus} color="white" />
       </AddScheduleButton>
-      {isAddScheduleModalOpen && (
+      {isNewScheduleModalOpen && (
         <NewScheduleModal
           width='40%'
-          title='일정 추가'
           onClose={handleCloseAddScheduleModal}
+          schedule={isNewScheduleModalOpen === true ? undefined : isNewScheduleModalOpen}
         />
       )}
       {scheduleModalInfo && (
@@ -454,6 +456,7 @@ export default function Home() {
           scheduleModalInfo={scheduleModalInfo}
           onScheduleModalClose={handleScheduleModalClose}
           onScheduleFinish={handleScheduleFinish}
+          onUpdateClick={handleUpdateScheduleClick}
         />
       )}
     </Container>

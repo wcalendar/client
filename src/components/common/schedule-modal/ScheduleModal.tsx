@@ -1,4 +1,4 @@
-import { ScheduleModalInfo } from "@/app/page";
+import { ScheduleModalInfo, ScheduleToRender } from "@/app/page";
 import time from "@/lib/time";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
@@ -9,6 +9,7 @@ type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
   onScheduleModalClose: () => void;
   onScheduleFinish: (categoryId: number, scheduleId: number) => void;
+  onUpdateClick: (schedule: ScheduleToRender) => void;
 }
 
 const Container = styled.div<{ $x: string, $y: string }>`
@@ -104,10 +105,11 @@ export default function ScheduleModal({
   scheduleModalInfo,
   onScheduleModalClose,
   onScheduleFinish,
+  onUpdateClick,
 }: ScheduleModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const { x, y, categoryId, schedule } = scheduleModalInfo;
+  const { x, y, schedule } = scheduleModalInfo;
   const renderX = useMemo(() => {
     if(x > (window.innerWidth / 2)) return `calc(${x}px - 16.875rem)`;
     else return `${x}px`;
@@ -137,7 +139,7 @@ export default function ScheduleModal({
     <Container $x={renderX} $y={renderY} ref={modalRef} >
       <Header>
         <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
-        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(categoryId, schedule.id)} />
+        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(schedule.categoryId, schedule.id)} />
         <CloseButton onClick={onScheduleModalClose}>
           <Icon path={mdiClose} />
         </CloseButton>
@@ -148,7 +150,7 @@ export default function ScheduleModal({
           <Value>{`${time.toString(schedule.startDate, 'YYYY.MM.DD')} ~ ${time.toString(schedule.endDate, 'YYYY.MM.DD')}`}</Value>
         </Line>
         <ButtonBox>
-          <Button>수정</Button>
+          <Button onClick={() => onUpdateClick(schedule)}>수정</Button>
           <Button>삭제</Button>
         </ButtonBox>
       </Body>
