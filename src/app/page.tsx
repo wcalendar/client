@@ -146,6 +146,7 @@ const PrioritySection = styled.div<{ $priority_count: number }>`
   border-bottom: 3px solid ${({ theme }) => theme.colors.lightGray};
   display: flex;
   transition: height .25s ease;
+  overflow: visible;
 `;
 
 const PriorityLabel = styled.div`
@@ -223,7 +224,7 @@ export default function Home() {
     CategoryToRender[]
   >([]);
   const [priorities, setPriorities] = useState<Priority[][]>([]);
-  const [prioritiesSize, setPrioritiesSize] = useState(5);
+  const [prioritiesSize, setPrioritiesSize] = useState(3);
 
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
@@ -545,6 +546,7 @@ export default function Home() {
                   prioritiesSize={prioritiesSize}
                   onResize={handlePrioritiesResize}
                   onPriorityItemClick={handlePriorityClick}
+                  idx={i}
                 />
               ))}
             </PrioritySection>

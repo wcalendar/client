@@ -2,19 +2,31 @@ import styled from "styled-components"
 import { Priority } from "./page";
 import PriorityItem from "./PriorityItem";
 import Icon from "@mdi/react";
-import { mdiChevronDown } from "@mdi/js";
-import { MouseEvent, useMemo } from "react";
+import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
+import { MouseEvent, useMemo, useState } from "react";
 
 type PriorityListProps = {
   priorities: Priority[];
   prioritiesSize: number;
   onResize: (size: number) => void;
   onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => void;
+  idx: number;
 }
 
-const Container = styled.div`
-  height: 100%;
+const Container = styled.div<{ $idx: number, $priority_count: number, $open: number }>`
+  box-sizing: content-box;
+  position: absolute;
+  left: calc(${({ $idx }) => $idx} * (var(--cell-width) + 1px));
+  height: ${({ $open, $priority_count }) => $open ? `calc(((var(--cell-height) + var(--line-gap)) * ${$priority_count + 1}) + 3px)` : '100%'};
   width: calc((var(--cell-width) + 1px));
+  background: ${({ theme }) => theme.colors.lightBlue};
+  transition: all ease .25s;
+  ${({ theme, $open }) => $open ? `
+    box-shadow: 0 2px 4px 2px ${theme.colors.gray};
+    transform: translate(2px, -5px);
+    z-index: 1500;
+    border-radius: 5px;
+  ` : '' }
 `;
 
 const List = styled.div`
@@ -57,16 +69,26 @@ export default function PriorityList({
   prioritiesSize,
   onResize,
   onPriorityItemClick,
+  idx,
 }: PriorityListProps) {
+  const [isOpen, setOpen] = useState(false);
+
   const priorityCount = priorities.length;
 
+  const handleOpenChange = () => {
+    setOpen(!isOpen);
+  };
+
   const buttonText = useMemo(() => {
-    if(prioritiesSize < priorityCount) return `+${priorityCount - prioritiesSize} 펼쳐보기`;
-    else if(prioritiesSize >= priorityCount) return '접어보기';
+    return isOpen ? '접기' : '펼치기';
+  }, [isOpen]);
+
+  const openable = useMemo(() => {
+    return priorityCount > prioritiesSize;
   }, [prioritiesSize]);
 
   return (
-    <Container>
+    <Container $idx={idx} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
       <List>
         {priorities.map(priority => (
           <PriorityItem
@@ -76,14 +98,16 @@ export default function PriorityList({
           />
         ))}
       </List>
-      <ButtonBox>
-        <MoreButton onClick={() => onResize(priorityCount)}>
-          {buttonText}
-          <IconWrapper>
-            <Icon path={mdiChevronDown} />
-          </IconWrapper>
-        </MoreButton>
-      </ButtonBox>
+      {openable && (
+        <ButtonBox>
+          <MoreButton onClick={handleOpenChange}>
+            {buttonText}
+            <IconWrapper>
+              <Icon path={isOpen ? mdiChevronUp : mdiChevronDown} />
+            </IconWrapper>
+          </MoreButton>
+        </ButtonBox>
+      )}
     </Container>
   )
 }
