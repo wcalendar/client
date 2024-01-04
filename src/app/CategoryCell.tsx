@@ -10,6 +10,7 @@ const Container = styled.div<{ $line_count: number, }>`
   justify-content: flex-end;
   align-items: flex-start;
   font-size: .75rem;
+  user-select: none;
 `;
 
 const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
@@ -19,18 +20,17 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-right: 1px;
-  
   padding-left: .5rem;
-  user-select: none;
 `;
 
-const Memo = styled.div<{ $level: number, $color: CategoryColor }>`
+const Description = styled.div<{ $level: number, $color: CategoryColor }>`
   width: calc(var(--memo-width) - 1px);
   height: var(--cell-height);
   line-height: var(--cell-height);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   padding-left: .5rem;
+  overflow: hidden;
 `;
 
 type CategoryCellProps = {
@@ -49,7 +49,7 @@ export default function CategoryCell({
       <CategoryName $level={level} $color={color}>
         {name}
       </CategoryName>
-      <Memo $level={level} $color={color}>{description}</Memo>
+      <Description $level={level} $color={color}>{description}</Description>
     </Container>
   )
 }
