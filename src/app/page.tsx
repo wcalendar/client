@@ -2,12 +2,12 @@
 
 import Header from '@/components/common/Header';
 import {
-  CategoryWithSchedule,
-  CategoryWithScheduleDto,
-  ScheduleWithoutCategory,
+  CategoryColor,
+  CategoryDto,
+  ScheduleDto,
   calendarDummyData,
 } from '@/dummies/calendar';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
 import CategoryCell from './CategoryCell';
@@ -17,19 +17,47 @@ import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
+import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
-export interface ScheduleToRender extends ScheduleWithoutCategory {
-  startDay: number;
-  endDay: number;
+interface Schedule {
+  id: number;
+  categoryId: number;
+  content: string;
+  date: Dayjs;
+  priority: number;
+  isFinished: boolean;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  level: number;
+  color: CategoryColor;
+  startDate: Dayjs;
+  endDate: Dayjs;
+  description: string;
+  isVisible: boolean;
+  schedules: ScheduleToRender[];
+}
+
+export interface ScheduleToRender extends Omit<Schedule, 'date'> {
+  startDate: Dayjs;
+  endDate: Dayjs;
 }
 
 export type CategoryToRender = {
-  category: CategoryWithSchedule;
+  category: Category;
   lines: (ScheduleToRender | undefined)[][];
 };
+
+export type ScheduleModalInfo = {
+  x: number,
+  y: number,
+  schedule: ScheduleToRender,
+}
 
 /**
  * 서버에서 받은 카테고리 데이터를 화면에 렌더링하기 쉽게 다듬어주는 함수
@@ -39,56 +67,80 @@ export type CategoryToRender = {
  * @returns
  */
 const toRenderingData = (
-  categoryList: CategoryWithScheduleDto[],
-  currentDate: Dayjs,
+  categoryList: CategoryDto[],
   lastDayInMonth: number,
 ): CategoryToRender[] => {
-  return categoryList.map<CategoryToRender>(category => {
-    const newCategory: CategoryWithSchedule = {
-      ...category,
-      scheduleList: [],
+  const result: CategoryToRender[] = [];
+
+  const toCategoryRender = (category: CategoryDto): CategoryToRender => {
+    const newCategory: Category = {
+      id: category.categoryId,
+      name: category.categoryName,
+      level: category.categoryLevel,
+      color: category.categoryColor,
+      startDate: time.fromString(category.categoryStartDate),
+      endDate: time.fromString(category.categoryEndDate),
+      description: category.categoryDescription,
+      isVisible: category.categoryVisible,
+      schedules: [],
     };
     const lines: (ScheduleToRender | undefined)[][] = [];
     lines.push(Array(lastDayInMonth));
 
-    // Schedule은 반드시 정렬되어있어야 함
-    category.scheduleList.forEach(schedule => {
-      const lineCount = lines.length;
-      const startDate = time.fromDate(schedule.startDate);
-      const endDate = time.fromDate(schedule.endDate);
-      const newSchedule: ScheduleWithoutCategory = {
-        ...schedule,
-        startDate,
-        endDate,
-      };
-      newCategory.scheduleList.push(newSchedule);
+    const rangeSchedules: ScheduleToRender[] = [];
 
-      const startDay =
-        startDate.year() < currentDate.year()
-          ? 1
-          : startDate.month() < currentDate.month()
-            ? 1
-            : startDate.date();
-      const endDay =
-        endDate.year() > currentDate.year()
-          ? lastDayInMonth
-          : endDate.month() > currentDate.month()
-            ? lastDayInMonth
-            : endDate.date();
+    let scheduleId = -1;
+    let startDate: Dayjs | undefined;
+    let lastSchedule: ScheduleDto | undefined;
+    category.schedules.forEach(schedule => {
+      const date = time.fromString(schedule.scheduleDate);
+
+      if(schedule.scheduleId !== scheduleId) {
+        scheduleId = schedule.scheduleId;
+        
+        if(startDate && lastSchedule) {
+          rangeSchedules.push({
+            id: lastSchedule.scheduleId,
+            categoryId: lastSchedule.categoryId,
+            content: lastSchedule.scheduleContent,
+            startDate,
+            endDate: time.fromString(lastSchedule.scheduleDate),
+            priority: lastSchedule.schedulePriority,
+            isFinished: lastSchedule.finished,
+          });
+        }
+
+        startDate = date;
+      }
+
+      lastSchedule = schedule;
+    });
+    if(startDate && lastSchedule) {
+      rangeSchedules.push({
+        id: lastSchedule.scheduleId,
+        categoryId: lastSchedule.categoryId,
+        content: lastSchedule.scheduleContent,
+        startDate,
+        endDate: time.fromString(lastSchedule.scheduleDate),
+        priority: lastSchedule.schedulePriority,
+        isFinished: lastSchedule.finished,
+      });
+    }
+
+    rangeSchedules.forEach(schedule => {
+      const lineCount = lines.length;
+      const {startDate, endDate} = schedule;
+      newCategory.schedules.push(schedule);
 
       let isAllocated = false;
       for (let i = 0; i < lineCount; i++) {
         // 해당 라인에 이미 할당된 일정이 있다면 다음 라인으로
-        if (lines[i][startDay - 1]) continue;
+        if (lines[i][startDate.date() - 1]) continue;
 
         // 할당된 일정이 없다면 일정 할당
         isAllocated = true;
-        for (let day = startDay - 1; day <= endDay - 1; day++) {
-          lines[i][day] = {
-            ...newSchedule,
-            startDay,
-            endDay,
-          };
+        for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
+          lines[i][day] = schedule;
         }
         break;
       }
@@ -96,12 +148,8 @@ const toRenderingData = (
       // 모든 라인에 할당되어 있으면 새 라인 생성하고 할당
       if (!isAllocated) {
         lines.push(Array(lastDayInMonth));
-        for (let day = startDay - 1; day <= endDay - 1; day++) {
-          lines[lines.length - 1][day] = {
-            ...newSchedule,
-            startDay,
-            endDay,
-          };
+        for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
+          lines[lines.length - 1][day] = schedule;
         }
       }
     });
@@ -110,7 +158,25 @@ const toRenderingData = (
       category: newCategory,
       lines,
     };
-  });
+  }
+
+  categoryList.forEach(c0 => {
+    result.push(toCategoryRender(c0));
+
+    if(c0.children.length > 0) {
+      c0.children.forEach(c1 => {
+        result.push(toCategoryRender(c1));
+
+        if(c1.children.length > 0) {
+          c1.children.forEach(c2 => {
+            result.push(toCategoryRender(c2));
+          })
+        }
+      })
+    }
+  })
+
+  return result;
 };
 
 const Container = styled.div`
@@ -222,7 +288,8 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
 `;
 
 export default function Home() {
-  const [isAddScheduleModalOpen, setAddScheduleModalOpen] = useState(false);
+  const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
+  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<boolean | ScheduleToRender>(false);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
   >([]);
@@ -257,23 +324,73 @@ export default function Home() {
     // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
     // 임시로 가짜 데이터 사용
     setCategoryToRenderList(
-      toRenderingData(calendarDummyData.categoryList, now, lastDayOfMonth),
+      toRenderingData(calendarDummyData.resultBody, lastDayOfMonth),
     );
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, []);
 
   const handleOpenAddScheduleModal = () => {
-    setAddScheduleModalOpen(true);
+    setNewScheduleModalOpen(true);
   };
 
   const handleCloseAddScheduleModal = () => {
-    setAddScheduleModalOpen(false);
+    setNewScheduleModalOpen(false);
   };
 
   const router = useRouter();
   const handleMoveCategoryPage = () => {
     router.push('/category');
   };
+
+  const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
+    if(!scheduleModalInfo) {
+      setScheduleModalInfo(newScheduleModalInfo);
+    }
+  }, [scheduleModalInfo]);
+
+  const handleScheduleModalClose = () => {
+    setScheduleModalInfo(null);
+  }
+
+  const handleUpdateScheduleClick = (schedule: ScheduleToRender) => {
+    setScheduleModalInfo(null);
+    setNewScheduleModalOpen(schedule);
+  }
+
+  const handleScheduleFinish = useCallback((categoryId: number, scheduleId: number) => {
+    const newCategoryListToRender = [...categoryToRenderList];
+    const category = newCategoryListToRender.find(c => c.category.id === categoryId);
+    if(!category) {
+      alert('존재하지 않는 일정입니다.');
+      return;
+    }
+
+    let schedule: ScheduleToRender | undefined;
+    let isScheduleFound = false;
+    for(const l of category.lines) {
+      for(const s of l) {
+        if(s && s.id === scheduleId) {
+          isScheduleFound = true;
+          schedule = s;
+          break;
+        }
+      }
+
+      if(isScheduleFound) break;
+    }
+    if(!schedule) {
+      alert('존재하지 않는 일정입니다.');
+      return;
+    }
+
+    const newIsFinished = !(schedule.isFinished);
+    schedule.isFinished = newIsFinished;
+    setCategoryToRenderList(newCategoryListToRender);
+
+    const newScheduleModalInfo = {...scheduleModalInfo!};
+    newScheduleModalInfo.schedule.isFinished = newIsFinished;
+    setScheduleModalInfo(newScheduleModalInfo);
+  }, [categoryToRenderList, scheduleModalInfo]);
 
   return (
     <Container>
@@ -311,26 +428,35 @@ export default function Home() {
                 ),
               )}
             </DivideLines>
-            {categoryToRenderList.map(categoryToRender => (
+            {categoryToRenderList.map((categoryToRender, i) => (
               <ScheduleLine
                 key={`schedule-${categoryToRender.category.id}`}
                 categoryToRender={categoryToRender}
+                onScheduleClick={handleScheduleClick}
               />
             ))}
           </CalendarBody>
         </ScheduleSide>
       </Calendar>
       <AddScheduleButton
-        $isOpen={isAddScheduleModalOpen ? 'true' : 'false'}
+        $isOpen={isNewScheduleModalOpen ? 'true' : 'false'}
         onClick={handleOpenAddScheduleModal}
       >
         <Icon path={mdiPlus} color="white" />
       </AddScheduleButton>
-      {isAddScheduleModalOpen && (
+      {isNewScheduleModalOpen && (
         <NewScheduleModal
           width='40%'
-          title='일정 추가'
           onClose={handleCloseAddScheduleModal}
+          schedule={isNewScheduleModalOpen === true ? undefined : isNewScheduleModalOpen}
+        />
+      )}
+      {scheduleModalInfo && (
+        <ScheduleModal
+          scheduleModalInfo={scheduleModalInfo}
+          onScheduleModalClose={handleScheduleModalClose}
+          onScheduleFinish={handleScheduleFinish}
+          onUpdateClick={handleUpdateScheduleClick}
         />
       )}
     </Container>

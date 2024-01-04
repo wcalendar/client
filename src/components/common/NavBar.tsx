@@ -10,8 +10,8 @@ type NavBarProps = {
 };
 
 const userMenus: NavBarProps[] = [
-  { title: 'user', href: '/user', icon: <RiUser3Line size={24} /> },
   { title: 'setting', href: '/setting', icon: <RiSettings5Line size={24} /> },
+  { title: 'user', href: '/user', icon: <RiUser3Line size={24} /> },
 ];
 
 const NavBarContainer = styled.div`

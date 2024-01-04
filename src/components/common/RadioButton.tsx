@@ -14,7 +14,7 @@ const Container = styled.div`
   cursor: pointer;
   
   &+& {
-    margin-left: 1rem;
+    margin-left: .5rem;
   }
 `;
 

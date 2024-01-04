@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { useMemo } from "react";
-import { CategoryToRender, ScheduleToRender } from "./page";
+import { MouseEvent, useCallback, useMemo } from "react";
+import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "./page";
 import { CategoryColor } from "@/dummies/calendar";
 
 type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
+  onScheduleClick: (info: ScheduleModalInfo) => void;
 }
 
 const Container = styled.div<{ $line_count: number }>`
@@ -41,7 +42,7 @@ const ScheduleItem = styled.div<{ $start: number, $end: number, $color: Category
   }
 `;
 
-const ScheduleItemText = styled.span`
+const ScheduleItemText = styled.span<{ $is_finished: number }>`
   position: sticky;
   left: 0;
   width: auto;
@@ -51,14 +52,14 @@ const ScheduleItemText = styled.span`
   line-height: var(--cell-height);
   padding-left: 1rem;
   padding-right: 1rem;
+  ${({ $is_finished }) => $is_finished ? 'text-decoration: line-through;' : '' }
 `;
 
 export default function ScheduleLine({
   categoryToRender,
+  onScheduleClick,
 }: ScheduleLineProps) {
-  console.log(categoryToRender);
   const { lines, category } = categoryToRender;
-  const {} = category;
 
   const schedulesByLine = useMemo(() => {
     return categoryToRender.lines.map(line => {
@@ -75,16 +76,33 @@ export default function ScheduleLine({
 
       return scheduleList;
     })
-  }, [categoryToRender])
+  }, [categoryToRender]);
+
+  const handleScheduleClick = useCallback((e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, schedule: ScheduleToRender) => {
+    const scheduleModalInfo: ScheduleModalInfo = {
+      x: e.clientX,
+      y: e.clientY,
+      schedule,
+    }
+
+    onScheduleClick(scheduleModalInfo);
+  }, [category]);
 
   return (
     <Container $line_count={lines.length}>
-      {schedulesByLine.map((line, i) => (
-        <Line key={`${category.id}-${i}`}>
-          {line.map(schedule => (
-            <ScheduleItem key={schedule.id} $start={schedule.startDay} $end={schedule.endDay} $color={category.color} $level={category.level}>
-              <ScheduleItemText>
-                {schedule.title}
+      {schedulesByLine.map((line, lineIdx) => (
+        <Line key={`${category.id}-${lineIdx}`}>
+          {line.map((schedule) => (
+            <ScheduleItem
+              key={schedule.id}
+              $start={schedule.startDate.date()}
+              $end={schedule.endDate.date()}
+              $color={category.color}
+              $level={category.level}
+              onClick={(e) => handleScheduleClick(e, schedule)}
+            >
+              <ScheduleItemText $is_finished={schedule.isFinished ? 1 : 0}>
+                {schedule.content}
               </ScheduleItemText>
             </ScheduleItem>
           ))}

@@ -129,8 +129,8 @@ export default function MiniCalendar({
     const result: (number | null)[][] = [];
 
     const firstDayOfWeek = time.new(year, month, 1).day();
-    console.log(firstDayOfWeek);
-    const lastDayInMonth = date.daysInMonth();
+    const lastDayInMonth = time.daysInMonth(year, month);
+    console.log(lastDayInMonth);
 
     const firstWeek: (number | null)[] = Array.from({length: 7}, () => null);
     let dayToInput = 1;
@@ -149,7 +149,7 @@ export default function MiniCalendar({
     }
 
     return result;
-  }, [month, year]);
+  }, [date, month, year]);
 
   const handleNextMonthClick = useCallback(() => {
     const newMonth = month+1;

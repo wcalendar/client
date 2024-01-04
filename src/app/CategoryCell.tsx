@@ -1,5 +1,6 @@
 import { CategoryColor, CategoryWithSchedule } from "@/dummies/calendar";
 import styled from "styled-components";
+import { Category } from "./page";
 
 const Container = styled.div<{ $line_count: number, }>`
   width: 100%;
@@ -9,31 +10,31 @@ const Container = styled.div<{ $line_count: number, }>`
   justify-content: flex-end;
   align-items: flex-start;
   font-size: .75rem;
+  user-select: none;
 `;
 
-const Category = styled.div<{ $level: number, $color: CategoryColor }>`
+const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem - var(--memo-width));
   height: var(--cell-height);
   line-height: var(--cell-height);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-right: 1px;
-  
   padding-left: .5rem;
-  user-select: none;
 `;
 
-const Memo = styled.div<{ $level: number, $color: CategoryColor }>`
+const Description = styled.div<{ $level: number, $color: CategoryColor }>`
   width: calc(var(--memo-width) - 1px);
   height: var(--cell-height);
   line-height: var(--cell-height);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   padding-left: .5rem;
+  overflow: hidden;
 `;
 
 type CategoryCellProps = {
-  category: CategoryWithSchedule;
+  category: Category;
   lineCount: number;
 };
 
@@ -41,14 +42,14 @@ export default function CategoryCell({
   category,
   lineCount,
 }: CategoryCellProps) {
-  const {id, name, level, color, memo, } = category;
+  const {id, name, level, color, description, } = category;
 
   return (
     <Container $line_count={lineCount}>
-      <Category $level={level} $color={color}>
+      <CategoryName $level={level} $color={color}>
         {name}
-      </Category>
-      <Memo $level={level} $color={color}>{memo}</Memo>
+      </CategoryName>
+      <Description $level={level} $color={color}>{description}</Description>
     </Container>
   )
 }
