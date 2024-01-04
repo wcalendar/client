@@ -439,7 +439,21 @@ export default function Home() {
     const newScheduleModalInfo = {...scheduleModalInfo!};
     newScheduleModalInfo.schedule.isFinished = newIsFinished;
     setScheduleModalInfo(newScheduleModalInfo);
-  }, [categoryToRenderList, scheduleModalInfo]);
+
+    // 우선순위
+    const startDay = schedule.startDate.date();
+    const endDay = schedule.endDate.date();
+    const newPriorities = [...priorities];
+    for(let i=startDay; i<=endDay; i++) {
+      for(let j=0; j<newPriorities[i].length; j++) {
+        if(newPriorities[i-1][j].scheduleId === scheduleId) {
+          newPriorities[i-1][j].isFinished = newIsFinished;
+          break;
+        }
+      }
+    }
+    setPriorities(newPriorities);
+  }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, priorities]);
 
   return (
     <Container>
