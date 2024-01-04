@@ -51,8 +51,8 @@ const theme = {
       },
       cellHeight: {
         mobile: '2rem',
-        tablet: '1.5rem',
-        desktop: '1.125rem',
+        tablet: '1.75rem',
+        desktop: '1.5rem',
       },
       memoWidth: {
         mobile: '1rem',

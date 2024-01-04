@@ -5,6 +5,12 @@ dayjs.locale('ko');
 
 const time = {
   /**
+   * 해당 년월의 마지막 일을 계산하는 함수
+   */
+  daysInMonth: (year: number, month: number) => {
+    return dayjs(new Date(year, month)).daysInMonth();
+  },
+  /**
    * @returns 현재 날짜가 저장된 Dayjs 객체
    */
   now: (): Dayjs => dayjs(),
@@ -26,7 +32,7 @@ const time = {
   fromString: (date: string): Dayjs => {
     const splitedDate = date.split('-');
     return dayjs(new Date(parseInt(splitedDate[0]), parseInt(splitedDate[1])-1, parseInt(splitedDate[2])));
-  }
+  },
 }
 
 export default time;
