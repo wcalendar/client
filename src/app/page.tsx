@@ -137,13 +137,14 @@ const HeaderSection = styled.div`
   border-bottom: 3px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
-const PrioritySection = styled.div`
+const PrioritySection = styled.div<{ $priority_count: number }>`
   width: 100%;
-  height: calc(((var(--cell-height) + var(--line-gap)) * var(--priority-count)) + var(--line-gap));
+  height: calc(((var(--cell-height) + var(--line-gap)) * ${({ $priority_count }) => $priority_count + 1}) + 3px);
   position: relative;
   background: ${({ theme }) => theme.colors.lightBlue};
   border-bottom: 3px solid ${({ theme }) => theme.colors.lightGray};
   display: flex;
+  transition: height .25s ease;
 `;
 
 const PriorityLabel = styled.div`
@@ -211,8 +212,7 @@ export default function Home() {
     CategoryToRender[]
   >([]);
   const [priorities, setPriorities] = useState<Priority[][]>([]);
-
-  console.log(priorities);
+  const [prioritiesSize, setPrioritiesSize] = useState(5);
 
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
@@ -455,6 +455,10 @@ export default function Home() {
     setPriorities(newPriorities);
   }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, priorities]);
 
+  const handlePrioritiesResize = (size: number) => {
+    setPrioritiesSize(size);
+  }
+
   return (
     <Container>
       <Header />
@@ -468,7 +472,7 @@ export default function Home() {
                 </SettingCategoryButton>
               </Cell>
             </HeaderSection>
-            <PrioritySection>
+            <PrioritySection $priority_count={prioritiesSize}>
               <PriorityLabel>
                 우선순위
               </PriorityLabel>
@@ -491,7 +495,7 @@ export default function Home() {
                 <Cell key={headerItem}>{headerItem}</Cell>
               ))}
             </HeaderSection>
-            <PrioritySection>
+            <PrioritySection $priority_count={prioritiesSize}>
               <DivideLines $day_count={lastDayOfMonth}>
                 {Array.from({ length: lastDayOfMonth }, () => null).map(
                   (_, i) => (
@@ -500,7 +504,7 @@ export default function Home() {
                 )}
               </DivideLines>
               {priorities.map((priority, i) => (
-                <PriorityList key={`pl-${i}`} priorities={priority} />
+                <PriorityList key={`pl-${i}`} priorities={priority} prioritiesSize={prioritiesSize} onResize={handlePrioritiesResize} />
               ))}
             </PrioritySection>
           </CalendarHeader>
