@@ -4,6 +4,7 @@ import Header from '@/components/common/Header';
 import {
   CategoryColor,
   CategoryDto,
+  NewScheduleDto,
   ScheduleDto,
   calendarDummyData,
 } from '@/dummies/calendar';
@@ -44,7 +45,7 @@ export interface Category {
   schedules: ScheduleToRender[];
 }
 
-export interface ScheduleToRender extends Omit<Schedule, 'date'> {
+export interface ScheduleToRender extends Omit<Schedule, 'date' | 'priority'> {
   startDate: Dayjs;
   endDate: Dayjs;
 }
@@ -221,6 +222,7 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
 export default function Home() {
   const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
   const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<boolean | ScheduleToRender>(false);
+  const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
   >([]);
@@ -303,7 +305,6 @@ export default function Home() {
               content: lastSchedule.scheduleContent,
               startDate,
               endDate: time.fromString(lastSchedule.scheduleDate),
-              priority: lastSchedule.schedulePriority,
               isFinished: lastSchedule.finished,
             });
           }
@@ -320,7 +321,6 @@ export default function Home() {
           content: lastSchedule.scheduleContent,
           startDate,
           endDate: time.fromString(lastSchedule.scheduleDate),
-          priority: lastSchedule.schedulePriority,
           isFinished: lastSchedule.finished,
         });
       }
@@ -388,17 +388,57 @@ export default function Home() {
 
     // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
     // 임시로 가짜 데이터 사용
-    toRenderingData(calendarDummyData.resultBody, lastDayOfMonth);
+    setCategoryList(calendarDummyData.resultBody);
     // TODO 월 선택 추가 시 월에 따라 달라져야함
   }, []);
 
-  const handleOpenAddScheduleModal = () => {
+  useEffect(() => {
+    toRenderingData(categoryList, lastDayOfMonth);
+  }, [categoryList]);
+
+  const handleOpenNewScheduleModal = () => {
     setNewScheduleModalOpen(true);
   };
 
-  const handleCloseAddScheduleModal = () => {
+  const handleCloseNewScheduleModal = () => {
     setNewScheduleModalOpen(false);
   };
+
+  const handleScheduleCreate = useCallback((newSchedule: NewScheduleDto) => {
+    const newCategoryList = [...categoryList];
+
+    const category = newCategoryList.find(c => c.categoryId === newSchedule.categoryId);
+    if(!category) {
+      alert('존재하지 않는 카테고리입니다.');
+      return;
+    }
+
+    const schedule: ScheduleToRender = {
+      id: -1,
+      startDate: time.fromString(newSchedule.scheduleStartDate),
+      endDate: time.fromString(newSchedule.scheduleEndDate),
+      categoryId: newSchedule.categoryId,
+      content: newSchedule.scheduleContent,
+      isFinished: false,
+    };
+
+    // TODO 새로 추가하는 일정의 년월은 어떻게?
+    const scheduleDtos: ScheduleDto[] = [];
+    for(let d=schedule.startDate.date(); d<=schedule.endDate.date(); d++) {
+      scheduleDtos.push({
+        scheduleId: schedule.id,
+        categoryId: schedule.categoryId,
+        scheduleContent: schedule.content,
+        scheduleDate: time.toString( time.new(schedule.startDate.year(), schedule.startDate.month(), d) , 'YYYY-MM-DD'),
+        schedulePriority: 999,
+        finished: false,
+      });
+    }
+
+    category.schedules.push(...scheduleDtos);
+
+    setCategoryList(newCategoryList);
+  }, [categoryToRenderList, priorities]);
 
   const router = useRouter();
   const handleMoveCategoryPage = () => {
@@ -572,15 +612,16 @@ export default function Home() {
       </Calendar>
       <AddScheduleButton
         $isOpen={isNewScheduleModalOpen ? 'true' : 'false'}
-        onClick={handleOpenAddScheduleModal}
+        onClick={handleOpenNewScheduleModal}
       >
         <Icon path={mdiPlus} color="white" />
       </AddScheduleButton>
       {isNewScheduleModalOpen && (
         <NewScheduleModal
           width='40%'
-          onClose={handleCloseAddScheduleModal}
+          onClose={handleCloseNewScheduleModal}
           schedule={isNewScheduleModalOpen === true ? undefined : isNewScheduleModalOpen}
+          onScheduleCreate={handleScheduleCreate}
         />
       )}
       {scheduleModalInfo && (
