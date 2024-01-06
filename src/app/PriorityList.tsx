@@ -16,14 +16,14 @@ type PriorityListProps = {
 const Container = styled.div<{ $idx: number, $priority_count: number, $open: number }>`
   box-sizing: content-box;
   position: absolute;
-  left: calc(${({ $idx }) => $idx} * (var(--cell-width) + 1px));
+  left: calc((${({ $idx }) => $idx} * (var(--cell-width) + 1px)) + 2px);
   height: ${({ $open, $priority_count }) => $open ? `calc(((var(--cell-height) + var(--line-gap)) * ${$priority_count + 1}) + 3px)` : '100%'};
-  width: calc((var(--cell-width) + 1px));
+  width: calc(var(--cell-width) + 1px - 4px);
   background: ${({ theme }) => theme.colors.lightBlue};
   transition: all ease .25s;
   ${({ theme, $open }) => $open ? `
-    box-shadow: 0 2px 4px 2px ${theme.colors.gray};
-    transform: translate(2px, -5px);
+    box-shadow: 0 0 4px 2px ${theme.colors.gray};
+    transform: translate(0, -5px);
     z-index: 1500;
     border-radius: 5px;
   ` : '' }

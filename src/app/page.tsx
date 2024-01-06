@@ -106,7 +106,7 @@ const Calendar = styled.main`
 
 const CategorySide = styled.aside`
   position: relative;
-  z-index: 2;
+  // z-index: 2;
   height: 100%;
   width: calc(var(--cell-width) + 3px);
   border-right: 3px solid ${({ theme }) => theme.colors.lightGray};
@@ -114,6 +114,7 @@ const CategorySide = styled.aside`
 `;
 
 const ScheduleSide = styled.div`
+  position: relative;
   width: calc(100% - (var(--cell-width) + 3px));
   height: 100%;
   overflow-x: auto;

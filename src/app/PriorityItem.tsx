@@ -11,7 +11,7 @@ type PriorityItemProps = {
 const Container = styled.div<{ $color: CategoryColor, $level: number }>`
   position: relative;
   height: var(--cell-height);
-  width: calc((var(--cell-width) + 1px) - 5px);
+  width: calc((var(--cell-width) + 1px) - 9px);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-left: 2px;
