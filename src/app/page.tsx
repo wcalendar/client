@@ -446,7 +446,6 @@ export default function Home() {
       </AddScheduleButton>
       {isNewScheduleModalOpen && (
         <NewScheduleModal
-          width='40%'
           onClose={handleCloseAddScheduleModal}
           schedule={isNewScheduleModalOpen === true ? undefined : isNewScheduleModalOpen}
         />
