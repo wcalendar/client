@@ -8,7 +8,6 @@ import { MouseEvent, useMemo, useState } from "react";
 type PriorityListProps = {
   priorities: Priority[];
   prioritiesSize: number;
-  onResize: (size: number) => void;
   onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => void;
   idx: number;
 }
@@ -67,7 +66,6 @@ const IconWrapper = styled.div`
 export default function PriorityList({
   priorities,
   prioritiesSize,
-  onResize,
   onPriorityItemClick,
   idx,
 }: PriorityListProps) {

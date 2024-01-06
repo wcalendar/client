@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
+const prioritiesSize = 3;
 
 interface Schedule {
   id: number;
@@ -227,7 +228,6 @@ export default function Home() {
     CategoryToRender[]
   >([]);
   const [priorities, setPriorities] = useState<Priority[][]>([]);
-  const [prioritiesSize, setPrioritiesSize] = useState(3);
 
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
@@ -531,10 +531,6 @@ export default function Home() {
     handleScheduleClick(newScheduleModalInfo);
   };
 
-  const handlePrioritiesResize = (size: number) => {
-    setPrioritiesSize(size);
-  }
-
   return (
     <Container>
       <Header />
@@ -585,7 +581,6 @@ export default function Home() {
                   key={`pl-${i}`}
                   priorities={priority}
                   prioritiesSize={prioritiesSize}
-                  onResize={handlePrioritiesResize}
                   onPriorityItemClick={handlePriorityClick}
                   idx={i}
                 />
