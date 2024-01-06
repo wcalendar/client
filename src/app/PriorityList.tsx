@@ -83,9 +83,10 @@ export default function PriorityList({
     return isOpen ? '접기' : '펼치기';
   }, [isOpen]);
 
+
   const openable = useMemo(() => {
     return priorityCount > prioritiesSize;
-  }, [prioritiesSize]);
+  }, [priorityCount, prioritiesSize]);
 
   return (
     <Container $idx={idx} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
