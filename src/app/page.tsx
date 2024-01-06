@@ -19,7 +19,7 @@ import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import PriorityList from './PriorityList';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
@@ -382,14 +382,19 @@ export default function Home() {
   useEffect(() => {
     const categorySideBody = categoryBody.current!;
     const scheduleSideBody = scheduleBody.current!;
-    scheduleSideBody.addEventListener('scroll', () => {
+    const handleScheduleSideScroll = () => {
       categorySideBody.scrollTop = scheduleSideBody.scrollTop;
-    });
+    };
+    scheduleSideBody.addEventListener('scroll', handleScheduleSideScroll);
 
     // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
     // 임시로 가짜 데이터 사용
     setCategoryList(calendarDummyData.resultBody);
     // TODO 월 선택 추가 시 월에 따라 달라져야함
+
+    return () => {
+      scheduleSideBody.removeEventListener('scroll', handleScheduleSideScroll);
+    }
   }, []);
 
   useEffect(() => {
