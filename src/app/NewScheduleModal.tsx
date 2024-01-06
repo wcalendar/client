@@ -2,7 +2,7 @@ import Dropdown from "@/components/common/Dropdown";
 import RadioButton from "@/components/common/RadioButton";
 import DatePicker from "@/components/common/date-picker/DatePicker";
 import FixedModal, { FixedModalProps, ModalButton } from "@/components/common/fixed-modal/FixedModal";
-import { CategoryDto, categoryListDummyData } from "@/dummies/calendar";
+import { CategoryDto, NewScheduleDto, categoryListDummyData } from "@/dummies/calendar";
 import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
@@ -13,6 +13,7 @@ import { ScheduleToRender } from "./page";
 
 interface NewScheduleModal {
   onClose: () => void;
+  onScheduleCreate: (newSchedule: NewScheduleDto) => void;
   schedule?: ScheduleToRender;
 }
 
@@ -104,6 +105,7 @@ const Tip = styled.li`
 export default function NewScheduleModal({
   onClose,
   schedule,
+  onScheduleCreate,
 }: NewScheduleModal) {
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [scheduleTitle, setScheduleTitle] = useState(schedule ? schedule.content : '');
@@ -160,7 +162,7 @@ export default function NewScheduleModal({
     setPriority(value);
   }
 
-  const handleSaveNewScheduleClick = () => {
+  const handleSaveNewScheduleClick = useCallback(() => {
     // Title
     const newTitle = scheduleTitle.trim();
     if(newTitle.length === 0) {
@@ -176,7 +178,17 @@ export default function NewScheduleModal({
       return;
     }
 
-  }
+    // TODO api
+    onScheduleCreate({
+      scheduleContent: newTitle,
+      scheduleStartDate: time.toString(startDate, 'YYYY-MM-DD'),
+      scheduleEndDate: isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
+      categoryId: categoryList[categoryIdx-1].categoryId,
+      schedulePriority: -1,
+      isDuration: isDuration,
+      isPriority: isPriority,
+    });
+  }, [scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
 
   const buttonList: ModalButton[] = [
     {
