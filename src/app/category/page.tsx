@@ -7,53 +7,32 @@ import CategoryList from '@/components/category/CategoryList';
 import CategoryMenuHelperText from '@/components/category/CategoryMenuHelperText';
 import Header from '@/components/common/Header';
 import { getCategories } from '@/lib/utils';
-import { Category } from '@/types/Category';
-import { useEffect, useState } from 'react';
+import { Category } from '@/types';
+import { FormEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-const Container = styled.main``;
-
-const CategoryContainer = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 1rem;
-`;
-
-const CategoryMenuContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 25%;
-`;
-
-const CategoryListHeader = styled.h3`
-  margin-bottom: 1rem;
-`
-
-const CategoryListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  padding-right: 4rem;
-  border: 1px solid black;
-  border-radius: 5px;
-`;
-const defaultCategoryList: Category[] = [
-  { id: 0, name: 'Test1', color: 'red', level: 0 },
-  { id: 1, name: 'Test2', color: 'green', level: 1 },
-  { id: 2, name: 'Test3', color: 'green', level: 2 },
-];
-
 export default function CategoryPage() {
-  const [categoryList, setCategoryList] =
-    useState<Category[]>(defaultCategoryList);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [isActive, setIsActive] = useState(true);
+
+  const [categoryData, setCategoryData] = useState<Category>();
 
   useEffect(() => {
-    const categories = getCategories();
-    setCategoryList(categories);
+    setCategoryList(getCategories());
   }, []);
 
-  const onSaveHandler = () => {
-    console.log('Save btn clicked');
+  useEffect(() => {
+    const mainCategoryList = categoryList.filter(
+      category => category.categoryLevel === 1,
+    );
+    if (mainCategoryList.length === 10) {
+      setIsActive(false);
+    }
+  }, [categoryList]);
+
+  const onSaveHandler = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('Submit btn clicked');
   };
 
   const onCancelHandler = () => {
@@ -72,11 +51,17 @@ export default function CategoryPage() {
 
   const onDownHandler = () => {};
 
+  const getCategoryDetail = () => {
+    console.log('btn clicked');
+  };
+
   return (
     <Container>
       <Header />
       <CategoryHeader
-        saveHandler={onSaveHandler}
+        saveHandler={event => {
+          onSaveHandler(event);
+        }}
         cancelHandler={onCancelHandler}
       />
       <CategoryContainer>
@@ -86,15 +71,57 @@ export default function CategoryPage() {
             deleteHandler={onDeleteHandler}
             upHandler={onUpHandler}
             downHandler={onDownHandler}
+            isActive={!isActive}
           />
           <CategoryListContainer>
-            <CategoryListHeader>카테고리 전체보기</CategoryListHeader>
-            <CategoryList categories={categoryList} />
+            <CategoryList
+              categories={categoryList}
+              getCategory={getCategoryDetail}
+            />
           </CategoryListContainer>
           <CategoryMenuHelperText />
         </CategoryMenuContainer>
-        <CategoryForm />
+        <CategoryForm
+          isActive={isActive}
+          color={''}
+          name={''}
+          description={''}
+        />
       </CategoryContainer>
     </Container>
   );
 }
+
+const Container = styled.main`
+  position: relative;
+  --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
+  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
+  --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
+  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
+`;
+
+const CategoryContainer = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 1rem;
+  padding-top: 50px;
+  z-index: 10;
+  @media screen and (max-width: 500px) {
+    flex-direction: column;
+  }
+`;
+
+const CategoryMenuContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+`;
+
+const CategoryListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  padding-right: 40px;
+  border: 1px solid black;
+  border-radius: 5px;
+`;
