@@ -430,7 +430,7 @@ export default function Home() {
         categoryId: schedule.categoryId,
         scheduleContent: schedule.content,
         scheduleDate: time.toString( time.new(schedule.startDate.year(), schedule.startDate.month(), d) , 'YYYY-MM-DD'),
-        schedulePriority: 999,
+        schedulePriority: priorities[d-1][priorities[d-1].length-1].priority + 1,
         finished: false,
       });
     }
@@ -438,7 +438,7 @@ export default function Home() {
     category.schedules.push(...scheduleDtos);
 
     setCategoryList(newCategoryList);
-  }, [categoryToRenderList, priorities]);
+  }, [categoryList, priorities]);
 
   const router = useRouter();
   const handleMoveCategoryPage = () => {
