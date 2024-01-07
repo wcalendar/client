@@ -44,7 +44,7 @@ export default function PriorityItem({
   priority,
   onClick,
 }: PriorityItemProps) {
-  const { color, level, content, isFinished, categoryId, scheduleId, groupCode } = priority;
+  const { color, level, content, isFinished, categoryId, groupCode } = priority;
 
   return (
     <Container $color={color} $level={level} onClick={(e) => onClick(e, categoryId, groupCode)}>

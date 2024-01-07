@@ -89,9 +89,9 @@ export default function PriorityList({
   return (
     <Container $idx={idx} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
       <List>
-        {priorities.map(priority => (
+        {priorities.map((priority, i) => (
           <PriorityItem
-            key={`pi-${priority.scheduleId}`}
+            key={`pi-${i}-${priority.scheduleId}`}
             priority={priority}
             onClick={onPriorityItemClick}
           />
