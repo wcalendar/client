@@ -65,13 +65,13 @@ export default function ScheduleLine({
     return categoryToRender.lines.map(line => {
       const scheduleList: ScheduleToRender[] = [];
 
-      let scheduleId: number | undefined = undefined;
+      let groupCode: number | undefined = undefined;
       for(let i=0; i<line.length; i++) {
         if(!line[i]) continue;
-        if(scheduleId && scheduleId === line[i]!.id) continue;
+        if(groupCode && groupCode === line[i]!.groupCode) continue;
 
         scheduleList.push(line[i]!);
-        scheduleId = line[i]!.id;
+        groupCode = line[i]!.groupCode;
       }
 
       return scheduleList;
@@ -94,7 +94,7 @@ export default function ScheduleLine({
         <Line key={`${category.id}-${lineIdx}`}>
           {line.map((schedule) => (
             <ScheduleItem
-              key={schedule.id}
+              key={schedule.groupCode}
               $start={schedule.startDate.date()}
               $end={schedule.endDate.date()}
               $color={category.color}

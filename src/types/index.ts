@@ -63,6 +63,7 @@ export interface CalendarCategory {
 // GET /api/schedules/{year}/{month}
 export type ScheduleDto = {
   scheduleId: number;
+  scheduleGroupCode: number;
   categoryId: number;
   scheduleContent: string;
   scheduleDate: string;
@@ -79,6 +80,7 @@ export type CategoryToRender = {
 // 캘린더에 렌더링하기 위한 일정 데이터
 export type ScheduleToRender = {
   id: number;
+  groupCode: number;
   categoryId: number;
   content: string;
   isFinished: boolean;
@@ -90,6 +92,7 @@ export type ScheduleToRender = {
 export type Priority = {
   categoryId: number;
   scheduleId: number;
+  groupCode: number;
   day: number;
   priority: number;
   isFinished: boolean;

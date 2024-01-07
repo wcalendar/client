@@ -15,7 +15,7 @@ import NewScheduleModal from './NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
-import { CalendarCategory, CategoryColor, CategoryDto, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { CalendarCategory, CategoryDto, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -226,14 +226,15 @@ export default function Home() {
 
       const rangeSchedules: ScheduleToRender[] = [];
 
-      let scheduleId = -1;
+      let scheduleGroupCode = -1;
       let startDate: Dayjs | undefined;
       let lastSchedule: ScheduleDto | undefined;
       category.schedules.forEach(schedule => {
         const date = time.fromString(schedule.scheduleDate);
         newPriorities[date.date()-1].push({
-          categoryId: category.categoryId,
           scheduleId: schedule.scheduleId,
+          categoryId: category.categoryId,
+          groupCode: schedule.scheduleGroupCode,
           day: date.date(),
           priority: schedule.schedulePriority,
           isFinished: schedule.finished,
@@ -242,12 +243,13 @@ export default function Home() {
           content: schedule.scheduleContent,
         });
 
-        if(schedule.scheduleId !== scheduleId) {
-          scheduleId = schedule.scheduleId;
+        if(schedule.scheduleGroupCode !== scheduleGroupCode) {
+          scheduleGroupCode = schedule.scheduleGroupCode;
           
           if(startDate && lastSchedule) {
             rangeSchedules.push({
               id: lastSchedule.scheduleId,
+              groupCode: lastSchedule.scheduleGroupCode,
               categoryId: lastSchedule.categoryId,
               content: lastSchedule.scheduleContent,
               startDate,
@@ -265,6 +267,7 @@ export default function Home() {
         rangeSchedules.push({
           id: lastSchedule.scheduleId,
           categoryId: lastSchedule.categoryId,
+          groupCode: lastSchedule.scheduleGroupCode,
           content: lastSchedule.scheduleContent,
           startDate,
           endDate: time.fromString(lastSchedule.scheduleDate),
@@ -367,6 +370,7 @@ export default function Home() {
 
     const schedule: ScheduleToRender = {
       id: -1,
+      groupCode: -2,
       startDate: time.fromString(newSchedule.scheduleStartDate),
       endDate: time.fromString(newSchedule.scheduleEndDate),
       categoryId: newSchedule.categoryId,
@@ -380,6 +384,7 @@ export default function Home() {
       scheduleDtos.push({
         scheduleId: schedule.id,
         categoryId: schedule.categoryId,
+        scheduleGroupCode: schedule.groupCode,
         scheduleContent: schedule.content,
         scheduleDate: time.toString( time.new(schedule.startDate.year(), schedule.startDate.month(), d) , 'YYYY-MM-DD'),
         schedulePriority: priorities[d-1][priorities[d-1].length-1].priority + 1,

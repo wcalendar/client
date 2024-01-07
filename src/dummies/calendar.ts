@@ -4,9 +4,11 @@ import { CategoryColor, CategoryDto, ResDto, ScheduleDto } from "@/types";
 const range = (y: number, m: number, fd: number, td: number, schedule: Omit<ScheduleDto, 'scheduleDate'>): ScheduleDto[] => {
   const result: ScheduleDto[] = [];
 
+  let id = 0;
   for(let i=fd; i<=td; i++) {
     result.push({
       ...schedule,
+      scheduleId: schedule.scheduleId + 1000 + (id++),
       scheduleDate: time.toString(time.new(y, m, i), 'YYYY-MM-DD'),
     });
   }
@@ -30,8 +32,9 @@ const newDummyCategory = (i: number, color: CategoryColor): CategoryDto[] => {
       categoryVisible: true,
       schedules: [
         ...range(y, m, 1, 7, {
-          scheduleId: i+1,
+          scheduleId: i,
           categoryId: i,
+          scheduleGroupCode: i+1,
           scheduleContent: "Splash Page",
           schedulePriority: i,
           finished: false,
@@ -49,8 +52,9 @@ const newDummyCategory = (i: number, color: CategoryColor): CategoryDto[] => {
           categoryVisible: true,
           schedules: [
             ...range(y, m, 4, 7, {
-              scheduleId: i+3,
+              scheduleId: i+2,
               categoryId: i+2,
+              scheduleGroupCode: i+3,
               scheduleContent: "Splash Test",
               schedulePriority: i+1,
               finished: false,
@@ -81,7 +85,8 @@ const newDummyCategory = (i: number, color: CategoryColor): CategoryDto[] => {
               schedules: [
                 ...range(y, m, 27, 27, {
                   scheduleId: i+5,
-                  categoryId: i+4,
+                  categoryId: i+5,
+                  scheduleGroupCode: i+6,
                   scheduleContent: "배포하기",
                   schedulePriority: i+2,
                   finished: false,
@@ -110,36 +115,41 @@ const calendarDummyData: ResDto<CategoryDto[]> = {
       categoryVisible: true,
       schedules: [
         ...range(y, m, 2, 20, {
-          scheduleId: 101,
+          scheduleId: 1101,
           categoryId: 100,
+          scheduleGroupCode: 101,
           scheduleContent: "긴 일정",
           schedulePriority: 100,
           finished: false,
         }),
         ...range(y, m, 2, 10, {
-          scheduleId: 102,
+          scheduleId: 2101,
           categoryId: 100,
+          scheduleGroupCode: 102,
           scheduleContent: "중간 일정",
           schedulePriority: 101,
           finished: false,
         }),
         ...range(y, m, 2, 3, {
-          scheduleId: 103,
+          scheduleId: 3101,
           categoryId: 100,
+          scheduleGroupCode: 103,
           scheduleContent: "짧은 일정",
           schedulePriority: 102,
           finished: false,
         }),
         ...range(y, m, 10, 20, {
-          scheduleId: 104,
+          scheduleId: 4101,
           categoryId: 100,
+          scheduleGroupCode: 104,
           scheduleContent: "가운데 중간 일정",
           schedulePriority: 103,
           finished: false,
         }),
         ...range(y, m, 11, 20, {
-          scheduleId: 105,
+          scheduleId: 5101,
           categoryId: 100,
+          scheduleGroupCode: 105,
           scheduleContent: "가운데 중간 일정2",
           schedulePriority: 104,
           finished: false,
