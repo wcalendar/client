@@ -32,6 +32,7 @@ const theme = {
     gray: '#adb5bd',
     lightGray: '#d9d9d9',
     white: '#ececec',
+    lightBlue: '#eaeffc',
 
     /* 범주 */
     ...categoryColors,
@@ -50,8 +51,8 @@ const theme = {
       },
       cellHeight: {
         mobile: '2rem',
-        tablet: '1.75rem',
-        desktop: '1.5rem',
+        tablet: '1.5rem',
+        desktop: '1.125rem',
       },
       memoWidth: {
         mobile: '1rem',
@@ -62,6 +63,11 @@ const theme = {
         mobile: '8px',
         tablet: '6px',
         desktop: '4px',
+      },
+      PriorityCount: {
+        mobile: '4',
+        tablet: '4',
+        desktop: '4',
       },
     }
   }

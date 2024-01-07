@@ -2,16 +2,18 @@ import Dropdown from "@/components/common/Dropdown";
 import RadioButton from "@/components/common/RadioButton";
 import DatePicker from "@/components/common/date-picker/DatePicker";
 import FixedModal, { FixedModalProps, ModalButton } from "@/components/common/fixed-modal/FixedModal";
-import { CategoryDto, categoryListDummyData } from "@/dummies/calendar";
+import { CategoryDto, NewScheduleDto, categoryListDummyData } from "@/dummies/calendar";
 import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { ScheduleToRender } from "./page";
 
-interface NewScheduleModal extends Omit<FixedModalProps, 'children' | 'buttonList' | 'title'> {
+interface NewScheduleModal {
+  onClose: () => void;
+  onScheduleCreate: (newSchedule: NewScheduleDto) => void;
   schedule?: ScheduleToRender;
 }
 
@@ -26,21 +28,48 @@ const Line = styled.div`
   margin-bottom: 1rem;
 `;
 
+const SubLine = styled.div`
+  display: none;
+  width: 100%;
+  height: .875rem;
+  margin-bottom: 1rem;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    display: flex;
+  }
+`;
+
+const DesktopDurationWrapper = styled.div`
+  @media ${({ theme }) => theme.devices.mobile} {
+    display: none;
+  }
+
+  width: auto;
+  height: 100%;
+  display: flex;
+`;
+
 const Label = styled.div`
-  width: 20%;
+  flex-basis: 6rem;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 1.75rem;
   line-height: 1.75rem;
   font-size: .875rem;
 `;
 
 const Input = styled.input`
-  width: 60%;
+  flex-basis: calc(100% - 6rem - 3rem);
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: 5px;
   text-indent: .5rem;
 
   &:focus {
     outline: none;
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    flex-basis: calc(100% - 6rem);
   }
 `;
 
@@ -56,8 +85,12 @@ const Interval = styled.div<{ $invisible: number }>`
 `;
 
 const DropDownWrapper = styled.div`
-  width: 60%;
+  flex-basis: calc(100% - 6rem - 3rem);
   height: 100%;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    flex-basis: calc(100% - 6rem);
+  }
 `;
 
 const Tips = styled.ul`
@@ -70,9 +103,9 @@ const Tip = styled.li`
 `;
 
 export default function NewScheduleModal({
-  width,
   onClose,
   schedule,
+  onScheduleCreate,
 }: NewScheduleModal) {
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [scheduleTitle, setScheduleTitle] = useState(schedule ? schedule.content : '');
@@ -129,7 +162,7 @@ export default function NewScheduleModal({
     setPriority(value);
   }
 
-  const handleSaveNewScheduleClick = () => {
+  const handleSaveNewScheduleClick = useCallback(() => {
     // Title
     const newTitle = scheduleTitle.trim();
     if(newTitle.length === 0) {
@@ -145,7 +178,17 @@ export default function NewScheduleModal({
       return;
     }
 
-  }
+    // TODO api
+    onScheduleCreate({
+      scheduleContent: newTitle,
+      scheduleStartDate: time.toString(startDate, 'YYYY-MM-DD'),
+      scheduleEndDate: isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
+      categoryId: categoryList[categoryIdx-1].categoryId,
+      schedulePriority: -1,
+      isDuration: isDuration,
+      isPriority: isPriority,
+    });
+  }, [scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
 
   const buttonList: ModalButton[] = [
     {
@@ -160,7 +203,7 @@ export default function NewScheduleModal({
 
   return (
     <FixedModal
-      width={width}
+      width='33.75rem'
       title={schedule ? '일정 수정' : '일정 등록'}
       buttonList={buttonList}
       onClose={onClose}
@@ -175,10 +218,17 @@ export default function NewScheduleModal({
           <DatePicker value={startDate} onChange={handleStartDateChange} />
           <Interval $invisible={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
           <DatePicker value={endDate} onChange={handleEndDateChange} invisible={!isDuration} />
-          <div style={{width: '1rem'}} />
+          <DesktopDurationWrapper>
+            <div style={{width: '1rem'}} />
+            <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
+            <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
+          </DesktopDurationWrapper>
+        </Line>
+        <SubLine>
+          <Label />
           <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
           <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
-        </Line>
+        </SubLine>
         <Line>
           <Label>카테고리</Label>
           <DropDownWrapper>

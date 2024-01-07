@@ -30,7 +30,8 @@ const Container = styled.div`
 `;
 
 const Box = styled.div<{ theme: DefaultTheme, $width: string }>`
-  width: ${({ $width }) => $width};
+  max-width: ${({ $width }) => $width};
+  width: 98%;
   height: auto;
   max-height: 90vh;
   border-radius: 10px;

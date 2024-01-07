@@ -22,6 +22,10 @@ const Container = styled.div<{ $x: string, $y: string }>`
   background-color: white;
   user-select: none;
   z-index: 15;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    left: calc(50% - (16.875rem / 2));
+  }
 `;
 
 const Header = styled.div`

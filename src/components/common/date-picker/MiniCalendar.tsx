@@ -40,6 +40,10 @@ const MonthSelector = styled.div`
   justify-content: center;
   align-items: center;
   height: 3rem;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    width: 12.25rem;
+  }
 `;
 
 const SlideButton = styled.button`
@@ -62,6 +66,10 @@ const CurrentMonth = styled.div`
 const Calendar = styled.div`
   width: 17rem;
   margin: 0 auto;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    width: 12.25rem;
+  }
 `;
 
 const Week = styled.div`
@@ -85,6 +93,12 @@ const Day = styled.div<{ $is_today: string }>`
     background-color: ${({ theme }) => theme.colors.blue};
     color: white;
   }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    width: 1.75rem;
+    height: 1.75rem;
+    line-height: 1.75rem;
+  }
 `;
 
 const BlankDay = styled.div`
@@ -94,6 +108,12 @@ const BlankDay = styled.div`
   text-align: center;
   user-select: none;
   font-size: .75rem;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    width: 1.75rem;
+    height: 1.75rem;
+    line-height: 1.75rem;
+  }
 `;
 
 const Footer = styled.div`
