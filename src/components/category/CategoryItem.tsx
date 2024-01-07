@@ -1,6 +1,5 @@
-import { CategoryColor } from '@/dummies/calendar';
 import { useFocus } from '@/hooks/useFocus';
-import { Category } from '@/types';
+import { Category, CategoryColor } from '@/types';
 import { RefObject, useEffect, useState } from 'react';
 import { RiEyeLine, RiEyeOffLine } from 'react-icons/ri';
 import styled from 'styled-components';

@@ -1,4 +1,4 @@
-import { CategoryColor } from "@/dummies/calendar";
+import { CategoryColor } from "@/types";
 
 type Colors = 'Red' | 'Orange' | 'Yellow' | 'Green' | 'Blue' | 'Purple' | 'Gray';
 type CategoryColorsKeys = `category${'Main' | 'Sub'}${Colors}`;
