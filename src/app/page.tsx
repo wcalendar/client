@@ -418,7 +418,7 @@ export default function Home() {
     setNewScheduleModalOpen(schedule);
   }
 
-  const handleScheduleFinish = useCallback((categoryId: number, scheduleId: number) => {
+  const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
     const newCategoryListToRender = [...categoryToRenderList];
     const category = newCategoryListToRender.find(c => c.category.id === categoryId);
     if(!category) {
@@ -430,7 +430,7 @@ export default function Home() {
     let isScheduleFound = false;
     for(const l of category.lines) {
       for(const s of l) {
-        if(s && s.id === scheduleId) {
+        if(s && s.groupCode === groupCode) {
           isScheduleFound = true;
           schedule = s;
           break;
@@ -458,7 +458,7 @@ export default function Home() {
     const newPriorities = [...priorities];
     for(let i=startDay; i<=endDay; i++) {
       for(let j=0; j<newPriorities[i].length; j++) {
-        if(newPriorities[i-1][j].scheduleId === scheduleId) {
+        if(newPriorities[i-1][j].groupCode === groupCode) {
           newPriorities[i-1][j].isFinished = newIsFinished;
           break;
         }

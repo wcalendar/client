@@ -8,7 +8,7 @@ import styled from "styled-components";
 type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
   onScheduleModalClose: () => void;
-  onScheduleFinish: (categoryId: number, scheduleId: number) => void;
+  onScheduleFinish: (categoryId: number, groupCode: number) => void;
   onUpdateClick: (schedule: ScheduleToRender) => void;
 }
 
@@ -143,7 +143,7 @@ export default function ScheduleModal({
     <Container $x={renderX} $y={renderY} ref={modalRef} >
       <Header>
         <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
-        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(schedule.categoryId, schedule.id)} />
+        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(schedule.categoryId, schedule.groupCode)} />
         <CloseButton onClick={onScheduleModalClose}>
           <Icon path={mdiClose} />
         </CloseButton>
