@@ -16,6 +16,7 @@ import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
 import { CalendarCategory, CategoryDto, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { group } from 'console';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -466,14 +467,14 @@ export default function Home() {
     setPriorities(newPriorities);
   }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, priorities]);
 
-  const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => {
+  const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => {
     const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
     if(!category) {
       alert('존재하지 않는 일정입니다.');
       return;
     }
 
-    const schedule = category.schedules.find(s => s.id === scheduleId);
+    const schedule = category.schedules.find(s => s.groupCode === groupCode);
     if(!schedule) {
       alert('존재하지 않는 일정입니다.');
       return;

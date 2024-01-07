@@ -8,7 +8,7 @@ import { Priority } from "@/types";
 type PriorityListProps = {
   priorities: Priority[];
   prioritiesSize: number;
-  onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => void;
+  onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
   idx: number;
 }
 
