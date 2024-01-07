@@ -1,9 +1,9 @@
 import styled from "styled-components"
-import { Priority } from "./page";
 import PriorityItem from "./PriorityItem";
 import Icon from "@mdi/react";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import { MouseEvent, useMemo, useState } from "react";
+import { Priority } from "@/types";
 
 type PriorityListProps = {
   priorities: Priority[];

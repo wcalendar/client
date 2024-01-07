@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { MouseEvent, useCallback, useMemo } from "react";
-import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "./page";
+import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "@/types";
 import { CategoryColor } from "@/types";
 
 type ScheduleLineProps = {

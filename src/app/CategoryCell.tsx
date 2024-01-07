@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { Category } from "./page";
-import { CategoryColor } from "@/types";
+import { CalendarCategory, CategoryColor } from "@/types";
 
 const Container = styled.div<{ $line_count: number, }>`
   width: 100%;
@@ -34,7 +33,7 @@ const Description = styled.div<{ $level: number, $color: CategoryColor }>`
 `;
 
 type CategoryCellProps = {
-  category: Category;
+  category: CalendarCategory;
   lineCount: number;
 };
 

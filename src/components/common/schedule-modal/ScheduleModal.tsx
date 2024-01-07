@@ -1,4 +1,4 @@
-import { ScheduleModalInfo, ScheduleToRender } from "@/app/page";
+import { ScheduleModalInfo, ScheduleToRender } from "@/types";
 import time from "@/lib/time";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";

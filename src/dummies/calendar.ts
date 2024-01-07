@@ -1,74 +1,5 @@
 import time from "@/lib/time";
-import { CategoryColor } from "@/types";
-import { Dayjs } from "dayjs";
-
-export type ScheduleDto = {
-  scheduleId: number;
-  categoryId: number;
-  scheduleContent: string;
-  scheduleDate: string;
-  schedulePriority: number;
-  finished: boolean;
-}
-
-export type CategoryDto = {
-  categoryId: number;
-  categoryName: string;
-  categoryLevel: number;
-  categoryColor: CategoryColor;
-  categoryStartDate: string;
-  categoryEndDate: string;
-  categoryDescription: string;
-  categoryVisible: boolean;
-  schedules: ScheduleDto[];
-  children: CategoryDto[];
-}
-
-export type ScheduleWithoutCategoryDto = {
-  id: number;
-  title: string;
-  // body: string;
-  startDate: Date;
-  endDate: Date;
-  isFinished: boolean;
-}
-
-export type ScheduleWithoutCategory = {
-  id: number;
-  title: string;
-  // body: string;
-  startDate: Dayjs;
-  endDate: Dayjs;
-  isFinished: boolean;
-}
-
-export interface CategoryWithScheduleDto extends CategoryDto {
-  scheduleList: ScheduleWithoutCategoryDto[];
-}
-
-export type CategoryWithSchedule = {
-  id: number;
-  name: string;
-  level: number;
-  color: CategoryColor;
-  memo?: string;
-  scheduleList: ScheduleWithoutCategory[];
-}
-
-type CalendarResDto = {
-  resultMessage: string;
-  resultBody: CategoryDto[];
-}
-
-export type NewScheduleDto = {
-  scheduleContent: string,
-  scheduleStartDate: string,
-  scheduleEndDate: string,
-  categoryId: number,
-  schedulePriority: number,
-  isDuration: boolean,
-  isPriority: boolean,
-}
+import { CategoryColor, CategoryDto, ResDto, ScheduleDto } from "@/types";
 
 const range = (y: number, m: number, fd: number, td: number, schedule: Omit<ScheduleDto, 'scheduleDate'>): ScheduleDto[] => {
   const result: ScheduleDto[] = [];
@@ -165,7 +96,7 @@ const newDummyCategory = (i: number, color: CategoryColor): CategoryDto[] => {
   ]
 }
 
-const calendarDummyData: CalendarResDto = {
+const calendarDummyData: ResDto<CategoryDto[]> = {
   resultMessage: 'success',
   resultBody: [
     {

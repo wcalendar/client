@@ -1,12 +1,7 @@
 'use client';
 
 import Header from '@/components/common/Header';
-import {
-  CategoryDto,
-  NewScheduleDto,
-  ScheduleDto,
-  calendarDummyData,
-} from '@/dummies/calendar';
+import { calendarDummyData } from '@/dummies/calendar';
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
@@ -18,60 +13,12 @@ import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
-import { CategoryColor } from '@/types';
+import { CalendarCategory, CategoryColor, CategoryDto, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
-
-interface Schedule {
-  id: number;
-  categoryId: number;
-  content: string;
-  date: Dayjs;
-  priority: number;
-  isFinished: boolean;
-}
-
-export interface Category {
-  id: number;
-  name: string;
-  level: number;
-  color: CategoryColor;
-  startDate: Dayjs;
-  endDate: Dayjs;
-  description: string;
-  isVisible: boolean;
-  schedules: ScheduleToRender[];
-}
-
-export interface ScheduleToRender extends Omit<Schedule, 'date' | 'priority'> {
-  startDate: Dayjs;
-  endDate: Dayjs;
-}
-
-export type CategoryToRender = {
-  category: Category;
-  lines: (ScheduleToRender | undefined)[][];
-};
-
-export type Priority = {
-  categoryId: number;
-  scheduleId: number;
-  day: number;
-  priority: number;
-  isFinished: boolean;
-  color: CategoryColor;
-  level: number;
-  content: string;
-};
-
-export type ScheduleModalInfo = {
-  x: number,
-  y: number,
-  schedule: ScheduleToRender,
-}
 
 const Container = styled.div`
   width: 100%;
@@ -263,7 +210,7 @@ export default function Home() {
     const newPriorities: Priority[][] = Array.from({length: lastDayInMonth}, () => []);
 
     const toCategoryRender = (category: CategoryDto): CategoryToRender => {
-      const newCategory: Category = {
+      const newCategory: CalendarCategory = {
         id: category.categoryId,
         name: category.categoryName,
         level: category.categoryLevel,

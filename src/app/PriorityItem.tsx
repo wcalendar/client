@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { Priority } from "./page";
 import { MouseEvent } from "react";
-import { CategoryColor } from "@/types";
+import { CategoryColor, Priority } from "@/types";
 
 type PriorityItemProps = {
   priority: Priority;
