@@ -1,7 +1,6 @@
 import time from "@/lib/time";
+import { CategoryColor } from "@/types";
 import { Dayjs } from "dayjs";
-
-export type CategoryColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'gray';
 
 export type ScheduleDto = {
   scheduleId: number;

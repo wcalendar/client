@@ -2,7 +2,6 @@
 
 import Header from '@/components/common/Header';
 import {
-  CategoryColor,
   CategoryDto,
   NewScheduleDto,
   ScheduleDto,
@@ -21,6 +20,7 @@ import NewScheduleModal from './NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PriorityList from './PriorityList';
+import { CategoryColor } from '@/types';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;

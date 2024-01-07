@@ -1,6 +1,6 @@
-import { CategoryColor, CategoryWithSchedule } from "@/dummies/calendar";
 import styled from "styled-components";
 import { Category } from "./page";
+import { CategoryColor } from "@/types";
 
 const Container = styled.div<{ $line_count: number, }>`
   width: 100%;

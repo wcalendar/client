@@ -1,7 +1,7 @@
-import { CategoryColor } from "@/dummies/calendar";
 import styled from "styled-components";
 import { Priority } from "./page";
 import { MouseEvent } from "react";
+import { CategoryColor } from "@/types";
 
 type PriorityItemProps = {
   priority: Priority;
