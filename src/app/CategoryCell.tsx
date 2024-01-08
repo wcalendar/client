@@ -20,6 +20,13 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   border-radius: 5px;
   margin-right: 1px;
   padding-left: .5rem;
+  cursor: pointer;
+  transition: all ease .25s;
+
+  &:hover {
+    transform: translateX(-1px) translateY(-1px);
+    box-shadow: 2px 2px 4px 1px ${({ theme }) => theme.colors.black80};
+  }
 
   @media ${({ theme }) => theme.devices.tablet} {
     width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem);
