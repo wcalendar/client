@@ -1,13 +1,7 @@
 'use client';
 
 import Header from '@/components/common/Header';
-import {
-  CategoryColor,
-  CategoryDto,
-  NewScheduleDto,
-  ScheduleDto,
-  calendarDummyData,
-} from '@/dummies/calendar';
+import { calendarDummyData } from '@/dummies/calendar';
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
@@ -19,59 +13,12 @@ import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from './NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
+import { CalendarCategory, CategoryDto, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
-
-interface Schedule {
-  id: number;
-  categoryId: number;
-  content: string;
-  date: Dayjs;
-  priority: number;
-  isFinished: boolean;
-}
-
-export interface Category {
-  id: number;
-  name: string;
-  level: number;
-  color: CategoryColor;
-  startDate: Dayjs;
-  endDate: Dayjs;
-  description: string;
-  isVisible: boolean;
-  schedules: ScheduleToRender[];
-}
-
-export interface ScheduleToRender extends Omit<Schedule, 'date' | 'priority'> {
-  startDate: Dayjs;
-  endDate: Dayjs;
-}
-
-export type CategoryToRender = {
-  category: Category;
-  lines: (ScheduleToRender | undefined)[][];
-};
-
-export type Priority = {
-  categoryId: number;
-  scheduleId: number;
-  day: number;
-  priority: number;
-  isFinished: boolean;
-  color: CategoryColor;
-  level: number;
-  content: string;
-};
-
-export type ScheduleModalInfo = {
-  x: number,
-  y: number,
-  schedule: ScheduleToRender,
-}
 
 const Container = styled.div`
   width: 100%;
@@ -263,7 +210,7 @@ export default function Home() {
     const newPriorities: Priority[][] = Array.from({length: lastDayInMonth}, () => []);
 
     const toCategoryRender = (category: CategoryDto): CategoryToRender => {
-      const newCategory: Category = {
+      const newCategory: CalendarCategory = {
         id: category.categoryId,
         name: category.categoryName,
         level: category.categoryLevel,
@@ -279,14 +226,15 @@ export default function Home() {
 
       const rangeSchedules: ScheduleToRender[] = [];
 
-      let scheduleId = -1;
+      let scheduleGroupCode = -1;
       let startDate: Dayjs | undefined;
       let lastSchedule: ScheduleDto | undefined;
       category.schedules.forEach(schedule => {
         const date = time.fromString(schedule.scheduleDate);
         newPriorities[date.date()-1].push({
-          categoryId: category.categoryId,
           scheduleId: schedule.scheduleId,
+          categoryId: category.categoryId,
+          groupCode: schedule.scheduleGroupCode,
           day: date.date(),
           priority: schedule.schedulePriority,
           isFinished: schedule.finished,
@@ -295,12 +243,13 @@ export default function Home() {
           content: schedule.scheduleContent,
         });
 
-        if(schedule.scheduleId !== scheduleId) {
-          scheduleId = schedule.scheduleId;
+        if(schedule.scheduleGroupCode !== scheduleGroupCode) {
+          scheduleGroupCode = schedule.scheduleGroupCode;
           
           if(startDate && lastSchedule) {
             rangeSchedules.push({
               id: lastSchedule.scheduleId,
+              groupCode: lastSchedule.scheduleGroupCode,
               categoryId: lastSchedule.categoryId,
               content: lastSchedule.scheduleContent,
               startDate,
@@ -318,6 +267,7 @@ export default function Home() {
         rangeSchedules.push({
           id: lastSchedule.scheduleId,
           categoryId: lastSchedule.categoryId,
+          groupCode: lastSchedule.scheduleGroupCode,
           content: lastSchedule.scheduleContent,
           startDate,
           endDate: time.fromString(lastSchedule.scheduleDate),
@@ -420,6 +370,7 @@ export default function Home() {
 
     const schedule: ScheduleToRender = {
       id: -1,
+      groupCode: -2,
       startDate: time.fromString(newSchedule.scheduleStartDate),
       endDate: time.fromString(newSchedule.scheduleEndDate),
       categoryId: newSchedule.categoryId,
@@ -433,6 +384,7 @@ export default function Home() {
       scheduleDtos.push({
         scheduleId: schedule.id,
         categoryId: schedule.categoryId,
+        scheduleGroupCode: schedule.groupCode,
         scheduleContent: schedule.content,
         scheduleDate: time.toString( time.new(schedule.startDate.year(), schedule.startDate.month(), d) , 'YYYY-MM-DD'),
         schedulePriority: priorities[d-1][priorities[d-1].length-1].priority + 1,
@@ -465,7 +417,7 @@ export default function Home() {
     setNewScheduleModalOpen(schedule);
   }
 
-  const handleScheduleFinish = useCallback((categoryId: number, scheduleId: number) => {
+  const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
     const newCategoryListToRender = [...categoryToRenderList];
     const category = newCategoryListToRender.find(c => c.category.id === categoryId);
     if(!category) {
@@ -477,7 +429,7 @@ export default function Home() {
     let isScheduleFound = false;
     for(const l of category.lines) {
       for(const s of l) {
-        if(s && s.id === scheduleId) {
+        if(s && s.groupCode === groupCode) {
           isScheduleFound = true;
           schedule = s;
           break;
@@ -505,7 +457,7 @@ export default function Home() {
     const newPriorities = [...priorities];
     for(let i=startDay; i<=endDay; i++) {
       for(let j=0; j<newPriorities[i].length; j++) {
-        if(newPriorities[i-1][j].scheduleId === scheduleId) {
+        if(newPriorities[i-1][j].groupCode === groupCode) {
           newPriorities[i-1][j].isFinished = newIsFinished;
           break;
         }
@@ -514,14 +466,14 @@ export default function Home() {
     setPriorities(newPriorities);
   }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, priorities]);
 
-  const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => {
+  const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => {
     const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
     if(!category) {
       alert('존재하지 않는 일정입니다.');
       return;
     }
 
-    const schedule = category.schedules.find(s => s.id === scheduleId);
+    const schedule = category.schedules.find(s => s.groupCode === groupCode);
     if(!schedule) {
       alert('존재하지 않는 일정입니다.');
       return;
