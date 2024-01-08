@@ -168,6 +168,8 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
 `;
 
 export default function Home() {
+  const [selectedDate, setSelectedDate] = useState(time.toString(time.now(), 'YYYY. MM.'));
+
   const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
   const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<boolean | ScheduleToRender>(false);
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
@@ -337,15 +339,15 @@ export default function Home() {
     };
     scheduleSideBody.addEventListener('scroll', handleScheduleSideScroll);
 
-    // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
-    // 임시로 가짜 데이터 사용
-    setCategoryList(calendarDummyData.resultBody);
-    // TODO 월 선택 추가 시 월에 따라 달라져야함
-
     return () => {
       scheduleSideBody.removeEventListener('scroll', handleScheduleSideScroll);
     }
   }, []);
+
+  useEffect(() => {
+    const month = parseInt(selectedDate.slice(6, selectedDate.length)) - 1;
+    setCategoryList(calendarDummyData[month].resultBody);
+  }, [selectedDate]);
 
   useEffect(() => {
     toRenderingData(categoryList, lastDayOfMonth);
@@ -357,6 +359,10 @@ export default function Home() {
 
   const handleCloseNewScheduleModal = () => {
     setNewScheduleModalOpen(false);
+  };
+
+  const handleSelectedDateChange = (value: string) => {
+    setSelectedDate(value);
   };
 
   const handleScheduleCreate = useCallback((newSchedule: NewScheduleDto) => {
@@ -490,7 +496,7 @@ export default function Home() {
 
   return (
     <Container>
-      <Header />
+      <Header date={selectedDate} onDateChange={handleSelectedDateChange} />
       <Calendar>
         <CategorySide ref={categoryBody}>
           <CalendarHeader $day_count={1}>
