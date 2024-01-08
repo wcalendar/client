@@ -4,6 +4,7 @@ import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
+import FloatingModal from "../floating-modal/FloatingModal";
 
 type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
@@ -11,22 +12,6 @@ type ScheduleModalProps = {
   onScheduleFinish: (categoryId: number, groupCode: number) => void;
   onUpdateClick: (schedule: ScheduleToRender) => void;
 }
-
-const Container = styled.div<{ $x: string, $y: string }>`
-  position: absolute;
-  left: ${({ $x }) => $x};
-  top: ${({ $y }) => $y};
-  width: 16.875rem;
-  border: 1px solid ${({ theme }) => theme.colors.white};
-  border-radius: 10px;
-  background-color: white;
-  user-select: none;
-  z-index: 15;
-
-  @media ${({ theme }) => theme.devices.mobile} {
-    left: calc(50% - (16.875rem / 2));
-  }
-`;
 
 const Header = styled.div`
   width: 100%;
@@ -111,36 +96,10 @@ export default function ScheduleModal({
   onScheduleFinish,
   onUpdateClick,
 }: ScheduleModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
-
   const { x, y, schedule } = scheduleModalInfo;
-  const renderX = useMemo(() => {
-    if(x > (window.innerWidth / 2)) return `calc(${x}px - 16.875rem)`;
-    else return `${x}px`;
-  }, [x]);
-
-  const renderY = useMemo(() => {
-    if((y + 150) > window.innerHeight) return `calc(${y}px - 6.875rem)`;
-    else return `${y}px`;
-  }, [y]);
-
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if(modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onScheduleModalClose();
-      }
-    };
-
-    document.addEventListener('click', handleOutsideClick);
-
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    }
-
-  }, []);
-
+  
   return (
-    <Container $x={renderX} $y={renderY} ref={modalRef} >
+    <FloatingModal x={x} y={y} onClose={onScheduleModalClose}>
       <Header>
         <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
         <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(schedule.categoryId, schedule.groupCode)} />
@@ -158,6 +117,6 @@ export default function ScheduleModal({
           <Button>삭제</Button>
         </ButtonBox>
       </Body>
-    </Container>
+    </FloatingModal>
   )
 }

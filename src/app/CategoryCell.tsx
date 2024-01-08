@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { CalendarCategory, CategoryColor } from "@/types";
+import { CalendarCategory, CategoryColor, CategoryModalInfo } from "@/types";
+import { MouseEvent, useCallback } from "react";
 
 const Container = styled.div<{ $line_count: number, }>`
   width: 100%;
@@ -50,17 +51,27 @@ const Description = styled.div<{ $level: number, $color: CategoryColor }>`
 type CategoryCellProps = {
   category: CalendarCategory;
   lineCount: number;
+  onCategoryClick: (category: CategoryModalInfo) => void;
 };
 
 export default function CategoryCell({
   category,
   lineCount,
+  onCategoryClick,
 }: CategoryCellProps) {
   const {id, name, level, color, description, } = category;
 
+  const handleClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    onCategoryClick({
+      x: e.clientX,
+      y: e.clientY,
+      category,
+    });
+  }, [category]);
+
   return (
     <Container $line_count={lineCount}>
-      <CategoryName $level={level} $color={color}>
+      <CategoryName $level={level} $color={color} onClick={handleClick}>
         {name}
       </CategoryName>
       <Description $level={level} $color={color}>{description}</Description>
