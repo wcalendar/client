@@ -1,15 +1,15 @@
 import Dropdown from "@/components/common/Dropdown";
 import RadioButton from "@/components/common/RadioButton";
 import DatePicker from "@/components/common/date-picker/DatePicker";
-import FixedModal, { FixedModalProps, ModalButton } from "@/components/common/fixed-modal/FixedModal";
-import { CategoryDto, NewScheduleDto, categoryListDummyData } from "@/dummies/calendar";
+import FixedModal, { ModalButton } from "@/components/common/fixed-modal/FixedModal";
 import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
-import styled, { useTheme } from "styled-components";
-import { ScheduleToRender } from "./page";
+import styled from "styled-components";
+import { CategoryDto, NewScheduleDto, ScheduleToRender } from "@/types";
+import { categoryListDummyData } from "@/dummies/calendar";
 
 interface NewScheduleModal {
   onClose: () => void;

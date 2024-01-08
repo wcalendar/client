@@ -1,14 +1,14 @@
 import styled from "styled-components"
-import { Priority } from "./page";
 import PriorityItem from "./PriorityItem";
 import Icon from "@mdi/react";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import { MouseEvent, useMemo, useState } from "react";
+import { Priority } from "@/types";
 
 type PriorityListProps = {
   priorities: Priority[];
   prioritiesSize: number;
-  onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => void;
+  onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
   idx: number;
 }
 
@@ -89,9 +89,9 @@ export default function PriorityList({
   return (
     <Container $idx={idx} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
       <List>
-        {priorities.map(priority => (
+        {priorities.map((priority, i) => (
           <PriorityItem
-            key={`pi-${priority.scheduleId}`}
+            key={`pi-${i}-${priority.scheduleId}`}
             priority={priority}
             onClick={onPriorityItemClick}
           />
