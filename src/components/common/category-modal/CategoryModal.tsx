@@ -47,14 +47,15 @@ const Line = styled.div`
 const Label = styled.div`
   flex-basis: 20%;
   flex-grow: 0;
-  height: 1rem;
+  flex-shrink: 0;
+  min-height: 1rem;
   line-height: 1rem;
   font-size: .75rem;
   color: ${({ theme }) => theme.colors.gray};
 `;
 
 const Value = styled.div`
-  height:  1rem;
+  min-height: 1rem;
   font-size: .75rem;
   line-height: 1rem;
 `;
