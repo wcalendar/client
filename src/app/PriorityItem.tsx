@@ -1,11 +1,10 @@
-import { CategoryColor } from "@/dummies/calendar";
 import styled from "styled-components";
-import { Priority } from "./page";
 import { MouseEvent } from "react";
+import { CategoryColor, Priority } from "@/types";
 
 type PriorityItemProps = {
   priority: Priority;
-  onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, scheduleId: number) => void;
+  onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
 }
 
 const Container = styled.div<{ $color: CategoryColor, $level: number }>`
@@ -45,10 +44,10 @@ export default function PriorityItem({
   priority,
   onClick,
 }: PriorityItemProps) {
-  const { color, level, content, isFinished, categoryId, scheduleId } = priority;
+  const { color, level, content, isFinished, categoryId, groupCode } = priority;
 
   return (
-    <Container $color={color} $level={level} onClick={(e) => onClick(e, categoryId, scheduleId)}>
+    <Container $color={color} $level={level} onClick={(e) => onClick(e, categoryId, groupCode)}>
       <Text $is_finished={isFinished ? 1 : 0}>
         {content}
       </Text>
