@@ -13,23 +13,31 @@ const Container = styled.div<{ $line_count: number, }>`
 `;
 
 const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
-  width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem - var(--memo-width));
+  width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem - ${({ theme }) => theme.sizes.calendar.memoWidth.desktop});
   height: var(--cell-height);
   line-height: var(--cell-height);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-right: 1px;
   padding-left: .5rem;
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem);
+  }
 `;
 
 const Description = styled.div<{ $level: number, $color: CategoryColor }>`
-  width: calc(var(--memo-width) - 1px);
+  width: calc(${({ theme }) => theme.sizes.calendar.memoWidth.desktop} - 1px);
   height: var(--cell-height);
   line-height: var(--cell-height);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   padding-left: .5rem;
   overflow: hidden;
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    display: none;
+  }
 `;
 
 type CategoryCellProps = {
