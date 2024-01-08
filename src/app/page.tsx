@@ -16,6 +16,7 @@ import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
 import { CalendarCategory, CategoryDto, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import axios from 'axios';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -329,6 +330,21 @@ export default function Home() {
     setCategoryToRenderList(newCategoryToRenderList);
   };
 
+  const getCategoryList = async () => {
+    const response = await axios.get('https://wplanner.co.kr/api/schedules/2023/12', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('at')}`,
+      },
+    });
+
+    if(response.status < 300) {
+      console.log(response.data.resultBody);
+      setCategoryList(response.data.resultBody);
+    } else {
+      alert('로그인 오류');
+    }
+  };
+
   useEffect(() => {
     const categorySideBody = categoryBody.current!;
     const scheduleSideBody = scheduleBody.current!;
@@ -339,7 +355,7 @@ export default function Home() {
 
     // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
     // 임시로 가짜 데이터 사용
-    setCategoryList(calendarDummyData.resultBody);
+    getCategoryList();
     // TODO 월 선택 추가 시 월에 따라 달라져야함
 
     return () => {
