@@ -2,7 +2,7 @@ import styled from "styled-components"
 import PriorityItem from "./PriorityItem";
 import Icon from "@mdi/react";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
-import { MouseEvent, useMemo, useState } from "react";
+import { DragEventHandler, MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Priority } from "@/types";
 
 type PriorityListProps = {
@@ -64,6 +64,10 @@ const IconWrapper = styled.div`
 const DropArea = styled.div`
   width: 100%;
   height: calc(var(--line-gap));
+
+  &.dragover {
+    border-bottom: 4px solid black;
+  }
 `;
 
 export default function PriorityList({
@@ -73,11 +77,50 @@ export default function PriorityList({
   idx,
 }: PriorityListProps) {
   const [isOpen, setOpen] = useState(false);
+  const [isDraggingOver, setDraggingOver] = useState(false);
+
+  const dropAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if(!(dropAreaRef.current)) {
+      return;
+    }
+
+    if(isDraggingOver) {
+      if(!dropAreaRef.current.classList.contains('dragover')) {
+        dropAreaRef.current.classList.add('dragover');
+      }
+    } else {
+      if(dropAreaRef.current.classList.contains('dragover')) {
+        dropAreaRef.current.classList.remove('dragover');
+      }
+    }
+    
+  }, [isDraggingOver]);
 
   const priorityCount = priorities.length;
 
   const handleOpenChange = () => {
     setOpen(!isOpen);
+  };
+
+  const handleDropAreaDragOver: DragEventHandler<HTMLDivElement> = (e) => {
+    const draggableDay = parseInt(e.dataTransfer.types[0].split('-')[1]);
+    if(draggableDay === idx) {
+      e.preventDefault();
+      
+      e.dataTransfer.dropEffect = 'move';
+      
+      setDraggingOver(true);
+    }
+  };
+
+  const handleDropAreaDragLeave: DragEventHandler<HTMLDivElement> = (e) => {
+    setDraggingOver(false);
+  };
+
+  const handleDropAreaDrop: DragEventHandler<HTMLDivElement> = (e) => {
+    setDraggingOver(false);
   };
 
   const buttonText = useMemo(() => {
@@ -92,7 +135,12 @@ export default function PriorityList({
   return (
     <Container $idx={idx} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
       <List>
-        <DropArea />
+        <DropArea
+          onDragOver={handleDropAreaDragOver}
+          onDragLeave={handleDropAreaDragLeave}
+          onDrop={handleDropAreaDrop}
+          ref={dropAreaRef}
+        />
         {priorities.map((priority, i) => (
           <PriorityItem
             key={`pi-${i}-${priority.scheduleId}`}
