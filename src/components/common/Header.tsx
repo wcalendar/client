@@ -5,6 +5,11 @@ import Monthly from './Monthly';
 import SearchBar from './SearchBar';
 import { usePathname } from 'next/navigation';
 
+type HeaderProps = {
+  date?: string;
+  onDateChange?: (value: string) => void;
+}
+
 const HeaderContainer = styled.header`
   background: white;
   display: flex;
@@ -23,14 +28,17 @@ const NavContainer = styled.div`
   flex-basis: 80%;
 `;
 
-export default function Header() {
+export default function Header({
+  date,
+  onDateChange,
+}: HeaderProps) {
   const pathName = usePathname();
   return (
     <HeaderContainer>
       <Logo />
-      {pathName === '/' ? (
+      {(date && onDateChange) ? (
         <NavContainer>
-          <Monthly />
+          <Monthly value={date} onChange={onDateChange}/>
           <SearchBar />
           <NavBar />
         </NavContainer>
