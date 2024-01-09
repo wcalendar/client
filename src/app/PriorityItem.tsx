@@ -130,12 +130,17 @@ export default function PriorityItem({
 
   const handleDragLeave: DragEventHandler<HTMLDivElement> = (e) => {
     setDraggingOver(false);
-  }
+  };
+
+  const handleDrop: DragEventHandler<HTMLDivElement> = (e) => {
+    setDraggingOver(false);
+  };
 
   return (
     <Wrapper
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       ref={wrapperRef}
     >
       <Container
