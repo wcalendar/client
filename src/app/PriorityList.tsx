@@ -96,14 +96,11 @@ export default function PriorityList({
       <List>
         <DropArea />
         {priorities.map((priority, i) => (
-          <>
-            <PriorityItem
-              key={`pi-${i}-${priority.scheduleId}`}
-              priority={priority}
-              onClick={onPriorityItemClick}
-            />
-            <DropArea />
-          </>
+          <PriorityItem
+            key={`pi-${i}-${priority.scheduleId}`}
+            priority={priority}
+            onClick={onPriorityItemClick}
+          />
         ))}
       </List>
       {openable && (
