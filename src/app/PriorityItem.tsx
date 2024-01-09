@@ -5,7 +5,7 @@ import { CategoryColor, Priority } from "@/types";
 type PriorityItemProps = {
   priority: Priority;
   onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
-  idx: number;
+  day: number;
 }
 
 const Wrapper = styled.div`
@@ -65,7 +65,7 @@ const DragImage = styled.div`
 export default function PriorityItem({
   priority,
   onClick,
-  idx,
+  day,
 }: PriorityItemProps) {
   const { color, level, content, isFinished, categoryId, groupCode, scheduleId } = priority;
 
@@ -103,7 +103,7 @@ export default function PriorityItem({
     e.dataTransfer.setDragImage(emptyImage, 0, 0);
     e.dataTransfer.effectAllowed = 'move';
 
-    e.dataTransfer.setData(`day-${idx}`, `${scheduleId}`);
+    e.dataTransfer.setData(`day-${day}`, `${scheduleId}`);
   };
 
   const handleDrag = (e: DragEvent<HTMLDivElement>) => {
@@ -118,7 +118,7 @@ export default function PriorityItem({
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
     const draggableDay = parseInt(e.dataTransfer.types[0].split('-')[1]);
-    if(draggableDay === idx) {
+    if(draggableDay === day) {
       e.preventDefault();
       
       e.dataTransfer.dropEffect = 'move';

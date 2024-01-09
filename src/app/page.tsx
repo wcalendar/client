@@ -558,7 +558,7 @@ export default function Home() {
                   priorities={priority}
                   prioritiesSize={prioritiesSize}
                   onPriorityItemClick={handlePriorityClick}
-                  idx={i}
+                  day={i}
                 />
               ))}
             </PrioritySection>

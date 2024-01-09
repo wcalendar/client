@@ -9,7 +9,7 @@ type PriorityListProps = {
   priorities: Priority[];
   prioritiesSize: number;
   onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
-  idx: number;
+  day: number;
 }
 
 const Container = styled.div<{ $idx: number, $priority_count: number, $open: number }>`
@@ -74,7 +74,7 @@ export default function PriorityList({
   priorities,
   prioritiesSize,
   onPriorityItemClick,
-  idx,
+  day,
 }: PriorityListProps) {
   const [isOpen, setOpen] = useState(false);
   const [isDraggingOver, setDraggingOver] = useState(false);
@@ -106,7 +106,7 @@ export default function PriorityList({
 
   const handleDropAreaDragOver: DragEventHandler<HTMLDivElement> = (e) => {
     const draggableDay = parseInt(e.dataTransfer.types[0].split('-')[1]);
-    if(draggableDay === idx) {
+    if(draggableDay === day) {
       e.preventDefault();
       
       e.dataTransfer.dropEffect = 'move';
@@ -133,7 +133,7 @@ export default function PriorityList({
   }, [priorityCount, prioritiesSize]);
 
   return (
-    <Container $idx={idx} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
+    <Container $idx={day} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
       <List>
         <DropArea
           onDragOver={handleDropAreaDragOver}
@@ -146,7 +146,7 @@ export default function PriorityList({
             key={`pi-${i}-${priority.scheduleId}`}
             priority={priority}
             onClick={onPriorityItemClick}
-            idx={idx}
+            day={day}
           />
         ))}
       </List>
