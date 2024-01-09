@@ -22,8 +22,6 @@ const Container = styled.div<{ $idx: number, $priority_count: number, $open: num
   transition: all ease .25s;
   ${({ theme, $open }) => $open ? `
     box-shadow: 0 0 4px 2px ${theme.colors.gray};
-    transform: translate(0, -5px);
-    z-index: 1500;
     border-radius: 5px;
   ` : '' }
 `;
