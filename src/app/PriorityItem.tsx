@@ -5,6 +5,8 @@ import { CategoryColor, Priority } from "@/types";
 type PriorityItemProps = {
   priority: Priority;
   onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
+  onDrag: (newX: number, newY:number, priority: Priority) => void;
+  onDragEnd: (e: DragEvent<HTMLDivElement>) => void;
   day: number;
 }
 
@@ -47,32 +49,16 @@ const Text = styled.span<{ $is_finished: number }>`
   ${({ $is_finished }) => $is_finished ? 'text-decoration: line-through;' : '' }
 `;
 
-const DragImage = styled.div`
-  position: fixed;
-  display: inline;
-  pointer-events: none;
-  width: auto;
-  height: 1.5rem;
-  line-height: 1.5rem;
-  font-size: .75rem;
-  border: 1px solid ${({ theme }) => theme.colors.gray};
-  border-radius: 5px;
-  z-index: 20;
-  background: white;
-  padding: 0 .25rem;
-`;
-
 export default function PriorityItem({
   priority,
   onClick,
+  onDrag,
+  onDragEnd,
   day,
 }: PriorityItemProps) {
   const { color, level, content, isFinished, categoryId, groupCode, scheduleId } = priority;
 
   const [isDraggingOver, setDraggingOver] = useState(false);
-  const [isDragging, setDragging] = useState(false);
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -104,16 +90,6 @@ export default function PriorityItem({
     e.dataTransfer.effectAllowed = 'move';
 
     e.dataTransfer.setData(`day-${day}`, `${scheduleId}`);
-  };
-
-  const handleDrag = (e: DragEvent<HTMLDivElement>) => {
-    if(!isDragging) setDragging(true);
-    setX(e.clientX);
-    setY(e.clientY);
-  };
-
-  const handleDragEnd = (e: DragEvent<HTMLDivElement>) => {
-    setDragging(false);
   };
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
@@ -148,15 +124,14 @@ export default function PriorityItem({
         onClick={(e) => onClick(e, categoryId, groupCode)}
         draggable
         onDragStart={handleDragStart}
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
+        onDrag={(e) => onDrag(e.clientX, e.clientY, priority)}
+        onDragEnd={onDragEnd}
         onDragOver={handleDragOver}
       >
         <Text $is_finished={isFinished ? 1 : 0}>
           {content}
         </Text>
       </Container>
-      {isDragging && (<DragImage style={{ left: x+20, top: y+10, }} >{content}</DragImage>)}
     </Wrapper>
   )
 }

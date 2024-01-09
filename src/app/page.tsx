@@ -2,7 +2,7 @@
 
 import Header from '@/components/common/Header';
 import { calendarDummyData } from '@/dummies/calendar';
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { DragEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
 import CategoryCell from './CategoryCell';
@@ -167,6 +167,21 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
   transform: rotate(${({ $isOpen }) => ($isOpen === 'true' ? '45' : '0')}deg);
 `;
 
+const DragImage = styled.div`
+  position: fixed;
+  display: inline;
+  pointer-events: none;
+  width: auto;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  font-size: .75rem;
+  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border-radius: 5px;
+  z-index: 20;
+  background: white;
+  padding: 0 .25rem;
+`;
+
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState(time.toString(time.now(), 'YYYY. MM.'));
 
@@ -177,6 +192,9 @@ export default function Home() {
     CategoryToRender[]
   >([]);
   const [priorities, setPriorities] = useState<Priority[][]>([]);
+  const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
 
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
@@ -506,6 +524,16 @@ export default function Home() {
 
     handleScheduleClick(newScheduleModalInfo);
   };
+  
+  const handlePriorityItemDrag = (newX: number, newY: number, priority: Priority) => {
+    if(!draggedPriority) setDraggedPriority(priority);
+    setX(newX);
+    setY(newY);
+  };
+  
+  const handlePriorityItemDragEnd = (e: DragEvent<HTMLDivElement>) => {
+    setDraggedPriority(null);
+  };
 
   return (
     <Container>
@@ -558,9 +586,12 @@ export default function Home() {
                   priorities={priority}
                   prioritiesSize={prioritiesSize}
                   onPriorityItemClick={handlePriorityClick}
+                  onPriorityItemDrag={handlePriorityItemDrag}
+                  onPriorityItemDragEnd={handlePriorityItemDragEnd}
                   day={i}
                 />
               ))}
+              {draggedPriority && (<DragImage style={{ left: x+20, top: y+10, }} >{draggedPriority.content}</DragImage>)}
             </PrioritySection>
           </CalendarHeader>
           <CalendarBody $day_count={lastDayOfMonth}>

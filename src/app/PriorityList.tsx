@@ -2,13 +2,15 @@ import styled from "styled-components"
 import PriorityItem from "./PriorityItem";
 import Icon from "@mdi/react";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
-import { DragEventHandler, MouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import { DragEvent, DragEventHandler, MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Priority } from "@/types";
 
 type PriorityListProps = {
   priorities: Priority[];
   prioritiesSize: number;
   onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
+  onPriorityItemDrag: (newX: number, newY: number, priority: Priority) => void;
+  onPriorityItemDragEnd: (e: DragEvent<HTMLDivElement>) => void;
   day: number;
 }
 
@@ -74,6 +76,8 @@ export default function PriorityList({
   priorities,
   prioritiesSize,
   onPriorityItemClick,
+  onPriorityItemDrag,
+  onPriorityItemDragEnd,
   day,
 }: PriorityListProps) {
   const [isOpen, setOpen] = useState(false);
@@ -146,6 +150,8 @@ export default function PriorityList({
             key={`pi-${i}-${priority.scheduleId}`}
             priority={priority}
             onClick={onPriorityItemClick}
+            onDrag={onPriorityItemDrag}
+            onDragEnd={onPriorityItemDragEnd}
             day={day}
           />
         ))}
