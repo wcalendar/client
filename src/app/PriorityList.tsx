@@ -63,6 +63,11 @@ const IconWrapper = styled.div`
   padding: 3%;
 `;
 
+const DropArea = styled.div`
+  width: 100%;
+  height: calc(var(--line-gap));
+`;
+
 export default function PriorityList({
   priorities,
   prioritiesSize,
@@ -89,12 +94,16 @@ export default function PriorityList({
   return (
     <Container $idx={idx} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
       <List>
+        <DropArea />
         {priorities.map((priority, i) => (
-          <PriorityItem
-            key={`pi-${i}-${priority.scheduleId}`}
-            priority={priority}
-            onClick={onPriorityItemClick}
-          />
+          <>
+            <PriorityItem
+              key={`pi-${i}-${priority.scheduleId}`}
+              priority={priority}
+              onClick={onPriorityItemClick}
+            />
+            <DropArea />
+          </>
         ))}
       </List>
       {openable && (

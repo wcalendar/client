@@ -7,15 +7,27 @@ type PriorityItemProps = {
   onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
 }
 
-const Container = styled.div<{ $color: CategoryColor, $level: number }>`
+const _Container = styled.div`
   position: relative;
+  width: 100%;
+  height: calc(var(--cell-height) + var(--line-gap));
+`;
+
+const HalfArea = styled.div`
+  width: 100%;
+  height: 50%;
+`;
+
+const Container = styled.div<{ $color: CategoryColor, $level: number }>`
+  position: absolute;
+  left: 2px;
+  top: calc(var(--line-gap) / 2);
   height: var(--cell-height);
   width: calc((var(--cell-width) + 1px) - 9px);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-left: 2px;
   margin-right: 2px;
-  margin-top: var(--line-gap);
   vertical-align: middle;
   display: flex;
   cursor: pointer;
@@ -28,8 +40,6 @@ const Container = styled.div<{ $color: CategoryColor, $level: number }>`
 `;
 
 const Text = styled.span<{ $is_finished: number }>`
-  position: sticky;
-  left: 0;
   width: auto;
   height: 100%;
   font-size: .75rem;
@@ -47,10 +57,14 @@ export default function PriorityItem({
   const { color, level, content, isFinished, categoryId, groupCode } = priority;
 
   return (
-    <Container $color={color} $level={level} onClick={(e) => onClick(e, categoryId, groupCode)}>
-      <Text $is_finished={isFinished ? 1 : 0}>
-        {content}
-      </Text>
-    </Container>
+    <_Container>
+      <HalfArea />
+      <HalfArea />
+      <Container $color={color} $level={level} onClick={(e) => onClick(e, categoryId, groupCode)}>
+        <Text $is_finished={isFinished ? 1 : 0}>
+          {content}
+        </Text>
+      </Container>
+    </_Container>
   )
 }
