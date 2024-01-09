@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { DragEventHandler, MouseEvent, useEffect, useRef, useState } from "react";
+import { DragEvent, DragEventHandler, MouseEvent, useEffect, useRef, useState } from "react";
 import { CategoryColor, Priority } from "@/types";
 
 type PriorityItemProps = {
@@ -30,8 +30,8 @@ const Container = styled.div<{ $color: CategoryColor, $level: number }>`
   transition: all ease .25s;
 
   &:hover {
-    transform: translateX(-1px) translateY(-1px);
-    box-shadow: 2px 2px 4px 1px ${({ theme }) => theme.colors.black80};
+    transform: translateX(-.5px) translateY(-.5px);
+    box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
   }
 `;
 
@@ -46,6 +46,21 @@ const Text = styled.span<{ $is_finished: number }>`
   ${({ $is_finished }) => $is_finished ? 'text-decoration: line-through;' : '' }
 `;
 
+const DragImage = styled.div`
+  position: fixed;
+  display: inline;
+  pointer-events: none;
+  width: auto;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  font-size: .75rem;
+  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border-radius: 5px;
+  z-index: 20;
+  background: white;
+  padding: 0 .25rem;
+`;
+
 export default function PriorityItem({
   priority,
   onClick,
@@ -53,6 +68,9 @@ export default function PriorityItem({
   const { color, level, content, isFinished, categoryId, groupCode } = priority;
 
   const [isDraggingOver, setDraggingOver] = useState(false);
+  const [isDragging, setDragging] = useState(false);
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -73,8 +91,25 @@ export default function PriorityItem({
     
   }, [isDraggingOver]);
 
-  const handleDragStart: DragEventHandler<HTMLDivElement> = (e) => {
+  const handleDragStart = (e: DragEvent<HTMLDivElement>) => {
+    const emptyImage = document.createElement('div');
+    emptyImage.style.width = '1px';
+    emptyImage.style.height = '1px';
 
+    document.body.appendChild(emptyImage);
+
+    e.dataTransfer.setDragImage(emptyImage, 0, 0);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDrag = (e: DragEvent<HTMLDivElement>) => {
+    if(!isDragging) setDragging(true);
+    setX(e.clientX);
+    setY(e.clientY);
+  };
+
+  const handleDragEnd = (e: DragEvent<HTMLDivElement>) => {
+    setDragging(false);
   };
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
@@ -109,12 +144,15 @@ export default function PriorityItem({
         onClick={(e) => onClick(e, categoryId, groupCode)}
         draggable
         onDragStart={handleDragStart}
+        onDrag={handleDrag}
+        onDragEnd={handleDragEnd}
         onDragOver={handleContainerDragOver}
       >
         <Text $is_finished={isFinished ? 1 : 0}>
           {content}
         </Text>
       </Container>
+      {isDragging && (<DragImage style={{ left: x+20, top: y+10, }} >{content}</DragImage>)}
     </Wrapper>
   )
 }

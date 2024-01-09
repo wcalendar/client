@@ -345,6 +345,19 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    // droppable 영역 외에 drop하면 dragImage가 제자리로 돌아가는 효과 삭제
+    const handleOutsideDragOver = (e: globalThis.DragEvent) => {
+      e.preventDefault();
+    }
+
+    document.addEventListener('dragover', handleOutsideDragOver);
+
+    return () => {
+      document.removeEventListener('dragover', handleOutsideDragOver);
+    }
+  }, []);
+
+  useEffect(() => {
     const month = parseInt(selectedDate.slice(6, selectedDate.length)) - 1;
     setCategoryList(calendarDummyData[month].resultBody);
   }, [selectedDate]);
