@@ -533,6 +533,11 @@ export default function Home() {
   
   const handlePriorityItemDragEnd = (e: DragEvent<HTMLDivElement>) => {
     setDraggedPriority(null);
+
+    const dragImage = document.getElementById('drag-image');
+    if(dragImage) {
+      dragImage.remove();
+    }
   };
 
   return (

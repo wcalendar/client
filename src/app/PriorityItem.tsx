@@ -81,6 +81,7 @@ export default function PriorityItem({
 
   const handleDragStart = (e: DragEvent<HTMLDivElement>) => {
     const emptyImage = document.createElement('div');
+    emptyImage.id = 'drag-image';
     emptyImage.style.width = '1px';
     emptyImage.style.height = '1px';
 
