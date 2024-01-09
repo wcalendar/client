@@ -5,6 +5,7 @@ import { CategoryColor, Priority } from "@/types";
 type PriorityItemProps = {
   priority: Priority;
   onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
+  idx: number;
 }
 
 const Wrapper = styled.div`
@@ -64,8 +65,9 @@ const DragImage = styled.div`
 export default function PriorityItem({
   priority,
   onClick,
+  idx,
 }: PriorityItemProps) {
-  const { color, level, content, isFinished, categoryId, groupCode } = priority;
+  const { color, level, content, isFinished, categoryId, groupCode, scheduleId } = priority;
 
   const [isDraggingOver, setDraggingOver] = useState(false);
   const [isDragging, setDragging] = useState(false);
@@ -100,6 +102,8 @@ export default function PriorityItem({
 
     e.dataTransfer.setDragImage(emptyImage, 0, 0);
     e.dataTransfer.effectAllowed = 'move';
+
+    e.dataTransfer.setData(`day-${idx}`, `${scheduleId}`);
   };
 
   const handleDrag = (e: DragEvent<HTMLDivElement>) => {
@@ -113,19 +117,14 @@ export default function PriorityItem({
   };
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    
-    e.dataTransfer.dropEffect = 'move';
-
-    setDraggingOver(true);
-  };
-
-  const handleContainerDragOver: DragEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-
-    e.dataTransfer.dropEffect = 'move';
-
-    setDraggingOver(true);
+    const draggableDay = parseInt(e.dataTransfer.types[0].split('-')[1]);
+    if(draggableDay === idx) {
+      e.preventDefault();
+      
+      e.dataTransfer.dropEffect = 'move';
+      
+      setDraggingOver(true);
+    }
   };
 
   const handleDragLeave: DragEventHandler<HTMLDivElement> = (e) => {
@@ -151,7 +150,7 @@ export default function PriorityItem({
         onDragStart={handleDragStart}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
-        onDragOver={handleContainerDragOver}
+        onDragOver={handleDragOver}
       >
         <Text $is_finished={isFinished ? 1 : 0}>
           {content}

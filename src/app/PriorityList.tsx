@@ -98,6 +98,7 @@ export default function PriorityList({
             key={`pi-${i}-${priority.scheduleId}`}
             priority={priority}
             onClick={onPriorityItemClick}
+            idx={idx}
           />
         ))}
       </List>
