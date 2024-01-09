@@ -1,8 +1,13 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri';
 import styled from 'styled-components';
 import MonthlyCalendar from './MonthlyCalendar';
+
+type MonthlyProps = {
+  value: string;
+  onChange: (value: string) => void;
+}
 
 const MonthlyContainer = styled.div`
   display: flex;
@@ -24,6 +29,7 @@ const ArrowButton = styled(Button)`
   border: 1px solid gray;
   border-radius: 8px;
 `;
+
 const getPrevMonth = (date: string) => {
   const currentMonth = dayjs(date);
   return formattedDate(currentMonth.subtract(1, 'M'));
@@ -38,10 +44,10 @@ const formattedDate = (date: dayjs.Dayjs) => {
   return date.format('YYYY. MM.');
 };
 
-export default function Monthly() {
-  const today = dayjs();
-  const formattedToday = formattedDate(today);
-  const [date, setDate] = useState<string>(formattedToday);
+export default function Monthly({
+  value,
+  onChange,
+}: MonthlyProps) {
   const [isCalendarShow, setCalendarShow] = useState<boolean>(false);
 
   const handleCalendarShow = (isCalendarShow: boolean) => {
@@ -53,23 +59,23 @@ export default function Monthly() {
       <MonthlyContainer>
         <ArrowButton
           onClick={() => {
-            setDate(getPrevMonth(date));
+            onChange(getPrevMonth(value));
           }}
         >
           <RiArrowLeftSLine />
         </ArrowButton>
         <Button onClick={() => handleCalendarShow(isCalendarShow)}>
-          {date}
+          {value}
         </Button>
         <ArrowButton
           onClick={() => {
-            setDate(getNextMonth(date));
+            onChange(getNextMonth(value));
           }}
         >
           <RiArrowRightSLine />
         </ArrowButton>
       </MonthlyContainer>
-      {isCalendarShow && <MonthlyCalendar date={date} />}
+      {isCalendarShow && <MonthlyCalendar date={value} />}
     </div>
   );
 }
