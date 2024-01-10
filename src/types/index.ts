@@ -119,3 +119,10 @@ export type ScheduleModalInfo = {
   y: number,
   schedule: ScheduleToRender,
 }
+
+// 캘린더에서 카테고리 클릭했을 때 뜨는 모달 데이터
+export type CategoryModalInfo = {
+  x: number,
+  y: number,
+  category: CalendarCategory,
+}

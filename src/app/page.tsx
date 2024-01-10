@@ -15,7 +15,8 @@ import NewScheduleModal from './NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
-import { CalendarCategory, CategoryDto, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import CategoryModal from '@/components/common/category-modal/CategoryModal';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -171,6 +172,8 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState(time.toString(time.now(), 'YYYY. MM.'));
 
   const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
+  const [categoryModalInfo, setCategoryModalInfo] = useState<CategoryModalInfo | null>(null);
+
   const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<boolean | ScheduleToRender>(false);
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
@@ -472,6 +475,16 @@ export default function Home() {
     setPriorities(newPriorities);
   }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, priorities]);
 
+  const handleCategoryClick = useCallback((newCategoryModalInfo: CategoryModalInfo) => {
+    if(!categoryModalInfo) {
+      setCategoryModalInfo(newCategoryModalInfo);
+    }
+  }, [categoryModalInfo]);
+
+  const handleCategoryModalClose = () => {
+    setCategoryModalInfo(null);
+  };
+
   const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => {
     const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
     if(!category) {
@@ -520,6 +533,7 @@ export default function Home() {
                 key={categoryToRender.category.id}
                 category={categoryToRender.category}
                 lineCount={categoryToRender.lines.length}
+                onCategoryClick={handleCategoryClick}
               />
             ))}
           </CalendarBody>
@@ -587,6 +601,12 @@ export default function Home() {
           onScheduleModalClose={handleScheduleModalClose}
           onScheduleFinish={handleScheduleFinish}
           onUpdateClick={handleUpdateScheduleClick}
+        />
+      )}
+      {categoryModalInfo && (
+        <CategoryModal
+          categoryModalInfo={categoryModalInfo}
+          onCategoryModalClose={handleCategoryModalClose}
         />
       )}
     </Container>
