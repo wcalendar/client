@@ -11,9 +11,7 @@ export type FixedModalProps = {
   width: string;
   title: string;
   buttonList: ModalButton[];
-
   children: ReactNode;
-
   onClose: () => void;
 }
 

@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import Monthly from '../common/Monthly';
 import ControlButton from '../common/ControlButton';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { ButtonText, LabelText } from './constants';
+import dayjs from 'dayjs';
 
 type CategoryHeaderProps = {
   saveHandler: (event: FormEvent<HTMLFormElement>) => void;
@@ -13,11 +14,18 @@ export default function CategoryHeader({
   saveHandler,
   cancelHandler,
 }: CategoryHeaderProps) {
+  // 임시로 이 곳에 date 를 작성해두었습니다.
+  const [date, setDate] = useState(dayjs().format('YYYY. MM.'));
+
+  const handleDateChange = (value: string) => {
+    setDate(value);
+  };
+
   return (
     <CategoryHeaderContainer>
       <CategoryHeaderContentsContainer>
         <CategoryHeaderTitle>{LabelText.pageTitle}</CategoryHeaderTitle>
-        <Monthly />
+        <Monthly value={date} onChange={handleDateChange} />
         <CategoryHeaderButtons>
           <Button
             type="submit"
