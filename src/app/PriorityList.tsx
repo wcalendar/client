@@ -2,14 +2,16 @@ import styled from "styled-components"
 import PriorityItem from "./PriorityItem";
 import Icon from "@mdi/react";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
-import { MouseEvent, useMemo, useState } from "react";
+import { DragEvent, DragEventHandler, MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Priority } from "@/types";
 
 type PriorityListProps = {
   priorities: Priority[];
   prioritiesSize: number;
   onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
-  idx: number;
+  onPriorityItemDrag: (newX: number, newY: number, priority: Priority) => void;
+  onPriorityItemDragEnd: (e: DragEvent<HTMLDivElement>) => void;
+  day: number;
 }
 
 const Container = styled.div<{ $idx: number, $priority_count: number, $open: number }>`
@@ -22,8 +24,6 @@ const Container = styled.div<{ $idx: number, $priority_count: number, $open: num
   transition: all ease .25s;
   ${({ theme, $open }) => $open ? `
     box-shadow: 0 0 4px 2px ${theme.colors.gray};
-    transform: translate(0, -5px);
-    z-index: 1500;
     border-radius: 5px;
   ` : '' }
 `;
@@ -63,18 +63,68 @@ const IconWrapper = styled.div`
   padding: 3%;
 `;
 
+const DropArea = styled.div`
+  width: 100%;
+  height: calc(var(--line-gap));
+
+  &.dragover {
+    border-bottom: 4px solid black;
+  }
+`;
+
 export default function PriorityList({
   priorities,
   prioritiesSize,
   onPriorityItemClick,
-  idx,
+  onPriorityItemDrag,
+  onPriorityItemDragEnd,
+  day,
 }: PriorityListProps) {
   const [isOpen, setOpen] = useState(false);
+  const [isDraggingOver, setDraggingOver] = useState(false);
+
+  const dropAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if(!(dropAreaRef.current)) {
+      return;
+    }
+
+    if(isDraggingOver) {
+      if(!dropAreaRef.current.classList.contains('dragover')) {
+        dropAreaRef.current.classList.add('dragover');
+      }
+    } else {
+      if(dropAreaRef.current.classList.contains('dragover')) {
+        dropAreaRef.current.classList.remove('dragover');
+      }
+    }
+    
+  }, [isDraggingOver]);
 
   const priorityCount = priorities.length;
 
   const handleOpenChange = () => {
     setOpen(!isOpen);
+  };
+
+  const handleDropAreaDragOver: DragEventHandler<HTMLDivElement> = (e) => {
+    const draggableDay = parseInt(e.dataTransfer.types[0].split('-')[1]);
+    if(draggableDay === day) {
+      e.preventDefault();
+      
+      e.dataTransfer.dropEffect = 'move';
+      
+      setDraggingOver(true);
+    }
+  };
+
+  const handleDropAreaDragLeave: DragEventHandler<HTMLDivElement> = (e) => {
+    setDraggingOver(false);
+  };
+
+  const handleDropAreaDrop: DragEventHandler<HTMLDivElement> = (e) => {
+    setDraggingOver(false);
   };
 
   const buttonText = useMemo(() => {
@@ -87,13 +137,22 @@ export default function PriorityList({
   }, [priorityCount, prioritiesSize]);
 
   return (
-    <Container $idx={idx} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
+    <Container $idx={day} $priority_count={priorityCount} $open={isOpen ? 1 : 0}>
       <List>
+        <DropArea
+          onDragOver={handleDropAreaDragOver}
+          onDragLeave={handleDropAreaDragLeave}
+          onDrop={handleDropAreaDrop}
+          ref={dropAreaRef}
+        />
         {priorities.map((priority, i) => (
           <PriorityItem
             key={`pi-${i}-${priority.scheduleId}`}
             priority={priority}
             onClick={onPriorityItemClick}
+            onDrag={onPriorityItemDrag}
+            onDragEnd={onPriorityItemDragEnd}
+            day={day}
           />
         ))}
       </List>
