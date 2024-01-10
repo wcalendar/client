@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { CategoryDto, NewScheduleDto, ScheduleToRender } from "@/types";
 import { categoryListDummyData } from "@/dummies/calendar";
 import Spinner from "@/components/common/spinner/Spinner";
+import Spinnable from "@/components/common/spinner/Spinnable";
 
 interface NewScheduleModal {
   onClose: () => void;
@@ -19,6 +20,7 @@ interface NewScheduleModal {
 }
 
 const Container = styled.div`
+  position: relative;
   height: 30rem;
 `;
 
@@ -101,15 +103,6 @@ const Tips = styled.ul`
 
 const Tip = styled.li`
   font-size: .75rem;
-`;
-
-const SpinnerWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 30rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 export default function NewScheduleModal({
@@ -221,49 +214,43 @@ export default function NewScheduleModal({
       onClose={onClose}
     >
       <Container>
-        {!isLoading ? (
-          <>
-            <Line>
-              <Label>제목</Label>
-              <Input maxLength={20} value={scheduleTitle} onChange={handleChangeScheduleTitle}></Input>
-            </Line>
-            <Line>
-              <Label>일시</Label>
-              <DatePicker value={startDate} onChange={handleStartDateChange} />
-              <Interval $invisible={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
-              <DatePicker value={endDate} onChange={handleEndDateChange} invisible={!isDuration} />
-              <DesktopDurationWrapper>
-                <div style={{width: '1rem'}} />
-                <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
-                <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
-              </DesktopDurationWrapper>
-            </Line>
-            <SubLine>
-              <Label />
+        <Spinnable isLoading={isLoading}>
+          <Line>
+            <Label>제목</Label>
+            <Input maxLength={20} value={scheduleTitle} onChange={handleChangeScheduleTitle}></Input>
+          </Line>
+          <Line>
+            <Label>일시</Label>
+            <DatePicker value={startDate} onChange={handleStartDateChange} />
+            <Interval $invisible={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
+            <DatePicker value={endDate} onChange={handleEndDateChange} invisible={!isDuration} />
+            <DesktopDurationWrapper>
+              <div style={{width: '1rem'}} />
               <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
               <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
-            </SubLine>
-            <Line>
-              <Label>카테고리</Label>
-              <DropDownWrapper>
-                <Dropdown values={dropdownValues} selectedIdx={categoryIdx} height='1.75rem' onChange={handleCategoryIdxChange} />
-              </DropDownWrapper>
-            </Line>
-            <Line>
-              <Label>우선순위 추가</Label>
-              <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
-              <RadioButton label="추가하지 않음" checked={!isPriority} onChange={() => handlePriorityChange(false)} />
-            </Line>
-            <Tips>
-              <Tip>{`카테고리 선택 후 일시 변경시에 카테고리가 없는 '월'로의 이동 및 선택은 불가합니다.`}</Tip>
-              <Tip>{`카테고리 리스트는 선택한 일시를 기준으로 일시의 시작 '월'과 종료 '월' 시점에 동시에 존재하는 카테고리들이 보여집니다.`}</Tip>
-            </Tips>
-          </>
-        ) : (
-          <SpinnerWrapper>
-            <Spinner />
-          </SpinnerWrapper>
-        )}
+            </DesktopDurationWrapper>
+          </Line>
+          <SubLine>
+            <Label />
+            <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
+            <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
+          </SubLine>
+          <Line>
+            <Label>카테고리</Label>
+            <DropDownWrapper>
+              <Dropdown values={dropdownValues} selectedIdx={categoryIdx} height='1.75rem' onChange={handleCategoryIdxChange} />
+            </DropDownWrapper>
+          </Line>
+          <Line>
+            <Label>우선순위 추가</Label>
+            <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
+            <RadioButton label="추가하지 않음" checked={!isPriority} onChange={() => handlePriorityChange(false)} />
+          </Line>
+          <Tips>
+            <Tip>{`카테고리 선택 후 일시 변경시에 카테고리가 없는 '월'로의 이동 및 선택은 불가합니다.`}</Tip>
+            <Tip>{`카테고리 리스트는 선택한 일시를 기준으로 일시의 시작 '월'과 종료 '월' 시점에 동시에 존재하는 카테고리들이 보여집니다.`}</Tip>
+          </Tips>
+        </Spinnable>
       </Container>
     </FixedModal>
   )

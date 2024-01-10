@@ -10,6 +10,7 @@ type SpinnableProps = {
 
 const SpinnerWrapper = styled.div<{ $height: string }>`
   position: absolute;
+  top: 0;
   z-index: 20;
   width: 100%;
   height: ${({ $height }) => $height};
