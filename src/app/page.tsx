@@ -18,7 +18,7 @@ import PriorityList from './PriorityList';
 import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
-import axios from 'axios';
+import { authAPI } from '@/lib/apis';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -357,11 +357,7 @@ export default function Home() {
   };
 
   const getCategoryList = async () => {
-    const response = await axios.get('https://wplanner.co.kr/api/schedules/2023/12', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('at')}`,
-      },
-    });
+    const response = await authAPI.get('/schedules/2023/12');
 
     if(response.status < 300) {
       console.log(response.data.resultBody);

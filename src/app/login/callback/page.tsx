@@ -3,13 +3,14 @@
 import { useEffect } from "react";
 import axios, { AxiosHeaders } from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
+import { noAuthAPI } from "@/lib/apis";
 
 export default function Callback() {
   const router = useRouter();
   const state = useSearchParams().get('state');
 
   const callback = async () => {
-    const response = await axios.get(`https://wplanner.co.kr/api/token/access/${state}`, {
+    const response = await noAuthAPI.get(`/token/access/${state}`, {
       withCredentials: true,
     });
 
