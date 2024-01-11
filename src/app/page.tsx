@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
 import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
+import Spinnable from '@/components/common/spinner/Spinnable';
 import axios from 'axios';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
@@ -199,6 +200,8 @@ export default function Home() {
   const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
+
+  const [isLoading, setLoading] = useState(false);
 
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
@@ -578,41 +581,64 @@ export default function Home() {
     <Container>
       <Header date={selectedDate} onDateChange={handleSelectedDateChange} />
       <Calendar>
-        <CategorySide ref={categoryBody}>
-          <CalendarHeader $day_count={1}>
-            <HeaderSection>
-              <Cell isCategory>
-                <SettingCategoryButton onClick={handleMoveCategoryPage}>
-                  카테고리 관리
-                </SettingCategoryButton>
-              </Cell>
-            </HeaderSection>
-            <PrioritySection $priority_count={prioritiesSize}>
-              <PriorityLabel>
-                일정 우선순위
-                <PriorityTip>{`* Drag&Drop으로 순서 변경이 가능`}</PriorityTip>
-              </PriorityLabel>
-            </PrioritySection>
-          </CalendarHeader>
-          <CalendarBody $day_count={1}>
-            {categoryToRenderList.map(categoryToRender => (
-              <CategoryCell
-                key={categoryToRender.category.id}
-                category={categoryToRender.category}
-                lineCount={categoryToRender.lines.length}
-                onCategoryClick={handleCategoryClick}
-              />
-            ))}
-          </CalendarBody>
-        </CategorySide>
-        <ScheduleSide ref={scheduleBody}>
-          <CalendarHeader $day_count={lastDayOfMonth}>
-            <HeaderSection>
-              {calendarHeaderItems.map(headerItem => (
-                <Cell key={headerItem}>{headerItem}</Cell>
+        <Spinnable isLoading={isLoading}>
+          <CategorySide ref={categoryBody}>
+            <CalendarHeader $day_count={1}>
+              <HeaderSection>
+                <Cell isCategory>
+                  <SettingCategoryButton onClick={handleMoveCategoryPage}>
+                    카테고리 관리
+                  </SettingCategoryButton>
+                </Cell>
+              </HeaderSection>
+              <PrioritySection $priority_count={prioritiesSize}>
+                <PriorityLabel>
+                  일정 우선순위
+                  <PriorityTip>{`* Drag&Drop으로 순서 변경이 가능`}</PriorityTip>
+                </PriorityLabel>
+              </PrioritySection>
+            </CalendarHeader>
+            <CalendarBody $day_count={1}>
+              {categoryToRenderList.map(categoryToRender => (
+                <CategoryCell
+                  key={categoryToRender.category.id}
+                  category={categoryToRender.category}
+                  lineCount={categoryToRender.lines.length}
+                  onCategoryClick={handleCategoryClick}
+                />
               ))}
-            </HeaderSection>
-            <PrioritySection $priority_count={prioritiesSize}>
+            </CalendarBody>
+          </CategorySide>
+          <ScheduleSide ref={scheduleBody}>
+            <CalendarHeader $day_count={lastDayOfMonth}>
+              <HeaderSection>
+                {calendarHeaderItems.map(headerItem => (
+                  <Cell key={headerItem}>{headerItem}</Cell>
+                ))}
+              </HeaderSection>
+              <PrioritySection $priority_count={prioritiesSize}>
+                <DivideLines $day_count={lastDayOfMonth}>
+                  {Array.from({ length: lastDayOfMonth }, () => null).map(
+                    (_, i) => (
+                      <DivideLine key={`div${i}`} />
+                    ),
+                  )}
+                </DivideLines>
+                {priorities.map((priority, i) => (
+                  <PriorityList
+                    key={`pl-${i}`}
+                    priorities={priority}
+                    prioritiesSize={prioritiesSize}
+                    onPriorityItemClick={handlePriorityClick}
+                    onPriorityItemDrag={handlePriorityItemDrag}
+                    onPriorityItemDragEnd={handlePriorityItemDragEnd}
+                    day={i}
+                  />
+                ))}
+                {draggedPriority && (<DragImage style={{ left: x+20, top: y+10, }} >{draggedPriority.content}</DragImage>)}
+              </PrioritySection>
+            </CalendarHeader>
+            <CalendarBody $day_count={lastDayOfMonth}>
               <DivideLines $day_count={lastDayOfMonth}>
                 {Array.from({ length: lastDayOfMonth }, () => null).map(
                   (_, i) => (
@@ -620,37 +646,16 @@ export default function Home() {
                   ),
                 )}
               </DivideLines>
-              {priorities.map((priority, i) => (
-                <PriorityList
-                  key={`pl-${i}`}
-                  priorities={priority}
-                  prioritiesSize={prioritiesSize}
-                  onPriorityItemClick={handlePriorityClick}
-                  onPriorityItemDrag={handlePriorityItemDrag}
-                  onPriorityItemDragEnd={handlePriorityItemDragEnd}
-                  day={i}
+              {categoryToRenderList.map((categoryToRender, i) => (
+                <ScheduleLine
+                  key={`schedule-${categoryToRender.category.id}`}
+                  categoryToRender={categoryToRender}
+                  onScheduleClick={handleScheduleClick}
                 />
               ))}
-              {draggedPriority && (<DragImage style={{ left: x+20, top: y+10, }} >{draggedPriority.content}</DragImage>)}
-            </PrioritySection>
-          </CalendarHeader>
-          <CalendarBody $day_count={lastDayOfMonth}>
-            <DivideLines $day_count={lastDayOfMonth}>
-              {Array.from({ length: lastDayOfMonth }, () => null).map(
-                (_, i) => (
-                  <DivideLine key={`div${i}`} />
-                ),
-              )}
-            </DivideLines>
-            {categoryToRenderList.map((categoryToRender, i) => (
-              <ScheduleLine
-                key={`schedule-${categoryToRender.category.id}`}
-                categoryToRender={categoryToRender}
-                onScheduleClick={handleScheduleClick}
-              />
-            ))}
-          </CalendarBody>
-        </ScheduleSide>
+            </CalendarBody>
+          </ScheduleSide>
+        </Spinnable>
       </Calendar>
       <AddScheduleButton
         $isOpen={isNewScheduleModalOpen ? 'true' : 'false'}
