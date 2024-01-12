@@ -8,6 +8,7 @@ type PriorityItemProps = {
   onDrag: (newX: number, newY:number, priority: Priority) => void;
   onDragEnd: (e: DragEvent<HTMLDivElement>) => void;
   day: number;
+  idx: number;
 }
 
 const Wrapper = styled.div`
@@ -55,6 +56,7 @@ export default function PriorityItem({
   onDrag,
   onDragEnd,
   day,
+  idx,
 }: PriorityItemProps) {
   const { color, level, content, isFinished, categoryId, groupCode, scheduleId } = priority;
 
@@ -90,7 +92,7 @@ export default function PriorityItem({
     e.dataTransfer.setDragImage(emptyImage, 0, 0);
     e.dataTransfer.effectAllowed = 'move';
 
-    e.dataTransfer.setData(`day-${day}`, `${scheduleId}`);
+    e.dataTransfer.setData(`day-${day}`, `${idx}`);
   };
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
