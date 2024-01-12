@@ -547,7 +547,7 @@ export default function Home() {
     setY(newY);
   };
   
-  const handlePriorityItemDragEnd = (e: DragEvent<HTMLDivElement>) => {
+  const handlePriorityItemDragEnd = (e?: DragEvent<HTMLDivElement>) => {
     setDraggedPriority(null);
 
     const dragImage = document.getElementById('drag-image');
@@ -584,6 +584,7 @@ export default function Home() {
 
     setPrioritiesByDay(newPrioritiesByDay);
 
+    handlePriorityItemDragEnd();
   }, [prioritiesByDay]);
 
   return (
