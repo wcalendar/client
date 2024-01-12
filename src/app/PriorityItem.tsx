@@ -7,6 +7,7 @@ type PriorityItemProps = {
   onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
   onDrag: (newX: number, newY:number, priority: Priority) => void;
   onDragEnd: (e: DragEvent<HTMLDivElement>) => void;
+  onDrop: (day: number, draggableIdx: number, droppableIdx: number) => void;
   day: number;
   idx: number;
 }
@@ -55,6 +56,7 @@ export default function PriorityItem({
   onClick,
   onDrag,
   onDragEnd,
+  onDrop,
   day,
   idx,
 }: PriorityItemProps) {
@@ -92,7 +94,7 @@ export default function PriorityItem({
     e.dataTransfer.setDragImage(emptyImage, 0, 0);
     e.dataTransfer.effectAllowed = 'move';
 
-    e.dataTransfer.setData(`day-${day}`, `${idx}`);
+    e.dataTransfer.setData(`day-${day}`, `${idx-1}`);
   };
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
@@ -111,7 +113,14 @@ export default function PriorityItem({
   };
 
   const handleDrop: DragEventHandler<HTMLDivElement> = (e) => {
-    setDraggingOver(false);
+    const draggableDay = parseInt(e.dataTransfer.types[0].split('-')[1]);
+    if(draggableDay === day) {
+      e.preventDefault();
+      const draggableIdx = e.dataTransfer.getData(`day-${day}`)
+      onDrop(day, parseInt(draggableIdx), idx);
+      
+      setDraggingOver(false);
+    }
   };
 
   return (

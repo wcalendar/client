@@ -132,6 +132,15 @@ const calendarDummyDataMonth = (month: number): ResDto<CategoryDto[]> => ({
           scheduleDate: time.toString(time.new(2024, month, 2), 'YYYY-MM-DD'),
           finished: false,
         },
+        {
+          scheduleId: 9,
+          categoryId: 1,
+          scheduleGroupCode: 106,
+          scheduleContent: "Schedule 6",
+          schedulePriority: 0,
+          scheduleDate: time.toString(time.new(2024, month, 3), 'YYYY-MM-DD'),
+          finished: false,
+        },
       ],
       children: [
         {
