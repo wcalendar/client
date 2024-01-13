@@ -5,7 +5,7 @@ import { MouseEvent, useCallback } from "react";
 const Container = styled.div<{ $line_count: number, }>`
   width: 100%;
   height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
-  margin-top: var(--line-gap);
+  margin-bottom: var(--line-gap);
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;

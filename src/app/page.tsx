@@ -122,6 +122,7 @@ const PriorityTip = styled.div`
 
 const CalendarBody = styled.div<{ $day_count: number }>`
   width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
+  padding-top: var(--line-gap);
   position: relative;
 `;
 
