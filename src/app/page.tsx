@@ -4,17 +4,17 @@ import Header from '@/components/common/Header';
 import { calendarDummyData } from '@/dummies/calendar';
 import { DragEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Cell from './Cell';
-import CategoryCell from './CategoryCell';
-import ScheduleLine from './ScheduleLine';
+import HeaderCell from '../components/calendar/HeaderCell';
+import CategoryCell from '../components/calendar/CategoryCell';
+import ScheduleLine from '../components/calendar/ScheduleLine';
 import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
-import NewScheduleModal from './NewScheduleModal';
+import NewScheduleModal from '../components/calendar/NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
-import PriorityList from './PriorityList';
+import PriorityList from '../components/calendar/PriorityList';
 import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
@@ -595,11 +595,11 @@ export default function Home() {
           <CategorySide ref={categoryBody}>
             <CalendarHeader $day_count={1}>
               <HeaderSection>
-                <Cell isCategory>
+                <HeaderCell isCategory>
                   <SettingCategoryButton onClick={handleMoveCategoryPage}>
                     카테고리 관리
                   </SettingCategoryButton>
-                </Cell>
+                </HeaderCell>
               </HeaderSection>
               <PrioritySection $priority_count={prioritiesSize}>
                 <PriorityLabel>
@@ -623,7 +623,7 @@ export default function Home() {
             <CalendarHeader $day_count={lastDayOfMonth}>
               <HeaderSection>
                 {calendarHeaderItems.map(headerItem => (
-                  <Cell key={headerItem}>{headerItem}</Cell>
+                  <HeaderCell key={headerItem}>{headerItem}</HeaderCell>
                 ))}
               </HeaderSection>
               <PrioritySection $priority_count={prioritiesSize}>

@@ -10,15 +10,15 @@ const Container = styled.div<{ $is_category: number; }>`
   align-items: center;
 `;
 
-type CellProps = {
+type HeaderCellProps = {
   isCategory?: boolean;
   children: ReactNode;
 }
 
-export default function Cell({
+export default function HeaderCell({
   isCategory,
   children,
-}: CellProps) {
+}: HeaderCellProps) {
   return (
     <Container $is_category={isCategory ? 0 : 1}>
       {children}
