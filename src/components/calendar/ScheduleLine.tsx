@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { MouseEvent, useCallback, useMemo } from "react";
 import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "@/types";
 import { CategoryColor } from "@/types";
+import Cell from "./Cell";
 
 type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
@@ -61,6 +62,7 @@ export default function ScheduleLine({
 }: ScheduleLineProps) {
   const { lines, category } = categoryToRender;
 
+  console.log(lines);
   const schedulesByLine = useMemo(() => {
     return categoryToRender.lines.map(line => {
       const scheduleList: ScheduleToRender[] = [];
@@ -90,9 +92,9 @@ export default function ScheduleLine({
 
   return (
     <Container $line_count={lines.length}>
-      {schedulesByLine.map((line, lineIdx) => (
+      {lines.map((line, lineIdx) => (
         <Line key={`${category.id}-${lineIdx}`}>
-          {line.map((schedule) => (
+          {line.map((schedule, scheduleIdx) => schedule ? (
             <ScheduleItem
               key={schedule.groupCode}
               $start={schedule.startDate.date()}
@@ -105,6 +107,8 @@ export default function ScheduleLine({
                 {schedule.content}
               </ScheduleItemText>
             </ScheduleItem>
+          ) : (
+            <Cell key={`c-${category.id}-${lineIdx}-${scheduleIdx}`} start={scheduleIdx} />
           ))}
         </Line>
       ))}

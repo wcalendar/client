@@ -15,7 +15,7 @@ type HeaderCellProps = {
   children: ReactNode;
 }
 
-export default function HeaderCell({
+export default function Cell({
   isCategory,
   children,
 }: HeaderCellProps) {

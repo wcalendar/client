@@ -247,8 +247,8 @@ export default function Home() {
         isVisible: category.categoryVisible,
         schedules: [],
       };
-      const lines: (ScheduleToRender | undefined)[][] = [];
-      lines.push(Array(lastDayInMonth));
+      const lines: (ScheduleToRender | null)[][] = [];
+      lines.push(Array.from({length: lastDayInMonth}, () => null));
 
       const rangeSchedules: ScheduleToRender[] = [];
 
@@ -321,7 +321,7 @@ export default function Home() {
 
         // 모든 라인에 할당되어 있으면 새 라인 생성하고 할당
         if (!isAllocated) {
-          lines.push(Array(lastDayInMonth));
+          lines.push(Array.from({length: lastDayInMonth}, () => null));
           for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
             lines[lines.length - 1][day] = schedule;
           }
