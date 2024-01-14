@@ -11,6 +11,7 @@ type PriorityListProps = {
   onPriorityItemClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
   onPriorityItemDrag: (newX: number, newY: number, priority: Priority) => void;
   onPriorityItemDragEnd: (e: DragEvent<HTMLDivElement>) => void;
+  onPriorityItemDrop: (day: number, draggableIdx: number, droppableIdx: number) => void;
   day: number;
 }
 
@@ -78,6 +79,7 @@ export default function PriorityList({
   onPriorityItemClick,
   onPriorityItemDrag,
   onPriorityItemDragEnd,
+  onPriorityItemDrop,
   day,
 }: PriorityListProps) {
   const [isOpen, setOpen] = useState(false);
@@ -124,7 +126,14 @@ export default function PriorityList({
   };
 
   const handleDropAreaDrop: DragEventHandler<HTMLDivElement> = (e) => {
-    setDraggingOver(false);
+    const draggableDay = parseInt(e.dataTransfer.types[0].split('-')[1]);
+    if(draggableDay === day) {
+      e.preventDefault();
+      const draggableIdx = e.dataTransfer.getData(`day-${day}`)
+      onPriorityItemDrop(day, parseInt(draggableIdx), 0);
+      
+      setDraggingOver(false);
+    }
   };
 
   const buttonText = useMemo(() => {
@@ -152,7 +161,9 @@ export default function PriorityList({
             onClick={onPriorityItemClick}
             onDrag={onPriorityItemDrag}
             onDragEnd={onPriorityItemDragEnd}
+            onDrop={onPriorityItemDrop}
             day={day}
+            idx={i+1}
           />
         ))}
       </List>

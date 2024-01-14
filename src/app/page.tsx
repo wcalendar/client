@@ -196,7 +196,7 @@ export default function Home() {
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
   >([]);
-  const [priorities, setPriorities] = useState<Priority[][]>([]);
+  const [prioritiesByDay, setPrioritiesByDay] = useState<Priority[][]>([]);
   const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
@@ -352,7 +352,7 @@ export default function Home() {
     })
 
     newPriorities.forEach(priorityList => priorityList.sort((a, b) => a.priority - b.priority));
-    setPriorities(newPriorities);
+    setPrioritiesByDay(newPriorities);
     setCategoryToRenderList(newCategoryToRenderList);
   };
 
@@ -447,7 +447,7 @@ export default function Home() {
         scheduleGroupCode: schedule.groupCode,
         scheduleContent: schedule.content,
         scheduleDate: time.toString( time.new(schedule.startDate.year(), schedule.startDate.month(), d) , 'YYYY-MM-DD'),
-        schedulePriority: priorities[d-1][priorities[d-1].length-1].priority + 1,
+        schedulePriority: prioritiesByDay[d-1][prioritiesByDay[d-1].length-1].priority + 1,
         finished: false,
       });
     }
@@ -455,7 +455,7 @@ export default function Home() {
     category.schedules.push(...scheduleDtos);
 
     setCategoryList(newCategoryList);
-  }, [categoryList, priorities]);
+  }, [categoryList, prioritiesByDay]);
 
   const router = useRouter();
   const handleMoveCategoryPage = () => {
@@ -514,7 +514,7 @@ export default function Home() {
     // 우선순위
     const startDay = schedule.startDate.date();
     const endDay = schedule.endDate.date();
-    const newPriorities = [...priorities];
+    const newPriorities = [...prioritiesByDay];
     for(let i=startDay; i<=endDay; i++) {
       for(let j=0; j<newPriorities[i].length; j++) {
         if(newPriorities[i-1][j].groupCode === groupCode) {
@@ -523,8 +523,8 @@ export default function Home() {
         }
       }
     }
-    setPriorities(newPriorities);
-  }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, priorities]);
+    setPrioritiesByDay(newPriorities);
+  }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, prioritiesByDay]);
 
   const handleCategoryClick = useCallback((newCategoryModalInfo: CategoryModalInfo) => {
     if(!categoryModalInfo) {
@@ -564,7 +564,7 @@ export default function Home() {
     setY(newY);
   };
   
-  const handlePriorityItemDragEnd = (e: DragEvent<HTMLDivElement>) => {
+  const handlePriorityItemDragEnd = (e?: DragEvent<HTMLDivElement>) => {
     setDraggedPriority(null);
 
     const dragImage = document.getElementById('drag-image');
@@ -572,6 +572,37 @@ export default function Home() {
       dragImage.remove();
     }
   };
+
+  const handlePriorityItemDrop = useCallback((day: number, draggableIdx: number, droppableIdx: number) => {
+    const newPrioritiesByDay = [...prioritiesByDay];
+    const priorities = newPrioritiesByDay[day];
+
+    const targetIdx = droppableIdx > draggableIdx ? droppableIdx-1 : droppableIdx;
+    console.log(draggableIdx);
+    console.log(targetIdx);
+
+    if(draggableIdx < targetIdx) {
+      priorities[draggableIdx].priority = targetIdx;
+
+      for(let i=draggableIdx+1; i<=targetIdx; i++) {
+        (priorities[i].priority)--;
+      }
+    } else if(draggableIdx > targetIdx) {
+      priorities[draggableIdx].priority = targetIdx;
+
+      for(let i=targetIdx; i<draggableIdx; i++) {
+        (priorities[i].priority)++;
+      }
+    } else return;
+
+    console.log(priorities);
+
+    priorities.sort((a, b) => a.priority - b.priority);
+
+    setPrioritiesByDay(newPrioritiesByDay);
+
+    handlePriorityItemDragEnd();
+  }, [prioritiesByDay]);
 
   return (
     <Container>
@@ -620,14 +651,15 @@ export default function Home() {
                     ),
                   )}
                 </DivideLines>
-                {priorities.map((priority, i) => (
+                {prioritiesByDay.map((priorities, i) => (
                   <PriorityList
                     key={`pl-${i}`}
-                    priorities={priority}
+                    priorities={priorities}
                     prioritiesSize={prioritiesSize}
                     onPriorityItemClick={handlePriorityClick}
                     onPriorityItemDrag={handlePriorityItemDrag}
                     onPriorityItemDragEnd={handlePriorityItemDragEnd}
+                    onPriorityItemDrop={handlePriorityItemDrop}
                     day={i}
                   />
                 ))}
