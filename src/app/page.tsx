@@ -18,7 +18,6 @@ import PriorityList from '../components/calendar/PriorityList';
 import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
-import useMode from '@/hooks/useMode';
 import useDragMove from '@/hooks/useDragMove';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];

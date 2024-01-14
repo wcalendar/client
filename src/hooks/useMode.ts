@@ -6,6 +6,7 @@ export default function useMode(key: string) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if(e.key === key) {
+        e.preventDefault();
         setMode(true);
       }
     };
