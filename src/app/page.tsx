@@ -630,7 +630,7 @@ export default function Home() {
               ))}
             </CalendarBody>
           </CategorySide>
-          <ScheduleSide ref={scheduleBody} onMouseMove={(e) => e.preventDefault()}>
+          <ScheduleSide ref={scheduleBody} onMouseMove={(e) => {if(isMoveMode) e.preventDefault()} }>
             <CalendarHeader $day_count={lastDayOfMonth}>
               <HeaderSection>
                 {calendarHeaderItems.map(headerItem => (
