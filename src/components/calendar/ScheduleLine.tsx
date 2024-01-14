@@ -69,7 +69,6 @@ export default function ScheduleLine({
 }: ScheduleLineProps) {
   const { lines, category } = categoryToRender;
 
-  console.log(lines);
   const schedulesByLine = useMemo(() => {
     return categoryToRender.lines.map(line => {
       const scheduleList: ScheduleToRender[] = [];

@@ -19,6 +19,7 @@ import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, New
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useMode from '@/hooks/useMode';
+import useDragMove from '@/hooks/useDragMove';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -206,17 +207,12 @@ export default function Home() {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
 
-  const [isMoveMode] = useMode(' ');
-  const [psl, setPsl] = useState(-1000);
-  const [pst, setPst] = useState(-1000);
-  const [px, setPx] = useState(-1000);
-  const [py, setPy] = useState(-1000);
-
   const [isLoading, setLoading] = useState(false);
-
+  
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
-
+  const [isMoveMode, onMouseDown, onMouseUp, onMouseMove] = useDragMove<HTMLDivElement>(scheduleBody);
+  
   const now = time.now();
   const lastDayOfMonth = now.daysInMonth();
   const calendarHeaderItems = useMemo(() => {
@@ -581,9 +577,6 @@ export default function Home() {
     const priorities = newPrioritiesByDay[day];
 
     const targetIdx = droppableIdx > draggableIdx ? droppableIdx-1 : droppableIdx;
-    console.log(draggableIdx);
-    console.log(targetIdx);
-
     if(draggableIdx < targetIdx) {
       priorities[draggableIdx].priority = targetIdx;
 
@@ -597,8 +590,6 @@ export default function Home() {
         (priorities[i].priority)++;
       }
     } else return;
-
-    console.log(priorities);
 
     priorities.sort((a, b) => a.priority - b.priority);
 
@@ -671,31 +662,10 @@ export default function Home() {
               </PrioritySection>
             </CalendarHeader>
             <CalendarBody $day_count={lastDayOfMonth} $is_move_mode={isMoveMode ? 1 : 0}
-              onMouseDown={(e) => {
-                setPx(e.clientX);
-                setPy(e.clientY);
-                setPsl(scheduleBody.current!.scrollLeft)
-                setPst(scheduleBody.current!.scrollTop)
-              }}
-              onMouseUp={() => {
-                setPx(-1000);
-                setPy(-1000);
-                setPsl(-1000);
-                setPst(-1000);
-              }}
-              onMouseMove={(e) => {
-                console.log(px !== -1000);
-                if(px > -1000) {
-                  const scheduleBodyElement = (scheduleBody.current as HTMLDivElement);
-                  console.log(px - e.clientX);
-                  console.log(py - e.clientY);
-  
-                  scheduleBodyElement.scrollTo({
-                    left: psl + (px - e.clientX),
-                    top: pst + (py - e.clientY),
-                  })
-                }
-              }}
+              onMouseDown={onMouseDown}
+              onMouseUp={onMouseUp}
+              onMouseMove={onMouseMove}
+              onMouseLeave={onMouseUp}
             >
               <DivideLines $day_count={lastDayOfMonth}>
                 {Array.from({ length: lastDayOfMonth }, () => null).map(
