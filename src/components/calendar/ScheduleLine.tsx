@@ -113,7 +113,13 @@ export default function ScheduleLine({
               </ScheduleItemText>
             </ScheduleItem>
           ) : (
-            <Cell key={`c-${category.id}-${lineIdx}-${scheduleIdx}`} start={scheduleIdx} categoryIdx={categoryIdx} onHover={onCellHover} />
+            <Cell
+              key={`c-${category.id}-${lineIdx}-${scheduleIdx}`}
+              start={scheduleIdx}
+              categoryIdx={categoryIdx}
+              categoryColor={category.color}
+              onHover={onCellHover}
+            />
           ))}
         </Line>
       ))}

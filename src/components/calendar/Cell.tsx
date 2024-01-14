@@ -1,3 +1,4 @@
+import { CategoryColor } from "@/types";
 import { mdiPlus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { MouseEventHandler } from "react";
@@ -6,10 +7,11 @@ import styled from "styled-components";
 type CellProps = {
   start: number;
   categoryIdx: number;
+  categoryColor: CategoryColor;
   onHover: (categoryIdx: number) => void;
 };
 
-const Container = styled.div<{ $start: number }>`
+const Container = styled.div<{ $start: number, $color: CategoryColor }>`
   position: absolute;
   top: 0;
   left: calc(${({ $start }) => `${$start} * (var(--cell-width) + 1px)`});
@@ -23,7 +25,7 @@ const Container = styled.div<{ $start: number }>`
   color: white;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.lightBlue};
+    background: ${({ theme, $color }) => theme.colors.category($color, 1)};
     color: ${({ theme }) => theme.colors.gray};
   }
 `;
@@ -43,6 +45,7 @@ const IconWrapper = styled.div`
 export default function Cell({
   start,
   categoryIdx,
+  categoryColor,
   onHover,
 }: CellProps) {
   const handleMouseOver: MouseEventHandler<HTMLDivElement> = () => {
@@ -50,7 +53,7 @@ export default function Cell({
   }
 
   return (
-    <Container $start={start} onMouseOver={handleMouseOver}>
+    <Container $start={start} $color={categoryColor} onMouseOver={handleMouseOver}>
       <IconWrapper>
         <Icon path={mdiPlus} />
       </IconWrapper>

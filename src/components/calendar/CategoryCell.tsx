@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CalendarCategory, CategoryColor, CategoryModalInfo } from "@/types";
 import { MouseEvent, useCallback } from "react";
 
-const Container = styled.div<{ $line_count: number, $is_hovered: number }>`
+const Container = styled.div<{ $line_count: number, $is_hovered: number, $color: CategoryColor }>`
   width: 100%;
   height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
   margin-bottom: var(--line-gap);
@@ -11,7 +11,7 @@ const Container = styled.div<{ $line_count: number, $is_hovered: number }>`
   align-items: flex-start;
   font-size: .75rem;
   user-select: none;
-  ${({ $is_hovered, theme }) => $is_hovered ? `background: ${theme.colors.lightBlue};` : ''}
+  ${({ $is_hovered, theme, $color }) => $is_hovered ? `background: ${theme.colors.category($color, 1)}40;` : ''}
   transition: background ease .25s; 
 `;
 
@@ -74,7 +74,7 @@ export default function CategoryCell({
   }, [category]);
 
   return (
-    <Container $line_count={lineCount} $is_hovered={isHovered ? 1 : 0}>
+    <Container $line_count={lineCount} $is_hovered={isHovered ? 1 : 0} $color={color}>
       <CategoryName $level={level} $color={color} onClick={handleClick}>
         {name}
       </CategoryName>
