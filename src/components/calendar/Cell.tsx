@@ -8,7 +8,8 @@ type CellProps = {
   start: number;
   categoryIdx: number;
   categoryColor: CategoryColor;
-  onHover: (categoryIdx: number) => void;
+  onMouseOver: (categoryIdx: number) => void;
+  onMouseOut: () => void;
 };
 
 const Container = styled.div<{ $start: number, $color: CategoryColor }>`
@@ -46,14 +47,15 @@ export default function Cell({
   start,
   categoryIdx,
   categoryColor,
-  onHover,
+  onMouseOver,
+  onMouseOut,
 }: CellProps) {
   const handleMouseOver: MouseEventHandler<HTMLDivElement> = () => {
-    onHover(categoryIdx);
+    onMouseOver(categoryIdx);
   }
 
   return (
-    <Container $start={start} $color={categoryColor} onMouseOver={handleMouseOver}>
+    <Container $start={start} $color={categoryColor} onMouseOver={handleMouseOver} onMouseOut={onMouseOut}>
       <IconWrapper>
         <Icon path={mdiPlus} />
       </IconWrapper>

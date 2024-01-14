@@ -394,9 +394,13 @@ export default function Home() {
     toRenderingData(categoryList, lastDayOfMonth);
   }, [categoryList]);
 
-  const handleCellHover = (categoryIdx: number) => {
+  const handleCellMouseOver = (categoryIdx: number) => {
     setHoveredCategoryIdx(categoryIdx);
   };
+
+  const handleCellMouseOut = () => {
+    setHoveredCategoryIdx(-1);
+  }
 
   const handleOpenNewScheduleModal = () => {
     setNewScheduleModalOpen(true);
@@ -671,7 +675,8 @@ export default function Home() {
                   key={`schedule-${categoryToRender.category.id}`}
                   categoryToRender={categoryToRender}
                   onScheduleClick={handleScheduleClick}
-                  onCellHover={handleCellHover}
+                  onCellMouseOver={handleCellMouseOver}
+                  onCellMouseOut={handleCellMouseOut}
                   categoryIdx={i}
                 />
               ))}
