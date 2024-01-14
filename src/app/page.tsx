@@ -18,6 +18,7 @@ import PriorityList from '../components/calendar/PriorityList';
 import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
+import useMode from '@/hooks/useMode';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -120,11 +121,12 @@ const PriorityTip = styled.div`
   color: ${({ theme }) => theme.colors.blue};
 `;
 
-const CalendarBody = styled.div<{ $day_count: number }>`
+const CalendarBody = styled.div<{ $day_count: number, $is_move_mode: number, }>`
   width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
   min-height: calc(100vh - 47.5px - 2.5rem);
   padding-top: var(--line-gap);
   position: relative;
+  ${({ $is_move_mode }) => $is_move_mode ? 'cursor: grab;' : ''}
 `;
 
 const SettingCategoryButton = styled.button`
@@ -203,6 +205,12 @@ export default function Home() {
   const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
+
+  const [isMoveMode] = useMode(' ');
+  const [psl, setPsl] = useState(-1000);
+  const [pst, setPst] = useState(-1000);
+  const [px, setPx] = useState(-1000);
+  const [py, setPy] = useState(-1000);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -620,7 +628,7 @@ export default function Home() {
                 </PriorityLabel>
               </PrioritySection>
             </CalendarHeader>
-            <CalendarBody $day_count={1}>
+            <CalendarBody $day_count={1} $is_move_mode={0}>
               {categoryToRenderList.map((categoryToRender, i) => (
                 <CategoryCell
                   key={categoryToRender.category.id}
@@ -662,7 +670,33 @@ export default function Home() {
                 {draggedPriority && (<DragImage style={{ left: x+20, top: y+10, }} >{draggedPriority.content}</DragImage>)}
               </PrioritySection>
             </CalendarHeader>
-            <CalendarBody $day_count={lastDayOfMonth}>
+            <CalendarBody $day_count={lastDayOfMonth} $is_move_mode={isMoveMode ? 1 : 0}
+              onMouseDown={(e) => {
+                setPx(e.clientX);
+                setPy(e.clientY);
+                setPsl(scheduleBody.current!.scrollLeft)
+                setPst(scheduleBody.current!.scrollTop)
+              }}
+              onMouseUp={() => {
+                setPx(-1000);
+                setPy(-1000);
+                setPsl(-1000);
+                setPst(-1000);
+              }}
+              onMouseMove={(e) => {
+                console.log(px !== -1000);
+                if(px > -1000) {
+                  const scheduleBodyElement = (scheduleBody.current as HTMLDivElement);
+                  console.log(px - e.clientX);
+                  console.log(py - e.clientY);
+  
+                  scheduleBodyElement.scrollTo({
+                    left: psl + (px - e.clientX),
+                    top: pst + (py - e.clientY),
+                  })
+                }
+              }}
+            >
               <DivideLines $day_count={lastDayOfMonth}>
                 {Array.from({ length: lastDayOfMonth }, () => null).map(
                   (_, i) => (
