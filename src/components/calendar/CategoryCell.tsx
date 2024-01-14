@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CalendarCategory, CategoryColor, CategoryModalInfo } from "@/types";
 import { MouseEvent, useCallback } from "react";
 
-const Container = styled.div<{ $line_count: number, }>`
+const Container = styled.div<{ $line_count: number, $is_hovered: number }>`
   width: 100%;
   height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
   margin-bottom: var(--line-gap);
@@ -11,6 +11,8 @@ const Container = styled.div<{ $line_count: number, }>`
   align-items: flex-start;
   font-size: .75rem;
   user-select: none;
+  ${({ $is_hovered, theme }) => $is_hovered ? `background: ${theme.colors.lightBlue};` : ''}
+  transition: background ease .25s; 
 `;
 
 const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
@@ -52,12 +54,14 @@ type CategoryCellProps = {
   category: CalendarCategory;
   lineCount: number;
   onCategoryClick: (category: CategoryModalInfo) => void;
+  isHovered: boolean;
 };
 
 export default function CategoryCell({
   category,
   lineCount,
   onCategoryClick,
+  isHovered,
 }: CategoryCellProps) {
   const {id, name, level, color, description, } = category;
 
@@ -70,7 +74,7 @@ export default function CategoryCell({
   }, [category]);
 
   return (
-    <Container $line_count={lineCount}>
+    <Container $line_count={lineCount} $is_hovered={isHovered ? 1 : 0}>
       <CategoryName $level={level} $color={color} onClick={handleClick}>
         {name}
       </CategoryName>

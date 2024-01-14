@@ -7,6 +7,8 @@ import Cell from "./Cell";
 type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
   onScheduleClick: (info: ScheduleModalInfo) => void;
+  onCellHover: (cateogoryIdx: number) => void;
+  categoryIdx: number;
 }
 
 const Container = styled.div<{ $line_count: number }>`
@@ -60,6 +62,8 @@ const ScheduleItemText = styled.span<{ $is_finished: number }>`
 export default function ScheduleLine({
   categoryToRender,
   onScheduleClick,
+  onCellHover,
+  categoryIdx,
 }: ScheduleLineProps) {
   const { lines, category } = categoryToRender;
 
@@ -109,7 +113,7 @@ export default function ScheduleLine({
               </ScheduleItemText>
             </ScheduleItem>
           ) : (
-            <Cell key={`c-${category.id}-${lineIdx}-${scheduleIdx}`} start={scheduleIdx} />
+            <Cell key={`c-${category.id}-${lineIdx}-${scheduleIdx}`} start={scheduleIdx} categoryIdx={categoryIdx} onHover={onCellHover} />
           ))}
         </Line>
       ))}

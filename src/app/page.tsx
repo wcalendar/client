@@ -198,6 +198,8 @@ export default function Home() {
     CategoryToRender[]
   >([]);
   const [prioritiesByDay, setPrioritiesByDay] = useState<Priority[][]>([]);
+
+  const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
   const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
@@ -391,6 +393,10 @@ export default function Home() {
   useEffect(() => {
     toRenderingData(categoryList, lastDayOfMonth);
   }, [categoryList]);
+
+  const handleCellHover = (categoryIdx: number) => {
+    setHoveredCategoryIdx(categoryIdx);
+  };
 
   const handleOpenNewScheduleModal = () => {
     setNewScheduleModalOpen(true);
@@ -611,12 +617,13 @@ export default function Home() {
               </PrioritySection>
             </CalendarHeader>
             <CalendarBody $day_count={1}>
-              {categoryToRenderList.map(categoryToRender => (
+              {categoryToRenderList.map((categoryToRender, i) => (
                 <CategoryCell
                   key={categoryToRender.category.id}
                   category={categoryToRender.category}
                   lineCount={categoryToRender.lines.length}
                   onCategoryClick={handleCategoryClick}
+                  isHovered={hoveredCategoryIdx === i}
                 />
               ))}
             </CalendarBody>
@@ -664,6 +671,8 @@ export default function Home() {
                   key={`schedule-${categoryToRender.category.id}`}
                   categoryToRender={categoryToRender}
                   onScheduleClick={handleScheduleClick}
+                  onCellHover={handleCellHover}
+                  categoryIdx={i}
                 />
               ))}
             </CalendarBody>

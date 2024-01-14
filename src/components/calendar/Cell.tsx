@@ -1,9 +1,12 @@
 import { mdiPlus } from "@mdi/js";
 import Icon from "@mdi/react";
+import { MouseEventHandler } from "react";
 import styled from "styled-components";
 
 type CellProps = {
   start: number;
+  categoryIdx: number;
+  onHover: (categoryIdx: number) => void;
 };
 
 const Container = styled.div<{ $start: number }>`
@@ -20,6 +23,7 @@ const Container = styled.div<{ $start: number }>`
   color: white;
 
   &:hover {
+    background: ${({ theme }) => theme.colors.lightBlue};
     color: ${({ theme }) => theme.colors.gray};
   }
 `;
@@ -38,9 +42,15 @@ const IconWrapper = styled.div`
 
 export default function Cell({
   start,
+  categoryIdx,
+  onHover,
 }: CellProps) {
+  const handleMouseOver: MouseEventHandler<HTMLDivElement> = () => {
+    onHover(categoryIdx);
+  }
+
   return (
-    <Container $start={start}>
+    <Container $start={start} onMouseOver={handleMouseOver}>
       <IconWrapper>
         <Icon path={mdiPlus} />
       </IconWrapper>
