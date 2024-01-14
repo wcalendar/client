@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { LabelText, InputMaxLength, ButtonText } from './constants';
 
@@ -21,18 +21,33 @@ const colorOptions = [
 
 export default function CategoryForm({ isActive, color }: CategoryFormProps) {
   const [selectedColor, setSelectedColor] = useState<string>(
-    color ?? colorOptions[4].color,
+    colorOptions[4].color,
   );
 
+  const getCurrentCategoryData = () => {
+    console.log('get data');
+  };
+
+  useEffect(() => {
+    getCurrentCategoryData();
+    setSelectedColor(color);
+  }, [color]);
   return (
-    <CategoryFormContainer id="category-form">
+    <CategoryFormContainer
+      action={formData => {
+        const categoryTitle = formData.get('categoryTitle');
+        const categoryDescription = formData.get('categoryDescription');
+        const categoryIsShow = formData.get('display');
+        const categoryColor = selectedColor;
+      }}
+    >
       <ContentContainer>
         <TitleLabel>{LabelText.title}</TitleLabel>
         <TextInput
           type="text"
           disabled={!isActive}
           maxLength={InputMaxLength}
-          required
+          name="categoryTitle"
         />
       </ContentContainer>
       <ContentContainer>
@@ -42,7 +57,7 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
           placeholder={LabelText.descriptionPlaceHolder}
           disabled={!isActive}
           maxLength={InputMaxLength}
-          required
+          name="categoryDescription"
         />
       </ContentContainer>
       <ContentContainer>
@@ -75,14 +90,18 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
               key={label}
               $color={color}
               type="button"
+              name="categoryColor"
               disabled={!isActive}
-              onClick={() => {
-                setSelectedColor(color);
+              onClick={e => {
+                setSelectedColor(e.currentTarget.value);
               }}
-            ></CategorySelect>
+              value={color}
+            />
           ))}
         </CategoryColorSelectContainer>
       </ContentContainer>
+
+      <hr style={{ width: '100%', height: '1px' }} />
       <div
         style={{
           display: 'flex',
@@ -134,12 +153,13 @@ const CategoryColorSelectContainer = styled.ul`
   list-style: none;
 `;
 
-const CategorySelect = styled.button<{ $color: string }>`
+const CategorySelect = styled.input<{ $color: string }>`
   background-color: ${({ $color }) => $color};
   width: 24px;
   height: 24px;
   border-radius: 4px;
   border: none;
+  color: ${({ $color }) => $color};
   cursor: pointer;
   &:focus {
     border: 2px solid black;

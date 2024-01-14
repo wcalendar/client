@@ -1,20 +1,23 @@
 'use client';
 
-import CategoryControlButtons from '@/components/category/CategoryControlButtons';
+import AddButton from '@/components/category/AddButton';
 import CategoryForm from '@/components/category/CategoryForm';
 import CategoryHeader from '@/components/category/CategoryHeader';
 import CategoryList from '@/components/category/CategoryList';
 import CategoryMenuHelperText from '@/components/category/CategoryMenuHelperText';
+import DeleteButton from '@/components/category/DeleteButton';
+import MoveButton from '@/components/category/MoveButton';
 import Header from '@/components/common/Header';
 import { getCategories } from '@/lib/utils';
 import { Category } from '@/types';
+import dayjs from 'dayjs';
 import { FormEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 export default function CategoryPage() {
   const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [currentDate, setDate] = useState<string>(dayjs().format('YYYY. MM.'));
   const [isActive, setIsActive] = useState(true);
-
   const [categoryData, setCategoryData] = useState<Category>();
 
   useEffect(() => {
@@ -45,9 +48,12 @@ export default function CategoryPage() {
 
   const onDeleteHandler = () => {
     console.log('Delete btn clicked');
+    // 모달 실행
   };
 
-  const onUpHandler = () => {};
+  const onUpHandler = () => {
+    // 선택된 카테고리 없으면 경고? or Do nothing?
+  };
 
   const onDownHandler = () => {};
 
@@ -58,21 +64,18 @@ export default function CategoryPage() {
   return (
     <Container>
       <Header />
-      <CategoryHeader
-        saveHandler={event => {
-          onSaveHandler(event);
-        }}
-        cancelHandler={onCancelHandler}
-      />
+      <CategoryHeader date={currentDate} setDate={setDate} />
       <CategoryContainer>
         <CategoryMenuContainer>
-          <CategoryControlButtons
-            addHandler={onAddHandler}
-            deleteHandler={onDeleteHandler}
-            upHandler={onUpHandler}
-            downHandler={onDownHandler}
-            isActive={!isActive}
-          />
+          <CategoryControlButtons>
+            <AddButton />
+            <DeleteButton />
+          </CategoryControlButtons>
+          <CategoryMoveButtons>
+            <MoveButton />
+            <MoveButton />
+          </CategoryMoveButtons>
+
           <CategoryListContainer>
             <CategoryList
               categories={categoryList}
@@ -125,3 +128,7 @@ const CategoryListContainer = styled.div`
   border: 1px solid black;
   border-radius: 5px;
 `;
+
+const CategoryControlButtons = styled.div``;
+
+const CategoryMoveButtons = styled.div``;
