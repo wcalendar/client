@@ -8,15 +8,14 @@ import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { CategoryDto, NewScheduleDto, ScheduleToRender } from "@/types";
+import { CategoryDto, CategoryToRender, FixedCategoryInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import { categoryListDummyData } from "@/dummies/calendar";
 import Spinnable from "@/components/common/spinner/Spinnable";
 
 interface NewScheduleModal {
   onClose: () => void;
   onScheduleCreate: (newSchedule: NewScheduleDto) => void;
-  schedule?: ScheduleToRender;
-  categoryId?: number;
+  newScheduleModalInfo: NewScheduleModalInfo;
 }
 
 const Container = styled.div`
@@ -109,14 +108,19 @@ const isScheduleToRender = (schedule: ScheduleToRender | undefined): schedule is
   return Boolean(schedule);
 }
 
+const isFixedCategoryInfo = (fixedCategoryInfo: FixedCategoryInfo | undefined): fixedCategoryInfo is FixedCategoryInfo => {
+  return Boolean(fixedCategoryInfo);
+}
+
 export default function NewScheduleModal({
   onClose,
-  schedule,
   onScheduleCreate,
-  categoryId,
+  newScheduleModalInfo
 }: NewScheduleModal) {
+  const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
+  console.log(fixedCategoryInfo);
   const isUpdateMode = isScheduleToRender(schedule);
-  const isFixedCategoryMode = categoryId !== undefined;
+  const isFixedCategoryMode = isFixedCategoryInfo(fixedCategoryInfo);
 
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');

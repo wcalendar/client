@@ -15,7 +15,7 @@ import NewScheduleModal from '../components/calendar/NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from '../components/calendar/PriorityList';
-import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, NewScheduleModalInfo, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
@@ -194,7 +194,7 @@ export default function Home() {
   const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
   const [categoryModalInfo, setCategoryModalInfo] = useState<CategoryModalInfo | null>(null);
 
-  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<boolean | ScheduleToRender>(false);
+  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<NewScheduleModalInfo | undefined>();
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
@@ -405,12 +405,42 @@ export default function Home() {
     setHoveredCategoryIdx(-1);
   }
 
+  const handleCellClick = (categoryId: number, day: number) => {
+    const splitedDate = selectedDate.split('.');
+    const y = parseInt(splitedDate[0]);
+    const m = parseInt(splitedDate[1].trimStart()) - 1;
+
+    setScheduleModalInfo(null);
+    for(const c1 of categoryList) {
+      if(c1.categoryId === categoryId) {
+        setNewScheduleModalOpen({ fixedCategoryInfo: { category: c1, date: time.new(y, m, day) } });
+        return;
+      }
+
+      for(const c2 of c1.children) {
+        if(c2.categoryId === categoryId) {
+          setNewScheduleModalOpen({ fixedCategoryInfo: { category: c2, date: time.new(y, m, day) } });
+          return;
+        } 
+
+        for(const c3 of c2.children) {
+          if(c3.categoryId === categoryId) {
+            setNewScheduleModalOpen({ fixedCategoryInfo: { category: c3, date: time.new(y, m, day) } });
+            return;
+          } 
+        }
+      }
+    }
+
+    alert('존재하지 않는 카테고리입니다.');
+  }
+
   const handleOpenNewScheduleModal = () => {
-    setNewScheduleModalOpen(true);
+    setNewScheduleModalOpen({});
   };
 
   const handleCloseNewScheduleModal = () => {
-    setNewScheduleModalOpen(false);
+    setNewScheduleModalOpen(undefined);
   };
 
   const handleSelectedDateChange = (value: string) => {
@@ -472,7 +502,7 @@ export default function Home() {
 
   const handleUpdateScheduleClick = (schedule: ScheduleToRender) => {
     setScheduleModalInfo(null);
-    setNewScheduleModalOpen(schedule);
+    setNewScheduleModalOpen({ schedule });
   }
 
   const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
@@ -680,6 +710,7 @@ export default function Home() {
                   onScheduleClick={handleScheduleClick}
                   onCellMouseOver={handleCellMouseOver}
                   onCellMouseOut={handleCellMouseOut}
+                  onCellClick={handleCellClick}
                   categoryIdx={i}
                 />
               ))}
@@ -696,8 +727,8 @@ export default function Home() {
       {isNewScheduleModalOpen && (
         <NewScheduleModal
           onClose={handleCloseNewScheduleModal}
-          schedule={isNewScheduleModalOpen === true ? undefined : isNewScheduleModalOpen}
           onScheduleCreate={handleScheduleCreate}
+          newScheduleModalInfo={isNewScheduleModalOpen}
         />
       )}
       {scheduleModalInfo && (

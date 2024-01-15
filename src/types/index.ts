@@ -126,3 +126,15 @@ export type CategoryModalInfo = {
   y: number,
   category: CalendarCategory,
 }
+
+// 빈 일정을 눌러 모달을 열었을 때 사용되는 데이터
+export type FixedCategoryInfo = {
+  category: CategoryDto,
+  date: Dayjs;
+}
+
+// 새 일정 생성 모달에 필요한 데이터
+export type NewScheduleModalInfo = {
+  schedule?: ScheduleToRender,
+  fixedCategoryInfo?: FixedCategoryInfo,
+}

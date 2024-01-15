@@ -9,6 +9,7 @@ type ScheduleLineProps = {
   onScheduleClick: (info: ScheduleModalInfo) => void;
   onCellMouseOver: (cateogoryIdx: number) => void;
   onCellMouseOut: () => void;
+  onCellClick: (categoryId: number, day: number) => void;
   categoryIdx: number;
 }
 
@@ -65,6 +66,7 @@ export default function ScheduleLine({
   onScheduleClick,
   onCellMouseOver,
   onCellMouseOut,
+  onCellClick,
   categoryIdx,
 }: ScheduleLineProps) {
   const { lines, category } = categoryToRender;
@@ -118,9 +120,11 @@ export default function ScheduleLine({
               key={`c-${category.id}-${lineIdx}-${scheduleIdx}`}
               start={scheduleIdx}
               categoryIdx={categoryIdx}
+              categoryId={category.id}
               categoryColor={category.color}
               onMouseOver={onCellMouseOver}
               onMouseOut={onCellMouseOut}
+              onClick={onCellClick}
             />
           ))}
         </Line>
