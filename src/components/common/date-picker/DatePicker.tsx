@@ -7,15 +7,14 @@ import time from "@/lib/time";
 type DatePickerProps = {
   value: Dayjs;
   onChange: (value: Dayjs) => void;
-  invisible?: boolean;
+  disabled?: boolean;
 }
 
-const Container = styled.div<{ $invisible: number }>`
+const Container = styled.div`
   position: relative;
-  visibility: ${({ $invisible }) => $invisible ? 'hidden' : 'visible'};
 `;
 
-const Selector = styled.div`
+const Selector = styled.div<{ $disabled: number }>`
   display: inline-block;
   width: auto;
   height: 1.75rem;
@@ -26,12 +25,18 @@ const Selector = styled.div`
   border-radius: 5px;
   user-select: none;
   cursor: pointer;
+
+  ${({ theme, $disabled }) => $disabled ? `
+  cursor: default;
+  color: ${theme.colors.gray};
+  background: ${theme.colors.gray}40;
+  ` : ''}
 `;
 
 export default function DatePicker({
   value,
   onChange,
-  invisible,
+  disabled,
 }: DatePickerProps) {
   const [isMiniCalendarOpen, setMiniCalendarOpen] = useState(false);
 
@@ -52,7 +57,7 @@ export default function DatePicker({
   }, []);
 
   const handleToggleMiniCalendar = () => {
-    setMiniCalendarOpen(!isMiniCalendarOpen);
+    if(!disabled) setMiniCalendarOpen(!isMiniCalendarOpen);
   }
 
   const handleDateClick = (value: Dayjs) => {
@@ -61,8 +66,8 @@ export default function DatePicker({
   }
 
   return (
-    <Container ref={datePickerRef} $invisible={invisible ? 1 : 0}>
-      <Selector onClick={handleToggleMiniCalendar}>
+    <Container ref={datePickerRef}>
+      <Selector $disabled={disabled ? 1 : 0} onClick={handleToggleMiniCalendar}>
         {time.toString(value, 'YYYY.MM.DD')}
       </Selector>
       {isMiniCalendarOpen && (
