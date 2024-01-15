@@ -10,13 +10,13 @@ import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "r
 import styled from "styled-components";
 import { CategoryDto, NewScheduleDto, ScheduleToRender } from "@/types";
 import { categoryListDummyData } from "@/dummies/calendar";
-import Spinner from "@/components/common/spinner/Spinner";
 import Spinnable from "@/components/common/spinner/Spinnable";
 
 interface NewScheduleModal {
   onClose: () => void;
   onScheduleCreate: (newSchedule: NewScheduleDto) => void;
   schedule?: ScheduleToRender;
+  categoryId?: number;
 }
 
 const Container = styled.div`
@@ -105,18 +105,26 @@ const Tip = styled.li`
   font-size: .75rem;
 `;
 
+const isScheduleToRender = (schedule: ScheduleToRender | undefined): schedule is ScheduleToRender => {
+  return Boolean(schedule);
+}
+
 export default function NewScheduleModal({
   onClose,
   schedule,
   onScheduleCreate,
+  categoryId,
 }: NewScheduleModal) {
+  const isUpdateMode = isScheduleToRender(schedule);
+  const isFixedCategoryMode = categoryId !== undefined;
+
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
-  const [scheduleTitle, setScheduleTitle] = useState(schedule ? schedule.content : '');
-  const [isDuration, setDuration] = useState(schedule ? !schedule.startDate.isSame(schedule.endDate) : false);
-  const [startDate, setStartDate] = useState<Dayjs>(schedule ? schedule.startDate : time.now());
-  const [endDate, setEndDate] = useState<Dayjs>(schedule ? schedule.endDate : time.now());
+  const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');
+  const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
+  const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : time.now());
+  const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : time.now());
   const [categoryIdx, setCategoryIdx] = useState(0);
-  const [isPriority, setPriority] = useState(schedule ? schedule.isFinished : true);
+  const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isFinished : true);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -209,7 +217,7 @@ export default function NewScheduleModal({
   return (
     <FixedModal
       width='33.75rem'
-      title={schedule ? '일정 수정' : '일정 등록'}
+      title={isUpdateMode ? '일정 수정' : '일정 등록'}
       buttonList={buttonList}
       onClose={onClose}
     >
