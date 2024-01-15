@@ -4,6 +4,7 @@ export const ButtonText = {
   delete: '삭제',
   save: '저장',
   cancel: '취소',
+  addLevelOne: '+ 1단계 카테고리 추가'
 } as const;
 
 export const LabelText = {

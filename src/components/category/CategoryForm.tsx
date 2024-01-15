@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { LabelText, InputMaxLength, ButtonText } from './constants';
+import SubmitButton from './SubmitButton';
+import CancelButton from './CancelButton';
+import { postNewCategory } from '@/app/actions';
+import { Category } from '@/types';
 
 type CategoryFormProps = {
   isActive: boolean;
-  color: string;
-  name: string;
-  description: string;
+  currentCategoryData: Category;
 };
 
 const colorOptions = [
@@ -19,27 +21,30 @@ const colorOptions = [
   { label: 'Color 7', color: '#9400D3' },
 ];
 
-export default function CategoryForm({ isActive, color }: CategoryFormProps) {
+export default function CategoryForm({
+  isActive,
+  currentCategoryData,
+}: CategoryFormProps) {
+  const [isFormActive, setFormActive] = useState<boolean>(false);
+  const { categoryName, categoryDescription, categoryLevel, categoryColor } =
+    currentCategoryData;
   const [selectedColor, setSelectedColor] = useState<string>(
     colorOptions[4].color,
   );
 
-  const getCurrentCategoryData = () => {
-    console.log('get data');
-  };
+  // useEffect(() => {
+  //   if (!categoryColor) setSelectedColor(categoryColor);
+  // }, []);
 
-  useEffect(() => {
-    getCurrentCategoryData();
-    setSelectedColor(color);
-  }, [color]);
+  //TODO 서버에 폼 제출?
+  const saveCategory = (formData: FormData, color: string) => {};
+
+  //TODO form 초기화
+  const cancelCategory = () => {};
+
   return (
     <CategoryFormContainer
-      action={formData => {
-        const categoryTitle = formData.get('categoryTitle');
-        const categoryDescription = formData.get('categoryDescription');
-        const categoryIsShow = formData.get('display');
-        const categoryColor = selectedColor;
-      }}
+      action={formData => postNewCategory(formData, selectedColor)}
     >
       <ContentContainer>
         <TitleLabel>{LabelText.title}</TitleLabel>
@@ -48,6 +53,7 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
           disabled={!isActive}
           maxLength={InputMaxLength}
           name="categoryTitle"
+          value={categoryName ? categoryName : ''}
         />
       </ContentContainer>
       <ContentContainer>
@@ -100,20 +106,11 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
           ))}
         </CategoryColorSelectContainer>
       </ContentContainer>
-
-      <hr style={{ width: '100%', height: '1px' }} />
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          width: '100%',
-          gap: '8px',
-        }}
-      >
-        <button type="submit">{ButtonText.save}</button>
-        <button>{ButtonText.cancel}</button>
-      </div>
+      <Divider />
+      <FormControlButtons>
+        <SubmitButton />
+        <CancelButton />
+      </FormControlButtons>
     </CategoryFormContainer>
   );
 }
@@ -165,4 +162,20 @@ const CategorySelect = styled.input<{ $color: string }>`
     border: 2px solid black;
     padding: 4px;
   }
+  &:disabled {
+    cursor: default;
+  }
+`;
+
+const Divider = styled.hr`
+  width: 100%;
+  height: 1px;
+`;
+
+const FormControlButtons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 8px;
 `;

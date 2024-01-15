@@ -5,16 +5,14 @@ import { useFocus } from '@/hooks/useFocus';
 
 type CategoryListProps = {
   categories: Category[];
-  getCategory: () => void;
 };
 
-export default function CategoryList({
-  categories,
-  getCategory,
-}: CategoryListProps) {
+export default function CategoryList({ categories }: CategoryListProps) {
+  const getCategory = () => {};
+
   return (
     <CategoryListContainer>
-      {categories.map((category) => (
+      {categories.map(category => (
         <CategoryItem
           key={category.categoryName}
           categoryId={category.categoryId}
@@ -40,7 +38,11 @@ const CategoryListContainer = styled.ul`
   width: 100%;
   list-style: none;
   max-height: 300px;
-  overflow-y: scroll;
   gap: 2px;
+  border: 1px solid gray;
+  padding: 8px;
   padding-right: 40px;
-`;
+  border-radius: 8px;
+  overflow: hidden;
+  overflow-y: scroll;
+  `;

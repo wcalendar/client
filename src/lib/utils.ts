@@ -60,3 +60,17 @@ export const getCategories = (): Category[] => {
     },
   ];
 };
+
+/**
+ * Validates a string value.
+ *
+ * @param value - The value to be validated.
+ * @param maxLength - The maximum length allowed for the string.
+ * @returns True if the value is a string and its length is less than or equal to the maxLength, false otherwise.
+ */
+export const validateString = (value: unknown, maxLength: number): boolean => {
+  if (!value || typeof value !== 'string' || value.length > maxLength) {
+    return false;
+  }
+  return true;
+};

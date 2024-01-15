@@ -48,12 +48,18 @@ export default function CategoryItem({
       <CategoryDescription $level={categoryLevel} $color={categoryColor}>
         {categoryDescription}
       </CategoryDescription>
-      <CategoryVisibleToggle
-        type="button"
-        onClick={() => handleToggleVisible(categoryVisible)}
-      >
-        {categoryVisible ? <RiEyeLine /> : <RiEyeOffLine />}
-      </CategoryVisibleToggle>
+      <CategoryVisibleContainer>
+        {!categoryVisible ? (
+          <CategoryVisibleToggle
+            type="button"
+            onClick={() => handleToggleVisible(categoryVisible)}
+          >
+            <RiEyeOffLine />
+          </CategoryVisibleToggle>
+        ) : (
+          ''
+        )}
+      </CategoryVisibleContainer>
     </CategoryItemContainer>
   );
 }
@@ -71,6 +77,7 @@ const CategoryItemContainer = styled.li<{ $level: number }>`
     background-color: #ececec;
     color: black;
     font-weight: bold;
+    text-decoration: underline;
   }
   ${({ $level }) => {
     switch ($level + 1) {
@@ -116,6 +123,12 @@ const CategoryDescription = styled(CategoryName)<{
   width: calc(var(--memo-width) - 1px);
   background-color: ${({ theme, $color, $level }) =>
     theme.colors.category($color, $level)};
+`;
+
+const CategoryVisibleContainer = styled.div`
+  width: 32px;
+  height: 32px;
+  cursor: default;
 `;
 
 const CategoryVisibleToggle = styled.button`
