@@ -74,7 +74,7 @@ export type ScheduleDto = {
 // 캘린더에 렌더링하기 위한 카테고리 데이터
 export type CategoryToRender = {
   category: CalendarCategory;
-  lines: (ScheduleToRender | undefined)[][];
+  lines: (ScheduleToRender | null)[][];
 };
 
 // 캘린더에 렌더링하기 위한 일정 데이터
