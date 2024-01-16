@@ -1,8 +1,12 @@
 import styled from 'styled-components';
 import { ButtonText } from './constants';
 
-export default function CancelButton() {
-  return <Button>{ButtonText.cancel}</Button>;
+type CancelButtonProps = {
+  handleCancel: () => void;
+};
+
+export default function CancelButton({ handleCancel }: CancelButtonProps) {
+  return <Button onClick={handleCancel}>{ButtonText.cancel}</Button>;
 }
 
 const Button = styled.button`
