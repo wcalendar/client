@@ -226,9 +226,10 @@ export default function NewScheduleModal({
     }
   }, [startDate]);
 
-  const handleDurationChange = (value: boolean) => {
+  const handleDurationChange = useCallback((value: boolean) => {
     setDuration(value);
-  }
+    if(!value) setEndDate(startDate);
+  }, [startDate]);
 
   const handleCategoryIdxChange = (idx: number) => {
     setCategoryIdx(idx);
