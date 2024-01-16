@@ -129,7 +129,7 @@ export type CategoryModalInfo = {
 
 // 빈 일정을 눌러 모달을 열었을 때 사용되는 데이터
 export type FixedCategoryInfo = {
-  category: CategoryDto,
+  categoryId: number;
   date: Dayjs;
 }
 

@@ -413,19 +413,19 @@ export default function Home() {
     setScheduleModalInfo(null);
     for(const c1 of categoryList) {
       if(c1.categoryId === categoryId) {
-        setNewScheduleModalOpen({ fixedCategoryInfo: { category: c1, date: time.new(y, m, day) } });
+        setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c1.categoryId, date: time.new(y, m, day) } });
         return;
       }
 
       for(const c2 of c1.children) {
         if(c2.categoryId === categoryId) {
-          setNewScheduleModalOpen({ fixedCategoryInfo: { category: c2, date: time.new(y, m, day) } });
+          setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c2.categoryId, date: time.new(y, m, day) } });
           return;
         } 
 
         for(const c3 of c2.children) {
           if(c3.categoryId === categoryId) {
-            setNewScheduleModalOpen({ fixedCategoryInfo: { category: c3, date: time.new(y, m, day) } });
+            setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c3.categoryId, date: time.new(y, m, day) } });
             return;
           } 
         }

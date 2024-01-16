@@ -29,6 +29,7 @@ const Input = styled.div<{ $height: string, $disabled: number }>`
   text-indent: .5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: 5px;
+  white-space: pre;
   
   ${({ $disabled, theme }) => $disabled ? `
   color: ${theme.colors.gray};
@@ -91,6 +92,7 @@ const ListItem = styled.div<{ $height: string, }>`
   line-height: ${({ $height }) => $height};
   font-size: .75rem;
   text-indent: .5rem;
+  white-space: pre;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.white};

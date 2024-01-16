@@ -4,7 +4,7 @@ import styled from "styled-components";
 type RadioButtonProps = {
   label: string;
   checked: boolean;
-  onChange: MouseEventHandler<HTMLDivElement>;
+  onChange: () => void;
 }
 
 const Container = styled.div`
@@ -34,9 +34,9 @@ export default function RadioButton({
   onChange,
 }: RadioButtonProps) {
   return (
-    <Container onClick={onChange}>
-      <Input type='radio' checked={checked} />
-      <Label>{label}</Label>
+    <Container>
+      <Input type='radio' checked={checked} onChange={onChange} />
+      <Label onClick={onChange}>{label}</Label>
     </Container>
   )
 }
