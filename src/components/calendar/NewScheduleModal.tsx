@@ -8,15 +8,14 @@ import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { CategoryDto, NewScheduleDto, ScheduleToRender } from "@/types";
+import { CategoryDto, CategoryToRender, FixedCategoryInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import { categoryListDummyData } from "@/dummies/calendar";
-import Spinner from "@/components/common/spinner/Spinner";
 import Spinnable from "@/components/common/spinner/Spinnable";
 
 interface NewScheduleModal {
   onClose: () => void;
   onScheduleCreate: (newSchedule: NewScheduleDto) => void;
-  schedule?: ScheduleToRender;
+  newScheduleModalInfo: NewScheduleModalInfo;
 }
 
 const Container = styled.div`
@@ -76,7 +75,7 @@ const Input = styled.input`
   }
 `;
 
-const Interval = styled.div<{ $invisible: number }>`
+const Interval = styled.div<{ $disabled: number }>`
   width: 1rem;
   margin: 0 .5rem;
   height: 100%;
@@ -84,7 +83,15 @@ const Interval = styled.div<{ $invisible: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  visibility: ${({ $invisible }) => $invisible ? 'hidden' : 'visible'};
+  ${({ theme, $disabled }) => $disabled ? `color: ${theme.colors.gray};` : ''}
+
+  svg {
+    color: inherit;
+  }
+
+  path {
+    color: inherit;
+  }
 `;
 
 const DropDownWrapper = styled.div`
@@ -105,18 +112,32 @@ const Tip = styled.li`
   font-size: .75rem;
 `;
 
+const isScheduleToRender = (schedule: ScheduleToRender | undefined): schedule is ScheduleToRender => {
+  return Boolean(schedule);
+}
+
+const isFixedCategoryInfo = (fixedCategoryInfo: FixedCategoryInfo | undefined): fixedCategoryInfo is FixedCategoryInfo => {
+  return Boolean(fixedCategoryInfo);
+}
+
 export default function NewScheduleModal({
   onClose,
-  schedule,
   onScheduleCreate,
+  newScheduleModalInfo
 }: NewScheduleModal) {
-  const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
-  const [scheduleTitle, setScheduleTitle] = useState(schedule ? schedule.content : '');
-  const [isDuration, setDuration] = useState(schedule ? !schedule.startDate.isSame(schedule.endDate) : false);
-  const [startDate, setStartDate] = useState<Dayjs>(schedule ? schedule.startDate : time.now());
-  const [endDate, setEndDate] = useState<Dayjs>(schedule ? schedule.endDate : time.now());
-  const [categoryIdx, setCategoryIdx] = useState(0);
-  const [isPriority, setPriority] = useState(schedule ? schedule.isFinished : true);
+  const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
+
+  const isUpdateMode = isScheduleToRender(schedule);
+  const isFixedCategoryMode = isFixedCategoryInfo(fixedCategoryInfo);
+
+  const [categoryList, setCategoryList] = useState<CategoryDto[]>(isFixedCategoryMode ? [fixedCategoryInfo.category] : []);
+  const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');
+  const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
+  const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
+  const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
+  const [categoryIdx, setCategoryIdx] = useState(1);
+  // TODO isPriority로 수정해야함
+  const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isFinished : true);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -129,6 +150,8 @@ export default function NewScheduleModal({
 
   // 기간이 변경되면 새 카테고리 리스트를 가져옴
   useEffect(() => {
+    if(isFixedCategoryMode) return;
+
     setCategoryIdx(0);
 
     // TODO 카테고리 리스트 구하는 로직 필요
@@ -209,7 +232,7 @@ export default function NewScheduleModal({
   return (
     <FixedModal
       width='33.75rem'
-      title={schedule ? '일정 수정' : '일정 등록'}
+      title={isUpdateMode ? '일정 수정' : '일정 등록'}
       buttonList={buttonList}
       onClose={onClose}
     >
@@ -221,9 +244,9 @@ export default function NewScheduleModal({
           </Line>
           <Line>
             <Label>일시</Label>
-            <DatePicker value={startDate} onChange={handleStartDateChange} />
-            <Interval $invisible={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
-            <DatePicker value={endDate} onChange={handleEndDateChange} invisible={!isDuration} />
+            <DatePicker value={startDate} onChange={handleStartDateChange} disabled={isFixedCategoryMode} />
+            <Interval $disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
+            <DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
             <DesktopDurationWrapper>
               <div style={{width: '1rem'}} />
               <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
@@ -238,7 +261,13 @@ export default function NewScheduleModal({
           <Line>
             <Label>카테고리</Label>
             <DropDownWrapper>
-              <Dropdown values={dropdownValues} selectedIdx={categoryIdx} height='1.75rem' onChange={handleCategoryIdxChange} />
+              <Dropdown
+                values={dropdownValues}
+                selectedIdx={categoryIdx}
+                height='1.75rem'
+                onChange={handleCategoryIdxChange}
+                disabled={isFixedCategoryMode}
+              />
             </DropDownWrapper>
           </Line>
           <Line>

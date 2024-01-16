@@ -7,9 +7,11 @@ import styled from "styled-components";
 type CellProps = {
   start: number;
   categoryIdx: number;
+  categoryId: number;
   categoryColor: CategoryColor;
   onMouseOver: (categoryIdx: number) => void;
   onMouseOut: () => void;
+  onClick: (categoryId: number, day: number) => void;
 };
 
 const Container = styled.div<{ $start: number, $color: CategoryColor }>`
@@ -46,16 +48,18 @@ const IconWrapper = styled.div`
 export default function Cell({
   start,
   categoryIdx,
+  categoryId,
   categoryColor,
   onMouseOver,
   onMouseOut,
+  onClick,
 }: CellProps) {
   const handleMouseOver: MouseEventHandler<HTMLDivElement> = () => {
     onMouseOver(categoryIdx);
   }
 
   return (
-    <Container $start={start} $color={categoryColor} onMouseOver={handleMouseOver} onMouseOut={onMouseOut}>
+    <Container $start={start} $color={categoryColor} onMouseOver={handleMouseOver} onMouseOut={onMouseOut} onClick={() => onClick(categoryId, start+1)}>
       <IconWrapper>
         <Icon path={mdiPlus} />
       </IconWrapper>
