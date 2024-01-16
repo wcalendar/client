@@ -2,22 +2,27 @@ import styled from "styled-components";
 import { MouseEvent, useCallback, useMemo } from "react";
 import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "@/types";
 import { CategoryColor } from "@/types";
+import Cell from "./Cell";
 
 type ScheduleLineProps = {
   categoryToRender: CategoryToRender;
   onScheduleClick: (info: ScheduleModalInfo) => void;
+  onCellMouseOver: (cateogoryIdx: number) => void;
+  onCellMouseOut: () => void;
+  categoryIdx: number;
 }
 
 const Container = styled.div<{ $line_count: number }>`
   width: 100%;
   height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
+  margin-bottom: var(--line-gap);
 `;
 
 const Line = styled.div`
   position: relative;
   width: 100%;
   height: var(--cell-height);
-  margin-top: var(--line-gap);
+  margin-bottom: var(--line-gap);
 `;
 
 // box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
@@ -58,6 +63,9 @@ const ScheduleItemText = styled.span<{ $is_finished: number }>`
 export default function ScheduleLine({
   categoryToRender,
   onScheduleClick,
+  onCellMouseOver,
+  onCellMouseOut,
+  categoryIdx,
 }: ScheduleLineProps) {
   const { lines, category } = categoryToRender;
 
@@ -90,9 +98,9 @@ export default function ScheduleLine({
 
   return (
     <Container $line_count={lines.length}>
-      {schedulesByLine.map((line, lineIdx) => (
+      {lines.map((line, lineIdx) => (
         <Line key={`${category.id}-${lineIdx}`}>
-          {line.map((schedule) => (
+          {line.map((schedule, scheduleIdx) => schedule ? (
             <ScheduleItem
               key={schedule.groupCode}
               $start={schedule.startDate.date()}
@@ -105,6 +113,15 @@ export default function ScheduleLine({
                 {schedule.content}
               </ScheduleItemText>
             </ScheduleItem>
+          ) : (
+            <Cell
+              key={`c-${category.id}-${lineIdx}-${scheduleIdx}`}
+              start={scheduleIdx}
+              categoryIdx={categoryIdx}
+              categoryColor={category.color}
+              onMouseOver={onCellMouseOver}
+              onMouseOut={onCellMouseOut}
+            />
           ))}
         </Line>
       ))}

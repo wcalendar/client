@@ -150,7 +150,6 @@ export default function MiniCalendar({
 
     const firstDayOfWeek = time.new(year, month, 1).day();
     const lastDayInMonth = time.daysInMonth(year, month);
-    console.log(lastDayInMonth);
 
     const firstWeek: (number | null)[] = Array.from({length: 7}, () => null);
     let dayToInput = 1;
