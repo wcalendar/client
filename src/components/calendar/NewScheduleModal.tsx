@@ -6,7 +6,7 @@ import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { CategoryDto, CategoryToRender, FixedCategoryInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import { categoryListDummyData } from "@/dummies/calendar";
@@ -130,7 +130,14 @@ export default function NewScheduleModal({
   const isUpdateMode = isScheduleToRender(schedule);
   const isFixedCategoryMode = isFixedCategoryInfo(fixedCategoryInfo);
 
+  const isFirstLoad = useRef(true);
+
+  const shouldSetCategoryIdx = (categoryId: number) => {
+    return isFirstLoad.current && ((isFixedCategoryMode && fixedCategoryInfo.categoryId === categoryId) || (isUpdateMode && schedule.categoryId === categoryId));
+  };
+
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
+  const [dropdownValues, setDropdownValues] = useState<string[]>(['-']);
   const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');
   const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
   const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
@@ -145,45 +152,59 @@ export default function NewScheduleModal({
     return categoryList.length === 0;
   }, [categoryList]);
 
-  const dropdownValues = useMemo<string[]>(() => {
-    if(isDropdownDisabled) return ['데이터를 불러오는 중 입니다.'];
+  // 기간이 변경되면 새 카테고리 리스트를 가져옴
+  useEffect(() => {
+    setCategoryList([]);
+    setCategoryIdx(0);
+
+    const getCategoryList = async () => {
+      // TODO API
+      setTimeout(() => {
+        setCategoryList([...categoryListDummyData]);
+      }, 1000);
+    };
+    
+    getCategoryList();
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    if(categoryList.length === 0) {
+      setDropdownValues(['-']);
+      return;
+    }
 
     const result: string[] = ['-'];
 
     let idx = 1;
     categoryList.forEach(c1 => {
       result.push(c1.categoryName);
-      if(isFixedCategoryMode && fixedCategoryInfo.categoryId === c1.categoryId) setCategoryIdx(idx);
+      if(shouldSetCategoryIdx(c1.categoryId)) {
+        setCategoryIdx(idx);
+        isFirstLoad.current = false;
+      } 
       idx++;
 
       c1.children.forEach(c2 => {
         result.push(`  ${c2.categoryName}`);
-        if(isFixedCategoryMode && fixedCategoryInfo.categoryId === c2.categoryId) setCategoryIdx(idx);
+        if(shouldSetCategoryIdx(c2.categoryId)) {
+          setCategoryIdx(idx);
+          isFirstLoad.current = false;
+        } 
         idx++;
 
         c2.children.forEach(c3 => {
           result.push(`    ${c3.categoryName}`);
-          if(isFixedCategoryMode && fixedCategoryInfo.categoryId === c3.categoryId) setCategoryIdx(idx);
+          if(shouldSetCategoryIdx(c3.categoryId)) {
+            setCategoryIdx(idx);
+            isFirstLoad.current = false;
+          } 
           idx++;
         })
       })
     });
 
-    return result;
-  }, [isDropdownDisabled, categoryList]);
-
-
-  // 기간이 변경되면 새 카테고리 리스트를 가져옴
-  useEffect(() => {
-    const getCategoryList = async () => {
-      // TODO API
-      setTimeout(() => {
-        setCategoryList(categoryListDummyData);
-      }, 1000);
-    };
-    
-    getCategoryList();
-  }, [startDate, endDate]);
+    setDropdownValues(result);
+  }, [categoryList]);
 
   const handleChangeScheduleTitle: ChangeEventHandler<HTMLInputElement> = (e) => {
     setScheduleTitle(e.target.value);
@@ -271,7 +292,7 @@ export default function NewScheduleModal({
           </Line>
           <Line>
             <Label>일시</Label>
-            <DatePicker value={startDate} onChange={handleStartDateChange} disabled={isFixedCategoryMode} />
+            <DatePicker value={startDate} onChange={handleStartDateChange} />
             <Interval $disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
             <DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
             <DesktopDurationWrapper>
