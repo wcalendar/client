@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 import ArrowButton from '../common/ArrowButton';
 import { ButtonText } from './constants';
+import AddButton from './AddButton';
 
 type CategoryControlButtonsProps = {
   isActive: boolean;
@@ -21,12 +22,8 @@ export default function CategoryControlButtons({
   return (
     <ControlButtonsContainer>
       <ButtonsContainer>
-        <ControlButton onClick={addHandler} disabled={!isActive}>
-          {ButtonText.add}
-        </ControlButton>
-        <ControlButton onClick={deleteHandler}>
-          {ButtonText.delete}
-        </ControlButton>
+        <AddButton />
+        {/* <DeleteButton /> */}
       </ButtonsContainer>
       <ButtonsContainer>
         <ArrowButton onClick={upHandler} icon={<RiArrowUpSLine size={24} />} />
@@ -49,12 +46,4 @@ const ControlButtonsContainer = styled.div`
 const ButtonsContainer = styled.div`
   display: flex;
   gap: 0.5rem;
-`;
-
-const ControlButton = styled.button`
-  background-color: white;
-  border: 1px solid black;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
 `;

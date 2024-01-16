@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { LabelText, InputMaxLength, ButtonText } from './constants';
+import SubmitButton from './SubmitButton';
+import CancelButton from './CancelButton';
+import { postNewCategory } from '@/app/actions';
+import { Category } from '@/types';
 
 type CategoryFormProps = {
   isActive: boolean;
-  color: string;
-  name: string;
-  description: string;
+  currentCategoryData: Category;
 };
 
 const colorOptions = [
@@ -19,20 +21,49 @@ const colorOptions = [
   { label: 'Color 7', color: '#9400D3' },
 ];
 
-export default function CategoryForm({ isActive, color }: CategoryFormProps) {
+export default function CategoryForm({
+  isActive,
+  currentCategoryData,
+}: CategoryFormProps) {
+  const [isFormActive, setFormActive] = useState<boolean>(false);
+  const { categoryName, categoryDescription, categoryLevel, categoryColor } =
+    currentCategoryData;
   const [selectedColor, setSelectedColor] = useState<string>(
-    color ?? colorOptions[4].color,
+    colorOptions[4].color,
   );
+  const [currentCategoryName, setCurrentCategoryName] =
+    useState<string>(categoryName);
+
+  const [currentCategoryDescription, setCurrentCategoryDescription] =
+    useState<string>(categoryDescription ? categoryDescription : '');
+
+  //TODO 서버에 폼 제출?
+  const saveCategory = (formData: FormData, color: string) => {};
+
+  //TODO form 초기화
+  const cancelCategory = () => {};
+
+  const onHandleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrentCategoryName(e.currentTarget.value);
+  };
+
+  const onHandleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrentCategoryDescription(e.currentTarget.value);
+  };
 
   return (
-    <CategoryFormContainer id="category-form">
+    <CategoryFormContainer
+      action={formData => postNewCategory(formData, selectedColor)}
+    >
       <ContentContainer>
         <TitleLabel>{LabelText.title}</TitleLabel>
         <TextInput
           type="text"
           disabled={!isActive}
           maxLength={InputMaxLength}
+          name="categoryTitle"
           required
+          onChange={e => onHandleNameChange(e)}
         />
       </ContentContainer>
       <ContentContainer>
@@ -42,7 +73,9 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
           placeholder={LabelText.descriptionPlaceHolder}
           disabled={!isActive}
           maxLength={InputMaxLength}
+          name="categoryDescription"
           required
+          onChange={e => onHandleDescriptionChange(e)}
         />
       </ContentContainer>
       <ContentContainer>
@@ -75,26 +108,21 @@ export default function CategoryForm({ isActive, color }: CategoryFormProps) {
               key={label}
               $color={color}
               type="button"
+              name="categoryColor"
               disabled={!isActive}
-              onClick={() => {
-                setSelectedColor(color);
+              onClick={e => {
+                setSelectedColor(e.currentTarget.value);
               }}
-            ></CategorySelect>
+              value={color}
+            />
           ))}
         </CategoryColorSelectContainer>
       </ContentContainer>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          width: '100%',
-          gap: '8px',
-        }}
-      >
-        <button type="submit">{ButtonText.save}</button>
-        <button>{ButtonText.cancel}</button>
-      </div>
+      <Divider />
+      <FormControlButtons>
+        <SubmitButton />
+        <CancelButton handleCancel={cancelCategory} />
+      </FormControlButtons>
     </CategoryFormContainer>
   );
 }
@@ -134,15 +162,32 @@ const CategoryColorSelectContainer = styled.ul`
   list-style: none;
 `;
 
-const CategorySelect = styled.button<{ $color: string }>`
+const CategorySelect = styled.input<{ $color: string }>`
   background-color: ${({ $color }) => $color};
   width: 24px;
   height: 24px;
   border-radius: 4px;
   border: none;
+  color: ${({ $color }) => $color};
   cursor: pointer;
   &:focus {
     border: 2px solid black;
     padding: 4px;
   }
+  &:disabled {
+    cursor: default;
+  }
+`;
+
+const Divider = styled.hr`
+  width: 100%;
+  height: 1px;
+`;
+
+const FormControlButtons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 8px;
 `;
