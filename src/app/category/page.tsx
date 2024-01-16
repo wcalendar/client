@@ -4,9 +4,15 @@ import CategoryForm from '@/components/category/CategoryForm';
 import CategoryHeader from '@/components/category/CategoryHeader';
 import CategoryList from '@/components/category/CategoryList';
 import CategoryMenuHelperText from '@/components/category/CategoryMenuHelperText';
-import { ButtonText } from '@/components/category/constants';
+import DeleteModal from '@/components/category/DeleteModal';
+import {
+  AlertText,
+  ButtonText,
+  DefaultCategoryLevel,
+  LevelOneCountMax,
+  MainCategoryLevel,
+} from '@/components/category/constants';
 import Header from '@/components/common/Header';
-import time from '@/lib/time';
 import { getCategories } from '@/lib/utils';
 import { Category } from '@/types';
 import dayjs from 'dayjs';
@@ -15,12 +21,17 @@ import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 import styled from 'styled-components';
 
 export default function CategoryPage() {
+  // All Category List
   const [categoryList, setCategoryList] = useState<Category[]>([]);
+  // Today date
   const [currentDate, setDate] = useState<string>(dayjs().format('YYYY. MM.'));
-  const [isActive, setIsActive] = useState(false);
-  const today = new Date();
+  // Category Form Active
+  const [isFormActive, setFormActive] = useState(false);
+  // Level One Category Button Active
+  const [isLevelOneActive, setLevelOneActive] = useState(true);
+  // Initial Category Data
   const [currentCategoryData, setCurrentCategoryData] = useState<Category>({
-    categoryLevel: 0,
+    categoryLevel: DefaultCategoryLevel,
     categoryName: '',
     categoryVisible: true,
     categoryColor: 'blue',
@@ -28,48 +39,57 @@ export default function CategoryPage() {
     categoryStartDate: dayjs().format('YYYY-MM-DD'),
     categoryEndDate: '2099-12-31',
   });
+  // Delete Modal Show
+  const [isDeleteModalShow, setDeleteModalShow] = useState<boolean>(false);
 
-  console.log(currentCategoryData);
-
+  const currentCategoryRef = useRef<HTMLLIElement>(null);
+  console.log(currentCategoryRef);
   useEffect(() => {
     setCategoryList(getCategories());
   }, []);
 
   useEffect(() => {
     const mainCategoryList = categoryList.filter(
-      category => category.categoryLevel === 1,
+      category => category.categoryLevel === MainCategoryLevel,
     );
-    if (mainCategoryList.length === 10) {
-      setIsActive(false);
+    if (mainCategoryList.length === LevelOneCountMax) {
+      setFormActive(false);
+      setLevelOneActive(false);
     }
   }, [categoryList]);
 
-  // When Clicked Category in Category List, get Info from Server that Category
-  const getCurrentCategoryData = () => {};
-
   //TODO Add New Level One Category
   //CategoryLevel = 1
-  const addNewCategory = () => {
-    setIsActive(true);
+  const handleAddNewCategory = () => {
+    setFormActive(true);
     let newCategory = { ...currentCategoryData };
-    newCategory.categoryLevel = 1;
+    newCategory.categoryLevel = MainCategoryLevel;
     setCurrentCategoryData(newCategory);
   };
 
   // TODO Add New Category Button
-  //CategoryLevel = 2 or 3
-  // How to add to Level 1?
-  const addSubCategory = () => {
-    setIsActive(true);
-    // setCategoryLevel(2);
-    // setCategoryLevel(3);
+  //CategoryLevel = Selected Category Level = 1 ? 2 : 3
+  const handleAddSubCategory = () => {
+    if (currentCategoryRef.current === null) {
+      alert(AlertText.add);
+      return;
+    }
+    setFormActive(true);
+    let newSubCategory = { ...currentCategoryData };
+    currentCategoryData.categoryLevel === 1
+      ? (newSubCategory.categoryLevel = 2)
+      : (newSubCategory.categoryLevel = 3);
   };
 
   //TODO Category Delete Button
   //Show Modal to ask
   // Call Back End to Remove
-  const deleteCategory = (e: any) => {
-    console.log('delete btn clicked');
+  const handleDeleteCategory = () => {
+    if (currentCategoryRef.current === null) {
+      alert(AlertText.delete);
+      return;
+    }
+    handleDeleteModal(isDeleteModalShow);
   };
 
   //TODO Category Move Up
@@ -83,6 +103,11 @@ export default function CategoryPage() {
   //TODO Category Move Down
   const moveDownCategory = () => {};
 
+  const handleDeleteModal = (isShow: boolean) => {
+    if (isShow) setDeleteModalShow(false);
+    else setDeleteModalShow(true);
+  };
+
   return (
     <Container>
       <Header />
@@ -92,8 +117,8 @@ export default function CategoryPage() {
           <CategoryMenuButtonsContainer>
             <CategoryControlButtonsContainer>
               <CategoryControlButtons>
-                <Button onClick={addSubCategory}>{ButtonText.add}</Button>
-                <Button onClick={e => deleteCategory(e.currentTarget.value)}>
+                <Button onClick={handleAddSubCategory}>{ButtonText.add}</Button>
+                <Button onClick={handleDeleteCategory}>
                   {ButtonText.delete}
                 </Button>
               </CategoryControlButtons>
@@ -106,18 +131,24 @@ export default function CategoryPage() {
                 </Button>
               </CategoryMoveButtons>
             </CategoryControlButtonsContainer>
-            <AddLevelOneButton onClick={addNewCategory}>
+            <AddLevelOneButton
+              onClick={handleAddNewCategory}
+              disabled={!isLevelOneActive}
+            >
               {ButtonText.addLevelOne}
             </AddLevelOneButton>
           </CategoryMenuButtonsContainer>
-          <CategoryList categories={categoryList} />
+          <CategoryList categories={categoryList} ref={currentCategoryRef} />
           <CategoryMenuHelperText />
         </CategoryMenuContainer>
         <CategoryForm
-          isActive={isActive}
+          isActive={isFormActive}
           currentCategoryData={currentCategoryData}
         />
       </CategoryContainer>
+      {isDeleteModalShow && (
+        <DeleteModal handleDeleteCategory={() => {}} onClose={() => {}} />
+      )}
     </Container>
   );
 }
@@ -184,4 +215,8 @@ const AddLevelOneButton = styled(Button)`
   border: none;
   margin: 8px 0;
   text-align: start;
+  &:disabled {
+    color: gray;
+    cursor: default;
+  }
 `;

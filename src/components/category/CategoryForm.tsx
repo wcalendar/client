@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { LabelText, InputMaxLength, ButtonText } from './constants';
 import SubmitButton from './SubmitButton';
@@ -31,16 +31,25 @@ export default function CategoryForm({
   const [selectedColor, setSelectedColor] = useState<string>(
     colorOptions[4].color,
   );
+  const [currentCategoryName, setCurrentCategoryName] =
+    useState<string>(categoryName);
 
-  // useEffect(() => {
-  //   if (!categoryColor) setSelectedColor(categoryColor);
-  // }, []);
+  const [currentCategoryDescription, setCurrentCategoryDescription] =
+    useState<string>(categoryDescription ? categoryDescription : '');
 
   //TODO 서버에 폼 제출?
   const saveCategory = (formData: FormData, color: string) => {};
 
   //TODO form 초기화
   const cancelCategory = () => {};
+
+  const onHandleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrentCategoryName(e.currentTarget.value);
+  };
+
+  const onHandleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrentCategoryDescription(e.currentTarget.value);
+  };
 
   return (
     <CategoryFormContainer
@@ -53,7 +62,8 @@ export default function CategoryForm({
           disabled={!isActive}
           maxLength={InputMaxLength}
           name="categoryTitle"
-          value={categoryName ? categoryName : ''}
+          required
+          onChange={e => onHandleNameChange(e)}
         />
       </ContentContainer>
       <ContentContainer>
@@ -64,6 +74,8 @@ export default function CategoryForm({
           disabled={!isActive}
           maxLength={InputMaxLength}
           name="categoryDescription"
+          required
+          onChange={e => onHandleDescriptionChange(e)}
         />
       </ContentContainer>
       <ContentContainer>
@@ -109,7 +121,7 @@ export default function CategoryForm({
       <Divider />
       <FormControlButtons>
         <SubmitButton />
-        <CancelButton />
+        <CancelButton handleCancel={cancelCategory} />
       </FormControlButtons>
     </CategoryFormContainer>
   );

@@ -1,68 +1,73 @@
 import { useFocus } from '@/hooks/useFocus';
 import { Category, CategoryColor } from '@/types';
-import { RefObject, useEffect, useState } from 'react';
+import { RefObject, forwardRef, useEffect, useState } from 'react';
 import { RiEyeLine, RiEyeOffLine } from 'react-icons/ri';
 import styled from 'styled-components';
 
 type CategoryItemProps = Category & {
-  getCategory: () => void;
+  getCategory?: () => void;
   useFocus: () => {
     categoryRef: RefObject<HTMLLIElement | null>;
     focusItem: () => void;
   };
 };
 
-export default function CategoryItem({
-  categoryId,
-  categoryName,
-  categoryColor,
-  categoryLevel,
-  categoryDescription,
-  categoryVisible,
-  getCategory,
-}: CategoryItemProps) {
-  const { categoryRef, focusItem } = useFocus();
-  const [currentVisible, setCurrentVisible] =
-    useState<boolean>(categoryVisible);
+export default forwardRef<HTMLLIElement, CategoryItemProps>(
+  function CategoryItem(
+    {
+      categoryId,
+      categoryName,
+      categoryColor,
+      categoryLevel,
+      categoryDescription,
+      categoryVisible,
+      getCategory,
+    },
+    ref,
+  ) {
+    const { categoryRef, focusItem } = useFocus();
+    const [currentVisible, setCurrentVisible] =
+      useState<boolean>(categoryVisible);
 
-  const handleGetCategory = () => {
-    focusItem();
-    getCategory();
-  };
+    const handleGetCategory = () => {
+      focusItem();
+      // getCategory();
+    };
 
-  const handleToggleVisible = (isVisible: boolean) => {
-    setCurrentVisible(!isVisible);
-    return !isVisible;
-  };
+    const handleToggleVisible = (isVisible: boolean) => {
+      setCurrentVisible(!isVisible);
+      return !isVisible;
+    };
 
-  return (
-    <CategoryItemContainer
-      tabIndex={categoryId}
-      $level={categoryLevel}
-      ref={categoryRef}
-      onClick={handleGetCategory}
-    >
-      <CategoryName $color={categoryColor} $level={categoryLevel}>
-        {categoryName}
-      </CategoryName>
-      <CategoryDescription $level={categoryLevel} $color={categoryColor}>
-        {categoryDescription}
-      </CategoryDescription>
-      <CategoryVisibleContainer>
-        {!categoryVisible ? (
-          <CategoryVisibleToggle
-            type="button"
-            onClick={() => handleToggleVisible(categoryVisible)}
-          >
-            <RiEyeOffLine />
-          </CategoryVisibleToggle>
-        ) : (
-          ''
-        )}
-      </CategoryVisibleContainer>
-    </CategoryItemContainer>
-  );
-}
+    return (
+      <CategoryItemContainer
+        tabIndex={categoryId}
+        $level={categoryLevel}
+        ref={ref}
+        onClick={handleGetCategory}
+      >
+        <CategoryName $color={categoryColor} $level={categoryLevel}>
+          {categoryName}
+        </CategoryName>
+        <CategoryDescription $level={categoryLevel} $color={categoryColor}>
+          {categoryDescription}
+        </CategoryDescription>
+        <CategoryVisibleContainer>
+          {!categoryVisible ? (
+            <CategoryVisibleToggle
+              type="button"
+              onClick={() => handleToggleVisible(categoryVisible)}
+            >
+              <RiEyeOffLine />
+            </CategoryVisibleToggle>
+          ) : (
+            ''
+          )}
+        </CategoryVisibleContainer>
+      </CategoryItemContainer>
+    );
+  },
+);
 
 const CategoryItemContainer = styled.li<{ $level: number }>`
   border: none;
@@ -129,6 +134,8 @@ const CategoryVisibleContainer = styled.div`
   width: 32px;
   height: 32px;
   cursor: default;
+  display: flex;
+  align-items: center;
 `;
 
 const CategoryVisibleToggle = styled.button`

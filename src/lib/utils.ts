@@ -46,7 +46,7 @@ export const getCategories = (): Category[] => {
       categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
       categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
       categoryDescription: '하하',
-      categoryVisible: true,
+      categoryVisible: false,
     },
     {
       categoryId: 3,

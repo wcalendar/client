@@ -1,17 +1,19 @@
 import styled from 'styled-components';
 import Monthly from '../common/Monthly';
 import { LabelText } from './constants';
+import { Dispatch, SetStateAction } from 'react';
 
 type CategoryHeaderProps = {
   date: string;
-  setDate: (value: string) => void;
+  setDate: Dispatch<SetStateAction<string>>;
 };
 
 export default function CategoryHeader({ date, setDate }: CategoryHeaderProps) {
-  
   const handleDateChange = (value: string) => {
     setDate(value);
   };
+
+  console.log(date);
 
   return (
     <CategoryHeaderContainer>
@@ -38,7 +40,7 @@ const CategoryHeaderContentsContainer = styled.div`
   display: flex;
   width: 100%;
   padding: 5px;
-  max-width: 768px;
+  width: 420px;
   gap: 2rem;
   justify-content: space-between;
   align-items: center;

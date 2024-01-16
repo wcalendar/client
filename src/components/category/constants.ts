@@ -4,7 +4,7 @@ export const ButtonText = {
   delete: '삭제',
   save: '저장',
   cancel: '취소',
-  addLevelOne: '+ 1단계 카테고리 추가'
+  addLevelOne: '+ 1단계 카테고리 추가',
 } as const;
 
 export const LabelText = {
@@ -28,3 +28,13 @@ export const HelperText: string[] = [
   '카테고리 제목과 일정은 수정 시, 전 기간에 반영됩니다.',
   '카테고리 추가/삭제는 해당 월부터 반영됩니다.',
 ];
+
+export const DefaultCategoryLevel = 0;
+
+export const MainCategoryLevel = 1;
+export const LevelOneCountMax = 10;
+
+export const AlertText = {
+  add: '하위 카테고리를 추가할 상위 카테고리를 선택하세요.',
+  delete: '삭제할 카테고리를 선택하세요!',
+};

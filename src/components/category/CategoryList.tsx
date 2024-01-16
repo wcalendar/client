@@ -2,34 +2,35 @@ import styled from 'styled-components';
 import { Category } from '@/types';
 import CategoryItem from './CategoryItem';
 import { useFocus } from '@/hooks/useFocus';
+import { forwardRef } from 'react';
 
 type CategoryListProps = {
   categories: Category[];
 };
 
-export default function CategoryList({ categories }: CategoryListProps) {
-  const getCategory = () => {};
-
-  return (
-    <CategoryListContainer>
-      {categories.map(category => (
-        <CategoryItem
-          key={category.categoryName}
-          categoryId={category.categoryId}
-          categoryName={category.categoryName}
-          categoryColor={category.categoryColor}
-          categoryLevel={category.categoryLevel}
-          categoryDescription={category.categoryDescription}
-          categoryVisible={category.categoryVisible}
-          getCategory={getCategory}
-          categoryStartDate={category.categoryStartDate}
-          categoryEndDate={category.categoryEndDate}
-          useFocus={useFocus}
-        />
-      ))}
-    </CategoryListContainer>
-  );
-}
+export default forwardRef<HTMLLIElement, CategoryListProps>(
+  function CategoryList({ categories }, ref) {
+    return (
+      <CategoryListContainer>
+        {categories.map(category => (
+          <CategoryItem
+            key={category.categoryName}
+            categoryId={category.categoryId}
+            categoryName={category.categoryName}
+            categoryColor={category.categoryColor}
+            categoryLevel={category.categoryLevel}
+            categoryDescription={category.categoryDescription}
+            categoryVisible={category.categoryVisible}
+            categoryStartDate={category.categoryStartDate}
+            categoryEndDate={category.categoryEndDate}
+            useFocus={useFocus}
+            ref={ref}
+          />
+        ))}
+      </CategoryListContainer>
+    );
+  },
+);
 
 const CategoryListContainer = styled.ul`
   display: flex;
@@ -45,4 +46,4 @@ const CategoryListContainer = styled.ul`
   border-radius: 8px;
   overflow: hidden;
   overflow-y: scroll;
-  `;
+`;
