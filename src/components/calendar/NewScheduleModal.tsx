@@ -130,32 +130,59 @@ export default function NewScheduleModal({
   const isUpdateMode = isScheduleToRender(schedule);
   const isFixedCategoryMode = isFixedCategoryInfo(fixedCategoryInfo);
 
-  const [categoryList, setCategoryList] = useState<CategoryDto[]>(isFixedCategoryMode ? [fixedCategoryInfo.category] : []);
+  const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');
   const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
   const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
   const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
-  const [categoryIdx, setCategoryIdx] = useState(1);
+  const [categoryIdx, setCategoryIdx] = useState(0);
   // TODO isPriority로 수정해야함
   const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isFinished : true);
 
   const [isLoading, setLoading] = useState(false);
 
-  const dropdownValues = useMemo<string[]>(() => {
-    return [
-      '-',
-      ...categoryList.map(category => category.categoryName),
-    ]
+  const isDropdownDisabled = useMemo(() => {
+    return categoryList.length === 0;
   }, [categoryList]);
+
+  const dropdownValues = useMemo<string[]>(() => {
+    if(isDropdownDisabled) return ['데이터를 불러오는 중 입니다.'];
+
+    const result: string[] = ['-'];
+
+    let idx = 1;
+    categoryList.forEach(c1 => {
+      result.push(c1.categoryName);
+      if(isFixedCategoryMode && fixedCategoryInfo.categoryId === c1.categoryId) setCategoryIdx(idx);
+      idx++;
+
+      c1.children.forEach(c2 => {
+        result.push(`  ${c2.categoryName}`);
+        if(isFixedCategoryMode && fixedCategoryInfo.categoryId === c2.categoryId) setCategoryIdx(idx);
+        idx++;
+
+        c2.children.forEach(c3 => {
+          result.push(`    ${c3.categoryName}`);
+          if(isFixedCategoryMode && fixedCategoryInfo.categoryId === c3.categoryId) setCategoryIdx(idx);
+          idx++;
+        })
+      })
+    });
+
+    return result;
+  }, [isDropdownDisabled, categoryList]);
+
 
   // 기간이 변경되면 새 카테고리 리스트를 가져옴
   useEffect(() => {
-    if(isFixedCategoryMode) return;
-
-    setCategoryIdx(0);
-
-    // TODO 카테고리 리스트 구하는 로직 필요
-    setCategoryList(categoryListDummyData);
+    const getCategoryList = async () => {
+      // TODO API
+      setTimeout(() => {
+        setCategoryList(categoryListDummyData);
+      }, 1000);
+    };
+    
+    getCategoryList();
   }, [startDate, endDate]);
 
   const handleChangeScheduleTitle: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -266,7 +293,7 @@ export default function NewScheduleModal({
                 selectedIdx={categoryIdx}
                 height='1.75rem'
                 onChange={handleCategoryIdxChange}
-                disabled={isFixedCategoryMode}
+                disabled={isDropdownDisabled}
               />
             </DropDownWrapper>
           </Line>
