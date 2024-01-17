@@ -1,3 +1,6 @@
+import { NewScheduleModalProps } from "@/components/calendar/NewScheduleModal";
+import { CategoryModalProps } from "@/components/common/category-modal/CategoryModal";
+import { ScheduleModalProps } from "@/components/common/schedule-modal/ScheduleModal";
 import { Dayjs } from "dayjs";
 
 export type CategoryColor =
@@ -141,8 +144,8 @@ export type NewScheduleModalInfo = {
 
 // Modal Context 관련 타입들
 export type ModalType = 'schedule' | 'category' | 'newSchedule';
-export type ModalInfo = (ScheduleModalInfo | CategoryModalInfo | NewScheduleModalInfo);
-export type ModalKey = {
-  key: ModalType;
-  modalInfo: ModalInfo;
-}
+export type ModalProps = ( ScheduleModalProps | CategoryModalProps | NewScheduleModalProps );
+export type ModalKey =
+  | { key: 'schedule'; modalProps: ScheduleModalProps }
+  | { key: 'category'; modalProps: CategoryModalProps }
+  | { key: 'newSchedule'; modalProps: NewScheduleModalProps };
