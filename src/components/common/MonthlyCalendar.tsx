@@ -1,48 +1,74 @@
-import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
-import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import time from '@/lib/time';
+import Icon from '@mdi/react';
+import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
 
-const MonthlyCalendarContainer = styled.div<{ pathname: string }>`
+const Container = styled.div`
+  width: 12rem;
   z-index: 10;
-  border: 1px solid black;
+  border: 1px solid ${({ theme }) => theme.colors.gray};
   padding: 1rem;
   background-color: white;
-  top: ${({ pathname }) => (pathname === '/category' ? '92px' : '40px')};
-  position: fixed;
+  position: absolute;
+  top: 1.875rem;
+  left: 2rem;
 `;
 
-const MonthsContainer = styled.div`
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-`;
-
-const MonthsHeader = styled.div`
+const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const MonthlyHeaderButton = styled.button`
+const Year = styled.div`
+  width: auto;
+  height: 1rem;
+  line-height: 1rem;
+  font-size: .875rem;
+`;
+
+const YearControls = styled.div`
+  height: 1.5rem;
+  display: flex;
+`;
+
+const YearControlButton = styled.button`
+  width: 1.5rem;
+  height: 1.5rem;
   border: none;
   background-color: transparent;
-  font-size: 20px;
+  cursor: pointer;
+  transition: background-color ease .25s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray}40;
+  }
+`;
+
+const Calendar = styled.div`
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 `;
 
 const MonthButton = styled.button<{ $is_current: number; }>`
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: .75rem;
   border: none;
+  border-radius: 1.25rem;
   background-color: transparent;
-  padding: 0.5rem;
   color: ${({ theme, $is_current }) => $is_current ? theme.colors.blue : theme.colors.gray};
   font-weight: ${({ $is_current }) => $is_current ? 'bold' : 'normal'};
   cursor: pointer;
-`;
+  transition: background-color ease .25s, color ease .25s;
 
-const MonthlyHeaderControls = styled.div`
-  display: flex;
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.blue};
+    color: white;
+  }
 `;
 
 type MonthlyCalendarProps = {
@@ -52,23 +78,10 @@ type MonthlyCalendarProps = {
 
 const months: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-const getPrevYear = (date: string): string => {
-  const prevYear = dayjs(date).subtract(1, 'y');
-  return prevYear.format('YYYY');
-};
-
-const getNextYear = (date: string): string => {
-  const prevYear = dayjs(date).add(1, 'y');
-  return prevYear.format('YYYY');
-};
-
 export default function MonthlyCalendar({
   date,
   onChange,
 }: MonthlyCalendarProps) {
-  // TODO What's this?
-  const pathname = usePathname();
-
   const [year, setYear] = useState(date.year());
   const isCurrent = (m: number) => (year === date.year()) && (m === date.month());
 
@@ -81,23 +94,19 @@ export default function MonthlyCalendar({
   };
 
   return (
-    <MonthlyCalendarContainer pathname={pathname}>
-      <MonthsHeader>
-        <span>{year}년</span>
-        <MonthlyHeaderControls>
-          <MonthlyHeaderButton
-            onClick={handleNextClick}
-          >
-            <RiArrowUpSLine />
-          </MonthlyHeaderButton>
-          <MonthlyHeaderButton
-            onClick={handlePrevClick}
-          >
-            <RiArrowDownSLine />
-          </MonthlyHeaderButton>
-        </MonthlyHeaderControls>
-      </MonthsHeader>
-      <MonthsContainer>
+    <Container>
+      <Header>
+        <Year>{year}년</Year>
+        <YearControls>
+          <YearControlButton onClick={handleNextClick} >
+            <Icon path={mdiChevronUp} />
+          </YearControlButton>
+          <YearControlButton onClick={handlePrevClick} >
+            <Icon path={mdiChevronDown} />
+          </YearControlButton>
+        </YearControls>
+      </Header>
+      <Calendar>
         {months.map((m, i) => (
           <MonthButton
             key={`monthly-${i}`}
@@ -107,7 +116,7 @@ export default function MonthlyCalendar({
             {m}
           </MonthButton>
         ))}
-      </MonthsContainer>
-    </MonthlyCalendarContainer>
+      </Calendar>
+    </Container>
   );
 }
