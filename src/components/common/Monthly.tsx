@@ -66,7 +66,7 @@ export default function Monthly({
           <RiArrowRightSLine />
         </ArrowButton>
       </Container>
-      {isCalendarShow && <MonthlyCalendar date={value} />}
+      {isCalendarShow && <MonthlyCalendar date={value} onChange={onChange} />}
     </div>
   );
 }

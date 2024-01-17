@@ -1,8 +1,9 @@
 import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
+import time from '@/lib/time';
 
 const MonthlyCalendarContainer = styled.div<{ pathname: string }>`
   z-index: 10;
@@ -31,17 +32,13 @@ const MonthlyHeaderButton = styled.button`
   font-size: 20px;
 `;
 
-const MonthButton = styled.button<{
-  month: number;
-  currentMonth: number;
-}>`
+const MonthButton = styled.button<{ $is_current: number; }>`
   border: none;
   background-color: transparent;
   padding: 0.5rem;
-  color: ${({ month, currentMonth }) =>
-    month === currentMonth ? 'blue' : 'gray'};
-  font-weight: ${({ month, currentMonth }) =>
-    month === currentMonth ? 'bold' : 'normal'};
+  color: ${({ theme, $is_current }) => $is_current ? theme.colors.blue : theme.colors.gray};
+  font-weight: ${({ $is_current }) => $is_current ? 'bold' : 'normal'};
+  cursor: pointer;
 `;
 
 const MonthlyHeaderControls = styled.div`
@@ -49,7 +46,8 @@ const MonthlyHeaderControls = styled.div`
 `;
 
 type MonthlyCalendarProps = {
-  date: string;
+  date: Dayjs;
+  onChange: (value: Dayjs) => void;
 };
 
 const months: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -64,45 +62,49 @@ const getNextYear = (date: string): string => {
   return prevYear.format('YYYY');
 };
 
-export default function MonthlyCalendar({ date }: MonthlyCalendarProps) {
+export default function MonthlyCalendar({
+  date,
+  onChange,
+}: MonthlyCalendarProps) {
+  // TODO What's this?
   const pathname = usePathname();
-  const [currentYear, setCurrentYear] = useState<string>(date.split('.')[0]);
-  const [currentMonth, setCurrentMonth] = useState<number>(
-    parseInt(date.split('.')[1]),
-  );
+
+  const [year, setYear] = useState(date.year());
+  const isCurrent = (m: number) => (year === date.year()) && (m === date.month());
+
+  const handlePrevClick = () => {
+    setYear(year - 1);
+  };
+
+  const handleNextClick = () => {
+    setYear(year + 1);
+  };
 
   return (
     <MonthlyCalendarContainer pathname={pathname}>
       <MonthsHeader>
-        <span>{currentYear}년</span>
+        <span>{year}년</span>
         <MonthlyHeaderControls>
           <MonthlyHeaderButton
-            onClick={() => {
-              setCurrentYear(getNextYear(currentYear));
-            }}
+            onClick={handleNextClick}
           >
             <RiArrowUpSLine />
           </MonthlyHeaderButton>
           <MonthlyHeaderButton
-            onClick={() => {
-              setCurrentYear(getPrevYear(currentYear));
-            }}
+            onClick={handlePrevClick}
           >
             <RiArrowDownSLine />
           </MonthlyHeaderButton>
         </MonthlyHeaderControls>
       </MonthsHeader>
       <MonthsContainer>
-        {months.map((month, i) => (
+        {months.map((m, i) => (
           <MonthButton
-            key={i}
-            month={month}
-            currentMonth={currentMonth}
-            onClick={() => {
-              setCurrentMonth(month);
-            }}
+            key={`monthly-${i}`}
+            $is_current={isCurrent(i) ? 1 : 0}
+            onClick={() => onChange(time.new(year, i, 1))}
           >
-            {month}
+            {m}
           </MonthButton>
         ))}
       </MonthsContainer>
