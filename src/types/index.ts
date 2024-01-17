@@ -31,6 +31,11 @@ export type ResDto<T> = {
   resultBody: T;
 }
 
+export interface ErrorRes {
+  errorCode: string;
+  errorMessage: string;
+}
+
 // 서버에서 오는 카테고리 데이터
 // GET /api/schedules/{year}/{month}
 export type CategoryDto = {
