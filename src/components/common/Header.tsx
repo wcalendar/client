@@ -11,16 +11,17 @@ type HeaderProps = {
   onDateChange?: (value: Dayjs) => void;
 }
 
-const HeaderContainer = styled.header`
+const Container = styled.header`
+  width: 100%;
+  height: 4.375rem;
   background: white;
   display: flex;
-  padding: 0.5rem;
+  padding: 1rem;
   align-items: center;
   justify-content: space-between;
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
     0 2px 4px -2px rgb(0 0 0 / 0.1);
-  width: 100%;
 `;
 
 const NavContainer = styled.div`
@@ -35,7 +36,7 @@ export default function Header({
 }: HeaderProps) {
   const pathName = usePathname();
   return (
-    <HeaderContainer>
+    <Container>
       <Logo />
       {(date && onDateChange) ? (
         <NavContainer>
@@ -46,6 +47,6 @@ export default function Header({
       ) : (
         <NavBar />
       )}
-    </HeaderContainer>
+    </Container>
   );
 }
