@@ -12,7 +12,7 @@ import { CategoryDto, CategoryToRender, FixedCategoryInfo, NewScheduleDto, NewSc
 import { categoryListDummyData } from "@/dummies/calendar";
 import Spinnable from "@/components/common/spinner/Spinnable";
 
-interface NewScheduleModal {
+export interface NewScheduleModalProps {
   onClose: () => void;
   onScheduleCreate: (newSchedule: NewScheduleDto) => void;
   newScheduleModalInfo: NewScheduleModalInfo;
@@ -124,7 +124,7 @@ export default function NewScheduleModal({
   onClose,
   onScheduleCreate,
   newScheduleModalInfo
-}: NewScheduleModal) {
+}: NewScheduleModalProps) {
   const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
 
   const isUpdateMode = isScheduleToRender(schedule);

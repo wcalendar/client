@@ -4,7 +4,7 @@ import Icon from "@mdi/react";
 import styled from "styled-components";
 import FloatingModal from "../floating-modal/FloatingModal";
 
-type CategoryModalProps = {
+export type CategoryModalProps = {
   categoryModalInfo: CategoryModalInfo;
   onCategoryModalClose: () => void;
 }

@@ -1,11 +1,11 @@
 'use client';
 
-import { ModalInfo, ModalKey, ModalType } from "@/types";
+import {  ModalKey, ModalProps, ModalType } from "@/types";
 import { ReactNode, createContext, useState } from "react";
 
 export interface ModalContextValue {
   modals: ModalKey[];
-  addModal: (modalType: ModalType, modalInfo: ModalInfo) => void;
+  addModal: (modalKey: ModalKey) => void;
 }
 
 export const ModalContext = createContext<ModalContextValue>({
@@ -22,8 +22,8 @@ export const ModalProvider = ({
 }: ModalProviderProps) => {
   const [modals, setModals] = useState<ModalKey[]>([]);
 
-  const addModal = (modalType: ModalType, modalInfo: ModalInfo) => {
-    setModals([{ key: modalType, modalInfo, }]);
+  const addModal = (modalKey: ModalKey) => {
+    setModals([modalKey]);
   };
 
   return (

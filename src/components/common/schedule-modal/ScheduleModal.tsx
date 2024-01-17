@@ -2,11 +2,10 @@ import { ScheduleModalInfo, ScheduleToRender } from "@/types";
 import time from "@/lib/time";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
-import { useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 import FloatingModal from "../floating-modal/FloatingModal";
 
-type ScheduleModalProps = {
+export type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
   onScheduleModalClose: () => void;
   onScheduleFinish: (categoryId: number, groupCode: number) => void;
