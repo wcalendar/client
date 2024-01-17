@@ -1,3 +1,5 @@
+'use client';
+
 import { ModalInfo, ModalKey, ModalType } from "@/types";
 import { ReactNode, createContext, useState } from "react";
 

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google';
 import StyleProvider from '@/style/StyleProvider';
+import { ModalProvider } from '@/providers/ModalContext';
 
 const roboto = Roboto({
   weight: ['400', '700'],
@@ -23,7 +24,9 @@ export default function RootLayout({
     <html lang="ko" className={roboto.className}>
       <body>
         <StyleProvider>
-          {children}
+          <ModalProvider>
+            {children}
+          </ModalProvider>
         </StyleProvider>
       </body>
     </html>
