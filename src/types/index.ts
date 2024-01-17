@@ -138,3 +138,11 @@ export type NewScheduleModalInfo = {
   schedule?: ScheduleToRender,
   fixedCategoryInfo?: FixedCategoryInfo,
 }
+
+// Modal Context 관련 타입들
+export type ModalType = 'schedule' | 'category' | 'newSchedule';
+export type ModalInfo = (ScheduleModalInfo | CategoryModalInfo | NewScheduleModalInfo);
+export type ModalKey = {
+  key: ModalType;
+  modalInfo: ModalInfo;
+}
