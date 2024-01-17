@@ -2,18 +2,20 @@ import styled from 'styled-components';
 import Monthly from '../common/Monthly';
 import { LabelText } from './constants';
 import { Dispatch, SetStateAction } from 'react';
+import { Dayjs } from 'dayjs';
 
 type CategoryHeaderProps = {
-  date: string;
-  setDate: Dispatch<SetStateAction<string>>;
+  date: Dayjs;
+  setDate: Dispatch<SetStateAction<Dayjs>>;
 };
 
-export default function CategoryHeader({ date, setDate }: CategoryHeaderProps) {
-  const handleDateChange = (value: string) => {
+export default function CategoryHeader({
+  date,
+  setDate,
+}: CategoryHeaderProps) {
+  const handleDateChange = (value: Dayjs) => {
     setDate(value);
   };
-
-  console.log(date);
 
   return (
     <CategoryHeaderContainer>
