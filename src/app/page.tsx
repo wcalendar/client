@@ -15,11 +15,12 @@ import NewScheduleModal from '../components/calendar/NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from '../components/calendar/PriorityList';
-import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, NewScheduleModalInfo, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, ErrorRes, NewScheduleDto, NewScheduleModalInfo, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
-import { authAPI } from '@/lib/apis';
+import { apis, authAPI } from '@/lib/apis';
 import useDragMove from '@/hooks/useDragMove';
+import { AxiosError } from 'axios';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -55,6 +56,7 @@ const Calendar = styled.main`
   width: 100%;
   height: calc(100vh - 47.5px);
   display: flex;
+  position: relative;
 `;
 
 const CategorySide = styled.aside`
@@ -363,14 +365,23 @@ export default function Home() {
     setCategoryToRenderList(newCategoryToRenderList);
   };
 
-  const getCategoryList = async () => {
-    const response = await authAPI.get('/schedules/2023/12');
+  const getCategoryList = async (y: number, m: number) => {
+    try {
+      const response = await apis.getCalendarData(y, m);
 
-    if(response.status < 300) {
-      console.log(response.data.resultBody);
-      setCategoryList(response.data.resultBody);
-    } else {
-      alert('로그인 오류');
+      setCategoryList(response.resultBody);
+
+      setLoading(false);
+    } catch(error) {
+      const e = error as AxiosError<ErrorRes>;
+      if(e.response) {
+        if(e.response.status === 401) {
+          alert('로그인이 필요한 서비스입니다.');
+          router.push('/login');
+        }
+      } else {
+        alert('문제가 발생했습니다.');
+      }
     }
   };
 
@@ -381,11 +392,6 @@ export default function Home() {
       categorySideBody.scrollTop = scheduleSideBody.scrollTop;
     };
     scheduleSideBody.addEventListener('scroll', handleScheduleSideScroll);
-
-    // 데이터를 가져와서 렌더링 데이터로 수정 후 저장
-    // 임시로 가짜 데이터 사용
-    getCategoryList();
-    // TODO 월 선택 추가 시 월에 따라 달라져야함
 
     return () => {
       scheduleSideBody.removeEventListener('scroll', handleScheduleSideScroll);
@@ -406,8 +412,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const month = parseInt(selectedDate.slice(6, selectedDate.length)) - 1;
-    setCategoryList(calendarDummyData[month].resultBody);
+    setLoading(true);
+
+    console.log(selectedDate);
+    const splitedDate = selectedDate.split('.');
+    const y = parseInt(splitedDate[0]);
+    const m = parseInt(splitedDate[1].trimStart()) - 1;
+    getCategoryList(y, m);
   }, [selectedDate]);
 
   useEffect(() => {
