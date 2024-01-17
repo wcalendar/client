@@ -13,9 +13,10 @@ import {
   MainCategoryLevel,
 } from '@/components/category/constants';
 import Header from '@/components/common/Header';
+import time from '@/lib/time';
 import { getCategories } from '@/lib/utils';
 import { Category } from '@/types';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 import styled from 'styled-components';
@@ -24,7 +25,7 @@ export default function CategoryPage() {
   // All Category List
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   // Today date
-  const [currentDate, setDate] = useState<string>(dayjs().format('YYYY. MM.'));
+  const [currentDate, setDate] = useState<Dayjs>(time.now());
   // Category Form Active
   const [isFormActive, setFormActive] = useState(false);
   // Level One Category Button Active

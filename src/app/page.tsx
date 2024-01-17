@@ -189,7 +189,7 @@ const DragImage = styled.div`
 `;
 
 export default function Home() {
-  const [selectedDate, setSelectedDate] = useState(time.toString(time.now(), 'YYYY. MM.'));
+  const [selectedDate, setSelectedDate] = useState(time.now());
 
   const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
   const [categoryModalInfo, setCategoryModalInfo] = useState<CategoryModalInfo | null>(null);
@@ -389,7 +389,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const month = parseInt(selectedDate.slice(6, selectedDate.length)) - 1;
+    const month = selectedDate.month();
     setCategoryList(calendarDummyData[month].resultBody);
   }, [selectedDate]);
 
@@ -406,9 +406,8 @@ export default function Home() {
   }
 
   const handleCellClick = (categoryId: number, day: number) => {
-    const splitedDate = selectedDate.split('.');
-    const y = parseInt(splitedDate[0]);
-    const m = parseInt(splitedDate[1].trimStart()) - 1;
+    const y = selectedDate.year();
+    const m = selectedDate.month();
 
     setScheduleModalInfo(null);
     for(const c1 of categoryList) {
@@ -443,7 +442,7 @@ export default function Home() {
     setNewScheduleModalOpen(undefined);
   };
 
-  const handleSelectedDateChange = (value: string) => {
+  const handleSelectedDateChange = (value: Dayjs) => {
     setSelectedDate(value);
   };
 

@@ -6,10 +6,10 @@ const LogoContainer = styled.div`
   height: 30px;
 `;
 const Title = styled.h1`
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
-  width: 101px;
-  height: 30px;
+  height: 1.875rem;
+  line-height: 1.875rem;
   & > a {
     text-decoration: none;
   }
