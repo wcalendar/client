@@ -46,7 +46,7 @@ export const getCategories = (): Category[] => {
       categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
       categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
       categoryDescription: '하하',
-      categoryVisible: true,
+      categoryVisible: false,
     },
     {
       categoryId: 3,
@@ -59,4 +59,18 @@ export const getCategories = (): Category[] => {
       categoryVisible: true,
     },
   ];
+};
+
+/**
+ * Validates a string value.
+ *
+ * @param value - The value to be validated.
+ * @param maxLength - The maximum length allowed for the string.
+ * @returns True if the value is a string and its length is less than or equal to the maxLength, false otherwise.
+ */
+export const validateString = (value: unknown, maxLength: number): boolean => {
+  if (!value || typeof value !== 'string' || value.length > maxLength) {
+    return false;
+  }
+  return true;
 };

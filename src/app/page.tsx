@@ -4,21 +4,22 @@ import Header from '@/components/common/Header';
 import { calendarDummyData } from '@/dummies/calendar';
 import { DragEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Cell from './Cell';
-import CategoryCell from './CategoryCell';
-import ScheduleLine from './ScheduleLine';
+import HeaderCell from '../components/calendar/HeaderCell';
+import CategoryCell from '../components/calendar/CategoryCell';
+import ScheduleLine from '../components/calendar/ScheduleLine';
 import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
-import NewScheduleModal from './NewScheduleModal';
+import NewScheduleModal from '../components/calendar/NewScheduleModal';
 import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
-import PriorityList from './PriorityList';
-import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import PriorityList from '../components/calendar/PriorityList';
+import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, NewScheduleModalInfo, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import { authAPI } from '@/lib/apis';
+import useDragMove from '@/hooks/useDragMove';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -121,9 +122,12 @@ const PriorityTip = styled.div`
   color: ${({ theme }) => theme.colors.blue};
 `;
 
-const CalendarBody = styled.div<{ $day_count: number }>`
+const CalendarBody = styled.div<{ $day_count: number, $is_move_mode: number, }>`
   width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
+  min-height: calc(100vh - 47.5px - 2.5rem);
+  padding-top: var(--line-gap);
   position: relative;
+  ${({ $is_move_mode }) => $is_move_mode ? 'cursor: grab;' : ''}
 `;
 
 const SettingCategoryButton = styled.button`
@@ -191,21 +195,24 @@ export default function Home() {
   const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
   const [categoryModalInfo, setCategoryModalInfo] = useState<CategoryModalInfo | null>(null);
 
-  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<boolean | ScheduleToRender>(false);
+  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<NewScheduleModalInfo | undefined>();
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
   >([]);
   const [prioritiesByDay, setPrioritiesByDay] = useState<Priority[][]>([]);
+
+  const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
   const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
 
   const [isLoading, setLoading] = useState(false);
-
+  
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
-
+  const [isMoveMode, onMouseDown, onMouseUp, onMouseMove] = useDragMove<HTMLDivElement>(scheduleBody);
+  
   const now = time.now();
   const lastDayOfMonth = now.daysInMonth();
   const calendarHeaderItems = useMemo(() => {
@@ -248,8 +255,8 @@ export default function Home() {
         isVisible: category.categoryVisible,
         schedules: [],
       };
-      const lines: (ScheduleToRender | undefined)[][] = [];
-      lines.push(Array(lastDayInMonth));
+      const lines: (ScheduleToRender | null)[][] = [];
+      lines.push(Array.from({length: lastDayInMonth}, () => null));
 
       const rangeSchedules: ScheduleToRender[] = [];
 
@@ -322,7 +329,7 @@ export default function Home() {
 
         // 모든 라인에 할당되어 있으면 새 라인 생성하고 할당
         if (!isAllocated) {
-          lines.push(Array(lastDayInMonth));
+          lines.push(Array.from({length: lastDayInMonth}, () => null));
           for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
             lines[lines.length - 1][day] = schedule;
           }
@@ -407,12 +414,50 @@ export default function Home() {
     toRenderingData(categoryList, lastDayOfMonth);
   }, [categoryList]);
 
+  const handleCellMouseOver = (categoryIdx: number) => {
+    setHoveredCategoryIdx(categoryIdx);
+  };
+
+  const handleCellMouseOut = () => {
+    setHoveredCategoryIdx(-1);
+  }
+
+  const handleCellClick = (categoryId: number, day: number) => {
+    const splitedDate = selectedDate.split('.');
+    const y = parseInt(splitedDate[0]);
+    const m = parseInt(splitedDate[1].trimStart()) - 1;
+
+    setScheduleModalInfo(null);
+    for(const c1 of categoryList) {
+      if(c1.categoryId === categoryId) {
+        setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c1.categoryId, date: time.new(y, m, day) } });
+        return;
+      }
+
+      for(const c2 of c1.children) {
+        if(c2.categoryId === categoryId) {
+          setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c2.categoryId, date: time.new(y, m, day) } });
+          return;
+        } 
+
+        for(const c3 of c2.children) {
+          if(c3.categoryId === categoryId) {
+            setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c3.categoryId, date: time.new(y, m, day) } });
+            return;
+          } 
+        }
+      }
+    }
+
+    alert('존재하지 않는 카테고리입니다.');
+  }
+
   const handleOpenNewScheduleModal = () => {
-    setNewScheduleModalOpen(true);
+    setNewScheduleModalOpen({});
   };
 
   const handleCloseNewScheduleModal = () => {
-    setNewScheduleModalOpen(false);
+    setNewScheduleModalOpen(undefined);
   };
 
   const handleSelectedDateChange = (value: string) => {
@@ -474,7 +519,7 @@ export default function Home() {
 
   const handleUpdateScheduleClick = (schedule: ScheduleToRender) => {
     setScheduleModalInfo(null);
-    setNewScheduleModalOpen(schedule);
+    setNewScheduleModalOpen({ schedule });
   }
 
   const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
@@ -578,9 +623,6 @@ export default function Home() {
     const priorities = newPrioritiesByDay[day];
 
     const targetIdx = droppableIdx > draggableIdx ? droppableIdx-1 : droppableIdx;
-    console.log(draggableIdx);
-    console.log(targetIdx);
-
     if(draggableIdx < targetIdx) {
       priorities[draggableIdx].priority = targetIdx;
 
@@ -594,8 +636,6 @@ export default function Home() {
         (priorities[i].priority)++;
       }
     } else return;
-
-    console.log(priorities);
 
     priorities.sort((a, b) => a.priority - b.priority);
 
@@ -612,11 +652,11 @@ export default function Home() {
           <CategorySide ref={categoryBody}>
             <CalendarHeader $day_count={1}>
               <HeaderSection>
-                <Cell isCategory>
+                <HeaderCell isCategory>
                   <SettingCategoryButton onClick={handleMoveCategoryPage}>
                     카테고리 관리
                   </SettingCategoryButton>
-                </Cell>
+                </HeaderCell>
               </HeaderSection>
               <PrioritySection $priority_count={prioritiesSize}>
                 <PriorityLabel>
@@ -625,22 +665,23 @@ export default function Home() {
                 </PriorityLabel>
               </PrioritySection>
             </CalendarHeader>
-            <CalendarBody $day_count={1}>
-              {categoryToRenderList.map(categoryToRender => (
+            <CalendarBody $day_count={1} $is_move_mode={0}>
+              {categoryToRenderList.map((categoryToRender, i) => (
                 <CategoryCell
                   key={categoryToRender.category.id}
                   category={categoryToRender.category}
                   lineCount={categoryToRender.lines.length}
                   onCategoryClick={handleCategoryClick}
+                  isHovered={hoveredCategoryIdx === i}
                 />
               ))}
             </CalendarBody>
           </CategorySide>
-          <ScheduleSide ref={scheduleBody}>
+          <ScheduleSide ref={scheduleBody} onMouseMove={(e) => {if(isMoveMode) e.preventDefault()} }>
             <CalendarHeader $day_count={lastDayOfMonth}>
               <HeaderSection>
                 {calendarHeaderItems.map(headerItem => (
-                  <Cell key={headerItem}>{headerItem}</Cell>
+                  <HeaderCell key={headerItem}>{headerItem}</HeaderCell>
                 ))}
               </HeaderSection>
               <PrioritySection $priority_count={prioritiesSize}>
@@ -666,7 +707,12 @@ export default function Home() {
                 {draggedPriority && (<DragImage style={{ left: x+20, top: y+10, }} >{draggedPriority.content}</DragImage>)}
               </PrioritySection>
             </CalendarHeader>
-            <CalendarBody $day_count={lastDayOfMonth}>
+            <CalendarBody $day_count={lastDayOfMonth} $is_move_mode={isMoveMode ? 1 : 0}
+              onMouseDown={onMouseDown}
+              onMouseUp={onMouseUp}
+              onMouseMove={onMouseMove}
+              onMouseLeave={onMouseUp}
+            >
               <DivideLines $day_count={lastDayOfMonth}>
                 {Array.from({ length: lastDayOfMonth }, () => null).map(
                   (_, i) => (
@@ -679,6 +725,10 @@ export default function Home() {
                   key={`schedule-${categoryToRender.category.id}`}
                   categoryToRender={categoryToRender}
                   onScheduleClick={handleScheduleClick}
+                  onCellMouseOver={handleCellMouseOver}
+                  onCellMouseOut={handleCellMouseOut}
+                  onCellClick={handleCellClick}
+                  categoryIdx={i}
                 />
               ))}
             </CalendarBody>
@@ -694,8 +744,8 @@ export default function Home() {
       {isNewScheduleModalOpen && (
         <NewScheduleModal
           onClose={handleCloseNewScheduleModal}
-          schedule={isNewScheduleModalOpen === true ? undefined : isNewScheduleModalOpen}
           onScheduleCreate={handleScheduleCreate}
+          newScheduleModalInfo={isNewScheduleModalOpen}
         />
       )}
       {scheduleModalInfo && (

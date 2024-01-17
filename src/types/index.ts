@@ -74,7 +74,7 @@ export type ScheduleDto = {
 // 캘린더에 렌더링하기 위한 카테고리 데이터
 export type CategoryToRender = {
   category: CalendarCategory;
-  lines: (ScheduleToRender | undefined)[][];
+  lines: (ScheduleToRender | null)[][];
 };
 
 // 캘린더에 렌더링하기 위한 일정 데이터
@@ -125,4 +125,16 @@ export type CategoryModalInfo = {
   x: number,
   y: number,
   category: CalendarCategory,
+}
+
+// 빈 일정을 눌러 모달을 열었을 때 사용되는 데이터
+export type FixedCategoryInfo = {
+  categoryId: number;
+  date: Dayjs;
+}
+
+// 새 일정 생성 모달에 필요한 데이터
+export type NewScheduleModalInfo = {
+  schedule?: ScheduleToRender,
+  fixedCategoryInfo?: FixedCategoryInfo,
 }

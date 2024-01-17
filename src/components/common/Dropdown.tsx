@@ -9,16 +9,18 @@ type DropdownProps = {
   onChange: (idx: number) => void;
   width?: string;
   height: string;
+  disabled?: boolean;
 }
 
-const Container = styled.div<{ $width?: string, $height: string }>`
+const Container = styled.div<{ $width?: string, $height: string, $disabled: number }>`
   position: relative;
   width: ${({ $width }) => $width ? $width : '100%'};
   height: ${({ $height }) => $height};
-  cursor: pointer;
+  ${({ $disabled }) => $disabled ? '' : 'cursor: pointer;'}
+  user-select: none;
 `;
 
-const Input = styled.div<{ $height: string, }>`
+const Input = styled.div<{ $height: string, $disabled: number }>`
   position: relative;
   width: 100%;
   height: ${({ $height }) => $height};
@@ -27,6 +29,12 @@ const Input = styled.div<{ $height: string, }>`
   text-indent: .5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: 5px;
+  white-space: pre;
+  
+  ${({ $disabled, theme }) => $disabled ? `
+  color: ${theme.colors.gray};
+  background: ${theme.colors.gray}40;
+  ` : ''}
 `;
 
 const IconWrapper = styled.div<{ $height: string, }>`
@@ -37,6 +45,15 @@ const IconWrapper = styled.div<{ $height: string, }>`
   height: ${({ $height }) => $height};
   padding: calc(${({ $height }) => $height} / 8);
   text-indent: 0;
+  color: inherit;
+
+  svg {
+    color: inherit;
+  }
+
+  path {
+    color: inherit;
+  }
 `;
 
 const ListWrapper = styled.div`
@@ -75,6 +92,7 @@ const ListItem = styled.div<{ $height: string, }>`
   line-height: ${({ $height }) => $height};
   font-size: .75rem;
   text-indent: .5rem;
+  white-space: pre;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.white};
@@ -95,6 +113,7 @@ export default function Dropdown({
   values,
   selectedIdx,
   onChange,
+  disabled,
 }: DropdownProps) {
   const [isListOpen, setListOpen] = useState(false);
 
@@ -115,7 +134,9 @@ export default function Dropdown({
   }, [])
 
   const onInputClick = () => {
-    setListOpen(!isListOpen);
+    if(!disabled) {
+      setListOpen(!isListOpen);
+    }
   }
 
   const handleItemClick = useCallback((idx: number) => {
@@ -124,8 +145,8 @@ export default function Dropdown({
   }, [onChange]);
 
   return (
-    <Container $width={width} $height={height} ref={dropdownRef}>
-      <Input $height={height} onClick={onInputClick}>
+    <Container $width={width} $height={height} $disabled={disabled ? 1 : 0} ref={dropdownRef}>
+      <Input $height={height} onClick={onInputClick} $disabled={disabled ? 1 : 0}>
         {values[selectedIdx]}
         <IconWrapper $height={height}><Icon path={mdiChevronDown} /></IconWrapper>
       </Input>
