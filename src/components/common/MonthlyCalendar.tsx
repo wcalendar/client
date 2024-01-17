@@ -14,6 +14,21 @@ const Container = styled.div`
   position: absolute;
   top: 1.875rem;
   left: 2rem;
+  animation-duration: .25s;
+  animation-name: open;
+
+  @keyframes open {
+    from {
+      opacity: 0;
+      transform: translateY(-5%);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
 `;
 
 const Header = styled.div`
