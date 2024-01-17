@@ -1,15 +1,16 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri';
 import styled from 'styled-components';
 import MonthlyCalendar from './MonthlyCalendar';
+import time from '@/lib/time';
 
 type MonthlyProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: Dayjs;
+  onChange: (value: Dayjs) => void;
 }
 
-const MonthlyContainer = styled.div`
+const Container = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -30,16 +31,6 @@ const ArrowButton = styled(Button)`
   border-radius: 8px;
 `;
 
-const getPrevMonth = (date: string) => {
-  const currentMonth = dayjs(date);
-  return formattedDate(currentMonth.subtract(1, 'M'));
-};
-
-const getNextMonth = (date: string) => {
-  const prevMonth = dayjs(date);
-  return formattedDate(prevMonth.add(1, 'M'));
-};
-
 const formattedDate = (date: dayjs.Dayjs) => {
   return date.format('YYYY. MM.');
 };
@@ -48,7 +39,15 @@ export default function Monthly({
   value,
   onChange,
 }: MonthlyProps) {
-  const [isCalendarShow, setCalendarShow] = useState<boolean>(false);
+  const [isCalendarShow, setCalendarShow] = useState(false);
+
+  const handlePrevClick = () => {
+    onChange(value.add(-1, 'month'));
+  };
+
+  const handleNextClick = () => {
+    onChange(value.add(1, 'month'));
+  }
 
   const handleCalendarShow = (isCalendarShow: boolean) => {
     setCalendarShow(!isCalendarShow);
@@ -56,25 +55,17 @@ export default function Monthly({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <MonthlyContainer>
-        <ArrowButton
-          onClick={() => {
-            onChange(getPrevMonth(value));
-          }}
-        >
+      <Container>
+        <ArrowButton onClick={handlePrevClick}>
           <RiArrowLeftSLine />
         </ArrowButton>
         <Button onClick={() => handleCalendarShow(isCalendarShow)}>
-          {value}
+          {time.toString(value, 'YYYY. MM.')}
         </Button>
-        <ArrowButton
-          onClick={() => {
-            onChange(getNextMonth(value));
-          }}
-        >
+        <ArrowButton onClick={handleNextClick}>
           <RiArrowRightSLine />
         </ArrowButton>
-      </MonthlyContainer>
+      </Container>
       {isCalendarShow && <MonthlyCalendar date={value} />}
     </div>
   );

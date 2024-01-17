@@ -4,10 +4,11 @@ import NavBar from './NavBar';
 import Monthly from './Monthly';
 import SearchBar from './SearchBar';
 import { usePathname } from 'next/navigation';
+import { Dayjs } from 'dayjs';
 
 type HeaderProps = {
-  date?: string;
-  onDateChange?: (value: string) => void;
+  date?: Dayjs;
+  onDateChange?: (value: Dayjs) => void;
 }
 
 const HeaderContainer = styled.header`
