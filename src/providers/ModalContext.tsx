@@ -6,11 +6,13 @@ import { ReactNode, createContext, useState } from "react";
 export interface ModalContextValue {
   modals: ModalKey[];
   addModal: (modalKey: ModalKey) => void;
+  closeModal: () => void;
 }
 
 export const ModalContext = createContext<ModalContextValue>({
   modals: [],
   addModal: () => {},
+  closeModal: () => {},
 });
 
 interface ModalProviderProps {
@@ -20,13 +22,18 @@ interface ModalProviderProps {
 export const ModalProvider = ({
   children,
 }: ModalProviderProps) => {
+  console.log('re')
   const [modals, setModals] = useState<ModalKey[]>([]);
 
   const addModal = (modalKey: ModalKey) => {
     setModals([modalKey]);
   };
 
+  const closeModal = () => {
+    setModals([]);
+  }
+
   return (
-    <ModalContext.Provider value={{ modals, addModal }}>{children}</ModalContext.Provider>
+    <ModalContext.Provider value={{ modals, addModal, closeModal }}>{children}</ModalContext.Provider>
   )
 };

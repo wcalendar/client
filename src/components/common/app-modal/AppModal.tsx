@@ -22,13 +22,13 @@ export default function AppModal() {
 
         if(key === 'schedule') {
           const Comp = modalMap[key];
-          return <Comp {...modalProps}></Comp>
+          return <Comp key={'modal'} {...modalProps}></Comp>
         } else if(key === 'category') {
           const Comp = modalMap[key];
-          return <Comp {...modalProps}></Comp>
+          return <Comp key={'modal'} {...modalProps}></Comp>
         } else if(key === 'newSchedule') {
           const Comp = modalMap[key];
-          return <Comp {...modalProps}></Comp>
+          return <Comp key={'modal'} {...modalProps}></Comp>
         }
       })}
     </>
