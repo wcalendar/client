@@ -1,53 +1,23 @@
 import styled from 'styled-components';
-import Monthly from '../common/Monthly';
-import { LabelText } from './constants';
-import { Dispatch, SetStateAction } from 'react';
-import { Dayjs } from 'dayjs';
 
-type CategoryHeaderProps = {
-  date: Dayjs;
-  setDate: Dispatch<SetStateAction<Dayjs>>;
-};
-
-export default function CategoryHeader({
-  date,
-  setDate,
-}: CategoryHeaderProps) {
-  const handleDateChange = (value: Dayjs) => {
-    setDate(value);
-  };
-
+export default function CategoryHeader() {
   return (
-    <CategoryHeaderContainer>
-      <CategoryHeaderContentsContainer>
-        <CategoryHeaderTitle>{LabelText.pageTitle}</CategoryHeaderTitle>
-        <Monthly value={date} onChange={handleDateChange} />
-      </CategoryHeaderContentsContainer>
-    </CategoryHeaderContainer>
+    <Container>
+      <Title>카테고리 관리</Title>
+    </Container>
   );
 }
 
-const CategoryHeaderContainer = styled.div`
+const Container = styled.div`
   width: 100%;
+  height: 2.5rem;
   display: flex;
   align-items: center;
   border-bottom: 1px solid gray;
-  position: fixed;
-  top: 40px;
   background-color: white;
-  margin-top: 8px;
 `;
 
-const CategoryHeaderContentsContainer = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 5px;
-  width: 420px;
-  gap: 2rem;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const CategoryHeaderTitle = styled.h2`
-  font-size: 18px;
+const Title = styled.h2`
+  font-size: .875rem;
+  text-indent: 1.25rem;
 `;
