@@ -1,6 +1,6 @@
-import CategoryForm from "@/components/category/CategoryForm";
+import CategoryForm from "@/app/category/CategoryForm";
 import CategoryList from "@/app/category/CategoryList";
-import CategoryMenuHelperText from "@/components/category/CategoryMenuHelperText";
+import Tips from "@/app/category/Tips";
 import { AlertText } from "@/components/category/constants";
 import time from "@/lib/time";
 import { getCategories } from "@/lib/utils";
@@ -15,12 +15,13 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   padding: 1.25rem;
+  gap: 1.25rem;
 `;
 
 const CategorySide = styled.div`
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: 19.375rem;
 `;
 
 const ControlBox = styled.div`
@@ -186,7 +187,7 @@ export default function CategoryBody() {
           </AddBaseCategoryButton>
         </ControlBox>
         <CategoryList categories={categoryList} ref={currentCategoryRef} />
-        <CategoryMenuHelperText />
+        <Tips />
       </CategorySide>
       <CategoryForm
         isActive={isFormActive}
