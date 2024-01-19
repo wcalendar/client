@@ -8,10 +8,11 @@ import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { CategoryDto, FixedCategoryInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
-import { categoryListDummyData } from "@/dummies/calendar";
+import { CategoryDto, ErrorRes, FixedCategoryInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import Spinnable from "@/components/common/spinner/Spinnable";
 import { useModal } from "@/providers/ModalProvider/useModal";
+import { apis } from "@/lib/apis";
+import { AxiosError } from "axios";
 
 export interface NewScheduleModalProps {
   onScheduleCreate: (newSchedule: NewScheduleDto) => void;
@@ -158,11 +159,27 @@ export default function NewScheduleModal({
     setCategoryList([]);
     setCategoryIdx(0);
 
+    const sy = startDate.year();
+    const sm = startDate.month();
+    const ey = endDate.year();
+    const em = endDate.month();
+
     const getCategoryList = async () => {
-      // TODO API
-      setTimeout(() => {
-        setCategoryList([...categoryListDummyData]);
-      }, 1000);
+      try {
+        const response = await apis.getCategoriesByPeriod(sy, sm, ey, em);
+
+        setCategoryList(response.resultBody);
+      } catch(error) {
+        const e = error as AxiosError<ErrorRes>;
+        if(e.response) {
+          if(e.response.status === 401) {
+            alert('로그인이 필요한 서비스입니다.');
+            // router.push('/login');
+          }
+        } else {
+          alert('문제가 발생했습니다.');
+        }
+      }
     };
     
     getCategoryList();
@@ -267,7 +284,6 @@ export default function NewScheduleModal({
       scheduleEndDate: isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
       categoryId: categoryList[categoryIdx-1].categoryId,
       schedulePriority: -1,
-      isDuration: isDuration,
       isPriority: isPriority,
     });
   }, [scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);

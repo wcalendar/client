@@ -117,7 +117,6 @@ export type NewScheduleDto = {
   scheduleEndDate: string,
   categoryId: number,
   schedulePriority: number,
-  isDuration: boolean,
   isPriority: boolean,
 }
 

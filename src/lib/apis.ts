@@ -33,4 +33,7 @@ export const apis = {
   getCalendarData: async (y: number, m: number): Promise<ResDto<CategoryDto[]>> => {
     return (await authAPI.get(`/schedules/${y}/${m+1}`)).data;
   },
+  getCategoriesByPeriod: async (sy: number, sm: number, ey: number, em: number): Promise<ResDto<CategoryDto[]>> => {
+    return (await authAPI.get(`/categories?startYear=${sy}&startMonth=${sm}&endYear=${ey}&endMonth=${em}`)).data;
+  },
 }
