@@ -3,8 +3,9 @@ import Logo from './Logo';
 import NavBar from './NavBar';
 import Monthly from './Monthly';
 import SearchBar from './SearchBar';
-import { usePathname } from 'next/navigation';
 import { Dayjs } from 'dayjs';
+import { useModal } from '@/providers/ModalProvider/useModal';
+import { useCallback } from 'react';
 
 type HeaderProps = {
   date?: Dayjs;
@@ -34,14 +35,19 @@ export default function Header({
   date,
   onDateChange,
 }: HeaderProps) {
-  const pathName = usePathname();
+  const { addModal } = useModal();
+
+  const handleSearchBarClick = useCallback(() => {
+    addModal({ key: 'search', modalProps: {state: 'open'} });
+  }, []);
+
   return (
     <Container>
       <Logo />
       {(date && onDateChange) ? (
         <NavContainer>
           <Monthly value={date} onChange={onDateChange}/>
-          <SearchBar />
+          <SearchBar onClick={handleSearchBarClick} />
           <NavBar />
         </NavContainer>
       ) : (
