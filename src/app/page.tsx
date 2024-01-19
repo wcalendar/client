@@ -2,7 +2,7 @@
 
 import Header from '@/components/common/Header';
 import { calendarDummyData } from '@/dummies/calendar';
-import { DragEvent, MouseEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { DragEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import HeaderCell from '../components/calendar/HeaderCell';
 import CategoryCell from '../components/calendar/CategoryCell';
@@ -16,7 +16,7 @@ import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleM
 import { useRouter } from 'next/navigation';
 import PriorityList from '../components/calendar/PriorityList';
 import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, NewScheduleModalInfo, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
-import CategoryModal from '@/components/common/category-modal/CategoryModal';
+import { CategoryModalProps } from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
 import { useModal } from '@/providers/ModalProvider/useModal';
@@ -193,8 +193,6 @@ export default function Home() {
   const { modals, addModal, closeModal } = useModal();
 
   const [selectedDate, setSelectedDate] = useState(time.now());
-
-  const [categoryModalInfo, setCategoryModalInfo] = useState<CategoryModalInfo | null>(null);
 
   const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<NewScheduleModalInfo | undefined>();
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
@@ -490,9 +488,9 @@ export default function Home() {
     router.push('/category');
   };
 
-  const handleUpdateScheduleClick = (schedule: ScheduleToRender) => {
+  const handleUpdateScheduleClick = useCallback((schedule: ScheduleToRender) => {
     setNewScheduleModalOpen({ schedule });
-  }
+  }, []);
 
   const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
     const newCategoryListToRender = [...categoryToRenderList];
@@ -538,16 +536,6 @@ export default function Home() {
     }
     setPrioritiesByDay(newPriorities);
   }, [categoryToRenderList, lastDayOfMonth, prioritiesByDay]);
-
-  const handleCategoryClick = useCallback((newCategoryModalInfo: CategoryModalInfo) => {
-    if(!categoryModalInfo) {
-      setCategoryModalInfo(newCategoryModalInfo);
-    }
-  }, [categoryModalInfo]);
-
-  const handleCategoryModalClose = () => {
-    setCategoryModalInfo(null);
-  };
 
   const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => {
     const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
@@ -621,6 +609,14 @@ export default function Home() {
     
     addModal({ key: 'schedule', modalProps: props });
   }, [handleScheduleFinish]);
+
+  const handleCategoryClick = useCallback((newCategoryModalInfo: CategoryModalInfo) => {
+    const props: CategoryModalProps = {
+      categoryModalInfo: newCategoryModalInfo,
+    };
+    
+    addModal({ key: 'category', modalProps: props });
+  }, []);
 
   return (
     <Container>
@@ -724,12 +720,6 @@ export default function Home() {
           onClose={handleCloseNewScheduleModal}
           onScheduleCreate={handleScheduleCreate}
           newScheduleModalInfo={isNewScheduleModalOpen}
-        />
-      )}
-      {categoryModalInfo && (
-        <CategoryModal
-          categoryModalInfo={categoryModalInfo}
-          onCategoryModalClose={handleCategoryModalClose}
         />
       )}
     </Container>

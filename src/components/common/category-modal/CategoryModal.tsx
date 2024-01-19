@@ -3,10 +3,11 @@ import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import styled from "styled-components";
 import FloatingModal from "../floating-modal/FloatingModal";
+import { useCallback, useState } from "react";
+import { useModal } from "@/providers/ModalProvider/useModal";
 
 export type CategoryModalProps = {
   categoryModalInfo: CategoryModalInfo;
-  onCategoryModalClose: () => void;
 }
 
 const Header = styled.div`
@@ -62,15 +63,21 @@ const Value = styled.div`
 
 export default function CategoryModal({
   categoryModalInfo,
-  onCategoryModalClose,
 }: CategoryModalProps) {
-  const { x, y, category } = categoryModalInfo;
+  const { closeModal } = useModal();
+
+  const [modalInfo, setModalInfo] = useState(categoryModalInfo);
+  const { x, y, category } = modalInfo;
+
+  const handleClose = useCallback(() => {
+    closeModal();
+  }, []);
   
   return (
-    <FloatingModal x={x} y={y} onClose={onCategoryModalClose}>
+    <FloatingModal x={x} y={y} onClose={handleClose}>
       <Header>
         <Title>{category.name}</Title>
-        <CloseButton onClick={onCategoryModalClose}>
+        <CloseButton onClick={handleClose}>
           <Icon path={mdiClose} />
         </CloseButton>
       </Header>
