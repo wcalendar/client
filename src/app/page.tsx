@@ -11,14 +11,15 @@ import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
-import NewScheduleModal from '../components/calendar/NewScheduleModal';
-import ScheduleModal from '@/components/common/schedule-modal/ScheduleModal';
+import { NewScheduleModalProps } from '../components/calendar/NewScheduleModal';
+import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from '../components/calendar/PriorityList';
 import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, NewScheduleModalInfo, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
-import CategoryModal from '@/components/common/category-modal/CategoryModal';
+import { CategoryModalProps } from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
+import { useModal } from '@/providers/ModalProvider/useModal';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -189,12 +190,10 @@ const DragImage = styled.div`
 `;
 
 export default function Home() {
+  const { modals, addModal, closeModal } = useModal();
+
   const [selectedDate, setSelectedDate] = useState(time.now());
 
-  const [scheduleModalInfo, setScheduleModalInfo] = useState<ScheduleModalInfo | null>(null);
-  const [categoryModalInfo, setCategoryModalInfo] = useState<CategoryModalInfo | null>(null);
-
-  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<NewScheduleModalInfo | undefined>();
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
@@ -405,43 +404,6 @@ export default function Home() {
     setHoveredCategoryIdx(-1);
   }
 
-  const handleCellClick = (categoryId: number, day: number) => {
-    const y = selectedDate.year();
-    const m = selectedDate.month();
-
-    setScheduleModalInfo(null);
-    for(const c1 of categoryList) {
-      if(c1.categoryId === categoryId) {
-        setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c1.categoryId, date: time.new(y, m, day) } });
-        return;
-      }
-
-      for(const c2 of c1.children) {
-        if(c2.categoryId === categoryId) {
-          setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c2.categoryId, date: time.new(y, m, day) } });
-          return;
-        } 
-
-        for(const c3 of c2.children) {
-          if(c3.categoryId === categoryId) {
-            setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c3.categoryId, date: time.new(y, m, day) } });
-            return;
-          } 
-        }
-      }
-    }
-
-    alert('존재하지 않는 카테고리입니다.');
-  }
-
-  const handleOpenNewScheduleModal = () => {
-    setNewScheduleModalOpen({});
-  };
-
-  const handleCloseNewScheduleModal = () => {
-    setNewScheduleModalOpen(undefined);
-  };
-
   const handleSelectedDateChange = (value: Dayjs) => {
     setSelectedDate(value);
   };
@@ -489,21 +451,6 @@ export default function Home() {
     router.push('/category');
   };
 
-  const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
-    if(!scheduleModalInfo) {
-      setScheduleModalInfo(newScheduleModalInfo);
-    }
-  }, [scheduleModalInfo]);
-
-  const handleScheduleModalClose = () => {
-    setScheduleModalInfo(null);
-  }
-
-  const handleUpdateScheduleClick = (schedule: ScheduleToRender) => {
-    setScheduleModalInfo(null);
-    setNewScheduleModalOpen({ schedule });
-  }
-
   const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
     const newCategoryListToRender = [...categoryToRenderList];
     const category = newCategoryListToRender.find(c => c.category.id === categoryId);
@@ -512,38 +459,34 @@ export default function Home() {
       return;
     }
 
-    let schedule: ScheduleToRender | undefined;
+    let foundSchedule: ScheduleToRender | undefined;
     let isScheduleFound = false;
-    for(const l of category.lines) {
-      for(const s of l) {
-        if(s && s.groupCode === groupCode) {
+    for(const line of category.lines) {
+      for(const schedule of line) {
+        if(schedule && schedule.groupCode === groupCode) {
           isScheduleFound = true;
-          schedule = s;
+          foundSchedule = {...schedule};
           break;
         }
       }
 
       if(isScheduleFound) break;
     }
-    if(!schedule) {
+    if(!foundSchedule) {
       alert('존재하지 않는 일정입니다.');
       return;
     }
 
-    const newIsFinished = !(schedule.isFinished);
-    schedule.isFinished = newIsFinished;
+    const newIsFinished = !(foundSchedule.isFinished);
+    foundSchedule.isFinished = newIsFinished;
     setCategoryToRenderList(newCategoryListToRender);
 
-    const newScheduleModalInfo = {...scheduleModalInfo!};
-    newScheduleModalInfo.schedule.isFinished = newIsFinished;
-    setScheduleModalInfo(newScheduleModalInfo);
-
     // 우선순위
-    const startDay = schedule.startDate.date();
-    const endDay = schedule.endDate.date();
+    const startDay = foundSchedule.startDate.date();
+    const endDay = foundSchedule.endDate.date();
     const newPriorities = [...prioritiesByDay];
     for(let i=startDay; i<=endDay; i++) {
-      for(let j=0; j<newPriorities[i].length; j++) {
+      for(let j=0; j<newPriorities[i-1].length; j++) {
         if(newPriorities[i-1][j].groupCode === groupCode) {
           newPriorities[i-1][j].isFinished = newIsFinished;
           break;
@@ -551,17 +494,7 @@ export default function Home() {
       }
     }
     setPrioritiesByDay(newPriorities);
-  }, [categoryToRenderList, scheduleModalInfo, lastDayOfMonth, prioritiesByDay]);
-
-  const handleCategoryClick = useCallback((newCategoryModalInfo: CategoryModalInfo) => {
-    if(!categoryModalInfo) {
-      setCategoryModalInfo(newCategoryModalInfo);
-    }
-  }, [categoryModalInfo]);
-
-  const handleCategoryModalClose = () => {
-    setCategoryModalInfo(null);
-  };
+  }, [categoryToRenderList, lastDayOfMonth, prioritiesByDay]);
 
   const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => {
     const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
@@ -625,6 +558,69 @@ export default function Home() {
 
     handlePriorityItemDragEnd();
   }, [prioritiesByDay]);
+
+  const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
+    const props: ScheduleModalProps = {
+      scheduleModalInfo: newScheduleModalInfo,
+      onScheduleFinish: handleScheduleFinish,
+      onUpdateClick: handleUpdateScheduleClick,
+    }
+    
+    addModal({ key: 'schedule', modalProps: props });
+  }, [handleScheduleFinish]);
+
+  const handleCategoryClick = useCallback((newCategoryModalInfo: CategoryModalInfo) => {
+    const props: CategoryModalProps = {
+      categoryModalInfo: newCategoryModalInfo,
+    };
+    
+    addModal({ key: 'category', modalProps: props });
+  }, []);
+
+  const openNewScheduleModal = useCallback((newScheduleModalInfo: NewScheduleModalInfo) => {
+    const props: NewScheduleModalProps = {
+      newScheduleModalInfo,
+      onScheduleCreate: handleScheduleCreate,
+    }
+
+    addModal({ key: 'newSchedule', modalProps: props })
+  }, [handleScheduleCreate]);
+
+  const handleUpdateScheduleClick = useCallback((schedule: ScheduleToRender) => {
+    openNewScheduleModal({ schedule });
+  }, [openNewScheduleModal]);
+
+  const handleOpenNewScheduleModal = () => {
+    openNewScheduleModal({});
+  };
+
+  const handleCellClick = useCallback((categoryId: number, day: number) => {
+    const y = selectedDate.year();
+    const m = selectedDate.month();
+
+    for(const c1 of categoryList) {
+      if(c1.categoryId === categoryId) {
+        openNewScheduleModal({ fixedCategoryInfo: { categoryId: c1.categoryId, date: time.new(y, m, day) } });
+        return;
+      }
+
+      for(const c2 of c1.children) {
+        if(c2.categoryId === categoryId) {
+          openNewScheduleModal({ fixedCategoryInfo: { categoryId: c2.categoryId, date: time.new(y, m, day) } });
+          return;
+        } 
+
+        for(const c3 of c2.children) {
+          if(c3.categoryId === categoryId) {
+            openNewScheduleModal({ fixedCategoryInfo: { categoryId: c3.categoryId, date: time.new(y, m, day) } });
+            return;
+          } 
+        }
+      }
+    }
+
+    alert('존재하지 않는 카테고리입니다.');
+  }, [openNewScheduleModal]);
 
   return (
     <Container>
@@ -718,32 +714,11 @@ export default function Home() {
         </Spinnable>
       </Calendar>
       <AddScheduleButton
-        $isOpen={isNewScheduleModalOpen ? 'true' : 'false'}
+        $isOpen={modals[0]?.key === 'newSchedule' ? 'true' : 'false'}
         onClick={handleOpenNewScheduleModal}
       >
         <Icon path={mdiPlus} color="white" />
       </AddScheduleButton>
-      {isNewScheduleModalOpen && (
-        <NewScheduleModal
-          onClose={handleCloseNewScheduleModal}
-          onScheduleCreate={handleScheduleCreate}
-          newScheduleModalInfo={isNewScheduleModalOpen}
-        />
-      )}
-      {scheduleModalInfo && (
-        <ScheduleModal
-          scheduleModalInfo={scheduleModalInfo}
-          onScheduleModalClose={handleScheduleModalClose}
-          onScheduleFinish={handleScheduleFinish}
-          onUpdateClick={handleUpdateScheduleClick}
-        />
-      )}
-      {categoryModalInfo && (
-        <CategoryModal
-          categoryModalInfo={categoryModalInfo}
-          onCategoryModalClose={handleCategoryModalClose}
-        />
-      )}
     </Container>
   );
 }
