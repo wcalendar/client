@@ -1,81 +1,87 @@
-import dayjs from 'dayjs';
-import { useState } from 'react';
-import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri';
+import { Dayjs } from 'dayjs';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import MonthlyCalendar from './MonthlyCalendar';
+import time from '@/lib/time';
+import Icon from '@mdi/react';
+import { mdiChevronLeftBoxOutline, mdiChevronRightBoxOutline } from '@mdi/js';
 
 type MonthlyProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: Dayjs;
+  onChange: (value: Dayjs) => void;
 }
 
-const MonthlyContainer = styled.div`
+const Container = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
   position: relative;
+  height: 1.875rem;
+  gap: 1rem;
+  user-select: none;
 `;
 
-const Button = styled.button`
-  display: flex;
-  align-items: center;
+const ArrowButton = styled.button`
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
   border: none;
   background: transparent;
+`;
+
+const Date = styled.div`
+  font-size: .875rem;
+  font-weight: bold;
+  height: 1.875rem;
+  line-height: 1.875rem;
   cursor: pointer;
-  padding: 0.5rem;
 `;
-
-const ArrowButton = styled(Button)`
-  border: 1px solid gray;
-  border-radius: 8px;
-`;
-
-const getPrevMonth = (date: string) => {
-  const currentMonth = dayjs(date);
-  return formattedDate(currentMonth.subtract(1, 'M'));
-};
-
-const getNextMonth = (date: string) => {
-  const prevMonth = dayjs(date);
-  return formattedDate(prevMonth.add(1, 'M'));
-};
-
-const formattedDate = (date: dayjs.Dayjs) => {
-  return date.format('YYYY. MM.');
-};
 
 export default function Monthly({
   value,
   onChange,
 }: MonthlyProps) {
-  const [isCalendarShow, setCalendarShow] = useState<boolean>(false);
+  const monthlyRef = useRef<HTMLDivElement>(null);
+
+  const [isCalendarShow, setCalendarShow] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if(monthlyRef.current && !monthlyRef.current.contains(e.target as Node)) {
+        setCalendarShow(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    }
+  }, []);
+
+  const handlePrevClick = () => {
+    onChange(value.add(-1, 'month'));
+  };
+
+  const handleNextClick = () => {
+    onChange(value.add(1, 'month'));
+  }
 
   const handleCalendarShow = (isCalendarShow: boolean) => {
     setCalendarShow(!isCalendarShow);
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <MonthlyContainer>
-        <ArrowButton
-          onClick={() => {
-            onChange(getPrevMonth(value));
-          }}
-        >
-          <RiArrowLeftSLine />
-        </ArrowButton>
-        <Button onClick={() => handleCalendarShow(isCalendarShow)}>
-          {value}
-        </Button>
-        <ArrowButton
-          onClick={() => {
-            onChange(getNextMonth(value));
-          }}
-        >
-          <RiArrowRightSLine />
-        </ArrowButton>
-      </MonthlyContainer>
-      {isCalendarShow && <MonthlyCalendar date={value} />}
-    </div>
+    <Container ref={monthlyRef}>
+      <ArrowButton onClick={handlePrevClick}>
+        <Icon path={mdiChevronLeftBoxOutline} />
+      </ArrowButton>
+      <Date onClick={() => handleCalendarShow(isCalendarShow)}>
+        {time.toString(value, 'YYYY. MM.')}
+      </Date>
+      <ArrowButton onClick={handleNextClick}>
+      <Icon path={mdiChevronRightBoxOutline} />
+      </ArrowButton>
+      {isCalendarShow && <MonthlyCalendar date={value} onChange={onChange} />}
+    </Container>
   );
 }
