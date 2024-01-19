@@ -1,5 +1,9 @@
+import { dSearchResultList } from "@/dummies/calendar";
 import { useModal } from "@/providers/ModalProvider/useModal";
-import { useCallback, useState } from "react";
+import { SearchResult } from "@/types";
+import { mdiMagnify } from "@mdi/js";
+import Icon from "@mdi/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Background = styled.div<{ $state: string }>`
@@ -53,8 +57,9 @@ const Container = styled.div<{ $width: string, $state: string }>`
   opacity: ${({ $state }) => $state === 'open' ? '1' : '0'};
   animation: ${({ $state }) => $state === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
   background-color: white;
-  box-shadow: 0px 2px 4px 2px ${({ theme }) => theme.colors.gray};
+  box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.gray};
   transform-origin: left;
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
 
   @keyframes scaleIn {
     from {
@@ -81,6 +86,46 @@ const Container = styled.div<{ $width: string, $state: string }>`
   }
 `;
 
+const Input = styled.input`
+  width: 100%;
+  height: 3.75rem;
+  line-height: 3.75rem;
+  border: none;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+  font-size: .875rem;
+  font-weight: bold;
+  text-indent: 1rem;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const IconWrapper = styled.div`
+  position: absolute;
+  top: calc( (3.75rem / 2) - .75rem );
+  right: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  path {
+    color: ${({ theme }) => theme.colors.gray};
+  }
+`;
+
+const List = styled.ul`
+  width: 100%;
+  height: 30rem;
+  list-style: none;
+  overflow-y: auto;
+  padding: 1rem;
+`;
+
+const Item = styled.li`
+  width: 100%;
+  height: 4.125rem;
+`;
+
 export interface SearchModalProps {
   state: string;
 }
@@ -89,8 +134,21 @@ export default function SearchModal({
   state,
 }: SearchModalProps) {
   const [modalStatus, setModalStatus] = useState('open');
+  const [resultList, setResultList] = useState<SearchResult[]>([]);
 
-  const { closeModal } = useModal()
+  const { closeModal } = useModal();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const getResultList = useCallback(async () => {
+    setResultList(dSearchResultList);
+  }, []);
+
+  useEffect(() => {
+    inputRef.current!.focus();
+
+    getResultList();
+  });
 
   const handleAnimationEnd = useCallback(() => {
     if(modalStatus === 'close') closeModal();
@@ -103,8 +161,17 @@ export default function SearchModal({
   return (
     <>
       <Background $state={modalStatus} onClick={handleModalClose} onAnimationEnd={handleAnimationEnd} />
-      <Container $width='30rem' $state={modalStatus}>
-        <div style={{ height: 500, backgroundColor: 'blue' }}></div>
+      <Container $width='33.75rem' $state={modalStatus}>
+        <Input type='text' placeholder="일정 검색" ref={inputRef} />
+        <IconWrapper>
+          <Icon path={mdiMagnify} />
+        </IconWrapper>
+        <List>
+          {resultList.map(result => (
+            // TODO 여기서부터 다시
+            <Item />
+          ))}
+        </List>
       </Container>
     </>
   )
