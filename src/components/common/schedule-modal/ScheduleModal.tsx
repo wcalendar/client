@@ -4,10 +4,11 @@ import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import styled from "styled-components";
 import FloatingModal from "../floating-modal/FloatingModal";
+import { useCallback, useState } from "react";
+import { useModal } from "@/providers/ModalProvider/useModal";
 
 export type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
-  onScheduleModalClose: () => void;
   onScheduleFinish: (categoryId: number, groupCode: number) => void;
   onUpdateClick: (schedule: ScheduleToRender) => void;
 }
@@ -91,18 +92,32 @@ const Button = styled.button`
 
 export default function ScheduleModal({
   scheduleModalInfo,
-  onScheduleModalClose,
   onScheduleFinish,
   onUpdateClick,
 }: ScheduleModalProps) {
-  const { x, y, schedule } = scheduleModalInfo;
+  const [modalInfo, setModalInfo] = useState<ScheduleModalInfo>(scheduleModalInfo);
+  const { x, y, schedule } = modalInfo;
+
+  const {closeModal} = useModal();
+
+  const handleModalClose = useCallback(() => {
+    closeModal();
+  }, []);
+
+  const handleScheduleFinish = useCallback(() => {
+    onScheduleFinish(schedule.categoryId, schedule.groupCode);
+
+    const newModalInfo = {...modalInfo};
+    newModalInfo.schedule.isFinished = !newModalInfo.schedule.isFinished;
+    setModalInfo(newModalInfo);
+  }, [modalInfo]);
   
   return (
-    <FloatingModal x={x} y={y} onClose={onScheduleModalClose}>
+    <FloatingModal x={x} y={y} onClose={handleModalClose}>
       <Header>
         <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
-        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={() => onScheduleFinish(schedule.categoryId, schedule.groupCode)} />
-        <CloseButton onClick={onScheduleModalClose}>
+        <CheckBox type='checkbox' checked={schedule.isFinished} onChange={handleScheduleFinish} />
+        <CloseButton onClick={handleModalClose}>
           <Icon path={mdiClose} />
         </CloseButton>
       </Header>

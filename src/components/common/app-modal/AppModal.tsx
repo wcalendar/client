@@ -4,7 +4,7 @@ import ScheduleModal from "../schedule-modal/ScheduleModal";
 import CategoryModal from "../category-modal/CategoryModal";
 import NewScheduleModal from "@/components/calendar/NewScheduleModal";
 import { useContext } from "react";
-import { ModalContext } from "@/providers/ModalContext";
+import { ModalContext } from "@/providers/ModalProvider/ModalContext";
 
 const modalMap = {
   schedule: ScheduleModal,

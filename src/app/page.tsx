@@ -12,14 +12,14 @@ import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import NewScheduleModal from '../components/calendar/NewScheduleModal';
-import ScheduleModal, { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
+import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from '../components/calendar/PriorityList';
 import { CalendarCategory, CategoryDto, CategoryModalInfo, CategoryToRender, NewScheduleDto, NewScheduleModalInfo, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import CategoryModal from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
-import { ModalContext } from '@/providers/ModalContext';
+import { useModal } from '@/providers/ModalProvider/useModal';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -190,8 +190,7 @@ const DragImage = styled.div`
 `;
 
 export default function Home() {
-  const { modals, addModal, closeModal } = useContext(ModalContext);
-  console.log(modals);
+  const { modals, addModal, closeModal } = useModal();
 
   const [selectedDate, setSelectedDate] = useState(time.now());
 
@@ -491,17 +490,11 @@ export default function Home() {
     router.push('/category');
   };
 
-  const handleScheduleModalClose = () => {
-    // closeModal();
-  }
-
   const handleUpdateScheduleClick = (schedule: ScheduleToRender) => {
-    // closeModal();
     setNewScheduleModalOpen({ schedule });
   }
 
   const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
-    console.log(modals);
     const newCategoryListToRender = [...categoryToRenderList];
     const category = newCategoryListToRender.find(c => c.category.id === categoryId);
     if(!category) {
@@ -509,51 +502,34 @@ export default function Home() {
       return;
     }
 
-    let schedule: ScheduleToRender | undefined;
+    let foundSchedule: ScheduleToRender | undefined;
     let isScheduleFound = false;
-    for(const l of category.lines) {
-      for(const s of l) {
-        if(s && s.groupCode === groupCode) {
+    for(const line of category.lines) {
+      for(const schedule of line) {
+        if(schedule && schedule.groupCode === groupCode) {
           isScheduleFound = true;
-          schedule = s;
+          foundSchedule = {...schedule};
           break;
         }
       }
 
       if(isScheduleFound) break;
     }
-    if(!schedule) {
+    if(!foundSchedule) {
       alert('존재하지 않는 일정입니다.');
       return;
     }
 
-    const newIsFinished = !(schedule.isFinished);
-    schedule.isFinished = newIsFinished;
+    const newIsFinished = !(foundSchedule.isFinished);
+    foundSchedule.isFinished = newIsFinished;
     setCategoryToRenderList(newCategoryListToRender);
 
-    console.log(modals);
-    if(modals.length > 0) {
-      const newModalProps = (modals[0].modalProps as ScheduleModalProps);
-      const newScheduleModalInfo = {...newModalProps.scheduleModalInfo};
-      newScheduleModalInfo.schedule.isFinished = newIsFinished;
-  
-      console.log(newScheduleModalInfo);
-      addModal({
-        key: 'schedule',
-        modalProps: {
-          ...newModalProps,
-          scheduleModalInfo: newScheduleModalInfo,
-        }
-      });
-
-    }
-
     // 우선순위
-    const startDay = schedule.startDate.date();
-    const endDay = schedule.endDate.date();
+    const startDay = foundSchedule.startDate.date();
+    const endDay = foundSchedule.endDate.date();
     const newPriorities = [...prioritiesByDay];
     for(let i=startDay; i<=endDay; i++) {
-      for(let j=0; j<newPriorities[i].length; j++) {
+      for(let j=0; j<newPriorities[i-1].length; j++) {
         if(newPriorities[i-1][j].groupCode === groupCode) {
           newPriorities[i-1][j].isFinished = newIsFinished;
           break;
@@ -561,7 +537,7 @@ export default function Home() {
       }
     }
     setPrioritiesByDay(newPriorities);
-  }, [categoryToRenderList, lastDayOfMonth, prioritiesByDay, modals]);
+  }, [categoryToRenderList, lastDayOfMonth, prioritiesByDay]);
 
   const handleCategoryClick = useCallback((newCategoryModalInfo: CategoryModalInfo) => {
     if(!categoryModalInfo) {
@@ -639,7 +615,6 @@ export default function Home() {
   const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
     const props: ScheduleModalProps = {
       scheduleModalInfo: newScheduleModalInfo,
-      onScheduleModalClose: handleScheduleModalClose,
       onScheduleFinish: handleScheduleFinish,
       onUpdateClick: handleUpdateScheduleClick,
     }
