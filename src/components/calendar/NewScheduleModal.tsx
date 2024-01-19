@@ -8,12 +8,12 @@ import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { CategoryDto, CategoryToRender, FixedCategoryInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
+import { CategoryDto, FixedCategoryInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import { categoryListDummyData } from "@/dummies/calendar";
 import Spinnable from "@/components/common/spinner/Spinnable";
+import { useModal } from "@/providers/ModalProvider/useModal";
 
 export interface NewScheduleModalProps {
-  onClose: () => void;
   onScheduleCreate: (newSchedule: NewScheduleDto) => void;
   newScheduleModalInfo: NewScheduleModalInfo;
 }
@@ -121,10 +121,11 @@ const isFixedCategoryInfo = (fixedCategoryInfo: FixedCategoryInfo | undefined): 
 }
 
 export default function NewScheduleModal({
-  onClose,
   onScheduleCreate,
   newScheduleModalInfo
 }: NewScheduleModalProps) {
+  const { closeModal } = useModal();
+
   const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
 
   const isUpdateMode = isScheduleToRender(schedule);
@@ -206,6 +207,10 @@ export default function NewScheduleModal({
     setDropdownValues(result);
   }, [categoryList]);
 
+  const handleClose = useCallback(() => {
+    closeModal();
+  }, []);
+
   const handleChangeScheduleTitle: ChangeEventHandler<HTMLInputElement> = (e) => {
     setScheduleTitle(e.target.value);
   }
@@ -274,7 +279,7 @@ export default function NewScheduleModal({
     },
     {
       text: '취소',
-      onClick: onClose,
+      onClick: handleClose,
     },
   ];
 
@@ -283,7 +288,7 @@ export default function NewScheduleModal({
       width='33.75rem'
       title={isUpdateMode ? '일정 수정' : '일정 등록'}
       buttonList={buttonList}
-      onClose={onClose}
+      onClose={handleClose}
     >
       <Container>
         <Spinnable isLoading={isLoading}>

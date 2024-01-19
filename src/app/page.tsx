@@ -11,7 +11,7 @@ import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
-import NewScheduleModal from '../components/calendar/NewScheduleModal';
+import { NewScheduleModalProps } from '../components/calendar/NewScheduleModal';
 import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from '../components/calendar/PriorityList';
@@ -194,7 +194,6 @@ export default function Home() {
 
   const [selectedDate, setSelectedDate] = useState(time.now());
 
-  const [isNewScheduleModalOpen, setNewScheduleModalOpen] = useState<NewScheduleModalInfo | undefined>();
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [categoryToRenderList, setCategoryToRenderList] = useState<
     CategoryToRender[]
@@ -405,42 +404,6 @@ export default function Home() {
     setHoveredCategoryIdx(-1);
   }
 
-  const handleCellClick = (categoryId: number, day: number) => {
-    const y = selectedDate.year();
-    const m = selectedDate.month();
-
-    for(const c1 of categoryList) {
-      if(c1.categoryId === categoryId) {
-        setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c1.categoryId, date: time.new(y, m, day) } });
-        return;
-      }
-
-      for(const c2 of c1.children) {
-        if(c2.categoryId === categoryId) {
-          setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c2.categoryId, date: time.new(y, m, day) } });
-          return;
-        } 
-
-        for(const c3 of c2.children) {
-          if(c3.categoryId === categoryId) {
-            setNewScheduleModalOpen({ fixedCategoryInfo: { categoryId: c3.categoryId, date: time.new(y, m, day) } });
-            return;
-          } 
-        }
-      }
-    }
-
-    alert('존재하지 않는 카테고리입니다.');
-  }
-
-  const handleOpenNewScheduleModal = () => {
-    setNewScheduleModalOpen({});
-  };
-
-  const handleCloseNewScheduleModal = () => {
-    setNewScheduleModalOpen(undefined);
-  };
-
   const handleSelectedDateChange = (value: Dayjs) => {
     setSelectedDate(value);
   };
@@ -487,10 +450,6 @@ export default function Home() {
   const handleMoveCategoryPage = () => {
     router.push('/category');
   };
-
-  const handleUpdateScheduleClick = useCallback((schedule: ScheduleToRender) => {
-    setNewScheduleModalOpen({ schedule });
-  }, []);
 
   const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
     const newCategoryListToRender = [...categoryToRenderList];
@@ -618,6 +577,51 @@ export default function Home() {
     addModal({ key: 'category', modalProps: props });
   }, []);
 
+  const openNewScheduleModal = useCallback((newScheduleModalInfo: NewScheduleModalInfo) => {
+    const props: NewScheduleModalProps = {
+      newScheduleModalInfo,
+      onScheduleCreate: handleScheduleCreate,
+    }
+
+    addModal({ key: 'newSchedule', modalProps: props })
+  }, [handleScheduleCreate]);
+
+  const handleUpdateScheduleClick = useCallback((schedule: ScheduleToRender) => {
+    openNewScheduleModal({ schedule });
+  }, [openNewScheduleModal]);
+
+  const handleOpenNewScheduleModal = () => {
+    openNewScheduleModal({});
+  };
+
+  const handleCellClick = useCallback((categoryId: number, day: number) => {
+    const y = selectedDate.year();
+    const m = selectedDate.month();
+
+    for(const c1 of categoryList) {
+      if(c1.categoryId === categoryId) {
+        openNewScheduleModal({ fixedCategoryInfo: { categoryId: c1.categoryId, date: time.new(y, m, day) } });
+        return;
+      }
+
+      for(const c2 of c1.children) {
+        if(c2.categoryId === categoryId) {
+          openNewScheduleModal({ fixedCategoryInfo: { categoryId: c2.categoryId, date: time.new(y, m, day) } });
+          return;
+        } 
+
+        for(const c3 of c2.children) {
+          if(c3.categoryId === categoryId) {
+            openNewScheduleModal({ fixedCategoryInfo: { categoryId: c3.categoryId, date: time.new(y, m, day) } });
+            return;
+          } 
+        }
+      }
+    }
+
+    alert('존재하지 않는 카테고리입니다.');
+  }, [openNewScheduleModal]);
+
   return (
     <Container>
       <Header date={selectedDate} onDateChange={handleSelectedDateChange} />
@@ -710,18 +714,11 @@ export default function Home() {
         </Spinnable>
       </Calendar>
       <AddScheduleButton
-        $isOpen={isNewScheduleModalOpen ? 'true' : 'false'}
+        $isOpen={modals[0]?.key === 'newSchedule' ? 'true' : 'false'}
         onClick={handleOpenNewScheduleModal}
       >
         <Icon path={mdiPlus} color="white" />
       </AddScheduleButton>
-      {isNewScheduleModalOpen && (
-        <NewScheduleModal
-          onClose={handleCloseNewScheduleModal}
-          onScheduleCreate={handleScheduleCreate}
-          newScheduleModalInfo={isNewScheduleModalOpen}
-        />
-      )}
     </Container>
   );
 }
