@@ -29,9 +29,15 @@ const IconWrapper = styled.div`
   }
 `;
 
-export default function SearchBar() {
+interface SearchBarProps {
+  onClick: () => void;
+}
+
+export default function SearchBar({
+  onClick,
+}: SearchBarProps) {
   return (
-    <Container>
+    <Container onClick={onClick}>
       <IconWrapper>
         <Icon path={mdiMagnify} />
       </IconWrapper>

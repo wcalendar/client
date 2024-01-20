@@ -10,6 +10,10 @@ const GlobalStyle = createGlobalStyle`
 
     color: ${({theme}) => theme.colors.black};
   }
+
+  html {
+    overflow: hidden;
+  }
 `;
 
 export default GlobalStyle;
