@@ -214,12 +214,11 @@ export default function Home() {
   const scheduleBody = useRef<HTMLDivElement>(null);
   const [isMoveMode, onMouseDown, onMouseUp, onMouseMove] = useDragMove<HTMLDivElement>(scheduleBody);
   
-  const now = time.now();
-  const lastDayOfMonth = now.daysInMonth();
+  const daysInMonth = selectedDate.daysInMonth();
   const calendarHeaderItems = useMemo(() => {
-    let dayOfTheWeek = time.new(now.year(), now.month(), 1).day();
+    let dayOfTheWeek = time.new(selectedDate.year(), selectedDate.month(), 1).day();
 
-    return Array.from({ length: lastDayOfMonth }, (v, i) => i + 1).map(d => {
+    return Array.from({ length: daysInMonth }, (v, i) => i + 1).map(d => {
       const result = `${d}(${dayOfTheWeeks[dayOfTheWeek]})`;
 
       dayOfTheWeek++;
@@ -227,9 +226,7 @@ export default function Home() {
 
       return result;
     });
-
-    // TODO 월 선택 추가 시 월에 따라 달라져야함
-  }, [now]);
+  }, [selectedDate]);
 
   /**
    * 서버에서 받은 카테고리 데이터를 화면에 렌더링하기 쉽게 다듬어주는 함수
@@ -419,7 +416,7 @@ export default function Home() {
   }, [selectedDate]);
 
   useEffect(() => {
-    toRenderingData(categoryList, lastDayOfMonth);
+    toRenderingData(categoryList, daysInMonth);
   }, [categoryList]);
 
   const handleCellMouseOver = (categoryIdx: number) => {
@@ -492,7 +489,7 @@ export default function Home() {
       }
     }
     setPrioritiesByDay(newPriorities);
-  }, [categoryToRenderList, lastDayOfMonth, prioritiesByDay]);
+  }, [categoryToRenderList, daysInMonth, prioritiesByDay]);
 
   const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => {
     const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
@@ -654,15 +651,15 @@ export default function Home() {
             </CalendarBody>
           </CategorySide>
           <ScheduleSide ref={scheduleBody} onMouseMove={(e) => {if(isMoveMode) e.preventDefault()} }>
-            <CalendarHeader $day_count={lastDayOfMonth}>
+            <CalendarHeader $day_count={daysInMonth}>
               <HeaderSection>
                 {calendarHeaderItems.map(headerItem => (
                   <HeaderCell key={headerItem}>{headerItem}</HeaderCell>
                 ))}
               </HeaderSection>
               <PrioritySection $priority_count={prioritiesSize}>
-                <DivideLines $day_count={lastDayOfMonth}>
-                  {Array.from({ length: lastDayOfMonth }, () => null).map(
+                <DivideLines $day_count={daysInMonth}>
+                  {Array.from({ length: daysInMonth }, () => null).map(
                     (_, i) => (
                       <DivideLine key={`div${i}`} />
                     ),
@@ -683,14 +680,14 @@ export default function Home() {
                 {draggedPriority && (<DragImage style={{ left: x+20, top: y+10, }} >{draggedPriority.content}</DragImage>)}
               </PrioritySection>
             </CalendarHeader>
-            <CalendarBody $day_count={lastDayOfMonth} $is_move_mode={isMoveMode ? 1 : 0}
+            <CalendarBody $day_count={daysInMonth} $is_move_mode={isMoveMode ? 1 : 0}
               onMouseDown={onMouseDown}
               onMouseUp={onMouseUp}
               onMouseMove={onMouseMove}
               onMouseLeave={onMouseUp}
             >
-              <DivideLines $day_count={lastDayOfMonth}>
-                {Array.from({ length: lastDayOfMonth }, () => null).map(
+              <DivideLines $day_count={daysInMonth}>
+                {Array.from({ length: daysInMonth }, () => null).map(
                   (_, i) => (
                     <DivideLine key={`div${i}`} />
                   ),

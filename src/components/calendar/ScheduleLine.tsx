@@ -70,7 +70,7 @@ export default function ScheduleLine({
   categoryIdx,
 }: ScheduleLineProps) {
   const { lines, category } = categoryToRender;
-
+  
   const schedulesByLine = useMemo(() => {
     return categoryToRender.lines.map(line => {
       const scheduleList: ScheduleToRender[] = [];
@@ -104,7 +104,7 @@ export default function ScheduleLine({
         <Line key={`${category.id}-${lineIdx}`}>
           {line.map((schedule, scheduleIdx) => schedule ? (
             <ScheduleItem
-              key={schedule.groupCode}
+              key={`s-${schedule.groupCode}-${scheduleIdx}`}
               $start={schedule.startDate.date()}
               $end={schedule.endDate.date()}
               $color={category.color}
