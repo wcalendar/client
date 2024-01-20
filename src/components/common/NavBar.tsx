@@ -1,55 +1,47 @@
-import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { RiUser3Line, RiSettings5Line } from 'react-icons/ri';
-import Link from 'next/link';
-
-type NavBarProps = {
-  title: string;
-  href: string;
-  icon: ReactNode;
-};
-
-const userMenus: NavBarProps[] = [
-  { title: 'setting', href: '/setting', icon: <RiSettings5Line size={24} /> },
-  { title: 'user', href: '/user', icon: <RiUser3Line size={24} /> },
-];
+import Icon from '@mdi/react';
+import { mdiAccount, mdiCog } from '@mdi/js';
 
 const NavBarContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: .5rem;
 `;
 
-const NavLinks = styled.ul`
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-`;
+const NavItem = styled.button`
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+  background-color: white;
+  border: none;
+  transition: color ease .25s;
 
-const NavItem = styled.li`
-  list-style: none;
+  &:focus {
+    outline: none;
+  }
 
-  & > a {
-    color: black;
-    &:hover {
-      color: blue;
+  &:hover {
+    color: ${({ theme }) => theme.colors.blue};
+
+    svg {
+      color: inherit;
+    }
+
+    path {
+      color: inherit;
     }
   }
 `;
 
-const getMenus = (menus: NavBarProps[]) => {
-  return (
-    <NavLinks>
-      {menus.map(m => (
-        <NavItem key={m.title}>
-          <Link href={m.href} passHref>
-            {m.icon}
-          </Link>
-        </NavItem>
-      ))}
-    </NavLinks>
-  );
-};
 export default function NavBar() {
-  return <NavBarContainer>{getMenus(userMenus)}</NavBarContainer>;
+  return (
+    <NavBarContainer>
+      <NavItem>
+        <Icon path={mdiCog} />
+      </NavItem>
+      <NavItem>
+        <Icon path={mdiAccount} />
+      </NavItem>
+    </NavBarContainer>
+  );
 }
