@@ -162,4 +162,4 @@ export type ModalKey =
   | { key: 'newSchedule'; modalProps: NewScheduleModalProps }
   | { key: 'search'; modalProps: SearchModalProps };
 
-export type ModalStatus = 'open' | 'closed';
+export type ModalStatus = 'open' | 'closing' | 'closed';

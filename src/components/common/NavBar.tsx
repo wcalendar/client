@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import Icon from '@mdi/react';
 import { mdiAccount, mdiCog } from '@mdi/js';
+import MenuButton from './MenuButton';
+import MenuItem from './MenuItem';
 
 const NavBarContainer = styled.div`
   display: flex;
@@ -8,40 +9,19 @@ const NavBarContainer = styled.div`
   gap: .5rem;
 `;
 
-const NavItem = styled.button`
-  width: 1.5rem;
-  height: 1.5rem;
-  cursor: pointer;
-  background-color: white;
-  border: none;
-  transition: color ease .25s;
-
-  &:focus {
-    outline: none;
-  }
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.blue};
-
-    svg {
-      color: inherit;
-    }
-
-    path {
-      color: inherit;
-    }
-  }
-`;
-
 export default function NavBar() {
   return (
     <NavBarContainer>
-      <NavItem>
-        <Icon path={mdiCog} />
-      </NavItem>
-      <NavItem>
-        <Icon path={mdiAccount} />
-      </NavItem>
+      <MenuButton icon={mdiCog}>
+        <MenuItem>공지사항</MenuItem>
+        <MenuItem>사용방법</MenuItem>
+        <MenuItem>오류제보/문의하기</MenuItem>
+        <MenuItem>이용약관</MenuItem>
+        <MenuItem>개인정보 취급방침</MenuItem>
+      </MenuButton>
+      <MenuButton icon={mdiAccount}>
+        <></>
+      </MenuButton>
     </NavBarContainer>
   );
 }
