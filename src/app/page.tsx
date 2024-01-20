@@ -1,7 +1,7 @@
 'use client';
 
 import Header from '@/components/common/Header';
-import { DragEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import HeaderCell from './HeaderCell';
 import CategoryCell from './CategoryCell';
@@ -14,12 +14,13 @@ import { NewScheduleModalProps } from './NewScheduleModal';
 import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
-import { CategoryModalInfo, NewScheduleDto, NewScheduleModalInfo, Priority, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { CategoryModalInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import { CategoryModalProps } from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
 import { useModal } from '@/providers/ModalProvider/useModal';
 import useCalendarData from './useCalendarData';
+import usePriorities from './usePriorities';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -198,9 +199,6 @@ export default function Home() {
   } = useCalendarData(selectedDate);
 
   const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
-  const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
 
   const [isLoading, setLoading] = useState(false);
   
@@ -352,69 +350,6 @@ export default function Home() {
     setPrioritiesByDay(newPriorities);
   }, [categoryToRenderList, lastDayOfMonth, prioritiesByDay]);
 
-  const handlePriorityClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => {
-    const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
-    if(!category) {
-      alert('존재하지 않는 일정입니다.');
-      return;
-    }
-
-    const schedule = category.schedules.find(s => s.groupCode === groupCode);
-    if(!schedule) {
-      alert('존재하지 않는 일정입니다.');
-      return;
-    }
-
-    const newScheduleModalInfo: ScheduleModalInfo = {
-      x: e.clientX,
-      y: e.clientY,
-      schedule,
-    };
-
-    handleScheduleClick(newScheduleModalInfo);
-  };
-  
-  const handlePriorityItemDrag = (newX: number, newY: number, priority: Priority) => {
-    if(!draggedPriority) setDraggedPriority(priority);
-    setX(newX);
-    setY(newY);
-  };
-  
-  const handlePriorityItemDragEnd = (e?: DragEvent<HTMLDivElement>) => {
-    setDraggedPriority(null);
-
-    const dragImage = document.getElementById('drag-image');
-    if(dragImage) {
-      dragImage.remove();
-    }
-  };
-
-  const handlePriorityItemDrop = useCallback((day: number, draggableIdx: number, droppableIdx: number) => {
-    const newPrioritiesByDay = [...prioritiesByDay];
-    const priorities = newPrioritiesByDay[day];
-
-    const targetIdx = droppableIdx > draggableIdx ? droppableIdx-1 : droppableIdx;
-    if(draggableIdx < targetIdx) {
-      priorities[draggableIdx].priority = targetIdx;
-
-      for(let i=draggableIdx+1; i<=targetIdx; i++) {
-        (priorities[i].priority)--;
-      }
-    } else if(draggableIdx > targetIdx) {
-      priorities[draggableIdx].priority = targetIdx;
-
-      for(let i=targetIdx; i<draggableIdx; i++) {
-        (priorities[i].priority)++;
-      }
-    } else return;
-
-    priorities.sort((a, b) => a.priority - b.priority);
-
-    setPrioritiesByDay(newPrioritiesByDay);
-
-    handlePriorityItemDragEnd();
-  }, [prioritiesByDay]);
-
   const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
     const props: ScheduleModalProps = {
       scheduleModalInfo: newScheduleModalInfo,
@@ -478,6 +413,14 @@ export default function Home() {
     alert('존재하지 않는 카테고리입니다.');
   }, [openNewScheduleModal]);
 
+  const {
+    draggedPriorityX, draggedPriorityY, draggedPriority,
+    handlePriorityClick,
+    handlePriorityItemDrag,
+    handlePriorityItemDragEnd,
+    handlePriorityItemDrop,
+  } = usePriorities(categoryToRenderList, prioritiesByDay, setPrioritiesByDay, handleScheduleClick, );
+
   return (
     <Container>
       <Header date={selectedDate} onDateChange={handleSelectedDateChange} />
@@ -538,7 +481,7 @@ export default function Home() {
                     day={i}
                   />
                 ))}
-                {draggedPriority && (<DragImage style={{ left: x+20, top: y+10, }} >{draggedPriority.content}</DragImage>)}
+                {draggedPriority && (<DragImage style={{ left: draggedPriorityX+20, top: draggedPriorityY+10, }} >{draggedPriority.content}</DragImage>)}
               </PrioritySection>
             </CalendarHeader>
             <CalendarBody $day_count={lastDayOfMonth} $is_move_mode={isMoveMode ? 1 : 0}
