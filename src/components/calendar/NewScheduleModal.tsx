@@ -261,7 +261,7 @@ export default function NewScheduleModal({
     setPriority(value);
   }
 
-  const handleSaveNewScheduleClick = useCallback(() => {
+  const handleSaveNewScheduleClick = useCallback(async () => {
     // Title
     const newTitle = scheduleTitle.trim();
     if(newTitle.length === 0) {
@@ -277,15 +277,25 @@ export default function NewScheduleModal({
       return;
     }
 
-    // TODO api
-    onScheduleCreate({
+    const NewScheduleDto: NewScheduleDto = {
       scheduleContent: newTitle,
       scheduleStartDate: time.toString(startDate, 'YYYY-MM-DD'),
-      scheduleEndDate: isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
+      scheduleEndDate: !isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
       categoryId: categoryList[categoryIdx-1].categoryId,
-      schedulePriority: -1,
+      schedulePriority: 999,
       isPriority: isPriority,
-    });
+    }
+
+    try {
+      const response = await apis.addSchedule(NewScheduleDto);
+      console.log(response);
+    } catch(e) {
+      const error = e as AxiosError<ErrorRes>;
+      console.log(error.response?.data);
+    }
+
+    // TODO api
+    // onScheduleCreate();
   }, [scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
 
   const buttonList: ModalButton[] = [
