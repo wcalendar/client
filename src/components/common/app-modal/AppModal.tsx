@@ -23,17 +23,23 @@ export default function AppModal() {
         const { key, modalProps } = modalKey;
 
         if(key === 'schedule') {
-          const Comp = modalMap[key];
-          return <Comp key={'modal'} {...modalProps}></Comp>
+          // TODO 변수명 수정
+          const ScheduleModals = modalMap[key];
+          // TODO key 수정
+          return <ScheduleModals key={'modal'} {...modalProps}></ScheduleModals>
+
         } else if(key === 'category') {
-          const Comp = modalMap[key];
-          return <Comp key={'modal'} {...modalProps}></Comp>
+          const CategoryModals = modalMap[key];
+          return <CategoryModals key={'modal'} {...modalProps}></CategoryModals>
+
         } else if(key === 'newSchedule') {
-          const Comp = modalMap[key];
-          return <Comp key={'modal'} {...modalProps}></Comp>
+          const NewScheduleModals = modalMap[key];
+          return <NewScheduleModals key={'modal'} {...modalProps}></NewScheduleModals>
+
         } else if(key === 'search') {
-          const Comp = modalMap[key];
-          return <Comp key={'modal'} {...modalProps}></Comp>
+          const SearchModals = modalMap[key];
+          return <SearchModals key={'modal'} {...modalProps}></SearchModals>
+          
         }
       })}
     </>
