@@ -5,6 +5,7 @@ import { mdiMagnify } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import ResultItem from "./ResultItem";
 
 const Background = styled.div<{ $state: string }>`
   position: fixed;
@@ -118,7 +119,7 @@ const List = styled.ul`
   height: 30rem;
   list-style: none;
   overflow-y: auto;
-  padding: 1rem;
+  padding: .5rem 1rem;
 `;
 
 const Item = styled.li`
@@ -168,8 +169,7 @@ export default function SearchModal({
         </IconWrapper>
         <List>
           {resultList.map(result => (
-            // TODO 여기서부터 다시
-            <Item />
+            <ResultItem key={`sr-${result.groupCode}`} searchResult={result} />
           ))}
         </List>
       </Container>
