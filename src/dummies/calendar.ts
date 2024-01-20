@@ -1,105 +1,8 @@
 import time from "@/lib/time";
-import { CategoryColor, CategoryDto, ResDto, ScheduleDto } from "@/types";
-
-const range = (y: number, m: number, fd: number, td: number, schedule: Omit<ScheduleDto, 'scheduleDate'>): ScheduleDto[] => {
-  const result: ScheduleDto[] = [];
-
-  let id = 0;
-  for(let i=fd; i<=td; i++) {
-    result.push({
-      ...schedule,
-      scheduleId: schedule.scheduleId + 1000 + (id++),
-      scheduleDate: time.toString(time.new(y, m, i), 'YYYY-MM-DD'),
-    });
-  }
-
-  return result;
-}
+import { CategoryDto, ResDto, SearchResult } from "@/types";
 
 const y = time.now().year();
 const m = time.now().month();
-
-const newDummyCategory = (i: number, color: CategoryColor): CategoryDto[] => {
-  return [
-    {
-      categoryId: i,
-      categoryName: "W Calendar",
-      categoryLevel: 0,
-      categoryColor: color,
-      categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
-      categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
-      categoryDescription: "W calendar is good",
-      categoryVisible: true,
-      schedules: [
-        ...range(y, m, 1, 7, {
-          scheduleId: i,
-          categoryId: i,
-          scheduleGroupCode: i+1,
-          scheduleContent: "Splash Page",
-          schedulePriority: i,
-          finished: false,
-        }),
-      ],
-      children: [
-        {
-          categoryId: i+2,
-          categoryName: 'Test',
-          categoryLevel: 1,
-          categoryColor: color,
-          categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
-          categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
-          categoryDescription: "It is test",
-          categoryVisible: true,
-          schedules: [
-            ...range(y, m, 4, 7, {
-              scheduleId: i+2,
-              categoryId: i+2,
-              scheduleGroupCode: i+3,
-              scheduleContent: "Splash Test",
-              schedulePriority: i+1,
-              finished: false,
-            }),
-          ],
-          children: [],
-        },
-        {
-          categoryId: i+4,
-          categoryName: 'Deploy',
-          categoryLevel: 1,
-          categoryColor: color,
-          categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
-          categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
-          categoryDescription: "How to Deploy",
-          categoryVisible: true,
-          schedules: [],
-          children: [
-            {
-              categoryId: i+5,
-              categoryName: 'AWS',
-              categoryLevel: 2,
-              categoryColor: color,
-              categoryStartDate: time.toString(time.new(2024, 0), 'YYYY-MM-DD'),
-              categoryEndDate: time.toString(time.new(2099, 0), 'YYYY-MM-DD'),
-              categoryDescription: "AWS is hard",
-              categoryVisible: true,
-              schedules: [
-                ...range(y, m, 27, 27, {
-                  scheduleId: i+5,
-                  categoryId: i+5,
-                  scheduleGroupCode: i+6,
-                  scheduleContent: "배포하기",
-                  schedulePriority: i+2,
-                  finished: false,
-                })
-              ],
-              children: [],
-            }
-          ],
-        },
-      ]
-    },
-  ]
-}
 
 const calendarDummyDataMonth = (month: number): ResDto<CategoryDto[]> => ({
   resultMessage: "",
@@ -219,7 +122,21 @@ const calendarDummyData: ResDto<CategoryDto[]>[] = [
 
 const categoryListDummyData: CategoryDto[] = calendarDummyData[0].resultBody;
 
+const dSearchResult: SearchResult = {
+  categories: ['카테고리 1', '카테고리 2'],
+  groupCode: 101,
+  content: '밥 먹기',
+  isFinished: false,
+  startDate: time.new(y, m, 15),
+  endDate: time.new(y, m, 17),
+};
+
+const dSearchResultList: SearchResult[] =[
+  dSearchResult,
+];
+
 export {
   calendarDummyData,
   categoryListDummyData,
+  dSearchResultList,
 }

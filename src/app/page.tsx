@@ -53,13 +53,12 @@ const Container = styled.div`
 
 const Calendar = styled.main`
   width: 100%;
-  height: calc(100vh - 47.5px);
+  height: calc(100vh - 4.375rem);
   display: flex;
 `;
 
 const CategorySide = styled.aside`
   position: relative;
-  // z-index: 2;
   height: 100%;
   width: calc(var(--cell-width) + 3px);
   border-right: 3px solid ${({ theme }) => theme.colors.lightGray};
@@ -124,7 +123,7 @@ const PriorityTip = styled.div`
 
 const CalendarBody = styled.div<{ $day_count: number, $is_move_mode: number, }>`
   width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
-  min-height: calc(100vh - 47.5px - 2.5rem);
+  min-height: ${({ $day_count }) => $day_count === 1 ? '100%' : 'calc(100vh - 4.375rem - 2.5rem)'};
   padding-top: var(--line-gap);
   position: relative;
   ${({ $is_move_mode }) => $is_move_mode ? 'cursor: grab;' : ''}
@@ -365,6 +364,7 @@ export default function Home() {
     const categorySideBody = categoryBody.current!;
     const scheduleSideBody = scheduleBody.current!;
     const handleScheduleSideScroll = () => {
+      console.log(scheduleSideBody.scrollTop)
       categorySideBody.scrollTop = scheduleSideBody.scrollTop;
     };
     scheduleSideBody.addEventListener('scroll', handleScheduleSideScroll);
