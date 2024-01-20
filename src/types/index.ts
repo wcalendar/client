@@ -1,4 +1,4 @@
-import { NewScheduleModalProps } from "@/components/calendar/NewScheduleModal";
+import { NewScheduleModalProps } from "@/app/NewScheduleModal";
 import { CategoryModalProps } from "@/components/common/category-modal/CategoryModal";
 import { ScheduleModalProps } from "@/components/common/schedule-modal/ScheduleModal";
 import { SearchModalProps } from "@/components/common/search-modal/SearchModal";
