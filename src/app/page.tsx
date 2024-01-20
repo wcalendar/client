@@ -434,43 +434,15 @@ export default function Home() {
     setSelectedDate(value);
   };
 
-  const handleScheduleCreate = useCallback((newSchedule: NewScheduleDto) => {
-    const newCategoryList = [...categoryList];
+  const handleScheduleCreate = useCallback(() => {
+    setLoading(true);
 
-    const category = newCategoryList.find(c => c.categoryId === newSchedule.categoryId);
-    if(!category) {
-      alert('존재하지 않는 카테고리입니다.');
-      return;
-    }
+    const y = selectedDate.year();
+    const m = selectedDate.month();
+    getCategoryList(y, m);
 
-    const schedule: ScheduleToRender = {
-      id: -1,
-      groupCode: -2,
-      startDate: time.fromString(newSchedule.scheduleStartDate),
-      endDate: time.fromString(newSchedule.scheduleEndDate),
-      categoryId: newSchedule.categoryId,
-      content: newSchedule.scheduleContent,
-      isFinished: false,
-    };
-
-    // TODO 새로 추가하는 일정의 년월은 어떻게?
-    const scheduleDtos: ScheduleDto[] = [];
-    for(let d=schedule.startDate.date(); d<=schedule.endDate.date(); d++) {
-      scheduleDtos.push({
-        scheduleId: schedule.id,
-        categoryId: schedule.categoryId,
-        scheduleGroupCode: schedule.groupCode,
-        scheduleContent: schedule.content,
-        scheduleDate: time.toString( time.new(schedule.startDate.year(), schedule.startDate.month(), d) , 'YYYY-MM-DD'),
-        schedulePriority: prioritiesByDay[d-1][prioritiesByDay[d-1].length-1].priority + 1,
-        finished: false,
-      });
-    }
-
-    category.schedules.push(...scheduleDtos);
-
-    setCategoryList(newCategoryList);
-  }, [categoryList, prioritiesByDay]);
+    closeModal();
+  }, [selectedDate]);
 
   const router = useRouter();
   const handleMoveCategoryPage = () => {

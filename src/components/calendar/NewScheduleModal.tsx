@@ -15,7 +15,7 @@ import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 
 export interface NewScheduleModalProps {
-  onScheduleCreate: (newSchedule: NewScheduleDto) => void;
+  onScheduleCreate: () => void;
   newScheduleModalInfo: NewScheduleModalInfo;
 }
 
@@ -288,7 +288,7 @@ export default function NewScheduleModal({
 
     try {
       const response = await apis.addSchedule(NewScheduleDto);
-      console.log(response);
+      onScheduleCreate();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
