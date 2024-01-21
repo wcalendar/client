@@ -18,6 +18,10 @@ const Container = styled.div`
   height: 100%;
   gap: 1rem;
   user-select: none;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    gap: .25rem;
+  }
 `;
 
 const ArrowButton = styled.button`
