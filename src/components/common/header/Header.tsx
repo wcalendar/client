@@ -1,11 +1,9 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import Logo from './Logo';
 import NavBar from './NavBar';
 import Monthly from './Monthly';
 import SearchBar from './SearchBar';
 import { Dayjs } from 'dayjs';
-import { useModal } from '@/providers/ModalProvider/useModal';
-import { useCallback } from 'react';
 import useDevice from '@/hooks/useDevice';
 
 type HeaderProps = {

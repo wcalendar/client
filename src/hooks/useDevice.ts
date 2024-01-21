@@ -2,7 +2,7 @@ import { Device } from "@/types";
 import { useEffect, useState } from "react";
 
 export default function useDevice() {
-  const [width, setWidth] = useState(window.innerWidth);
+  const [width, setWidth] = useState(0);
   const device: Device = width <= 834 ? 'mobile' : (width <= 1024 ? 'tablet' : 'desktop');
 
   useEffect(() => {
@@ -11,6 +11,8 @@ export default function useDevice() {
     };
 
     window.addEventListener('resize', handleResize);
+
+    setWidth(window.innerWidth);
 
     return () => {
       window.removeEventListener('resize', handleResize);
