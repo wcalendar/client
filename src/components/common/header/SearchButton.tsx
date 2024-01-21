@@ -34,7 +34,7 @@ export default function SearchButton() {
   const { addModal } = useModal();
 
   const handleClick = useCallback(() => {
-    addModal({ key: 'search', modalProps: {state: 'open'} });
+    addModal({ key: 'search', modalProps: {} });
   }, []);
 
   return (

@@ -39,7 +39,7 @@ export default function SearchBar({
   const { addModal } = useModal();
 
   const handleClick = useCallback(() => {
-    addModal({ key: 'search', modalProps: {state: 'open'} });
+    addModal({ key: 'search', modalProps: {} });
   }, []);
 
   return (
