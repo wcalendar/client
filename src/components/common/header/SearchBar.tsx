@@ -2,7 +2,6 @@ import { useModal } from '@/providers/ModalProvider/useModal';
 import { mdiMagnify } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useCallback } from 'react';
-import { RiSearchLine } from 'react-icons/ri';
 import styled from 'styled-components';
 
 const Container = styled.div`

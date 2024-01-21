@@ -15,7 +15,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  height: 1.875rem;
+  height: 100%;
   gap: 1rem;
   user-select: none;
 `;

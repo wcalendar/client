@@ -12,11 +12,24 @@ type HeaderProps = {
 }
 
 const Container = styled.header`
+  --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
+  --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
+  }
+
   width: 100%;
-  height: 4.375rem;
+  height: var(--header-height);
   background: white;
   display: flex;
-  padding: 1rem;
+  padding: var(--header-padding);
   align-items: center;
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
@@ -27,6 +40,8 @@ const NavContainer = styled.div`
   flex-grow: 1;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  height: 100%;
 `;
 
 export default function Header({
