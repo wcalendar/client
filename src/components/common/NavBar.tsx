@@ -1,55 +1,28 @@
-import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { RiUser3Line, RiSettings5Line } from 'react-icons/ri';
-import Link from 'next/link';
-
-type NavBarProps = {
-  title: string;
-  href: string;
-  icon: ReactNode;
-};
-
-const userMenus: NavBarProps[] = [
-  { title: 'setting', href: '/setting', icon: <RiSettings5Line size={24} /> },
-  { title: 'user', href: '/user', icon: <RiUser3Line size={24} /> },
-];
+import { mdiAccount, mdiCog } from '@mdi/js';
+import MenuButton from './MenuButton';
+import MenuItem from './MenuItem';
 
 const NavBarContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: .5rem;
 `;
 
-const NavLinks = styled.ul`
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-`;
-
-const NavItem = styled.li`
-  list-style: none;
-
-  & > a {
-    color: black;
-    &:hover {
-      color: blue;
-    }
-  }
-`;
-
-const getMenus = (menus: NavBarProps[]) => {
-  return (
-    <NavLinks>
-      {menus.map(m => (
-        <NavItem key={m.title}>
-          <Link href={m.href} passHref>
-            {m.icon}
-          </Link>
-        </NavItem>
-      ))}
-    </NavLinks>
-  );
-};
 export default function NavBar() {
-  return <NavBarContainer>{getMenus(userMenus)}</NavBarContainer>;
+  return (
+    <NavBarContainer>
+      <MenuButton icon={mdiCog}>
+        <MenuItem>공지사항</MenuItem>
+        <MenuItem>사용방법</MenuItem>
+        <MenuItem>오류제보/문의하기</MenuItem>
+        <MenuItem>이용약관</MenuItem>
+        <MenuItem>개인정보 취급방침</MenuItem>
+      </MenuButton>
+      <MenuButton icon={mdiAccount}>
+        <MenuItem>로그아웃</MenuItem>
+        <MenuItem>회원탈퇴</MenuItem>
+      </MenuButton>
+    </NavBarContainer>
+  );
 }
