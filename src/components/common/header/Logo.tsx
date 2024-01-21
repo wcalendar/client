@@ -2,14 +2,14 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 const LogoContainer = styled.div`
-  --logo-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
+  --logo-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
-    --logo-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
+    --logo-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.tablet};
   }
   
   @media ${({ theme }) => theme.devices.mobile} {
-    --logo-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
+    --logo-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.mobile};
   }
 
   flex-basis: calc(var(--logo-width) - 1rem);
