@@ -29,6 +29,8 @@ const Container = styled.div`
   width: 100%;
   overflow: hidden;
 
+  --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
+  --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
   --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
   --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
   --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.desktop};
@@ -37,6 +39,8 @@ const Container = styled.div`
   --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
     --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.tablet};
@@ -46,6 +50,8 @@ const Container = styled.div`
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
     --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.mobile};
@@ -57,7 +63,7 @@ const Container = styled.div`
 
 const Calendar = styled.main`
   width: 100%;
-  height: calc(100vh - 4.375rem);
+  height: calc(100vh - var(--header-height));
   display: flex;
 `;
 

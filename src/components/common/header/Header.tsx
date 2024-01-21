@@ -12,19 +12,6 @@ type HeaderProps = {
 }
 
 const Container = styled.header`
-  --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
-  --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
-
-  @media ${({ theme }) => theme.devices.tablet} {
-    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
-    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
-  }
-
-  @media ${({ theme }) => theme.devices.mobile} {
-    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
-    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
-  }
-
   width: 100%;
   height: var(--header-height);
   background: white;
