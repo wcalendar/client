@@ -16,16 +16,29 @@ type PriorityListProps = {
 }
 
 const Container = styled.div<{ $idx: number, $priority_count: number, $open: number }>`
+  --priority-list-width: ${({ theme }) => theme.sizes.calendar.PriorityListWidth.desktop};
+  transition: all ease .25s;
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --priority-list-width: ${({ theme }) => theme.sizes.calendar.PriorityListWidth.tablet};
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --priority-list-width: ${({ theme }) => theme.sizes.calendar.PriorityListWidth.mobile};
+    transition: none;
+  }
+
   box-sizing: content-box;
   position: absolute;
   left: calc((${({ $idx }) => $idx} * (var(--cell-width) + 1px)) + 2px);
   height: ${({ $open, $priority_count }) => $open ? `calc(((var(--cell-height) + var(--line-gap)) * ${$priority_count + 1}) + 3px)` : '100%'};
-  width: calc(var(--cell-width) + 1px - 4px);
+  width: ${({ $open }) => $open ? 'calc(var(--priority-list-width) + 1px - 4px)' : 'calc(var(--cell-width) + 1px - 4px)'};
   background: ${({ theme }) => theme.colors.lightBlue};
-  transition: all ease .25s;
+  
   ${({ theme, $open }) => $open ? `
     box-shadow: 0 0 4px 2px ${theme.colors.gray};
     border-radius: 5px;
+    z-index: 5;
   ` : '' }
 `;
 

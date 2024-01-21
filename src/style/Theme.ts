@@ -74,6 +74,11 @@ const theme = {
         tablet: '4',
         desktop: '4',
       },
+      PriorityListWidth: {
+        mobile: '133px',
+        tablet: '133px',
+        desktop: '232px',
+      },
     }
   }
 }
