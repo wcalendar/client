@@ -56,12 +56,21 @@ const MoreButton = styled.button`
   &:focus {
     outline: none;
   }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    padding-right: .5rem;
+  } 
 `;
 
 const IconWrapper = styled.div`
+  display: block;
   width: calc(var(--cell-height));
   height: calc(var(--cell-height));
   padding: 3%;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    display: none;
+  } 
 `;
 
 const DropArea = styled.div`
