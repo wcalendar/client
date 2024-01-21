@@ -20,7 +20,8 @@ export default function NavBar() {
         <MenuItem>개인정보 취급방침</MenuItem>
       </MenuButton>
       <MenuButton icon={mdiAccount}>
-        <></>
+        <MenuItem>로그아웃</MenuItem>
+        <MenuItem>회원탈퇴</MenuItem>
       </MenuButton>
     </NavBarContainer>
   );

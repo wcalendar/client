@@ -51,10 +51,16 @@ export default function MenuButton({
     if(status === 'closing') setStatus('closed');
   }, [status]);
 
+  const handleClose = useCallback(() => {
+    setStatus('closing');
+  }, []);
+
   return (
     <Container $is_open={status !== 'closed' ? 1 : 0} onClick={handleClick}>
       <Icon path={icon} />
-      {status !== 'closed' && (<Menu status={status} onAnimationEnd={handleAnimationEnd}>{children}</Menu>)}
+      {status !== 'closed' && (
+        <Menu status={status} onAnimationEnd={handleAnimationEnd} onClose={handleClose}>{children}</Menu>
+      )}
     </Container>
   )
 }
