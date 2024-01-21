@@ -1,7 +1,7 @@
 import Icon from "@mdi/react";
 import { ReactNode, useCallback, useState } from "react";
 import styled from "styled-components";
-import Menu from "./menu/Menu";
+import Menu from "../menu/Menu";
 import { ModalStatus } from "@/types";
 
 const Container = styled.div<{ $is_open: number }>`

@@ -1,6 +1,6 @@
 'use client';
 
-import Header from '@/components/common/Header';
+import Header from '@/components/common/header/Header';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import HeaderCell from './HeaderCell';

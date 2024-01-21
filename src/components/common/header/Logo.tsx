@@ -2,7 +2,19 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 const LogoContainer = styled.div`
-  flex-basis: 16%;
+  --logo-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --logo-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
+  }
+  
+  @media ${({ theme }) => theme.devices.mobile} {
+    --logo-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
+  }
+
+  flex-basis: calc(var(--logo-width) - 1rem);
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 30px;
 `;
 const Title = styled.h1`
