@@ -20,26 +20,6 @@ const Background = styled.div<{ $status: string }>`
   background-color: white;
   opacity: ${({ $status }) => $status === 'open' ? '.5' : '0'};
   animation: ${({ $status }) => $status === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-
-    100% {
-      opacity: 0.5;
-    }
-  }
-
-  @keyframes fadeOut {
-    0% {
-      opacity: 0.5;
-    }
-
-    100% {
-      opacity: 0;
-    }
-  }
 `;
 
 const Container = styled.div<{ $width: string, $status: string }>`
@@ -61,30 +41,6 @@ const Container = styled.div<{ $width: string, $status: string }>`
   box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.gray};
   transform-origin: left;
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
-
-  @keyframes scaleIn {
-    from {
-      opacity: 0;
-      transform: scale(.97) translateX(-50%);
-    }
-
-    to {
-      opacity: 1;
-      transform: scale(1) translateX(-50%);
-    }
-  }
-
-  @keyframes scaleOut {
-    from {
-      opacity: 1;
-      transform: scale(1) translateX(-50%);
-    }
-
-    to {
-      opacity: 0;
-      transform: scale(.97) translateX(-50%);
-    }
-  }
 `;
 
 const Input = styled.input`

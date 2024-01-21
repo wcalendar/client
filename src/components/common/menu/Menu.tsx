@@ -9,37 +9,13 @@ const Container = styled.div<{ $status: ModalStatus }>`
   width: max-content;
   transform: translateY(${({ $status }) => $status === 'open' ? '0%' : '-10%'});
   opacity: ${({ $status }) => $status === 'open' ? 1 : 0};
-  animation: ${({ $status }) => $status === 'open' ? 'downOpen' : 'upOpen'} .25s;
+  animation: ${({ $status }) => $status === 'open' ? 'fromUpOpen' : 'fromUpClose'} .25s;
   background: white;
   border-radius: 10px;
   overflow: hidden;
   z-index: 10;
   padding: 1rem;
   box-shadow: 0 2px 4px 1px ${({ theme }) => theme.colors.gray};
-
-  @keyframes downOpen {
-    0% {
-      transform: translateY(-10%);
-      opacity: 0;
-    }
-
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes upOpen {
-    0% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    100% {
-      transform: translateY(-10%);
-      opacity: 0;
-    }
-  }
 `;
 
 interface MenuProps {

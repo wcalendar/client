@@ -37,21 +37,9 @@ const Box = styled.div<{ theme: DefaultTheme, $width: string }>`
   overflow-y: auto;
   opacity: 1;
   animation-duration: .25s;
-  animation-name: open;
+  animation-name: fromUpOpen;
   background-color: white;
   box-shadow: 0px 2px 4px 2px ${({ theme }) => theme.colors.gray};
-
-  @keyframes open {
-    from {
-      opacity: 0;
-      transform: translateY(5%);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 `;
 
 const ModalHeader = styled.div<{ theme: DefaultTheme }>`

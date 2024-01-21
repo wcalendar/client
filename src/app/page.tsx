@@ -29,23 +29,32 @@ const Container = styled.div`
   width: 100%;
   overflow: hidden;
 
+  --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
+  --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
   --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
   --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
+  --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.desktop};
   --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
   --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
   --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
+    --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.tablet};
     --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.tablet};
     --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.tablet};
     --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.tablet};
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
+    --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.mobile};
     --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.mobile};
     --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.mobile};
     --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.mobile};
@@ -54,21 +63,21 @@ const Container = styled.div`
 
 const Calendar = styled.main`
   width: 100%;
-  height: calc(100vh - 4.375rem);
+  height: calc(100vh - var(--header-height));
   display: flex;
 `;
 
 const CategorySide = styled.aside`
   position: relative;
   height: 100%;
-  width: calc(var(--cell-width) + 3px);
+  width: calc(var(--category-cell-width) + 3px);
   border-right: 3px solid ${({ theme }) => theme.colors.lightGray};
   overflow-y: hidden;
 `;
 
 const ScheduleSide = styled.div`
   position: relative;
-  width: calc(100% - (var(--cell-width) + 3px));
+  width: calc(100% - (var(--category-cell-width) + 3px));
   height: 100%;
   overflow-x: auto;
   overflow-y: auto;
@@ -77,7 +86,9 @@ const ScheduleSide = styled.div`
 const CalendarHeader = styled.div<{ $day_count: number }>`
   position: sticky;
   z-index: 1;
-  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
+  width: calc(${({ $day_count }) => $day_count === 1 ?
+  `var(--category-cell-width)` :
+  `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
   top: 0;
 `;
 
@@ -123,7 +134,9 @@ const PriorityTip = styled.div`
 `;
 
 const CalendarBody = styled.div<{ $day_count: number, $is_move_mode: number, }>`
-  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
+  width: calc(${({ $day_count }) => $day_count === 1 ?
+  `var(--category-cell-width)` :
+  `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
   min-height: ${({ $day_count }) => $day_count === 1 ? '100%' : 'calc(100vh - 4.375rem - 2.5rem)'};
   padding-top: var(--line-gap);
   position: relative;

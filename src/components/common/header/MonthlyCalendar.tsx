@@ -15,20 +15,7 @@ const Container = styled.div`
   top: 1.875rem;
   left: 2rem;
   animation-duration: .25s;
-  animation-name: open;
-
-  @keyframes open {
-    from {
-      opacity: 0;
-      transform: translateY(-5%);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
+  animation-name: fromUpOpen;
 `;
 
 const Header = styled.div`
