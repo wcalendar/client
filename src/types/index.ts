@@ -25,6 +25,7 @@ export type Category = {
   children?: Category;
 };
 
+export type Device = 'mobile' | 'tablet' | 'desktop';
 /**
  * 
  */

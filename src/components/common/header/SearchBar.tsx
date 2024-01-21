@@ -1,9 +1,11 @@
+import { useModal } from '@/providers/ModalProvider/useModal';
 import { mdiMagnify } from '@mdi/js';
 import Icon from '@mdi/react';
+import { useCallback } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 import styled from 'styled-components';
 
-const Container = styled.form`
+const Container = styled.div`
   width: 25rem;
   height: 1.875rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
@@ -30,14 +32,18 @@ const IconWrapper = styled.div`
 `;
 
 interface SearchBarProps {
-  onClick: () => void;
 }
 
 export default function SearchBar({
-  onClick,
 }: SearchBarProps) {
+  const { addModal } = useModal();
+
+  const handleClick = useCallback(() => {
+    addModal({ key: 'search', modalProps: {state: 'open'} });
+  }, []);
+
   return (
-    <Container onClick={onClick}>
+    <Container onClick={handleClick}>
       <IconWrapper>
         <Icon path={mdiMagnify} />
       </IconWrapper>
