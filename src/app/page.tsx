@@ -13,7 +13,7 @@ import { Dayjs } from 'dayjs';
 import { NewScheduleModalProps } from './NewScheduleModal';
 import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
-import { CategoryModalInfo, NewScheduleModalInfo, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { CategoryDto, CategoryModalInfo, NewScheduleModalInfo, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import { CategoryModalProps } from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
@@ -333,11 +333,44 @@ export default function Home() {
     setPrioritiesByDay(newPriorities);
   }, [categoryToRenderList, daysInMonth, prioritiesByDay]);
 
+  const handleScheduleDelete = useCallback((categoryId: number, groupCode: number) => {
+    const newCategoryList = [...categoryList];
+    let category: CategoryDto | undefined = undefined;
+    outer: for(const c1 of newCategoryList) {
+      if(c1.categoryId === categoryId) {
+        category = c1;
+        break;
+      }
+      for(const c2 of c1.children) {
+        if(c2.categoryId === categoryId) {
+          category = c2;
+          break outer;
+        }
+        for(const c3 of c2.children) {
+          if(c3.categoryId === categoryId) {
+            category = c3;
+            break outer;
+          }
+        }
+      }
+    }
+    if(!category) {
+      alert('존재하지 않는 카테고리 입니다.');
+      return;
+    }
+
+    const newSchedules = category.schedules.filter(schedule => schedule.scheduleGroupCode !== groupCode);
+    category.schedules = newSchedules;
+
+    setCategoryList(newCategoryList);
+  }, [categoryList]);
+
   const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
     const props: ScheduleModalProps = {
       scheduleModalInfo: newScheduleModalInfo,
       onScheduleFinish: handleScheduleFinish,
       onUpdateClick: handleUpdateScheduleClick,
+      onScheduleDelete: handleScheduleDelete,
     }
     
     addModal({ key: 'schedule', modalProps: props });

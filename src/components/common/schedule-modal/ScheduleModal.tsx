@@ -1,4 +1,4 @@
-import { ScheduleModalInfo, ScheduleToRender } from "@/types";
+import { ErrorRes, ScheduleModalInfo, ScheduleToRender } from "@/types";
 import time from "@/lib/time";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
@@ -6,12 +6,8 @@ import styled from "styled-components";
 import FloatingModal from "../floating-modal/FloatingModal";
 import { useCallback, useState } from "react";
 import { useModal } from "@/providers/ModalProvider/useModal";
-
-export type ScheduleModalProps = {
-  scheduleModalInfo: ScheduleModalInfo;
-  onScheduleFinish: (categoryId: number, groupCode: number) => void;
-  onUpdateClick: (schedule: ScheduleToRender) => void;
-}
+import { apis } from "@/lib/apis";
+import { AxiosError } from "axios";
 
 const Header = styled.div`
   width: 100%;
@@ -90,13 +86,22 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+export type ScheduleModalProps = {
+  scheduleModalInfo: ScheduleModalInfo;
+  onScheduleFinish: (categoryId: number, groupCode: number) => void;
+  onUpdateClick: (schedule: ScheduleToRender) => void;
+  onScheduleDelete: (categoryId: number, groupCode: number) => void;
+}
+
 export default function ScheduleModal({
   scheduleModalInfo,
   onScheduleFinish,
   onUpdateClick,
+  onScheduleDelete,
 }: ScheduleModalProps) {
   const [modalInfo, setModalInfo] = useState<ScheduleModalInfo>(scheduleModalInfo);
   const { x, y, schedule } = modalInfo;
+  console.log(schedule.id);
 
   const {closeModal} = useModal();
 
@@ -111,6 +116,23 @@ export default function ScheduleModal({
     newModalInfo.schedule.isFinished = !newModalInfo.schedule.isFinished;
     setModalInfo(newModalInfo);
   }, [modalInfo]);
+
+  const deleteSchedule = useCallback(async (scheduleId: number) => {
+    try {
+      const response = apis.deleteSchedule(scheduleId);
+      console.log(response);
+    } catch(e) {
+      const error = e as AxiosError<ErrorRes>;
+      console.log(error.response?.data);
+    }
+  }, []);
+
+  const handleScheduleDelete = useCallback(() => {
+    if(confirm('일정을 삭제하시겠습니까?')) {
+      onScheduleDelete(schedule.categoryId, schedule.groupCode);
+      deleteSchedule(schedule.id);
+    }
+  }, [schedule]);
   
   return (
     <FloatingModal x={x} y={y} onClose={handleModalClose}>
@@ -128,7 +150,7 @@ export default function ScheduleModal({
         </Line>
         <ButtonBox>
           <Button onClick={() => onUpdateClick(schedule)}>수정</Button>
-          <Button>삭제</Button>
+          <Button onClick={handleScheduleDelete}>삭제</Button>
         </ButtonBox>
       </Body>
     </FloatingModal>
