@@ -1,7 +1,7 @@
 'use client';
 
 import CategoryHeader from '@/app/category/CategoryHeader';
-import Header from '@/components/common/Header';
+import Header from '@/components/common/header/Header';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
 import { useState } from 'react';

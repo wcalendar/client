@@ -4,8 +4,7 @@ import NavBar from './NavBar';
 import Monthly from './Monthly';
 import SearchBar from './SearchBar';
 import { Dayjs } from 'dayjs';
-import { useModal } from '@/providers/ModalProvider/useModal';
-import { useCallback } from 'react';
+import useDevice from '@/hooks/useDevice';
 
 type HeaderProps = {
   date?: Dayjs;
@@ -14,32 +13,29 @@ type HeaderProps = {
 
 const Container = styled.header`
   width: 100%;
-  height: 4.375rem;
+  height: var(--header-height);
   background: white;
   display: flex;
-  padding: 1rem;
+  padding: var(--header-padding);
   align-items: center;
-  justify-content: space-between;
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
     0 2px 4px -2px rgb(0 0 0 / 0.1);
 `;
 
 const NavContainer = styled.div`
+  flex-grow: 1;
   display: flex;
   justify-content: space-between;
-  flex-basis: 80%;
+  align-items: center;
+  height: 100%;
 `;
 
 export default function Header({
   date,
   onDateChange,
-}: HeaderProps) {
-  const { addModal } = useModal();
-
-  const handleSearchBarClick = useCallback(() => {
-    addModal({ key: 'search', modalProps: {state: 'open'} });
-  }, []);
+}: HeaderProps) {  
+  const device = useDevice();
 
   return (
     <Container>
@@ -47,11 +43,13 @@ export default function Header({
       {(date && onDateChange) ? (
         <NavContainer>
           <Monthly value={date} onChange={onDateChange}/>
-          <SearchBar onClick={handleSearchBarClick} />
-          <NavBar />
+          {device === 'desktop' && (
+            <SearchBar />
+          )}
+          <NavBar device={device} />
         </NavContainer>
       ) : (
-        <NavBar />
+        <NavBar device={device}/>
       )}
     </Container>
   );

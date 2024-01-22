@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 
 const Container = styled.div<{ $color: CategoryColor, $level: number }>`
   height: var(--cell-height);
-  width: calc((var(--cell-width) + 1px) - 9px);
+  width: calc(100% - 5px);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-left: 2px;
@@ -46,8 +46,9 @@ const Text = styled.span<{ $is_finished: number }>`
   font-size: .75rem;
   user-select: none;
   line-height: var(--cell-height);
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  overflow: hidden;
   ${({ $is_finished }) => $is_finished ? 'text-decoration: line-through;' : '' }
 `;
 

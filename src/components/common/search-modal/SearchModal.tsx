@@ -1,13 +1,13 @@
 import { dSearchResultList } from "@/dummies/calendar";
 import { useModal } from "@/providers/ModalProvider/useModal";
-import { SearchResult } from "@/types";
+import { ModalStatus, SearchResult } from "@/types";
 import { mdiMagnify } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ResultItem from "./ResultItem";
 
-const Background = styled.div<{ $state: string }>`
+const Background = styled.div<{ $status: string }>`
   position: fixed;
   left: 0;
   top: 0;
@@ -18,36 +18,16 @@ const Background = styled.div<{ $state: string }>`
   justify-content: center;
   align-items: center;
   background-color: white;
-  opacity: ${({ $state }) => $state === 'open' ? '.5' : '0'};
-  animation: ${({ $state }) => $state === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-
-    100% {
-      opacity: 0.5;
-    }
-  }
-
-  @keyframes fadeOut {
-    0% {
-      opacity: 0.5;
-    }
-
-    100% {
-      opacity: 0;
-    }
-  }
+  opacity: ${({ $status }) => $status === 'open' ? '.5' : '0'};
+  animation: ${({ $status }) => $status === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
 `;
 
-const Container = styled.div<{ $width: string, $state: string }>`
+const Container = styled.div<{ $width: string, $status: string }>`
   position: fixed;
   top: 15%;
   left: 50%;
   z-index: 10;
-  transform: ${({ $state }) => $state === 'open' ? 'scale(1)' : 'scale(.97)'} translateX(-50%);
+  transform: ${({ $status }) => $status === 'open' ? 'scale(1)' : 'scale(.97)'} translateX(-50%);
   max-width: ${({ $width }) => $width};
   width: 98%;
   height: auto;
@@ -55,36 +35,12 @@ const Container = styled.div<{ $width: string, $state: string }>`
   border-radius: 10px;
   overflow: hidden;
   overflow-y: auto;
-  opacity: ${({ $state }) => $state === 'open' ? '1' : '0'};
-  animation: ${({ $state }) => $state === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
+  opacity: ${({ $status }) => $status === 'open' ? '1' : '0'};
+  animation: ${({ $status }) => $status === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
   background-color: white;
   box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.gray};
   transform-origin: left;
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
-
-  @keyframes scaleIn {
-    from {
-      opacity: 0;
-      transform: scale(.97) translateX(-50%);
-    }
-
-    to {
-      opacity: 1;
-      transform: scale(1) translateX(-50%);
-    }
-  }
-
-  @keyframes scaleOut {
-    from {
-      opacity: 1;
-      transform: scale(1) translateX(-50%);
-    }
-
-    to {
-      opacity: 0;
-      transform: scale(.97) translateX(-50%);
-    }
-  }
 `;
 
 const Input = styled.input`
@@ -122,19 +78,12 @@ const List = styled.ul`
   padding: .5rem 1rem;
 `;
 
-const Item = styled.li`
-  width: 100%;
-  height: 4.125rem;
-`;
-
 export interface SearchModalProps {
-  state: string;
 }
 
 export default function SearchModal({
-  state,
 }: SearchModalProps) {
-  const [modalStatus, setModalStatus] = useState('open');
+  const [modalStatus, setModalStatus] = useState<ModalStatus>('open');
   const [resultList, setResultList] = useState<SearchResult[]>([]);
 
   const { closeModal } = useModal();
@@ -152,17 +101,17 @@ export default function SearchModal({
   });
 
   const handleAnimationEnd = useCallback(() => {
-    if(modalStatus === 'close') closeModal();
+    if(modalStatus === 'closing') closeModal();
   }, [modalStatus]);
 
   const handleModalClose = useCallback(() => {
-    setModalStatus('close');
+    setModalStatus('closing');
   }, []);
 
   return (
     <>
-      <Background $state={modalStatus} onClick={handleModalClose} onAnimationEnd={handleAnimationEnd} />
-      <Container $width='33.75rem' $state={modalStatus}>
+      <Background $status={modalStatus} onClick={handleModalClose} onAnimationEnd={handleAnimationEnd} />
+      <Container $width='33.75rem' $status={modalStatus}>
         <Input type='text' placeholder="일정 검색" ref={inputRef} />
         <IconWrapper>
           <Icon path={mdiMagnify} />

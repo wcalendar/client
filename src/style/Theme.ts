@@ -43,9 +43,21 @@ const theme = {
   },
 
   sizes: {
+    header: {
+      headerHeight: {
+        mobile: '2.5rem',
+        tablet: '3.125rem',
+        desktop: '4.375rem',
+      },
+      headerPadding: {
+        mobile: '.25rem',
+        tablet: '.5rem',
+        desktop: '1rem',
+      },
+    },
     calendar: {
       cellWidth: {
-        mobile: '122px',
+        mobile: '55px',
         tablet: '133px',
         desktop: '232px',
       },
@@ -53,6 +65,11 @@ const theme = {
         mobile: '2rem',
         tablet: '1.5rem',
         desktop: '1.125rem',
+      },
+      categoryCellWidth: {
+        mobile: '133px',
+        tablet: '133px',
+        desktop: '232px',
       },
       memoWidth: {
         mobile: '1rem',
@@ -68,6 +85,11 @@ const theme = {
         mobile: '4',
         tablet: '4',
         desktop: '4',
+      },
+      PriorityListWidth: {
+        mobile: '133px',
+        tablet: '133px',
+        desktop: '232px',
       },
     }
   }

@@ -25,6 +25,7 @@ export type Category = {
   children?: Category;
 };
 
+export type Device = 'mobile' | 'tablet' | 'desktop';
 /**
  * 
  */
@@ -165,3 +166,5 @@ export type ModalKey =
   | { key: 'category'; modalProps: CategoryModalProps }
   | { key: 'newSchedule'; modalProps: NewScheduleModalProps }
   | { key: 'search'; modalProps: SearchModalProps };
+
+export type ModalStatus = 'open' | 'closing' | 'closed';
