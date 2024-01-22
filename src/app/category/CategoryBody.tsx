@@ -1,11 +1,10 @@
 import CategoryList from "@/app/category/CategoryList";
 import Tips from "@/app/category/Tips";
-import { AlertText } from "@/components/category/constants";
 import time from "@/lib/time";
 import { Category, CategoryDto } from "@/types";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import Icon from "@mdi/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import SimpleButton from "./SimpleButton";
 import { calendarDummyData } from "@/dummies/calendar";
@@ -81,18 +80,9 @@ interface CategoryBodyProps {
 export default function CategoryBody({
   currentDate,
 }: CategoryBodyProps) {
-  const currentCategoryRef = useRef<HTMLLIElement>(null);
-
   const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  // Category Form Active
-  const [isFormActive, setFormActive] = useState(false);
-  // Level One Category Button Active
-  const [isLevelOneActive, setLevelOneActive] = useState(true);
-
-  // Delete Modal Show
-  const [isDeleteModalShow, setDeleteModalShow] = useState<boolean>(false);
 
   const getCategories = useCallback(async (y: number, m: number) => {
     // TODO API
@@ -151,42 +141,10 @@ export default function CategoryBody({
     setCategoryList(newCategoryList);
   }, [categoryDtoList]);
 
-  // TODO Add New Category Button
-  //CategoryLevel = Selected Category Level = 1 ? 2 : 3
-  const handleAddSubCategory = () => {
-  };
-
-  //TODO Category Delete Button
-  //Show Modal to ask
-  // Call Back End to Remove
-  const handleDeleteCategory = () => {
-    if (currentCategoryRef.current === null) {
-      alert(AlertText.delete);
-      return;
-    }
-    handleDeleteModal(isDeleteModalShow);
-  };
-
-  //TODO Category Move Up
-  const moveUpCategory = () => {
-    // currentCategory Ref Check
-    // currentCategory === null?, do nothing ? Alert
-    // currentCategory !== null, currentCategoryLevel Check
-    // currentCategoryLevel !== 1? do nothing? Alert
-  };
-
-  //TODO Category Move Down
-  const moveDownCategory = () => {};
-
-  //TODO Add New Level One Category
-  //CategoryLevel = 1
-  const handleAddNewCategory = () => {
-  };
-
-  const handleDeleteModal = (isShow: boolean) => {
-    if (isShow) setDeleteModalShow(false);
-    else setDeleteModalShow(true);
-  };
+  const handleCategoryItemClick = useCallback((category: Category) => {
+    if(selectedCategory && selectedCategory.id === category.id) setSelectedCategory(null);
+    else setSelectedCategory({...category});
+  }, [selectedCategory]);
 
   return (
     <Container>
@@ -194,26 +152,26 @@ export default function CategoryBody({
         <ControlBox>
           <ControlRow>
             <ButtonBox>
-              <SimpleButton onClick={handleAddSubCategory}>추가</SimpleButton>
-              <SimpleButton onClick={handleDeleteCategory}>삭제</SimpleButton>
+              <SimpleButton onClick={() => {}}>추가</SimpleButton>
+              <SimpleButton onClick={() => {}}>삭제</SimpleButton>
             </ButtonBox>
             <ButtonBox>
-              <Button onClick={moveUpCategory}>
+              <Button onClick={() => {}}>
                 <Icon path={mdiChevronUp} />
               </Button>
-              <Button onClick={moveDownCategory}>
+              <Button onClick={() => {}}>
               <Icon path={mdiChevronDown} />
               </Button>
             </ButtonBox>
           </ControlRow>
           <AddBaseCategoryButton
-            onClick={handleAddNewCategory}
-            disabled={!isLevelOneActive}
+            onClick={() => {}}
+            disabled={false}
           >
             + 1단계 카테고리 추가
           </AddBaseCategoryButton>
         </ControlBox>
-        <CategoryList categoryList={categoryList} selectedCategory={selectedCategory} />
+        <CategoryList categoryList={categoryList} selectedCategory={selectedCategory} onCategoryItemClick={handleCategoryItemClick}/>
         <Tips />
       </CategorySide>
       {/* <CategoryForm

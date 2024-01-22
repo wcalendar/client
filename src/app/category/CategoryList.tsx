@@ -26,11 +26,13 @@ const Container = styled.ul`
 type CategoryListProps = {
   categoryList: Category[];
   selectedCategory: Category | null;
+  onCategoryItemClick: (category: Category) => void;
 };
 
 export default function CategoryList({
   categoryList,
   selectedCategory,
+  onCategoryItemClick,
 }: CategoryListProps) {
   return (
     <Container>
@@ -39,6 +41,7 @@ export default function CategoryList({
           key={category.name}
           category={category}
           isSelected={selectedCategory ? (selectedCategory.id === category.id) : false}
+          onClick={onCategoryItemClick}
         />
       ))}
     </Container>

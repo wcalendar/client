@@ -7,7 +7,6 @@ import { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import styled from 'styled-components';
 import CategoryBody from './CategoryBody';
-import { Category } from '@/types';
 
 const Container = styled.main`
   position: relative;

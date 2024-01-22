@@ -1,6 +1,7 @@
 import { Category, CategoryColor } from '@/types';
 import { mdiEyeOffOutline } from '@mdi/js';
 import Icon from '@mdi/react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div<{ $color: CategoryColor }>`
@@ -53,20 +54,26 @@ const InvisibleIcon = styled.div`
 interface CategoryItemProps {
   category: Category;
   isSelected: boolean;
+  onClick: (category: Category) => void;
 };
 
 export default function CategoryItem({
   category,
   isSelected,
+  onClick,
 }: CategoryItemProps) {
   const { name, description, color, level, } = category;
 
+  const handleClick = useCallback(() => {
+    onClick(category);
+  }, [category, onClick]);
+
   return (
     <Container $color={color}>
-      <CategoryName $color={color} $level={level} $is_selected={isSelected ? 1 : 0}>
+      <CategoryName $color={color} $level={level} $is_selected={isSelected ? 1 : 0} onClick={handleClick}>
         {name}
       </CategoryName>
-      <Description $level={level} $color={color} $is_selected={isSelected ? 1 : 0}>
+      <Description $level={level} $color={color} $is_selected={isSelected ? 1 : 0} onClick={handleClick}>
         {description}
       </Description>
       <InvisibleIcon>
