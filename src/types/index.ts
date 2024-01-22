@@ -103,7 +103,7 @@ export type Priority = {
   categoryId: number;
   scheduleId: number;
   groupCode: number;
-  day: number;
+  date: Dayjs;
   priority: number;
   isFinished: boolean;
   color: CategoryColor;

@@ -36,7 +36,10 @@ export const apis = {
   getCategoriesByPeriod: async (sy: number, sm: number, ey: number, em: number): Promise<ResDto<CategoryDto[]>> => {
     return (await authAPI.get(`/categories?startYear=${sy}&startMonth=${sm+1}&endYear=${ey}&endMonth=${em+1}`)).data;
   },
-  addSchedule: async (newScheduleDto: NewScheduleDto) => {
+  addSchedule: async (newScheduleDto: NewScheduleDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/schedules`, newScheduleDto)).data;
+  },
+  updateSchedulePriority: async (scheduleOrderList: number[], scheduleDate: string): Promise<ResDto<string>> => {
+    return (await authAPI.put(`/schedules`, { scheduleOrderList, scheduleDate })).data;
   },
 }

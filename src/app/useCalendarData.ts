@@ -44,7 +44,7 @@ export default function useCalendarData(
         scheduleId: schedule.scheduleId,
         categoryId: category.categoryId,
         groupCode: schedule.scheduleGroupCode,
-        day: date.date(),
+        date: date,
         priority: schedule.schedulePriority,
         isFinished: schedule.finished,
         color: category.categoryColor,
