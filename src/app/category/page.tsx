@@ -10,10 +10,19 @@ import CategoryBody from './CategoryBody';
 
 const Container = styled.main`
   position: relative;
-  --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
-  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
-  --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
-  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
+
+  --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
+  --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
+  }
 `;
 
 export default function CategoryPage() {
