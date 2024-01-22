@@ -282,12 +282,13 @@ export default function NewScheduleModal({
       scheduleStartDate: time.toString(startDate, 'YYYY-MM-DD'),
       scheduleEndDate: !isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
       categoryId: categoryList[categoryIdx-1].categoryId,
-      schedulePriority: 999,
       isPriority: isPriority,
     }
 
+    setLoading(true);
     try {
       const response = await apis.addSchedule(NewScheduleDto);
+      setLoading(false);
       onScheduleCreate();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
