@@ -1,12 +1,11 @@
 import { dSearchResultList } from "@/dummies/calendar";
-import { useModal } from "@/providers/ModalProvider/useModal";
 import { ModalStatus, SearchResult } from "@/types";
 import { mdiMagnify } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ResultItem from "./ResultItem";
-import FixedModals from "../fixed-modal/FixedModals";
+import FixedModal from "../fixed-modal/FixedModal";
 
 const Input = styled.input`
   width: 100%;
@@ -68,7 +67,7 @@ export default function SearchModal({
   }, []);
 
   return (
-    <FixedModals status={modalStatus} width="33.75rem" onModalClose={handleModalClose}>
+    <FixedModal status={modalStatus} width="33.75rem" onModalClose={handleModalClose}>
       <Input type='text' placeholder="일정 검색" ref={inputRef} />
       <IconWrapper>
         <Icon path={mdiMagnify} />
@@ -78,6 +77,6 @@ export default function SearchModal({
           <ResultItem key={`sr-${result.groupCode}`} searchResult={result} />
         ))}
       </List>
-    </FixedModals>
+    </FixedModal>
   )
 }
