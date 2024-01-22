@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { Category } from '@/types';
-import CategoryItem from '../../components/category/CategoryItem';
-import { useFocus } from '@/hooks/useFocus';
-import { forwardRef } from 'react';
+import CategoryItem from './CategoryItem';
 
 const Container = styled.ul`
   width: 100%;
@@ -13,32 +11,36 @@ const Container = styled.ul`
   border-radius: 4px;
   overflow-x: hidden;
   overflow-y: auto;
+
+  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.tablet};
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.mobile};
+  }
 `;
 
 type CategoryListProps = {
-  categories: Category[];
+  categoryList: Category[];
+  selectedCategory: Category | null;
 };
 
-export default forwardRef<HTMLLIElement, CategoryListProps>(
-  function CategoryList({ categories }, ref) {
-    return (
-      <Container>
-        {categories.map(category => (
-          <CategoryItem
-            key={category.categoryName}
-            categoryId={category.categoryId}
-            categoryName={category.categoryName}
-            categoryColor={category.categoryColor}
-            categoryLevel={category.categoryLevel}
-            categoryDescription={category.categoryDescription}
-            categoryVisible={category.categoryVisible}
-            categoryStartDate={category.categoryStartDate}
-            categoryEndDate={category.categoryEndDate}
-            useFocus={useFocus}
-            ref={ref}
-          />
-        ))}
-      </Container>
-    );
-  },
-);
+export default function CategoryList({
+  categoryList,
+  selectedCategory,
+}: CategoryListProps) {
+  return (
+    <Container>
+      {categoryList.map(category => (
+        <CategoryItem
+          key={category.name}
+          category={category}
+          isSelected={selectedCategory ? (selectedCategory.id === category.id) : false}
+        />
+      ))}
+    </Container>
+  );
+}

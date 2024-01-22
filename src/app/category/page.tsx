@@ -7,6 +7,15 @@ import { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import styled from 'styled-components';
 import CategoryBody from './CategoryBody';
+import { Category } from '@/types';
+
+const Container = styled.main`
+  position: relative;
+  --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
+  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
+  --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
+  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
+`;
 
 export default function CategoryPage() {
   const [currentDate, setDate] = useState<Dayjs>(time.now());
@@ -19,15 +28,7 @@ export default function CategoryPage() {
     <Container>
       <Header date={currentDate} onDateChange={handleDateChange} />
       <CategoryHeader />
-      <CategoryBody />
+      <CategoryBody currentDate={currentDate} />
     </Container>
   );
 }
-
-const Container = styled.main`
-  position: relative;
-  --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
-  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
-  --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
-  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
-`;

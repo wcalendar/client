@@ -1,6 +1,6 @@
 import { calendarDummyData } from "@/dummies/calendar";
 import time from "@/lib/time";
-import { CalendarCategory, CategoryDto, CategoryToRender, Priority, ScheduleDto, ScheduleToRender } from "@/types";
+import { Category, CategoryDto, CategoryToRender, Priority, ScheduleDto, ScheduleToRender } from "@/types";
 import { Dayjs } from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -12,7 +12,7 @@ export default function useCalendarData(selectedDate: Dayjs) {
 
   // CategoryDto를 CategoryToRender 타입으로 변환해주는 함수
   const toCategoryRender = useCallback((category: CategoryDto, newPriorities: Priority[][]): CategoryToRender => {
-    const newCategory: CalendarCategory = {
+    const newCategory: Category = {
       id: category.categoryId,
       name: category.categoryName,
       level: category.categoryLevel,

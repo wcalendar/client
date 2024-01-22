@@ -13,18 +13,6 @@ export type CategoryColor =
   | 'purple'
   | 'gray';
 
-export type Category = {
-  categoryId?: number;
-  categoryName: string;
-  categoryColor: CategoryColor;
-  categoryLevel: number;
-  categoryDescription?: string;
-  categoryVisible: boolean;
-  categoryStartDate: string;
-  categoryEndDate: string;
-  children?: Category;
-};
-
 export type Device = 'mobile' | 'tablet' | 'desktop';
 /**
  * 
@@ -52,7 +40,7 @@ export type CategoryDto = {
 }
 
 // 캘린더에 렌더링하기 쉽게 가공한 카테고리 데이터
-export interface CalendarCategory {
+export interface Category {
   id: number;
   name: string;
   level: number;
@@ -78,7 +66,7 @@ export type ScheduleDto = {
 
 // 캘린더에 렌더링하기 위한 카테고리 데이터
 export type CategoryToRender = {
-  category: CalendarCategory;
+  category: Category;
   lines: (ScheduleToRender | null)[][];
 };
 
@@ -129,7 +117,7 @@ export type ScheduleModalInfo = {
 export type CategoryModalInfo = {
   x: number,
   y: number,
-  category: CalendarCategory,
+  category: Category,
 }
 
 // 빈 일정을 눌러 모달을 열었을 때 사용되는 데이터
