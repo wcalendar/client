@@ -10,7 +10,7 @@ import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
 import { Dayjs } from 'dayjs';
-import { NewScheduleModalProps } from './NewScheduleModal';
+import { NewScheduleModalProps } from '../components/common/new-schedule-modal/NewScheduleModal';
 import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
 import PriorityList from './PriorityList';
