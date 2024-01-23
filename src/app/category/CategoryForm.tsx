@@ -144,7 +144,7 @@ const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
       </Row>
       <Row>
         <Label>{LabelText.isVisible}</Label>
-        <FormRadioButton name='categoryVisible' value='ture' label='표시' tabIndex={3} defaultChecked={selectedCategory ? selectedCategory.isVisible : true} />
+        <FormRadioButton name='categoryVisible' value='ture' label='표시' tabIndex={3} defaultChecked={selectedCategory ? selectedCategory.isVisible : false} />
         <FormRadioButton name='categoryVisible' value='false' label='숨기기' tabIndex={4} defaultChecked={selectedCategory ? !selectedCategory.isVisible : false} />
       </Row>
       <Row>
@@ -158,7 +158,7 @@ const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
               value={label}
               $color={color}
               tabIndex={i+5}
-              defaultChecked={selectedCategory ? selectedCategory.color === label : i === 0}
+              defaultChecked={selectedCategory ? selectedCategory.color === label : false}
             />
           ))}
         </ColorSelector>
