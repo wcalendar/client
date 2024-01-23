@@ -1,7 +1,6 @@
 import { ChangeEvent, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { LabelText, InputMaxLength, ButtonText } from '../../components/category/constants';
-import { postNewCategory } from '@/app/actions';
+import { LabelText, InputMaxLength } from '../../components/category/constants';
 import { Category, CategoryColor } from '@/types';
 import RadioButton from '@/components/common/RadioButton';
 import SimpleButton from './SimpleButton';
@@ -78,13 +77,11 @@ const FormControlButtons = styled.div`
 type ColorOption = { label: CategoryColor, color: string };
 
 type CategoryFormProps = {
-  isActive: boolean;
-  currentCategoryData: Category;
+  selectedCategory: Category | null;
 };
 
 export default function CategoryForm({
-  isActive,
-  currentCategoryData,
+  selectedCategory
 }: CategoryFormProps) {
   const theme = useTheme();
 
@@ -98,17 +95,11 @@ export default function CategoryForm({
     { label: 'gray', color: theme.colors.categoryMainGray },
   ], [theme]);
 
-  const { categoryName, categoryDescription, categoryLevel, categoryColor } =
-    currentCategoryData;
-
-  const [isFormActive, setFormActive] = useState(true);
-  const [isVisible, setVisible] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<CategoryColor>('red');
-  const [currentCategoryName, setCurrentCategoryName] =
-    useState<string>(categoryName);
-
-  const [currentCategoryDescription, setCurrentCategoryDescription] =
-    useState<string>(categoryDescription ? categoryDescription : '');
+  const isActive = Boolean(selectedCategory);
+  const [isVisible, setVisible] = useState(selectedCategory ? selectedCategory.isVisible : false);
+  const [selectedColor, setSelectedColor] = useState<CategoryColor>(selectedCategory?.color || 'red');
+  const [name, setName] = useState<string>(selectedCategory?.name || '');
+  const [description, setDescription] = useState<string>(selectedCategory?.description || '');
 
   //TODO 서버에 폼 제출?
   const saveCategory = (formData: FormData, color: string) => {};
@@ -117,17 +108,15 @@ export default function CategoryForm({
   const cancelCategory = () => {};
 
   const onHandleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurrentCategoryName(e.currentTarget.value);
+    setName(e.currentTarget.value);
   };
 
   const onHandleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurrentCategoryDescription(e.currentTarget.value);
+    setDescription(e.currentTarget.value);
   };
 
   return (
-    <Container
-      action={formData => postNewCategory(formData, selectedColor)}
-    >
+    <Container>
       <Row>
         <Label>{LabelText.title}</Label>
         <TextInput
@@ -165,6 +154,7 @@ export default function CategoryForm({
               $color={color}
               $is_selected={label === selectedColor ? 1 : 0}
               onClick={e => {
+                e.preventDefault();
                 setSelectedColor(label);
               }}
             />

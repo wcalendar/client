@@ -9,6 +9,7 @@ import styled from "styled-components";
 import SimpleButton from "./SimpleButton";
 import { calendarDummyData } from "@/dummies/calendar";
 import { Dayjs } from "dayjs";
+import CategoryForm from "./CategoryForm";
 
 const Container = styled.div`
   display: flex;
@@ -174,10 +175,9 @@ export default function CategoryBody({
         <CategoryList categoryList={categoryList} selectedCategory={selectedCategory} onCategoryItemClick={handleCategoryItemClick}/>
         <Tips />
       </CategorySide>
-      {/* <CategoryForm
-        isActive={isFormActive}
-        currentCategoryData={currentCategoryData}
-      /> */}
+      <CategoryForm
+        selectedCategory={selectedCategory}
+      />
     </Container>
   )
 }
