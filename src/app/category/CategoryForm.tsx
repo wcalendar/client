@@ -1,9 +1,10 @@
-import { ChangeEvent, useMemo, useState } from 'react';
+import { FormEventHandler, useCallback, useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { LabelText, InputMaxLength } from '../../components/category/constants';
 import { Category, CategoryColor } from '@/types';
-import RadioButton from '@/components/common/RadioButton';
 import SimpleButton from './SimpleButton';
+import FormRadioButton from '@/components/common/FormRadioButton';
+import FormSimpleButton from './FormSimpleButton';
 
 const Container = styled.form`
   padding-top: 4.375rem;
@@ -39,23 +40,29 @@ const ColorSelector = styled.div`
   list-style: none;
 `;
 
-const ColorItem = styled.button<{ $color: string, $is_selected: number }>`
-  background-color: ${({ $color }) => $color};
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 4px;
-  border: 1px solid ${({ theme, $is_selected }) => $is_selected ? theme.colors.black : 'white'};
-  color: ${({ $color }) => $color};
-  cursor: pointer;
-  transition: border ease .25s, transform ease .25s;
-  ${({ $is_selected }) => $is_selected ? 'transform: scale(1.2);' : ''}
+const ColorItem = styled.input<{ $color: string }>`
+  appearance: none;
 
-  &:hover {
+  &::before {
+    display: block;
+    content: "";
+    background-color: ${({ $color }) => $color};
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid white;
+    transition: transform ease .25s, border ease .25s;
+  }
+
+  &:hover::before {
+    transform: scale(1.2);
     border: 1px solid ${({ theme }) => theme.colors.black};
   }
 
-  &:disabled {
-    cursor: default;
+  &:checked::before {
+    transform: scale(1.2);
+    border: 1px solid ${({ theme }) => theme.colors.black};
   }
 `;
 
@@ -96,36 +103,24 @@ export default function CategoryForm({
   ], [theme]);
 
   const isActive = Boolean(selectedCategory);
-  const [isVisible, setVisible] = useState(selectedCategory ? selectedCategory.isVisible : false);
-  const [selectedColor, setSelectedColor] = useState<CategoryColor>(selectedCategory?.color || 'red');
-  const [name, setName] = useState<string>(selectedCategory?.name || '');
-  const [description, setDescription] = useState<string>(selectedCategory?.description || '');
 
-  //TODO 서버에 폼 제출?
-  const saveCategory = (formData: FormData, color: string) => {};
+  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>((e) => {
+    e.preventDefault();
 
-  //TODO form 초기화
-  const cancelCategory = () => {};
-
-  const onHandleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setName(e.currentTarget.value);
-  };
-
-  const onHandleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDescription(e.currentTarget.value);
-  };
+  }, []);
 
   return (
-    <Container>
+    <Container onSubmit={handleSubmit} >
       <Row>
         <Label>{LabelText.title}</Label>
         <TextInput
           type="text"
           disabled={!isActive}
           maxLength={InputMaxLength}
-          name="categoryTitle"
+          name="categoryName"
           required
-          onChange={e => onHandleNameChange(e)}
+          defaultValue=''
+          tabIndex={1}
         />
       </Row>
       <Row>
@@ -137,33 +132,34 @@ export default function CategoryForm({
           maxLength={InputMaxLength}
           name="categoryDescription"
           required
-          onChange={e => onHandleDescriptionChange(e)}
+          defaultValue=''
+          tabIndex={2}
         />
       </Row>
       <Row>
         <Label>{LabelText.isVisible}</Label>
-        <RadioButton label='표시' checked={isVisible} onChange={() => {setVisible(true)}}/>
-        <RadioButton label='숨기기' checked={!isVisible} onChange={() => {setVisible(false)}}/>
+        <FormRadioButton name='categoryVisible' value='ture' label='표시' tabIndex={3} defaultChecked />
+        <FormRadioButton name='categoryVisible' value='false' label='숨기기' tabIndex={4} />
       </Row>
       <Row>
         <Label>{LabelText.color}</Label>
         <ColorSelector>
-          {colorOptions.map(({ label, color }) => (
+          {colorOptions.map(({ label, color }, i) => (
             <ColorItem
               key={label}
+              type='radio'
+              name='categoryColor'
+              value={label}
               $color={color}
-              $is_selected={label === selectedColor ? 1 : 0}
-              onClick={e => {
-                e.preventDefault();
-                setSelectedColor(label);
-              }}
+              tabIndex={i+5}
+              defaultChecked={i === 0}
             />
           ))}
         </ColorSelector>
       </Row>
       <Divider />
       <FormControlButtons>
-        <SimpleButton onClick={() => {}}>저장</SimpleButton>
+        <FormSimpleButton tabIndex={12} value='저장' />
         <SimpleButton onClick={() => {}}>취소</SimpleButton>
       </FormControlButtons>
     </Container>
