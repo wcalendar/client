@@ -1,4 +1,4 @@
-import { FormEventHandler, useCallback, useMemo } from 'react';
+import { FormEventHandler, forwardRef, useCallback, useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { LabelText, InputMaxLength } from '../../components/category/constants';
 import { Category, CategoryColor } from '@/types';
@@ -85,11 +85,13 @@ type ColorOption = { label: CategoryColor, color: string };
 
 type CategoryFormProps = {
   selectedCategory: Category | null;
+  resetForm: () => void;
 };
 
-export default function CategoryForm({
-  selectedCategory
-}: CategoryFormProps) {
+const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
+  selectedCategory,
+  resetForm,
+}, ref) => {
   const theme = useTheme();
 
   const colorOptions = useMemo<ColorOption[]>(() => [
@@ -109,8 +111,12 @@ export default function CategoryForm({
 
   }, []);
 
+  const handleCancel = useCallback(() => {
+    resetForm();
+  }, []);
+
   return (
-    <Container onSubmit={handleSubmit} >
+    <Container onSubmit={handleSubmit} ref={ref} >
       <Row>
         <Label>{LabelText.title}</Label>
         <TextInput
@@ -160,8 +166,10 @@ export default function CategoryForm({
       <Divider />
       <FormControlButtons>
         <FormSimpleButton tabIndex={12} value='저장' />
-        <SimpleButton onClick={() => {}}>취소</SimpleButton>
+        <SimpleButton onClick={handleCancel}>취소</SimpleButton>
       </FormControlButtons>
     </Container>
   );
-}
+})
+
+export default CategoryForm;

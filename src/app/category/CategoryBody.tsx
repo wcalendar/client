@@ -4,7 +4,7 @@ import time from "@/lib/time";
 import { Category, CategoryDto } from "@/types";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import Icon from "@mdi/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import SimpleButton from "./SimpleButton";
 import { calendarDummyData } from "@/dummies/calendar";
@@ -81,9 +81,15 @@ interface CategoryBodyProps {
 export default function CategoryBody({
   currentDate,
 }: CategoryBodyProps) {
+  const formRef = useRef<HTMLFormElement>(null);
+
   const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+
+  const resetForm = useCallback(() => {
+    formRef.current!.reset();
+  }, []);
 
   const getCategories = useCallback(async (y: number, m: number) => {
     // TODO API
@@ -177,6 +183,8 @@ export default function CategoryBody({
       </CategorySide>
       <CategoryForm
         selectedCategory={selectedCategory}
+        resetForm={resetForm}
+        ref={formRef}
       />
     </Container>
   )
