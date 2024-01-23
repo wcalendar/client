@@ -27,7 +27,7 @@ type FormRadioButtonProps = {
   label: string;
   value: string;
   tabIndex: number;
-  defaultChecked?: true;
+  defaultChecked?: boolean;
 }
 
 export default function FormRadioButton({
