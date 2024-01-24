@@ -1,6 +1,5 @@
-import { ChangeEventHandler, FormEventHandler, forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEventHandler, FormEventHandler, forwardRef, useCallback, useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { LabelText, InputMaxLength } from '../../components/category/constants';
 import { Category, CategoryColor } from '@/types';
 import SimpleButton from './SimpleButton';
 import FormRadioButton from '@/components/common/FormRadioButton';
@@ -55,13 +54,13 @@ const ColorItem = styled.input<{ $color: CategoryColor }>`
     transition: transform ease .25s, border ease .25s;
   }
 
-  &:hover::before {
-    transform: scale(1.2);
+  &:hover:enabled::before {
+    transform: scale(1.1);
     border: 1px solid ${({ theme }) => theme.colors.black};
   }
 
-  &:checked::before {
-    transform: scale(1.2);
+  &:checked:enabled::before {
+    transform: scale(1.1);
     border: 1px solid ${({ theme }) => theme.colors.black};
   }
 `;
@@ -157,7 +156,7 @@ const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
         <TextInput
           name='categoryDescription'
           type="text"
-          placeholder={LabelText.descriptionPlaceHolder}
+          placeholder='카테고리 관련 메모 입력(마감일, 주기 등)'
           disabled={!isActive}
           maxLength={20}
           tabIndex={2}
@@ -206,8 +205,8 @@ const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
       </Row>
       <Divider />
       <FormControlButtons>
-        <FormSimpleButton tabIndex={12} value='저장' />
-        <SimpleButton onClick={handleCancel}>취소</SimpleButton>
+        <FormSimpleButton tabIndex={12} value='저장' disabled={!isActive} />
+        <SimpleButton onClick={handleCancel} disabled={!isActive}>취소</SimpleButton>
       </FormControlButtons>
     </Container>
   );

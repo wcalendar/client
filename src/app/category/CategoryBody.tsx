@@ -46,6 +46,11 @@ const Button = styled.button`
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: .25rem;
   cursor: pointer;
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.lightGray};
+    cursor: default;
+  }
 `;
 
 const AddBaseCategoryButton = styled.button`
@@ -160,14 +165,14 @@ export default function CategoryBody({
           <ControlRow>
             <ButtonBox>
               <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>추가</SimpleButton>
-              <SimpleButton onClick={() => {}}>삭제</SimpleButton>
+              <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>삭제</SimpleButton>
             </ButtonBox>
             <ButtonBox>
-              <Button onClick={() => {}}>
+              <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
                 <Icon path={mdiChevronUp} />
               </Button>
-              <Button onClick={() => {}}>
-              <Icon path={mdiChevronDown} />
+              <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
+                <Icon path={mdiChevronDown} />
               </Button>
             </ButtonBox>
           </ControlRow>

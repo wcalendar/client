@@ -11,16 +11,22 @@ const Container = styled.input`
   background-color: white;
   padding: 0 .5rem;
   cursor: pointer;
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.lightGray};
+    cursor: default;
+  }
 `;
 
 interface FormSimpleButtonProps {
   value: string;
   tabIndex: number;
+  disabled?: boolean;
 }
 
 export default function FormSimpleButton({
   value,
   tabIndex,
 }: FormSimpleButtonProps) {
-  return <Container type='submit' tabIndex={tabIndex} value={value} />
+  return <Container type='submit' tabIndex={tabIndex} value={value} disabled />
 }

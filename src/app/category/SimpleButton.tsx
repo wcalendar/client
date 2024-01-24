@@ -14,6 +14,7 @@ const Container = styled.button`
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.lightGray};
+    cursor: default;
   }
 `;
 
