@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { FormEventHandler, ReactNode } from "react";
 import styled from "styled-components";
 
-const Container = styled.button`
+const Container = styled.input`
   height: 1.75rem;
   line-height: 1.75rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
@@ -18,16 +18,16 @@ const Container = styled.button`
   }
 `;
 
-interface SimpleButtonProps {
-  children: ReactNode;
+interface FormSimpleButtonProps {
+  value: string;
+  tabIndex: number;
   disabled?: boolean;
-  onClick: () => void;
 }
 
-export default function SimpleButton({
-  children,
+export default function FormSimpleButton({
+  value,
+  tabIndex,
   disabled,
-  onClick,
-}: SimpleButtonProps) {
-  return <Container onClick={onClick} disabled={disabled} >{children}</Container>
+}: FormSimpleButtonProps) {
+  return <Container type='submit' tabIndex={tabIndex} value={value} disabled={disabled} />
 }

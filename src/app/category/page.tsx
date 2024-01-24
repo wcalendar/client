@@ -8,6 +8,23 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import CategoryBody from './CategoryBody';
 
+const Container = styled.main`
+  position: relative;
+
+  --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
+  --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
+  }
+`;
+
 export default function CategoryPage() {
   const [currentDate, setDate] = useState<Dayjs>(time.now());
 
@@ -19,15 +36,7 @@ export default function CategoryPage() {
     <Container>
       <Header date={currentDate} onDateChange={handleDateChange} />
       <CategoryHeader />
-      <CategoryBody />
+      <CategoryBody currentDate={currentDate} />
     </Container>
   );
 }
-
-const Container = styled.main`
-  position: relative;
-  --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
-  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
-  --memo-width: ${({ theme }) => theme.sizes.calendar.memoWidth.desktop};
-  --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
-`;
