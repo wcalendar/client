@@ -62,7 +62,7 @@ export default function CategoryItem({
   isSelected,
   onClick,
 }: CategoryItemProps) {
-  const { name, description, color, level, } = category;
+  const { name, description, color, level, isVisible } = category;
 
   const handleClick = useCallback(() => {
     onClick(category);
@@ -76,9 +76,11 @@ export default function CategoryItem({
       <Description $level={level} $color={color} $is_selected={isSelected ? 1 : 0} onClick={handleClick}>
         {description}
       </Description>
-      <InvisibleIcon>
-        <Icon path={mdiEyeOffOutline} />
-      </InvisibleIcon>
+      {!isVisible && (
+        <InvisibleIcon>
+          <Icon path={mdiEyeOffOutline} />
+        </InvisibleIcon>
+      )}
     </Container>
   );
 }
