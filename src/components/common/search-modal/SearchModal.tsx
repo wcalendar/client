@@ -1,47 +1,11 @@
 import { dSearchResultList } from "@/dummies/calendar";
-import { useModal } from "@/providers/ModalProvider/useModal";
 import { ModalStatus, SearchResult } from "@/types";
 import { mdiMagnify } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ResultItem from "./ResultItem";
-
-const Background = styled.div<{ $status: string }>`
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 10;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  opacity: ${({ $status }) => $status === 'open' ? '.5' : '0'};
-  animation: ${({ $status }) => $status === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
-`;
-
-const Container = styled.div<{ $width: string, $status: string }>`
-  position: fixed;
-  top: 15%;
-  left: 50%;
-  z-index: 10;
-  transform: ${({ $status }) => $status === 'open' ? 'scale(1)' : 'scale(.97)'} translateX(-50%);
-  max-width: ${({ $width }) => $width};
-  width: 98%;
-  height: auto;
-  max-height: 90vh;
-  border-radius: 10px;
-  overflow: hidden;
-  overflow-y: auto;
-  opacity: ${({ $status }) => $status === 'open' ? '1' : '0'};
-  animation: ${({ $status }) => $status === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
-  background-color: white;
-  box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.gray};
-  transform-origin: left;
-  border: 1px solid ${({ theme }) => theme.colors.lightGray};
-`;
+import FixedModal from "../fixed-modal/FixedModal";
 
 const Input = styled.input`
   width: 100%;
@@ -86,8 +50,6 @@ export default function SearchModal({
   const [modalStatus, setModalStatus] = useState<ModalStatus>('open');
   const [resultList, setResultList] = useState<SearchResult[]>([]);
 
-  const { closeModal } = useModal();
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   const getResultList = useCallback(async () => {
@@ -100,28 +62,21 @@ export default function SearchModal({
     getResultList();
   });
 
-  const handleAnimationEnd = useCallback(() => {
-    if(modalStatus === 'closing') closeModal();
-  }, [modalStatus]);
-
   const handleModalClose = useCallback(() => {
     setModalStatus('closing');
   }, []);
 
   return (
-    <>
-      <Background $status={modalStatus} onClick={handleModalClose} onAnimationEnd={handleAnimationEnd} />
-      <Container $width='33.75rem' $status={modalStatus}>
-        <Input type='text' placeholder="일정 검색" ref={inputRef} />
-        <IconWrapper>
-          <Icon path={mdiMagnify} />
-        </IconWrapper>
-        <List>
-          {resultList.map(result => (
-            <ResultItem key={`sr-${result.groupCode}`} searchResult={result} />
-          ))}
-        </List>
-      </Container>
-    </>
+    <FixedModal status={modalStatus} width="33.75rem" onModalClose={handleModalClose}>
+      <Input type='text' placeholder="일정 검색" ref={inputRef} />
+      <IconWrapper>
+        <Icon path={mdiMagnify} />
+      </IconWrapper>
+      <List>
+        {resultList.map(result => (
+          <ResultItem key={`sr-${result.groupCode}`} searchResult={result} />
+        ))}
+      </List>
+    </FixedModal>
   )
 }

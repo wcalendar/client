@@ -1,23 +1,62 @@
 import Dropdown from "@/components/common/Dropdown";
 import RadioButton from "@/components/common/RadioButton";
 import DatePicker from "@/components/common/date-picker/DatePicker";
-import FixedModal, { ModalButton } from "@/components/common/fixed-modal/FixedModal";
 import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { CategoryDto, ErrorRes, FixedCategoryInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
+import { CategoryDto, ErrorRes, FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import Spinnable from "@/components/common/spinner/Spinnable";
-import { useModal } from "@/providers/ModalProvider/useModal";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
+import FixedModal from "../fixed-modal/FixedModal";
 
-export interface NewScheduleModalProps {
-  onScheduleCreate: () => void;
-  newScheduleModalInfo: NewScheduleModalInfo;
-}
+const ModalHeader = styled.div`
+  position: relative;
+  width: 100%;
+  height: 2.5rem;
+  background-color: ${({ theme }) => theme.colors.blue};
+  padding: 0 1rem;
+  user-select: none;
+
+  font-size: .875rem;
+  font-weight: bold;
+  color: white;
+  line-height: 2.5rem;
+`;
+
+const ButtonList = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  gap: 1rem;
+  padding-right: 1rem;
+`;
+
+const Button = styled.button`
+  width: auto;
+  padding: 0 .5rem;
+  height: 1.875rem;
+  line-height: 1.875rem;
+  border: none;
+  border-radius: 10px;
+  background: white;
+  font-weight: bold;
+  font-size: .875rem;
+  cursor: pointer;
+`;
+
+const ModalBody = styled.div`
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 1rem;
+`;
 
 const Container = styled.div`
   position: relative;
@@ -121,11 +160,16 @@ const isFixedCategoryInfo = (fixedCategoryInfo: FixedCategoryInfo | undefined): 
   return Boolean(fixedCategoryInfo);
 }
 
+export interface NewScheduleModalProps {
+  onScheduleCreate: () => void;
+  newScheduleModalInfo: NewScheduleModalInfo;
+}
+
 export default function NewScheduleModal({
   onScheduleCreate,
   newScheduleModalInfo
 }: NewScheduleModalProps) {
-  const { closeModal } = useModal();
+  const [status, setStatus] = useState<ModalStatus>('open');
 
   const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
 
@@ -225,12 +269,12 @@ export default function NewScheduleModal({
   }, [categoryList]);
 
   const handleClose = useCallback(() => {
-    closeModal();
+    setStatus('closing');
   }, []);
 
-  const handleChangeScheduleTitle: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleChangeScheduleTitle: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     setScheduleTitle(e.target.value);
-  }
+  }, []);
 
   const handleStartDateChange = useCallback((value: Dayjs) => {
     setStartDate(value);
@@ -253,13 +297,13 @@ export default function NewScheduleModal({
     if(!value) setEndDate(startDate);
   }, [startDate]);
 
-  const handleCategoryIdxChange = (idx: number) => {
+  const handleCategoryIdxChange = useCallback((idx: number) => {
     setCategoryIdx(idx);
-  }
+  }, []);
 
-  const handlePriorityChange = (value: boolean) => {
+  const handlePriorityChange = useCallback((value: boolean) => {
     setPriority(value);
-  }
+  }, []);
 
   const handleSaveNewScheduleClick = useCallback(async () => {
     // Title
@@ -294,12 +338,9 @@ export default function NewScheduleModal({
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
     }
-
-    // TODO api
-    // onScheduleCreate();
   }, [scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
 
-  const buttonList: ModalButton[] = [
+  const buttonList = [
     {
       text: '저장',
       onClick: handleSaveNewScheduleClick,
@@ -313,55 +354,66 @@ export default function NewScheduleModal({
   return (
     <FixedModal
       width='33.75rem'
-      title={isUpdateMode ? '일정 수정' : '일정 등록'}
-      buttonList={buttonList}
-      onClose={handleClose}
+      status={status}
+      onModalClose={handleClose}
     >
-      <Container>
-        <Spinnable isLoading={isLoading}>
-          <Line>
-            <Label>제목</Label>
-            <Input maxLength={20} value={scheduleTitle} onChange={handleChangeScheduleTitle}></Input>
-          </Line>
-          <Line>
-            <Label>일시</Label>
-            <DatePicker value={startDate} onChange={handleStartDateChange} />
-            <Interval $disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
-            <DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
-            <DesktopDurationWrapper>
-              <div style={{width: '1rem'}} />
+      <ModalHeader>
+        {isUpdateMode ? '일정 수정' : '일정 등록'}
+        <ButtonList>
+          {buttonList.map((button, i) => (
+            <Button key={`hb-${i}`} onClick={button.onClick}>
+              {button.text}
+            </Button>
+          ))}
+        </ButtonList>
+      </ModalHeader>
+      <ModalBody>
+        <Container>
+          <Spinnable isLoading={isLoading}>
+            <Line>
+              <Label>제목</Label>
+              <Input maxLength={20} value={scheduleTitle} onChange={handleChangeScheduleTitle}></Input>
+            </Line>
+            <Line>
+              <Label>일시</Label>
+              <DatePicker value={startDate} onChange={handleStartDateChange} />
+              <Interval $disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
+              <DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
+              <DesktopDurationWrapper>
+                <div style={{width: '1rem'}} />
+                <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
+                <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
+              </DesktopDurationWrapper>
+            </Line>
+            <SubLine>
+              <Label />
               <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
               <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
-            </DesktopDurationWrapper>
-          </Line>
-          <SubLine>
-            <Label />
-            <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
-            <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
-          </SubLine>
-          <Line>
-            <Label>카테고리</Label>
-            <DropDownWrapper>
-              <Dropdown
-                values={dropdownValues}
-                selectedIdx={categoryIdx}
-                height='1.75rem'
-                onChange={handleCategoryIdxChange}
-                disabled={isDropdownDisabled}
-              />
-            </DropDownWrapper>
-          </Line>
-          <Line>
-            <Label>우선순위 추가</Label>
-            <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
-            <RadioButton label="추가하지 않음" checked={!isPriority} onChange={() => handlePriorityChange(false)} />
-          </Line>
-          <Tips>
-            <Tip>{`카테고리 선택 후 일시 변경시에 카테고리가 없는 '월'로의 이동 및 선택은 불가합니다.`}</Tip>
-            <Tip>{`카테고리 리스트는 선택한 일시를 기준으로 일시의 시작 '월'과 종료 '월' 시점에 동시에 존재하는 카테고리들이 보여집니다.`}</Tip>
-          </Tips>
-        </Spinnable>
-      </Container>
+            </SubLine>
+            <Line>
+              <Label>카테고리</Label>
+              <DropDownWrapper>
+                <Dropdown
+                  values={dropdownValues}
+                  selectedIdx={categoryIdx}
+                  height='1.75rem'
+                  onChange={handleCategoryIdxChange}
+                  disabled={isDropdownDisabled}
+                />
+              </DropDownWrapper>
+            </Line>
+            <Line>
+              <Label>우선순위 추가</Label>
+              <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
+              <RadioButton label="추가하지 않음" checked={!isPriority} onChange={() => handlePriorityChange(false)} />
+            </Line>
+            <Tips>
+              <Tip>{`카테고리 선택 후 일시 변경시에 카테고리가 없는 '월'로의 이동 및 선택은 불가합니다.`}</Tip>
+              <Tip>{`카테고리 리스트는 선택한 일시를 기준으로 일시의 시작 '월'과 종료 '월' 시점에 동시에 존재하는 카테고리들이 보여집니다.`}</Tip>
+            </Tips>
+          </Spinnable>
+        </Container>
+      </ModalBody>
     </FixedModal>
   )
 }

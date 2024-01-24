@@ -2,7 +2,7 @@
 
 import ScheduleModal from "../schedule-modal/ScheduleModal";
 import CategoryModal from "../category-modal/CategoryModal";
-import NewScheduleModal from "@/app/NewScheduleModal";
+import NewScheduleModal from "@/components/common/new-schedule-modal/NewScheduleModal";
 import { useContext } from "react";
 import { ModalContext } from "@/providers/ModalProvider/ModalContext";
 import SearchModal from "../search-modal/SearchModal";
