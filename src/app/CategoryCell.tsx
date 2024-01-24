@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { CalendarCategory, CategoryColor, CategoryModalInfo } from "@/types";
+import { Category, CategoryColor, CategoryModalInfo } from "@/types";
 import { MouseEvent, useCallback } from "react";
 
 const Container = styled.div<{ $line_count: number, $is_hovered: number, $color: CategoryColor }>`
@@ -51,7 +51,7 @@ const Description = styled.div<{ $level: number, $color: CategoryColor }>`
 `;
 
 type CategoryCellProps = {
-  category: CalendarCategory;
+  category: Category;
   lineCount: number;
   onCategoryClick: (category: CategoryModalInfo) => void;
   isHovered: boolean;

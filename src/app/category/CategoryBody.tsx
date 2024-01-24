@@ -1,15 +1,15 @@
-import CategoryForm from "@/app/category/CategoryForm";
 import CategoryList from "@/app/category/CategoryList";
 import Tips from "@/app/category/Tips";
-import { AlertText } from "@/components/category/constants";
 import time from "@/lib/time";
-import { getCategories } from "@/lib/utils";
-import { Category } from "@/types";
+import { Category, CategoryDto } from "@/types";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import Icon from "@mdi/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import SimpleButton from "./SimpleButton";
+import { calendarDummyData } from "@/dummies/calendar";
+import { Dayjs } from "dayjs";
+import CategoryForm from "./CategoryForm";
 
 const Container = styled.div`
   display: flex;
@@ -46,6 +46,11 @@ const Button = styled.button`
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: .25rem;
   cursor: pointer;
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.lightGray};
+    cursor: default;
+  }
 `;
 
 const AddBaseCategoryButton = styled.button`
@@ -74,92 +79,88 @@ const AddBaseCategoryButton = styled.button`
   }
 `;
 
-export default function CategoryBody() {
-  const currentCategoryRef = useRef<HTMLLIElement>(null);
+interface CategoryBodyProps {
+  currentDate: Dayjs;
+}
 
+export default function CategoryBody({
+  currentDate,
+}: CategoryBodyProps) {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
-  // Initial Category Data
-  const [currentCategoryData, setCurrentCategoryData] = useState<Category>({
-    categoryLevel: 0,
-    categoryName: '',
-    categoryVisible: true,
-    categoryColor: 'blue',
-    categoryDescription: '',
-    categoryStartDate: time.toString(time.now(), 'YYYY-MM-DD'),
-    categoryEndDate: '2099-12-31',
-  });
-  // Category Form Active
-  const [isFormActive, setFormActive] = useState(false);
-  // Level One Category Button Active
-  const [isLevelOneActive, setLevelOneActive] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-  // Delete Modal Show
-  const [isDeleteModalShow, setDeleteModalShow] = useState<boolean>(false);
+  const resetForm = useCallback(() => {
+    formRef.current!.reset();
+  }, []);
 
-  useEffect(() => {
-    setCategoryList(getCategories());
+  const getCategories = useCallback(async (y: number, m: number) => {
+    // TODO API
+    setCategoryDtoList(calendarDummyData[m].resultBody);
   }, []);
 
   useEffect(() => {
-    const mainCategoryList = categoryList.filter(
-      category => category.categoryLevel === 0,
-    );
-    // TODO MAXLENGTH 저장
-    if (mainCategoryList.length === 10) {
-      setFormActive(false);
-      setLevelOneActive(false);
-    }
-  }, [categoryList]);
+    getCategories(currentDate.year(), currentDate.month());
+  }, [currentDate]);
 
-  // TODO Add New Category Button
-  //CategoryLevel = Selected Category Level = 1 ? 2 : 3
-  const handleAddSubCategory = () => {
-    if (currentCategoryRef.current === null) {
-      alert('하위 카테고리를 추가할 상위 카테고리를 선택하세요.');
-      return;
-    }
-    setFormActive(true);
-    let newSubCategory = { ...currentCategoryData };
-    currentCategoryData.categoryLevel === 1
-      ? (newSubCategory.categoryLevel = 2)
-      : (newSubCategory.categoryLevel = 3);
-  };
+  useEffect(() => {
+    const newCategoryList: Category[] = [];
 
-  //TODO Category Delete Button
-  //Show Modal to ask
-  // Call Back End to Remove
-  const handleDeleteCategory = () => {
-    if (currentCategoryRef.current === null) {
-      alert(AlertText.delete);
-      return;
-    }
-    handleDeleteModal(isDeleteModalShow);
-  };
+    categoryDtoList.forEach(c1 => {
+      newCategoryList.push({
+        id: c1.categoryId,
+        name: c1.categoryName,
+        level: c1.categoryLevel,
+        color: c1.categoryColor,
+        startDate: time.fromString(c1.categoryStartDate),
+        endDate: time.fromString(c1.categoryEndDate),
+        description: c1.categoryDescription,
+        isVisible: c1.categoryVisible,
+        schedules: [],
+      });
 
-  //TODO Category Move Up
-  const moveUpCategory = () => {
-    // currentCategory Ref Check
-    // currentCategory === null?, do nothing ? Alert
-    // currentCategory !== null, currentCategoryLevel Check
-    // currentCategoryLevel !== 1? do nothing? Alert
-  };
+      c1.children.forEach(c2 => {
+        newCategoryList.push({
+          id: c2.categoryId,
+          name: c2.categoryName,
+          level: c2.categoryLevel,
+          color: c2.categoryColor,
+          startDate: time.fromString(c2.categoryStartDate),
+          endDate: time.fromString(c2.categoryEndDate),
+          description: c2.categoryDescription,
+          isVisible: c2.categoryVisible,
+          schedules: [],
+        });
 
-  //TODO Category Move Down
-  const moveDownCategory = () => {};
+        c2.children.forEach(c3 => {
+          newCategoryList.push({
+            id: c3.categoryId,
+            name: c3.categoryName,
+            level: c3.categoryLevel,
+            color: c3.categoryColor,
+            startDate: time.fromString(c3.categoryStartDate),
+            endDate: time.fromString(c3.categoryEndDate),
+            description: c3.categoryDescription,
+            isVisible: c3.categoryVisible,
+            schedules: [],
+          });
+        })
+      })
+    });
 
-  //TODO Add New Level One Category
-  //CategoryLevel = 1
-  const handleAddNewCategory = () => {
-    setFormActive(true);
-    let newCategory = { ...currentCategoryData };
-    newCategory.categoryLevel = 0;
-    setCurrentCategoryData(newCategory);
-  };
+    setCategoryList(newCategoryList);
+  }, [categoryDtoList]);
 
-  const handleDeleteModal = (isShow: boolean) => {
-    if (isShow) setDeleteModalShow(false);
-    else setDeleteModalShow(true);
-  };
+  const handleBaseCategoryCreate = useCallback(async () => {
+    
+  }, []);
+
+  const handleCategoryItemClick = useCallback((category: Category) => {
+    if(selectedCategory && selectedCategory.id === category.id) setSelectedCategory(null);
+    else setSelectedCategory({...category});
+  }, [selectedCategory]);
 
   return (
     <Container>
@@ -167,31 +168,32 @@ export default function CategoryBody() {
         <ControlBox>
           <ControlRow>
             <ButtonBox>
-              <SimpleButton onClick={handleAddSubCategory}>추가</SimpleButton>
-              <SimpleButton onClick={handleDeleteCategory}>삭제</SimpleButton>
+              <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>추가</SimpleButton>
+              <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>삭제</SimpleButton>
             </ButtonBox>
             <ButtonBox>
-              <Button onClick={moveUpCategory}>
+              <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
                 <Icon path={mdiChevronUp} />
               </Button>
-              <Button onClick={moveDownCategory}>
-              <Icon path={mdiChevronDown} />
+              <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
+                <Icon path={mdiChevronDown} />
               </Button>
             </ButtonBox>
           </ControlRow>
           <AddBaseCategoryButton
-            onClick={handleAddNewCategory}
-            disabled={!isLevelOneActive}
+            onClick={handleBaseCategoryCreate}
+            disabled={false}
           >
             + 1단계 카테고리 추가
           </AddBaseCategoryButton>
         </ControlBox>
-        <CategoryList categories={categoryList} ref={currentCategoryRef} />
+        <CategoryList categoryList={categoryList} selectedCategory={selectedCategory} onCategoryItemClick={handleCategoryItemClick}/>
         <Tips />
       </CategorySide>
       <CategoryForm
-        isActive={isFormActive}
-        currentCategoryData={currentCategoryData}
+        selectedCategory={selectedCategory}
+        resetForm={resetForm}
+        ref={formRef}
       />
     </Container>
   )

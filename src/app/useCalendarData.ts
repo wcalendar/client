@@ -1,6 +1,6 @@
 import { apis } from "@/lib/apis";
 import time from "@/lib/time";
-import { CalendarCategory, CategoryDto, CategoryToRender, ErrorRes, Priority, ScheduleDto, ScheduleToRender } from "@/types";
+import { Category, CategoryDto, CategoryToRender, ErrorRes, Priority, ScheduleDto, ScheduleToRender } from "@/types";
 import { AxiosError } from "axios";
 import { Dayjs } from "dayjs";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,7 @@ export default function useCalendarData(
 
   // CategoryDto를 CategoryToRender 타입으로 변환해주는 함수
   const toCategoryRender = useCallback((category: CategoryDto, newPriorities: Priority[][]): CategoryToRender => {
-    const newCategory: CalendarCategory = {
+    const newCategory: Category = {
       id: category.categoryId,
       name: category.categoryName,
       level: category.categoryLevel,

@@ -1,4 +1,3 @@
-import { ChangeEventHandler, MouseEventHandler } from "react";
 import styled from "styled-components";
 
 type RadioButtonProps = {
