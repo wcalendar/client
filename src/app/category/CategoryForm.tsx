@@ -87,10 +87,11 @@ type CategoryFormProps = {
   resetForm: () => void;
 };
 
-const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
+const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
+function CategoryForm({
   selectedCategory,
   resetForm,
-}, ref) => {
+}, ref) {
   const isActive = Boolean(selectedCategory);
 
   const [name, setName] = useState('');
