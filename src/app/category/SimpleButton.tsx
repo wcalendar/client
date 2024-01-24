@@ -11,16 +11,22 @@ const Container = styled.button`
   background-color: white;
   padding: 0 .5rem;
   cursor: pointer;
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.lightGray};
+  }
 `;
 
 interface SimpleButtonProps {
   children: ReactNode;
+  disabled?: boolean;
   onClick: () => void;
 }
 
 export default function SimpleButton({
   children,
+  disabled,
   onClick,
 }: SimpleButtonProps) {
-  return <Container onClick={onClick} >{children}</Container>
+  return <Container onClick={onClick} disabled={disabled} >{children}</Container>
 }

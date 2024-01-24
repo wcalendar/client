@@ -159,7 +159,7 @@ export default function CategoryBody({
         <ControlBox>
           <ControlRow>
             <ButtonBox>
-              <SimpleButton onClick={() => {}}>추가</SimpleButton>
+              <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>추가</SimpleButton>
               <SimpleButton onClick={() => {}}>삭제</SimpleButton>
             </ButtonBox>
             <ButtonBox>
