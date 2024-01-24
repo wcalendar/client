@@ -153,6 +153,10 @@ export default function CategoryBody({
     setCategoryList(newCategoryList);
   }, [categoryDtoList]);
 
+  const handleBaseCategoryCreate = useCallback(async () => {
+    
+  }, []);
+
   const handleCategoryItemClick = useCallback((category: Category) => {
     if(selectedCategory && selectedCategory.id === category.id) setSelectedCategory(null);
     else setSelectedCategory({...category});
@@ -177,7 +181,7 @@ export default function CategoryBody({
             </ButtonBox>
           </ControlRow>
           <AddBaseCategoryButton
-            onClick={() => {}}
+            onClick={handleBaseCategoryCreate}
             disabled={false}
           >
             + 1단계 카테고리 추가

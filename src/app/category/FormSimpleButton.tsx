@@ -27,6 +27,7 @@ interface FormSimpleButtonProps {
 export default function FormSimpleButton({
   value,
   tabIndex,
+  disabled,
 }: FormSimpleButtonProps) {
-  return <Container type='submit' tabIndex={tabIndex} value={value} disabled />
+  return <Container type='submit' tabIndex={tabIndex} value={value} disabled={disabled} />
 }

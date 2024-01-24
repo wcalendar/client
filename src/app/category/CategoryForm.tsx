@@ -1,5 +1,5 @@
 import { ChangeEventHandler, FormEventHandler, forwardRef, useCallback, useEffect, useState } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { Category, CategoryColor } from '@/types';
 import SimpleButton from './SimpleButton';
 import FormRadioButton from '@/components/common/FormRadioButton';
@@ -91,8 +91,6 @@ const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
   selectedCategory,
   resetForm,
 }, ref) => {
-  const theme = useTheme();
-
   const isActive = Boolean(selectedCategory);
 
   const [name, setName] = useState('');
