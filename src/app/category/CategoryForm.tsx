@@ -1,4 +1,4 @@
-import { FormEventHandler, forwardRef, useCallback, useMemo } from 'react';
+import { ChangeEventHandler, FormEventHandler, forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { LabelText, InputMaxLength } from '../../components/category/constants';
 import { Category, CategoryColor } from '@/types';
@@ -40,13 +40,13 @@ const ColorSelector = styled.div`
   list-style: none;
 `;
 
-const ColorItem = styled.input<{ $color: string }>`
+const ColorItem = styled.input<{ $color: CategoryColor }>`
   appearance: none;
 
   &::before {
     display: block;
     content: "";
-    background-color: ${({ $color }) => $color};
+    background-color: ${({ theme, $color }) => theme.colors.category($color, 0)};
     width: 1.25rem;
     height: 1.25rem;
     border-radius: 4px;
@@ -81,7 +81,7 @@ const FormControlButtons = styled.div`
   gap: .75rem;
 `;
 
-type ColorOption = { label: CategoryColor, color: string };
+const colors: CategoryColor[] = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'gray'];
 
 type CategoryFormProps = {
   selectedCategory: Category | null;
@@ -94,21 +94,44 @@ const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
 }, ref) => {
   const theme = useTheme();
 
-  const colorOptions = useMemo<ColorOption[]>(() => [
-    { label: 'red', color: theme.colors.categoryMainRed },
-    { label: 'orange', color: theme.colors.categoryMainOrange },
-    { label: 'yellow', color: theme.colors.categoryMainYellow },
-    { label: 'green', color: theme.colors.categoryMainGreen },
-    { label: 'blue', color: theme.colors.categoryMainBlue },
-    { label: 'purple', color: theme.colors.categoryMainPurple },
-    { label: 'gray', color: theme.colors.categoryMainGray },
-  ], [theme]);
-
   const isActive = Boolean(selectedCategory);
+
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [isVisible, setVisible] = useState<boolean>();
+  const [color, setColor] = useState<CategoryColor>();
+
+  useEffect(() => {
+    setName(selectedCategory?.name || '');
+    setDescription(selectedCategory?.description || '');
+    setVisible(selectedCategory?.isVisible);
+    setColor(selectedCategory?.color);
+  }, [selectedCategory]);
 
   const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>((e) => {
     e.preventDefault();
 
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    console.log(formData.get('categoryName'));
+  }, []);
+
+  const handleNameChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
+    setName(e.target.value);
+  }, []);
+
+  const handleDescriptionChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
+    setDescription(e.target.value);
+  }, []);
+
+  const handleVisibleChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
+    if(e.target.value === 'true') setVisible(true);
+    else if(e.target.value === 'false') setVisible(false);
+  }, []);
+
+  const handleColorChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
+    const newColor = e.target.value as CategoryColor;
+    setColor(newColor); 
   }, []);
 
   const handleCancel = useCallback(() => {
@@ -118,47 +141,65 @@ const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(({
   return (
     <Container onSubmit={handleSubmit} ref={ref} >
       <Row>
-        <Label>{LabelText.title}</Label>
+        <Label>제목</Label>
         <TextInput
+          name='categoryName'
           type="text"
           disabled={!isActive}
-          maxLength={InputMaxLength}
-          name="categoryName"
-          required
-          defaultValue={selectedCategory?.name || ''}
+          maxLength={20}
           tabIndex={1}
+          value={name}
+          onChange={handleNameChange}
         />
       </Row>
       <Row>
-        <Label>{LabelText.description}</Label>
+        <Label>비고</Label>
         <TextInput
+          name='categoryDescription'
           type="text"
           placeholder={LabelText.descriptionPlaceHolder}
           disabled={!isActive}
-          maxLength={InputMaxLength}
-          name="categoryDescription"
-          required
-          defaultValue={selectedCategory?.description || ''}
+          maxLength={20}
           tabIndex={2}
+          value={description}
+          onChange={handleDescriptionChange}
         />
       </Row>
       <Row>
-        <Label>{LabelText.isVisible}</Label>
-        <FormRadioButton name='categoryVisible' value='ture' label='표시' tabIndex={3} defaultChecked={selectedCategory ? selectedCategory.isVisible : false} />
-        <FormRadioButton name='categoryVisible' value='false' label='숨기기' tabIndex={4} defaultChecked={selectedCategory ? !selectedCategory.isVisible : false} />
+        <Label>표시 여부</Label>
+        <FormRadioButton
+          name='categoryVisible'
+          value='true'
+          checked={isVisible === undefined ? false : isVisible}
+          onChange={handleVisibleChange}
+          label='표시'
+          disabled={!isActive}
+          tabIndex={3}
+        />
+        <FormRadioButton
+          name='categoryVisible'
+          value='false'
+          checked={isVisible === undefined ? false : !isVisible}
+          onChange={handleVisibleChange}
+          label='숨기기'
+          disabled={!isActive}
+          tabIndex={4}
+        />
       </Row>
       <Row>
-        <Label>{LabelText.color}</Label>
+        <Label>범주</Label>
         <ColorSelector>
-          {colorOptions.map(({ label, color }, i) => (
+          {colors.map((colorName, i) => (
             <ColorItem
-              key={label}
-              type='radio'
               name='categoryColor'
-              value={label}
-              $color={color}
+              key={colorName}
+              type='radio'
+              value={colorName}
+              $color={colorName}
+              disabled={!isActive}
+              checked={color === undefined ? false : color === colorName}
+              onChange={handleColorChange}
               tabIndex={i+5}
-              defaultChecked={selectedCategory ? selectedCategory.color === label : false}
             />
           ))}
         </ColorSelector>

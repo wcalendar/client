@@ -182,7 +182,6 @@ export default function CategoryBody({
         <Tips />
       </CategorySide>
       <CategoryForm
-        key={selectedCategory ? `form-${selectedCategory.id}` : 'from-blank'}
         selectedCategory={selectedCategory}
         resetForm={resetForm}
         ref={formRef}
