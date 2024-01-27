@@ -7,11 +7,11 @@ import Icon from "@mdi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import SimpleButton from "./SimpleButton";
-import { calendarDummyData } from "@/dummies/calendar";
 import { Dayjs } from "dayjs";
 import CategoryForm from "./CategoryForm";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
+import { findCategoryById } from "@/lib/util";
 
 const Container = styled.div`
   display: flex;
@@ -127,6 +127,7 @@ export default function CategoryBody({
         endDate: time.fromString(c1.categoryEndDate),
         description: c1.categoryDescription,
         isVisible: c1.categoryVisible,
+        parentId: null,
         schedules: [],
       });
 
@@ -140,6 +141,7 @@ export default function CategoryBody({
           endDate: time.fromString(c2.categoryEndDate),
           description: c2.categoryDescription,
           isVisible: c2.categoryVisible,
+          parentId: c1.categoryId,
           schedules: [],
         });
 
@@ -153,6 +155,7 @@ export default function CategoryBody({
             endDate: time.fromString(c3.categoryEndDate),
             description: c3.categoryDescription,
             isVisible: c3.categoryVisible,
+            parentId: c2.categoryId,
             schedules: [],
           });
         })
@@ -161,6 +164,30 @@ export default function CategoryBody({
 
     setCategoryList(newCategoryList);
   }, [categoryDtoList]);
+
+  const handleCategoryCreate = useCallback(async () => {
+    if(!selectedCategory || selectedCategory.level >= 2) return;
+
+    const newCategoryDto: NewCategoryDto = {
+      categoryColor: selectedCategory.color,
+      categoryDescription: '',
+      categoryStartDate: time.toString(currentDate, 'YYYY-MM-DD'),
+      categoryLevel: selectedCategory.level + 1,
+      categoryName: '새 카테고리',
+      categoryParentId: selectedCategory.id,
+      categoryVisible: selectedCategory.isVisible,
+    };
+
+    try {
+      await apis.addCategory(newCategoryDto);
+
+      getCategories(currentDate.year(), currentDate.month());
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+      return;
+    }
+  }, [selectedCategory]);
 
   const handleBaseCategoryCreate = useCallback(async () => {
     const newCategoryDto: NewCategoryDto = {
@@ -196,7 +223,7 @@ export default function CategoryBody({
         <ControlBox>
           <ControlRow>
             <ButtonBox>
-              <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>추가</SimpleButton>
+              <SimpleButton onClick={handleCategoryCreate} disabled={!Boolean(selectedCategory)}>추가</SimpleButton>
               <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>삭제</SimpleButton>
             </ButtonBox>
             <ButtonBox>

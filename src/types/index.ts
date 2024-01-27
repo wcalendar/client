@@ -54,6 +54,7 @@ export interface Category {
   endDate: Dayjs;
   description: string;
   isVisible: boolean;
+  parentId: number | null;
   schedules: ScheduleToRender[];
 }
 
