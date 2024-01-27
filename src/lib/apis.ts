@@ -1,4 +1,4 @@
-import { CategoryDto, NewScheduleDto, ResDto } from "@/types";
+import { CategoryDto, NewCategoryDto, NewScheduleDto, ResDto } from "@/types";
 import axios from "axios";
 
 // TODO env 파일로 빼기
@@ -30,6 +30,10 @@ authAPI.interceptors.request.use((config) => {
 });
 
 export const apis = {
+  addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<string>> => {
+    return (await authAPI.post(`/categories`, newCategoryDto));
+  },
+
   getCalendarData: async (y: number, m: number): Promise<ResDto<CategoryDto[]>> => {
     return (await authAPI.get(`/schedules/${y}/${m+1}`)).data;
   },

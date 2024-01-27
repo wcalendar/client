@@ -99,6 +99,17 @@ export type Priority = {
   content: string;
 };
 
+// 새 카테고리를 만들 때 보내는 데이터
+export interface NewCategoryDto {
+  categoryColor: CategoryColor;
+  categoryDescription: string;
+  categoryStartDate: string;
+  categoryLevel: number;
+  categoryName: string;
+  categoryParentId: number | null;
+  categoryVisible: boolean;
+}
+
 // 새 일정을 만들때 보내는 데이터
 // POST /api/schedules
 export type NewScheduleDto = {

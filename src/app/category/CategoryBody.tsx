@@ -1,7 +1,7 @@
 import CategoryList from "@/app/category/CategoryList";
 import Tips from "@/app/category/Tips";
 import time from "@/lib/time";
-import { Category, CategoryDto } from "@/types";
+import { Category, CategoryDto, NewCategoryDto } from "@/types";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -10,6 +10,8 @@ import SimpleButton from "./SimpleButton";
 import { calendarDummyData } from "@/dummies/calendar";
 import { Dayjs } from "dayjs";
 import CategoryForm from "./CategoryForm";
+import { apis } from "@/lib/apis";
+import { AxiosError } from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -154,8 +156,26 @@ export default function CategoryBody({
   }, [categoryDtoList]);
 
   const handleBaseCategoryCreate = useCallback(async () => {
-    
-  }, []);
+    const newCategoryDto: NewCategoryDto = {
+      categoryColor: 'red',
+      categoryDescription: '',
+      categoryStartDate: time.toString(currentDate, 'YYYY-MM-DD'),
+      categoryLevel: 0,
+      categoryName: '새 카테고리',
+      categoryParentId: null,
+      categoryVisible: true,
+    };
+
+    try {
+      const response = await apis.addCategory(newCategoryDto);
+      console.log(response);
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+      return;
+    }
+
+  }, [currentDate]);
 
   const handleCategoryItemClick = useCallback((category: Category) => {
     if(selectedCategory && selectedCategory.id === category.id) setSelectedCategory(null);
