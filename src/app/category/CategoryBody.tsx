@@ -99,8 +99,15 @@ export default function CategoryBody({
   }, []);
 
   const getCategories = useCallback(async (y: number, m: number) => {
-    // TODO API
-    setCategoryDtoList(calendarDummyData[m].resultBody);
+    try {
+      const response = await apis.getCategories(y, m);
+      console.log(response);
+
+      setCategoryDtoList(response.resultBody);
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+    }
   }, []);
 
   useEffect(() => {
