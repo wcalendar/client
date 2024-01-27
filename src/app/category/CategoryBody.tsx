@@ -193,7 +193,7 @@ export default function CategoryBody({
     if(!selectedCategory) return;
 
     try {
-      await apis.deleteCategory(selectedCategory.id);
+      await apis.deleteCategory(selectedCategory.id, time.toString(currentDate, 'YYYY-MM-DD'));
 
       getCategories(currentDate.year(), currentDate.month()); 
     } catch(e) {
