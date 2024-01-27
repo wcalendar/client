@@ -174,8 +174,9 @@ export default function CategoryBody({
     };
 
     try {
-      const response = await apis.addCategory(newCategoryDto);
-      console.log(response);
+      await apis.addCategory(newCategoryDto);
+
+      getCategories(currentDate.year(), currentDate.month());
     } catch(e) {
       const error = e as AxiosError;
       console.log(error.response?.data);
