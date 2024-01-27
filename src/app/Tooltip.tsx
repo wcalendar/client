@@ -1,8 +1,10 @@
-import { ModalStatus } from "@/types";
+import { Category, ModalStatus } from "@/types";
 import styled from "styled-components"
 
-const Container = styled.div<{ $status: ModalStatus}>`
+const Container = styled.div<{ $status: ModalStatus, $level: number }>`
   position: absolute;
+  left: calc(${({ $level }) => 1 + ($level * 0.5)}rem);
+  top: var(--cell-height);
   z-index: 50;
   ${({ $status }) => $status === 'open' ? `
   opacity: 1;
@@ -20,16 +22,18 @@ const Container = styled.div<{ $status: ModalStatus}>`
 `;
 
 interface TooltipProps {
+  category: Category;
   status: ModalStatus;
   onAnimationEnd: () => void;
 }
 
 export default function Tooltip({
+  category,
   status,
   onAnimationEnd,
 }: TooltipProps) {
   return (
-    <Container $status={status} onAnimationEnd={onAnimationEnd} >
+    <Container $status={status} $level={category.level} onAnimationEnd={onAnimationEnd} >
 
     </Container>
   );

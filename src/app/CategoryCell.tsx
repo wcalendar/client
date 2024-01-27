@@ -4,6 +4,7 @@ import { MouseEvent, useCallback, useState } from "react";
 import Tooltip from "./Tooltip";
 
 const Container = styled.div<{ $line_count: number, $is_hovered: number, $color: CategoryColor }>`
+  position: relative;
   width: 100%;
   height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
   margin-bottom: var(--line-gap);
@@ -100,7 +101,7 @@ export default function CategoryCell({
       </CategoryName>
       <Description $level={level} $color={color}>{description}</Description>
       {tooltipStatus !== 'closed' && (
-        <Tooltip status={tooltipStatus} onAnimationEnd={handleTooltipAnimationEnd} />
+        <Tooltip status={tooltipStatus} category={category} onAnimationEnd={handleTooltipAnimationEnd} />
       )}
     </Container>
   )
