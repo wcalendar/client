@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { Category, CategoryColor, CategoryModalInfo } from "@/types";
-import { MouseEvent, useCallback } from "react";
+import { Category, CategoryColor, CategoryModalInfo, ModalStatus } from "@/types";
+import { MouseEvent, useCallback, useState } from "react";
+import Tooltip from "./Tooltip";
 
 const Container = styled.div<{ $line_count: number, $is_hovered: number, $color: CategoryColor }>`
   width: 100%;
@@ -15,7 +16,8 @@ const Container = styled.div<{ $line_count: number, $is_hovered: number, $color:
   transition: background ease .25s; 
 `;
 
-const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
+const CategoryName = styled.div<{ $name: string, $description: string, $level: number, $color: CategoryColor }>`
+  position: relative;
   width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem - ${({ theme }) => theme.sizes.calendar.memoWidth.desktop});
   height: var(--cell-height);
   line-height: var(--cell-height);
@@ -25,11 +27,6 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   padding-left: .5rem;
   cursor: pointer;
   transition: all ease .25s;
-
-  &:hover {
-    transform: translateX(-1px) translateY(-1px);
-    box-shadow: 2px 2px 4px 1px ${({ theme }) => theme.colors.black80};
-  }
 
   @media ${({ theme }) => theme.devices.tablet} {
     width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem);
@@ -65,6 +62,8 @@ export default function CategoryCell({
 }: CategoryCellProps) {
   const {id, name, level, color, description, } = category;
 
+  const [tooltipStatus, setTooltipStatus] = useState<ModalStatus>('closed');
+
   const handleClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
     onCategoryClick({
       x: e.clientX,
@@ -73,12 +72,36 @@ export default function CategoryCell({
     });
   }, [category]);
 
+  const handleMouseEnter = useCallback(() => {
+    setTooltipStatus('open');
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setTooltipStatus('closing');
+  }, []);
+
+  const handleTooltipAnimationEnd = useCallback(() => {
+    if(tooltipStatus === 'closing') {
+      setTooltipStatus('closed');
+    }
+  }, [tooltipStatus]);
+
+  console.log(tooltipStatus);
+
   return (
     <Container $line_count={lineCount} $is_hovered={isHovered ? 1 : 0} $color={color}>
-      <CategoryName $level={level} $color={color} onClick={handleClick}>
+      <CategoryName
+        $name={name} $description={description} $level={level} $color={color}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {name}
       </CategoryName>
       <Description $level={level} $color={color}>{description}</Description>
+      {tooltipStatus !== 'closed' && (
+        <Tooltip status={tooltipStatus} onAnimationEnd={handleTooltipAnimationEnd} />
+      )}
     </Container>
   )
 }
