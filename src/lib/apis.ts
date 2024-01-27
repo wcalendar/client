@@ -36,6 +36,9 @@ export const apis = {
   addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/categories`, newCategoryDto)).data;
   },
+  deleteCategory: async (categoryId: number): Promise<ResDto<string>> => {
+    return (await authAPI.put(`/categories/${categoryId}/end-date`)).data;
+  },
 
   getCalendarData: async (y: number, m: number): Promise<ResDto<CategoryDto[]>> => {
     return (await authAPI.get(`/schedules/${y}/${m+1}`)).data;

@@ -187,7 +187,20 @@ export default function CategoryBody({
       console.log(error.response?.data);
       return;
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, currentDate]);
+
+  const handleCategoryDelete = useCallback(async () => {
+    if(!selectedCategory) return;
+
+    try {
+      await apis.deleteCategory(selectedCategory.id);
+
+      getCategories(currentDate.year(), currentDate.month()); 
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+    }
+  }, [selectedCategory, currentDate]);
 
   const handleBaseCategoryCreate = useCallback(async () => {
     const newCategoryDto: NewCategoryDto = {
@@ -224,7 +237,7 @@ export default function CategoryBody({
           <ControlRow>
             <ButtonBox>
               <SimpleButton onClick={handleCategoryCreate} disabled={!Boolean(selectedCategory)}>추가</SimpleButton>
-              <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>삭제</SimpleButton>
+              <SimpleButton onClick={handleCategoryDelete} disabled={!Boolean(selectedCategory)}>삭제</SimpleButton>
             </ButtonBox>
             <ButtonBox>
               <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
