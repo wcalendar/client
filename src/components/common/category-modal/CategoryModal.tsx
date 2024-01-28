@@ -1,4 +1,4 @@
-import { CategoryModalInfo, ScheduleModalInfo, ScheduleToRender } from "@/types";
+import { CategoryModalInfo } from "@/types";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import styled from "styled-components";

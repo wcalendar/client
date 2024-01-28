@@ -88,9 +88,9 @@ const Button = styled.button`
 
 export type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
-  onScheduleFinish: (categoryId: number, groupCode: number) => void;
+  onScheduleFinish: (categoryId: string, groupCode: string) => void;
   onUpdateClick: (schedule: ScheduleToRender) => void;
-  onScheduleDelete: (categoryId: number, groupCode: number) => void;
+  onScheduleDelete: (categoryId: string, groupCode: string) => void;
 }
 
 export default function ScheduleModal({
@@ -117,7 +117,7 @@ export default function ScheduleModal({
     setModalInfo(newModalInfo);
   }, [modalInfo]);
 
-  const deleteSchedule = useCallback(async (scheduleId: number) => {
+  const deleteSchedule = useCallback(async (scheduleId: string) => {
     try {
       const response = apis.deleteSchedule(scheduleId);
       console.log(response);

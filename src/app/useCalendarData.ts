@@ -18,7 +18,7 @@ export default function useCalendarData(
   const router = useRouter();
 
   // CategoryDto를 CategoryToRender 타입으로 변환해주는 함수
-  const toCategoryRender = useCallback((category: CategoryDto, newPriorities: Priority[][]): CategoryToRender => {
+  const toCategoryRender = useCallback((parentId: string | null, category: CategoryDto, newPriorities: Priority[][]): CategoryToRender => {
     const newCategory: Category = {
       id: category.categoryId,
       name: category.categoryName,
@@ -28,6 +28,7 @@ export default function useCalendarData(
       endDate: time.fromString(category.categoryEndDate),
       description: category.categoryDescription,
       isVisible: category.categoryVisible,
+      parentId,
       schedules: [],
     };
     const lines: (ScheduleToRender | null)[][] = [];
@@ -35,7 +36,7 @@ export default function useCalendarData(
 
     const rangeSchedules: ScheduleToRender[] = [];
 
-    let scheduleGroupCode = -1;
+    let scheduleGroupCode = '-1';
     let startDate: Dayjs | undefined;
     let lastSchedule: ScheduleDto | undefined;
     category.schedules.forEach(schedule => {
@@ -128,15 +129,15 @@ export default function useCalendarData(
     const newPriorities: Priority[][] = Array.from({length: daysInMonth}, () => []);
 
     newCategoryList.forEach(c0 => {
-      newCategoryToRenderList.push(toCategoryRender(c0, newPriorities));
+      newCategoryToRenderList.push(toCategoryRender(null, c0, newPriorities));
 
       if(c0.children.length > 0) {
         c0.children.forEach(c1 => {
-          newCategoryToRenderList.push(toCategoryRender(c1, newPriorities));
+          newCategoryToRenderList.push(toCategoryRender(c0.categoryId, c1, newPriorities));
 
           if(c1.children.length > 0) {
             c1.children.forEach(c2 => {
-              newCategoryToRenderList.push(toCategoryRender(c2, newPriorities));
+              newCategoryToRenderList.push(toCategoryRender(c1.categoryId, c2, newPriorities));
             })
           }
         })

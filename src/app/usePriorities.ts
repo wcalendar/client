@@ -14,7 +14,7 @@ export default function usePriorities(
   const [draggedPriorityX, setDraggedPriorityX] = useState(0);
   const [draggedPriorityY, setDraggedPriorityY] = useState(0);
 
-  const handlePriorityClick = useCallback((e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => {
+  const handlePriorityClick = useCallback((e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: string, groupCode: string) => {
     const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
     if(!category) {
       alert('존재하지 않는 일정입니다.');
@@ -51,7 +51,7 @@ export default function usePriorities(
     }
   }, []);
 
-  const updatePriority = useCallback(async (scheduleOrderList: number[], scheduleDate: string) => {
+  const updatePriority = useCallback(async (scheduleOrderList: string[], scheduleDate: string) => {
     try {
       const response = await apis.updateSchedulePriority(scheduleOrderList, scheduleDate);
       console.log(response);

@@ -288,7 +288,7 @@ export default function Home() {
     router.push('/category');
   };
 
-  const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
+  const handleScheduleFinish = useCallback((categoryId: string, groupCode: string) => {
     const newCategoryListToRender = [...categoryToRenderList];
     const category = newCategoryListToRender.find(c => c.category.id === categoryId);
     if(!category) {
@@ -333,7 +333,7 @@ export default function Home() {
     setPrioritiesByDay(newPriorities);
   }, [categoryToRenderList, daysInMonth, prioritiesByDay]);
 
-  const handleScheduleDelete = useCallback((categoryId: number, groupCode: number) => {
+  const handleScheduleDelete = useCallback((categoryId: string, groupCode: string) => {
     const newCategoryList = [...categoryList];
     let category: CategoryDto | undefined = undefined;
     outer: for(const c1 of newCategoryList) {
@@ -401,7 +401,7 @@ export default function Home() {
     openNewScheduleModal({});
   };
 
-  const handleCellClick = useCallback((categoryId: number, day: number) => {
+  const handleCellClick = useCallback((categoryId: string, day: number) => {
     const y = selectedDate.year();
     const m = selectedDate.month();
 

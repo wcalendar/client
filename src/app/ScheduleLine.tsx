@@ -9,7 +9,7 @@ type ScheduleLineProps = {
   onScheduleClick: (info: ScheduleModalInfo) => void;
   onCellMouseOver: (cateogoryIdx: number) => void;
   onCellMouseOut: () => void;
-  onCellClick: (categoryId: number, day: number) => void;
+  onCellClick: (categoryId: string, day: number) => void;
   categoryIdx: number;
 }
 
@@ -76,7 +76,7 @@ export default function ScheduleLine({
     return categoryToRender.lines.map(line => {
       const scheduleList: ScheduleToRender[] = [];
 
-      let groupCode: number | undefined = undefined;
+      let groupCode: string | undefined = undefined;
       for(let i=0; i<line.length; i++) {
         if(!line[i]) continue;
         if(groupCode && groupCode === line[i]!.groupCode) continue;

@@ -32,7 +32,7 @@ export interface ErrorRes {
 // 서버에서 오는 카테고리 데이터
 // GET /api/schedules/{year}/{month}
 export type CategoryDto = {
-  categoryId: number;
+  categoryId: string;
   categoryName: string;
   categoryLevel: number;
   categoryColor: CategoryColor;
@@ -46,7 +46,7 @@ export type CategoryDto = {
 
 // 캘린더에 렌더링하기 쉽게 가공한 카테고리 데이터
 export interface Category {
-  id: number;
+  id: string;
   name: string;
   level: number;
   color: CategoryColor;
@@ -54,16 +54,16 @@ export interface Category {
   endDate: Dayjs;
   description: string;
   isVisible: boolean;
-  parentId: number | null;
+  parentId: string | null;
   schedules: ScheduleToRender[];
 }
 
 // 서버에서 오는 일정 데이터
 // GET /api/schedules/{year}/{month}
 export type ScheduleDto = {
-  scheduleId: number;
-  scheduleGroupCode: number;
-  categoryId: number;
+  scheduleId: string;
+  scheduleGroupCode: string;
+  categoryId: string;
   scheduleContent: string;
   scheduleDate: string;
   schedulePriority: number;
@@ -78,9 +78,9 @@ export type CategoryToRender = {
 
 // 캘린더에 렌더링하기 위한 일정 데이터
 export type ScheduleToRender = {
-  id: number;
-  groupCode: number;
-  categoryId: number;
+  id: string;
+  groupCode: string;
+  categoryId: string;
   content: string;
   isFinished: boolean;
   startDate: Dayjs;
@@ -89,9 +89,9 @@ export type ScheduleToRender = {
 
 // 우선순위를 렌더링하기 위한 데이터
 export type Priority = {
-  categoryId: number;
-  scheduleId: number;
-  groupCode: number;
+  categoryId: string;
+  scheduleId: string;
+  groupCode: string;
   date: Dayjs;
   priority: number;
   isFinished: boolean;
@@ -107,7 +107,7 @@ export interface NewCategoryDto {
   categoryStartDate: string;
   categoryLevel: number;
   categoryName: string;
-  categoryParentId: number | null;
+  categoryParentId: string | null;
   categoryVisible: boolean;
 }
 
@@ -117,7 +117,7 @@ export type NewScheduleDto = {
   scheduleContent: string,
   scheduleStartDate: string,
   scheduleEndDate: string,
-  categoryId: number,
+  categoryId: string,
   isPriority: boolean,
 }
 
@@ -137,7 +137,7 @@ export type CategoryModalInfo = {
 
 // 빈 일정을 눌러 모달을 열었을 때 사용되는 데이터
 export type FixedCategoryInfo = {
-  categoryId: number;
+  categoryId: string;
   date: Dayjs;
 }
 
@@ -150,7 +150,7 @@ export type NewScheduleModalInfo = {
 // 일정 검색 결과
 export interface SearchResult {
   categories: string[];
-  groupCode: number;
+  groupCode: string;
   content: string;
   isFinished: boolean;
   startDate: Dayjs;

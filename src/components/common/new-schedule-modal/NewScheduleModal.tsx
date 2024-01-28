@@ -178,7 +178,7 @@ export default function NewScheduleModal({
 
   const isFirstLoad = useRef(true);
 
-  const shouldSetCategoryIdx = (categoryId: number) => {
+  const shouldSetCategoryIdx = (categoryId: string) => {
     return isFirstLoad.current && ((isFixedCategoryMode && fixedCategoryInfo.categoryId === categoryId) || (isUpdateMode && schedule.categoryId === categoryId));
   };
 

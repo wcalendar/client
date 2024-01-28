@@ -206,7 +206,7 @@ export default function CategoryBody({
 
     const { id: categoryId, level, parentId } = selectedCategory;
 
-    let newOrderList: number[] = [];
+    let newOrderList: string[] = [];
     if(level === 0) {
       newOrderList = categoryDtoList.map(c => c.categoryId);
     } else {

@@ -36,10 +36,10 @@ export const apis = {
   addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/categories`, newCategoryDto)).data;
   },
-  moveCategory: async (newOrderList: number[]): Promise<ResDto<string>> => {
+  moveCategory: async (newOrderList: string[]): Promise<ResDto<string>> => {
     return (await authAPI.put(`/categories/order`, {categoryOrderList: newOrderList})).data;
   },
-  deleteCategory: async (categoryId: number, endDate: string): Promise<ResDto<string>> => {
+  deleteCategory: async (categoryId: string, endDate: string): Promise<ResDto<string>> => {
     return (await authAPI.put(`/categories/${categoryId}/end-date`, { endDate })).data;
   },
 
@@ -52,10 +52,10 @@ export const apis = {
   addSchedule: async (newScheduleDto: NewScheduleDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/schedules`, newScheduleDto)).data;
   },
-  deleteSchedule: async (scheduleId: number): Promise<ResDto<string>> => {
+  deleteSchedule: async (scheduleId: string): Promise<ResDto<string>> => {
     return (await authAPI.delete(`/schedules/${scheduleId}`)).data;
   },
-  updateSchedulePriority: async (scheduleOrderList: number[], scheduleDate: string): Promise<ResDto<string>> => {
+  updateSchedulePriority: async (scheduleOrderList: string[], scheduleDate: string): Promise<ResDto<string>> => {
     return (await authAPI.put(`/schedules`, { scheduleOrderList, scheduleDate })).data;
   },
 }
