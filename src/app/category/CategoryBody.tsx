@@ -11,7 +11,6 @@ import { Dayjs } from "dayjs";
 import CategoryForm from "./CategoryForm";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
-import { findCategoryById } from "@/lib/util";
 
 const Container = styled.div`
   display: flex;
@@ -202,6 +201,62 @@ export default function CategoryBody({
     }
   }, [selectedCategory, currentDate]);
 
+  const handleCategoryMove = useCallback(async (direction: number) => {
+    if(!selectedCategory) return;
+
+    const { id: categoryId, level, parentId } = selectedCategory;
+
+    let newOrderList: number[] = [];
+    if(level === 0) {
+      newOrderList = categoryDtoList.map(c => c.categoryId);
+    } else {
+      outer: for(const c0 of categoryDtoList) {
+        if(level === 1) {
+          if(c0.categoryId === parentId) {
+            newOrderList = c0.children.map(c => c.categoryId);
+            break;
+          }
+        } else {
+          for(const c1 of c0.children) {
+            if(c1.categoryId === parentId) {
+              newOrderList = c1.children.map(c => c.categoryId);
+              break outer;
+            }
+          }
+        }
+      }
+    }
+
+    // newOrderList = selectedCategory 가 속한 리스트의 id 목록
+    const maxOrder = newOrderList.length - 1;
+    const currentOrder = newOrderList.findIndex(id => id === categoryId);
+    if(currentOrder === -1) return;
+
+    const newOrder = currentOrder + direction;
+    if(newOrder < 0 || newOrder > maxOrder) return;
+
+    const tmp = newOrderList[newOrder];
+    newOrderList[newOrder] = newOrderList[currentOrder];
+    newOrderList[currentOrder] = tmp;
+
+    try {
+      await apis.moveCategory(newOrderList);
+
+      getCategories(currentDate.year(), currentDate.month());
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+    }
+  }, [selectedCategory, categoryDtoList, currentDate]);
+
+  const handleCategoryMoveUp = useCallback(() => {
+    handleCategoryMove(-1);
+  }, [handleCategoryMove]);
+
+  const handleCategoryMoveDown = useCallback(() => {
+    handleCategoryMove(1);
+  }, [handleCategoryMove]);
+
   const handleBaseCategoryCreate = useCallback(async () => {
     const newCategoryDto: NewCategoryDto = {
       categoryColor: 'red',
@@ -240,10 +295,10 @@ export default function CategoryBody({
               <SimpleButton onClick={handleCategoryDelete} disabled={!Boolean(selectedCategory)}>삭제</SimpleButton>
             </ButtonBox>
             <ButtonBox>
-              <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
+              <Button onClick={handleCategoryMoveUp} disabled={!Boolean(selectedCategory)}>
                 <Icon path={mdiChevronUp} />
               </Button>
-              <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
+              <Button onClick={handleCategoryMoveDown} disabled={!Boolean(selectedCategory)}>
                 <Icon path={mdiChevronDown} />
               </Button>
             </ButtonBox>

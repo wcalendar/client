@@ -36,6 +36,9 @@ export const apis = {
   addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/categories`, newCategoryDto)).data;
   },
+  moveCategory: async (newOrderList: number[]): Promise<ResDto<string>> => {
+    return (await authAPI.put(`/categories/order`, {categoryOrderList: newOrderList})).data;
+  },
   deleteCategory: async (categoryId: number, endDate: string): Promise<ResDto<string>> => {
     return (await authAPI.put(`/categories/${categoryId}/end-date`, { endDate })).data;
   },
