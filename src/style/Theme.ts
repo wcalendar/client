@@ -57,29 +57,29 @@ const theme = {
     },
     calendar: {
       cellWidth: {
-        mobile: '55px',
-        tablet: '133px',
-        desktop: '232px',
+        mobile: '8.5625rem',
+        tablet: '8.5625rem',
+        desktop: '14.6875rem',
       },
       cellHeight: {
-        mobile: '2rem',
-        tablet: '1.5rem',
+        mobile: '1.75rem',
+        tablet: '1.75rem',
         desktop: '1.125rem',
       },
       categoryCellWidth: {
-        mobile: '133px',
-        tablet: '133px',
-        desktop: '232px',
+        mobile: '9.125rem',
+        tablet: '9.125rem',
+        desktop: '15.75rem',
       },
       memoWidth: {
-        mobile: '1rem',
-        tablet: '2rem',
-        desktop: '3.375rem',
+        mobile: '0',
+        tablet: '0',
+        desktop: '4.0625rem',
       },
       lineGap: {
-        mobile: '8px',
-        tablet: '6px',
-        desktop: '4px',
+        mobile: '1rem',
+        tablet: '1rem',
+        desktop: '.125rem',
       },
       PriorityCount: {
         mobile: '4',

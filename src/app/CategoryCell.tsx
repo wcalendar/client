@@ -12,11 +12,19 @@ const Container = styled.div<{ $line_count: number, $is_hovered: number, $color:
   font-size: .75rem;
   user-select: none;
   ${({ $is_hovered, theme, $color }) => $is_hovered ? `background: ${theme.colors.category($color, 1)}40;` : ''}
-  transition: background ease .25s; 
+  transition: background ease .25s;
+
+  --category-name-width: 10.375rem;
+  --category-name-ml: .5rem;
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    --category-name-width: 8.3125rem;
+    --category-name-ml: .25rem;
+  }
 `;
 
 const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
-  width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem - ${({ theme }) => theme.sizes.calendar.memoWidth.desktop});
+  width: calc(var(--category-name-width) - (${({ $level }) => $level} * var(--category-name-ml)));
   height: var(--cell-height);
   line-height: var(--cell-height);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
@@ -29,10 +37,6 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   &:hover {
     transform: translateX(-1px) translateY(-1px);
     box-shadow: 2px 2px 4px 1px ${({ theme }) => theme.colors.black80};
-  }
-
-  @media ${({ theme }) => theme.devices.tablet} {
-    width: calc(100% - ${({ $level }) => 1 + ($level * 0.5)}rem);
   }
 `;
 
