@@ -1,22 +1,15 @@
 import { CategoryColor } from "@/types";
 
 type Colors = 'Red' | 'Orange' | 'Yellow' | 'Green' | 'Blue' | 'Purple' | 'Gray';
-type CategoryColorsKeys = `category${'Main' | 'Sub'}${Colors}`;
+type CategoryColorsKeys = `category${Colors}`;
 const categoryColors: {[key in CategoryColorsKeys]: string} = {
-  categoryMainRed: '#e4617a',
-  categorySubRed: '#f1b0bc',
-  categoryMainOrange: '#e0744e',
-  categorySubOrange: '#dfb9a6',
-  categoryMainYellow: '#daa12b',
-  categorySubYellow: '#ecd095',
-  categoryMainGreen: '#26aa85',
-  categorySubGreen: '#92d4c2',
-  categoryMainBlue: '#506ee2',
-  categorySubBlue: '#a7b6f0',
-  categoryMainPurple: '#8d4de2',
-  categorySubPurple: '#c6a6f0',
-  categoryMainGray: '#777d85',
-  categorySubGray: '#bbbec2',
+  categoryRed: '#f1b0bc',
+  categoryOrange: '#efb9a6',
+  categoryYellow: '#ecd095',
+  categoryGreen: '#92d4c2',
+  categoryBlue: '#a7b6f0',
+  categoryPurple: '#c6a6f0',
+  categoryGray: '#bbbec2',
 }
 
 const theme = {
@@ -34,11 +27,11 @@ const theme = {
     white: '#ececec',
     lightBlue: '#eaeffc',
 
-    /* 범주 */
-    ...categoryColors,
-
     category: (color: CategoryColor, level: number) => {
-      return categoryColors[`category${level === 0 ? 'Main' : 'Sub'}${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`];
+      return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}${level === 0 ? '' : (level === 1 ? 'cc' : '99')}`;
+    },
+    finishedCategory: (color: CategoryColor) => {
+      return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}33`;
     }
   },
 
