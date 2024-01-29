@@ -2,9 +2,7 @@ import styled from 'styled-components';
 import Logo from './Logo';
 import NavBar from './NavBar';
 import Monthly from './Monthly';
-import SearchBar from './SearchBar';
 import { Dayjs } from 'dayjs';
-import useDevice from '@/hooks/useDevice';
 
 type HeaderProps = {
   date?: Dayjs;
@@ -35,21 +33,16 @@ export default function Header({
   date,
   onDateChange,
 }: HeaderProps) {  
-  const device = useDevice();
-
   return (
     <Container>
       <Logo />
       {(date && onDateChange) ? (
         <NavContainer>
           <Monthly value={date} onChange={onDateChange}/>
-          {device === 'desktop' && (
-            <SearchBar />
-          )}
-          <NavBar device={device} />
+          <NavBar />
         </NavContainer>
       ) : (
-        <NavBar device={device}/>
+        <NavBar />
       )}
     </Container>
   );

@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { mdiAccount, mdiCog } from '@mdi/js';
 import MenuButton from './MenuButton';
 import MenuItem from './MenuItem';
-import { Device } from '@/types';
 import SearchButton from './SearchButton';
 
 const NavBarContainer = styled.div`
@@ -11,18 +10,10 @@ const NavBarContainer = styled.div`
   gap: .5rem;
 `;
 
-interface NavBarProps {
-  device: Device;
-}
-
-export default function NavBar({
-  device,
-}: NavBarProps) {
+export default function NavBar() {
   return (
     <NavBarContainer>
-      {device !== 'desktop' && (
-        <SearchButton />
-      )}
+      <SearchButton />
       <MenuButton icon={mdiCog}>
         <MenuItem>공지사항</MenuItem>
         <MenuItem>사용방법</MenuItem>
