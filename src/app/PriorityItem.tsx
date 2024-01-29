@@ -22,17 +22,17 @@ const Wrapper = styled.div`
   }
 `;
 
-const Container = styled.div<{ $color: CategoryColor, $level: number }>`
+const Container = styled.div<{ $color: CategoryColor, $level: number, $is_finished: number }>`
   height: var(--cell-height);
   width: calc(100% - 5px);
-  background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
+  background-color: ${({ theme, $color, $level, $is_finished }) => $is_finished ? theme.colors.finishedCategory($color) : theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-left: 2px;
   margin-right: 2px;
   vertical-align: middle;
   display: flex;
   cursor: pointer;
-  transition: all ease .25s;
+  transition: transform ease .25s, box-shadow ease .25s;
 
   &:hover {
     transform: translateX(-.5px) translateY(-.5px);
@@ -49,7 +49,10 @@ const Text = styled.span<{ $is_finished: number }>`
   padding-left: .5rem;
   padding-right: .5rem;
   overflow: hidden;
-  ${({ $is_finished }) => $is_finished ? 'text-decoration: line-through;' : '' }
+  ${({ $is_finished }) => $is_finished ? `
+  text-decoration: line-through;
+  opacity: .2;
+  ` : '' }
 `;
 
 export default function PriorityItem({
@@ -134,6 +137,7 @@ export default function PriorityItem({
       <Container
         $color={color}
         $level={level}
+        $is_finished={isFinished ? 1 : 0}
         onClick={(e) => onClick(e, categoryId, groupCode)}
         draggable
         onDragStart={handleDragStart}
