@@ -85,6 +85,9 @@ export default function useCalendarData(
       });
     }
 
+    // 일정 시작 날짜가 빠른 순서대로 -> 날짜가 같으면 기간이 더 긴 일정이 우선
+    rangeSchedules.sort((a, b) => a.startDate.date() === b.startDate.date() ? (b.endDate.date() - b.startDate.date()) - (a.endDate.date() - a.startDate.date()) : a.startDate.date() - b.startDate.date());
+
     rangeSchedules.forEach(schedule => {
       const lineCount = lines.length;
       const {startDate, endDate} = schedule;
