@@ -1,8 +1,10 @@
 import styled from "styled-components";
-import { Category, CategoryColor, CategoryModalInfo } from "@/types";
-import { MouseEvent, useCallback } from "react";
+import { Category, CategoryColor, CategoryModalInfo, ModalStatus } from "@/types";
+import { MouseEvent, useCallback, useState } from "react";
+import Tooltip from "./Tooltip";
 
 const Container = styled.div<{ $line_count: number, $is_hovered: number, $color: CategoryColor }>`
+  position: relative;
   width: 100%;
   height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
   margin-bottom: var(--line-gap);
@@ -40,11 +42,6 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-
-  &:hover {
-    transform: translateX(-1px) translateY(-1px);
-    box-shadow: 2px 2px 4px 1px ${({ theme }) => theme.colors.black80};
-  }
 `;
 
 const Description = styled.div<{ $level: number, $color: CategoryColor }>`
@@ -78,6 +75,8 @@ export default function CategoryCell({
 }: CategoryCellProps) {
   const {id, name, level, color, description, } = category;
 
+  const [tooltipStatus, setTooltipStatus] = useState<ModalStatus>('closed');
+
   const handleClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
     onCategoryClick({
       x: e.clientX,
@@ -86,12 +85,36 @@ export default function CategoryCell({
     });
   }, [category]);
 
+  const handleMouseEnter = useCallback(() => {
+    setTooltipStatus('open');
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setTooltipStatus('closing');
+  }, []);
+
+  const handleTooltipAnimationEnd = useCallback(() => {
+    if(tooltipStatus === 'closing') {
+      setTooltipStatus('closed');
+    }
+  }, [tooltipStatus]);
+
+  console.log(tooltipStatus);
+
   return (
     <Container $line_count={lineCount} $is_hovered={isHovered ? 1 : 0} $color={color}>
-      <CategoryName $level={level} $color={color} onClick={handleClick}>
+      <CategoryName
+        $level={level} $color={color}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {name}
       </CategoryName>
       <Description $level={level} $color={color}>{description}</Description>
+      {tooltipStatus !== 'closed' && (
+        <Tooltip status={tooltipStatus} category={category} onAnimationEnd={handleTooltipAnimationEnd} />
+      )}
     </Container>
   )
 }
