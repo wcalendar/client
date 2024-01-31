@@ -52,6 +52,9 @@ export const apis = {
   addSchedule: async (newScheduleDto: NewScheduleDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/schedules`, newScheduleDto)).data;
   },
+  updateSchedule: async (newScheduleDto: NewScheduleDto, scheduleId: string): Promise<ResDto<string>> => {
+    return (await authAPI.put(`/schedules/${scheduleId}`, newScheduleDto)).data;
+  },
   deleteSchedule: async (scheduleId: string): Promise<ResDto<string>> => {
     return (await authAPI.delete(`/schedules/${scheduleId}`)).data;
   },

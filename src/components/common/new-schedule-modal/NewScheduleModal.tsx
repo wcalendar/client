@@ -328,17 +328,17 @@ export default function NewScheduleModal({
       categoryId: categoryList[categoryIdx-1].categoryId,
       isPriority: isPriority,
     }
-
+    
     setLoading(true);
     try {
-      const response = await apis.addSchedule(NewScheduleDto);
+      const response = isUpdateMode ? await apis.updateSchedule(NewScheduleDto, schedule.id) : await apis.addSchedule(NewScheduleDto);
       setLoading(false);
       onScheduleCreate();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
     }
-  }, [scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
+  }, [isUpdateMode, schedule, scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
 
   const buttonList = [
     {
