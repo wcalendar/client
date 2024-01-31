@@ -58,7 +58,9 @@ const ScheduleItemText = styled.span<{ $is_finished: number }>`
   line-height: var(--cell-height);
   padding-left: .5rem;
   padding-right: .5rem;
-  overflow-x: hidden;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   ${({ $is_finished }) => $is_finished ? `
   text-decoration: line-through;
   opacity: .2;

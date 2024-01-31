@@ -37,6 +37,9 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   padding-left: .5rem;
   cursor: pointer;
   transition: all ease .25s;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   &:hover {
     transform: translateX(-1px) translateY(-1px);
@@ -52,6 +55,8 @@ const Description = styled.div<{ $level: number, $color: CategoryColor }>`
   border-radius: 5px;
   padding-left: .5rem;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   @media ${({ theme }) => theme.devices.tablet} {
     display: none;
