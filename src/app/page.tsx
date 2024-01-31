@@ -245,6 +245,8 @@ export default function Home() {
     };
     scheduleSideBody.addEventListener('scroll', handleScheduleSideScroll);
 
+    addModal({ key: 'tutorial', modalProps: {} });
+
     return () => {
       scheduleSideBody.removeEventListener('scroll', handleScheduleSideScroll);
     }

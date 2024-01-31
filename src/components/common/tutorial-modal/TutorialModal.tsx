@@ -12,7 +12,7 @@ export default function TutorialModal() {
 
   return (
     <FixedModal
-      width='33rem'
+      width='31.25rem'
       status={status}
       onModalClose={() => {}}
     >
