@@ -50,9 +50,9 @@ const theme = {
     },
     calendar: {
       cellWidth: {
-        mobile: '8.5625rem',
-        tablet: '8.5625rem',
-        desktop: '14.6875rem',
+        mobile: '3.75rem',
+        tablet: '8.625rem',
+        desktop: '14.75rem',
       },
       cellHeight: {
         mobile: '1.75rem',
@@ -60,7 +60,7 @@ const theme = {
         desktop: '1.125rem',
       },
       categoryCellWidth: {
-        mobile: '9.125rem',
+        mobile: '7.375rem',
         tablet: '9.125rem',
         desktop: '15.75rem',
       },

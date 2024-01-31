@@ -18,8 +18,12 @@ const Container = styled.div<{ $line_count: number, $is_hovered: number, $color:
   --category-name-ml: .5rem;
 
   @media ${({ theme }) => theme.devices.tablet} {
-    --category-name-width: 8.3125rem;
+    --category-name-width: 8.375rem;
     --category-name-ml: .25rem;
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --category-name-width: 7.125rem;
   }
 `;
 
