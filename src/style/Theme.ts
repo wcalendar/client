@@ -26,6 +26,7 @@ const theme = {
     lightGray: '#d9d9d9',
     white: '#ececec',
     lightBlue: '#eaeffc',
+    warningRed: '#ff2323',
 
     category: (color: CategoryColor, level: number) => {
       return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}${level === 0 ? '' : (level === 1 ? 'cc' : '99')}`;

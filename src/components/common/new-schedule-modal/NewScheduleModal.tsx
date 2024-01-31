@@ -75,6 +75,10 @@ const Label = styled.div`
   font-size: .875rem;
 `;
 
+const Required = styled.span`
+  color: ${({ theme }) => theme.colors.warningRed};
+`;
+
 const Input = styled.input`
   flex-basis: calc(100% - 6rem - 3rem);
   border: 1px solid ${({ theme }) => theme.colors.gray};
@@ -332,11 +336,11 @@ export default function NewScheduleModal({
         <Container>
           <Spinnable isLoading={isLoading}>
             <Line>
-              <Label>제목</Label>
+              <Label>제목<Required>*</Required></Label>
               <Input maxLength={20} value={scheduleTitle} onChange={handleChangeScheduleTitle}></Input>
             </Line>
             <Line>
-              <Label>일시</Label>
+              <Label>일시<Required>*</Required></Label>
               <DatePicker value={startDate} onChange={handleStartDateChange} />
               <Interval $disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
               <DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
@@ -352,7 +356,7 @@ export default function NewScheduleModal({
               <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
             </SubLine>
             <Line>
-              <Label>카테고리</Label>
+              <Label>카테고리<Required>*</Required></Label>
               <DropDownWrapper>
                 <Dropdown
                   values={dropdownValues}
@@ -364,7 +368,7 @@ export default function NewScheduleModal({
               </DropDownWrapper>
             </Line>
             <Line>
-              <Label>우선순위 추가</Label>
+              <Label>우선순위 추가<Required>*</Required></Label>
               <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
               <RadioButton label="추가하지 않음" checked={!isPriority} onChange={() => handlePriorityChange(false)} />
             </Line>
