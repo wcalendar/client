@@ -39,12 +39,12 @@ const theme = {
   sizes: {
     header: {
       headerHeight: {
-        mobile: '2.5rem',
+        mobile: '5.25rem',
         tablet: '3.125rem',
         desktop: '4.375rem',
       },
       headerPadding: {
-        mobile: '.25rem',
+        mobile: '.5rem',
         tablet: '.5rem',
         desktop: '1rem',
       },

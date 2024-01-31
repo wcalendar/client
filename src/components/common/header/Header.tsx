@@ -3,22 +3,33 @@ import Logo from './Logo';
 import NavBar from './NavBar';
 import Monthly from './Monthly';
 import { Dayjs } from 'dayjs';
+import useDevice from '@/hooks/useDevice';
 
 type HeaderProps = {
-  date?: Dayjs;
-  onDateChange?: (value: Dayjs) => void;
+  date: Dayjs;
+  onDateChange: (value: Dayjs) => void;
 }
 
 const Container = styled.header`
   width: 100%;
   height: var(--header-height);
   background: white;
-  display: flex;
   padding: var(--header-padding);
-  align-items: center;
+
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
     0 2px 4px -2px rgb(0 0 0 / 0.1);
+`;
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    height: 50%;
+  }
 `;
 
 const NavContainer = styled.div`
@@ -27,22 +38,31 @@ const NavContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 100%;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    justify-content: flex-end;
+  }
 `;
 
 export default function Header({
   date,
   onDateChange,
-}: HeaderProps) {  
+}: HeaderProps) {
+  const device = useDevice();
+
   return (
     <Container>
-      <Logo />
-      {(date && onDateChange) ? (
+      <Row>
+        <Logo />
         <NavContainer>
-          <Monthly value={date} onChange={onDateChange}/>
+          {device !== 'mobile' && (<Monthly value={date} onChange={onDateChange}/>)}
           <NavBar />
         </NavContainer>
-      ) : (
-        <NavBar />
+      </Row>
+      {device === 'mobile' && (
+        <Row>
+          <Monthly value={date} onChange={onDateChange}/>
+        </Row>
       )}
     </Container>
   );
