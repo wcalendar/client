@@ -26,30 +26,6 @@ const ModalHeader = styled.div`
   line-height: 2.5rem;
 `;
 
-const ButtonList = styled.div`
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  gap: 1rem;
-  padding-right: 1rem;
-`;
-
-const Button = styled.button`
-  width: auto;
-  padding: 0 .5rem;
-  height: 1.875rem;
-  line-height: 1.875rem;
-  border: none;
-  border-radius: 10px;
-  background: white;
-  font-weight: bold;
-  font-size: .875rem;
-  cursor: pointer;
-`;
-
 const ModalBody = styled.div`
   position: relative;
   width: 100%;
@@ -59,7 +35,7 @@ const ModalBody = styled.div`
 
 const Container = styled.div`
   position: relative;
-  height: 30rem;
+  height: 26rem;
 `;
 
 const Line = styled.div`
@@ -149,6 +125,22 @@ const Tips = styled.ul`
 
 const Tip = styled.li`
   font-size: .75rem;
+`;
+
+const ModalFooter = styled.div`
+  width: 100%;
+  height: 4rem;
+  display: flex;
+`;
+
+const Button = styled.button`
+  flex-basis: 50%;
+  height: 100%;
+  line-height: 4rem;
+  border: none;
+  background: white;
+  font-size: 1.25rem;
+  cursor: pointer;
 `;
 
 const isScheduleToRender = (schedule: ScheduleToRender | undefined): schedule is ScheduleToRender => {
@@ -335,13 +327,6 @@ export default function NewScheduleModal({
     >
       <ModalHeader>
         {isUpdateMode ? '일정 수정' : '일정 등록'}
-        <ButtonList>
-          {buttonList.map((button, i) => (
-            <Button key={`hb-${i}`} onClick={button.onClick}>
-              {button.text}
-            </Button>
-          ))}
-        </ButtonList>
       </ModalHeader>
       <ModalBody>
         <Container>
@@ -390,6 +375,14 @@ export default function NewScheduleModal({
           </Spinnable>
         </Container>
       </ModalBody>
+      <ModalFooter>
+        <Button onClick={handleClose}>
+          취소
+        </Button>
+        <Button onClick={handleSaveNewScheduleClick} style={{ fontWeight: 'bold' }}>
+          저장
+        </Button>
+      </ModalFooter>
     </FixedModal>
   )
 }

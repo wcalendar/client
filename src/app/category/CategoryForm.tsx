@@ -204,8 +204,8 @@ function CategoryForm({
       </Row>
       <Divider />
       <FormControlButtons>
-        <FormSimpleButton tabIndex={12} value='저장' disabled={!isActive} />
         <SimpleButton onClick={handleCancel} disabled={!isActive}>취소</SimpleButton>
+        <FormSimpleButton tabIndex={12} value='저장' disabled={!isActive} />
       </FormControlButtons>
     </Container>
   );
