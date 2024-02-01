@@ -41,17 +41,19 @@ export default function useCalendarData(
     let lastSchedule: ScheduleDto | undefined;
     category.schedules.forEach(schedule => {
       const date = time.fromString(schedule.scheduleDate);
-      newPriorities[date.date()-1].push({
-        scheduleId: schedule.scheduleId,
-        categoryId: category.categoryId,
-        groupCode: schedule.scheduleGroupCode,
-        date: date,
-        priority: schedule.schedulePriority,
-        isFinished: schedule.finished,
-        color: category.categoryColor,
-        level: category.categoryLevel,
-        content: schedule.scheduleContent,
-      });
+      if(schedule.isPriority) {
+        newPriorities[date.date()-1].push({
+          scheduleId: schedule.scheduleId,
+          categoryId: category.categoryId,
+          groupCode: schedule.scheduleGroupCode,
+          date: date,
+          priority: schedule.schedulePriority,
+          isFinished: schedule.isFinished,
+          color: category.categoryColor,
+          level: category.categoryLevel,
+          content: schedule.scheduleContent,
+        });
+      }
 
       if(schedule.scheduleGroupCode !== scheduleGroupCode) {
         scheduleGroupCode = schedule.scheduleGroupCode;
@@ -64,7 +66,7 @@ export default function useCalendarData(
             content: lastSchedule.scheduleContent,
             startDate,
             endDate: time.fromString(lastSchedule.scheduleDate),
-            isFinished: lastSchedule.finished,
+            isFinished: lastSchedule.isFinished,
           });
         }
 
@@ -81,7 +83,7 @@ export default function useCalendarData(
         content: lastSchedule.scheduleContent,
         startDate,
         endDate: time.fromString(lastSchedule.scheduleDate),
-        isFinished: lastSchedule.finished,
+        isFinished: lastSchedule.isFinished,
       });
     }
 

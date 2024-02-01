@@ -67,7 +67,8 @@ export type ScheduleDto = {
   scheduleContent: string;
   scheduleDate: string;
   schedulePriority: number;
-  finished: boolean;
+  isPriority: boolean;
+  isFinished: boolean;
 }
 
 // 캘린더에 렌더링하기 위한 카테고리 데이터
