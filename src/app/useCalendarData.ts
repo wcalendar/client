@@ -162,7 +162,7 @@ export default function useCalendarData(
     } catch(error) {
       const e = error as AxiosError<ErrorRes>;
       if(e.response) {
-        if(e.response.status === 401) {
+        if(e.response.status === 401 || e.response.status === 404) {
           alert('로그인이 필요한 서비스입니다.');
           router.push('/login');
         }
