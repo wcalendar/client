@@ -2,7 +2,7 @@ import { CategoryDto, NewCategoryDto, NewScheduleDto, ResDto } from "@/types";
 import axios from "axios";
 
 // TODO env 파일로 빼기
-export const serverURL = 'https://wplanner.co.kr/';
+export const serverURL = process.env.NEXT_PUBLIC_SERVER_URL;
 export const baseURL = `${serverURL}api/`;
 
 export const noAuthAPI = axios.create({
