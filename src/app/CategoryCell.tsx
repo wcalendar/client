@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Category, CategoryColor, CategoryModalInfo, ModalStatus } from "@/types";
-import { MouseEvent, useCallback, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import Tooltip from "./Tooltip";
 
 const Container = styled.div<{ $line_count: number, $is_hovered: number, $color: CategoryColor }>`
@@ -75,7 +75,16 @@ export default function CategoryCell({
 }: CategoryCellProps) {
   const {id, name, level, color, description, } = category;
 
-  const [tooltipStatus, setTooltipStatus] = useState<ModalStatus>('closed');
+  const categoryNameRef = useRef<HTMLDivElement>(null);
+
+  const [tooltipStatus, setTooltipStatus] = useState<ModalStatus>('open');
+  const [tooltipTop, setTooltipTop] = useState(0);
+
+  useEffect(() => {
+    if(tooltipStatus === 'open' && categoryNameRef.current) {
+      setTooltipTop(categoryNameRef.current.getBoundingClientRect().top);
+    }
+  }, [tooltipStatus]);
 
   const handleClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
     onCategoryClick({
@@ -99,11 +108,10 @@ export default function CategoryCell({
     }
   }, [tooltipStatus]);
 
-  console.log(tooltipStatus);
-
   return (
     <Container $line_count={lineCount} $is_hovered={isHovered ? 1 : 0} $color={color}>
       <CategoryName
+        ref={categoryNameRef}
         $level={level} $color={color}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
@@ -113,7 +121,7 @@ export default function CategoryCell({
       </CategoryName>
       <Description $level={level} $color={color}>{description}</Description>
       {tooltipStatus !== 'closed' && (
-        <Tooltip status={tooltipStatus} category={category} onAnimationEnd={handleTooltipAnimationEnd} />
+        <Tooltip status={tooltipStatus} category={category} onAnimationEnd={handleTooltipAnimationEnd} top={tooltipTop} />
       )}
     </Container>
   )
