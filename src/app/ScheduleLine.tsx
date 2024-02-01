@@ -27,20 +27,20 @@ const Line = styled.div`
 `;
 
 // box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
-const ScheduleItem = styled.div<{ $start: number, $end: number, $color: CategoryColor, $level: number }>`
+const ScheduleItem = styled.div<{ $start: number, $end: number, $color: CategoryColor, $level: number, $is_finished: number }>`
   position: absolute;
   top: 0;
   left: calc(${({ $start }) => `${$start - 1} * (var(--cell-width) + 1px)`});
   height: 100%;
   width: calc(${({ $start, $end }) => `(${$end - $start + 1} * (var(--cell-width) + 1px)) - 5px`});
-  background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
+  background-color: ${({ theme, $color, $level, $is_finished }) => $is_finished ? theme.colors.finishedCategory($color) : theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-left: 2px;
   margin-right: 2px;
   vertical-align: middle;
   display: flex;
   cursor: pointer;
-  transition: all ease .25s;
+  transition: transform ease .25s, box-shadow ease .25s;
 
   &:hover {
     transform: translateX(-1px) translateY(-1px);
@@ -58,8 +58,13 @@ const ScheduleItemText = styled.span<{ $is_finished: number }>`
   line-height: var(--cell-height);
   padding-left: .5rem;
   padding-right: .5rem;
-  overflow-x: hidden;
-  ${({ $is_finished }) => $is_finished ? 'text-decoration: line-through;' : '' }
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  ${({ $is_finished }) => $is_finished ? `
+  text-decoration: line-through;
+  opacity: .2;
+  ` : '' }
 `;
 
 export default function ScheduleLine({
@@ -110,6 +115,7 @@ export default function ScheduleLine({
               $end={schedule.endDate.date()}
               $color={category.color}
               $level={category.level}
+              $is_finished={schedule.isFinished ? 1 : 0}
               onClick={(e) => handleScheduleClick(e, schedule)}
             >
               <ScheduleItemText $is_finished={schedule.isFinished ? 1 : 0}>

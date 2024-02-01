@@ -37,7 +37,7 @@ const Input = styled.div<{ $height: string, $disabled: number }>`
   ` : ''}
 `;
 
-const IconWrapper = styled.div<{ $height: string, }>`
+const IconWrapper = styled.div<{ $is_open: number, $height: string, }>`
   position: absolute;
   top: 0;
   right: 0;
@@ -46,6 +46,8 @@ const IconWrapper = styled.div<{ $height: string, }>`
   padding: calc(${({ $height }) => $height} / 8);
   text-indent: 0;
   color: inherit;
+  transform: rotate(${({ $is_open }) => $is_open ? 180 : 0}deg);
+  transition: transform ease .25s;
 
   svg {
     color: inherit;
@@ -148,7 +150,7 @@ export default function Dropdown({
     <Container $width={width} $height={height} $disabled={disabled ? 1 : 0} ref={dropdownRef}>
       <Input $height={height} onClick={onInputClick} $disabled={disabled ? 1 : 0}>
         {values[selectedIdx]}
-        <IconWrapper $height={height}><Icon path={mdiChevronDown} /></IconWrapper>
+        <IconWrapper $is_open={isListOpen ? 1 : 0} $height={height}><Icon path={mdiChevronDown} /></IconWrapper>
       </Input>
       
       {isListOpen && (
