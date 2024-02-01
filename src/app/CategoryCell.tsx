@@ -77,7 +77,7 @@ export default function CategoryCell({
 
   const categoryNameRef = useRef<HTMLDivElement>(null);
 
-  const [tooltipStatus, setTooltipStatus] = useState<ModalStatus>('open');
+  const [tooltipStatus, setTooltipStatus] = useState<ModalStatus>('closed');
   const [tooltipTop, setTooltipTop] = useState(0);
 
   useEffect(() => {
