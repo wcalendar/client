@@ -5,12 +5,12 @@ import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEventHandler, useCallback, useRef, useState } from "react";
 import styled from "styled-components";
-import { CategoryDto, FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
-import { categoryListDummyData } from "@/dummies/calendar";
+import { FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import Spinnable from "@/components/common/spinner/Spinnable";
 import FixedModal from "@/components/common/fixed-modal/FixedModal";
+import useCategoryListDropdown from "./useCategoryListDropdown";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -177,75 +177,22 @@ export default function NewScheduleModal({
     return isFirstLoad.current && ((isFixedCategoryMode && fixedCategoryInfo.categoryId === categoryId) || (isUpdateMode && schedule.categoryId === categoryId));
   };
 
-  const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
-  const [dropdownValues, setDropdownValues] = useState<string[]>(['-']);
   const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');
   const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
   const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
   const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
-  const [categoryIdx, setCategoryIdx] = useState(0);
   // TODO isPriority로 수정해야함
   const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isFinished : true);
 
+  const {
+    categoryList,
+    categoryIdx,
+    dropdownValues,
+    isDropdownDisabled,
+    handleCategoryIdxChange
+  } = useCategoryListDropdown(startDate, endDate, isFirstLoad, shouldSetCategoryIdx);
+
   const [isLoading, setLoading] = useState(false);
-
-  const isDropdownDisabled = useMemo(() => {
-    return categoryList.length === 0;
-  }, [categoryList]);
-
-  // 기간이 변경되면 새 카테고리 리스트를 가져옴
-  useEffect(() => {
-    setCategoryList([]);
-    setCategoryIdx(0);
-
-    const getCategoryList = async () => {
-      // TODO API
-      setTimeout(() => {
-        setCategoryList([...categoryListDummyData]);
-      }, 1000);
-    };
-    
-    getCategoryList();
-  }, [startDate, endDate]);
-
-  useEffect(() => {
-    if(categoryList.length === 0) {
-      setDropdownValues(['-']);
-      return;
-    }
-
-    const result: string[] = ['-'];
-
-    let idx = 1;
-    categoryList.forEach(c1 => {
-      result.push(c1.categoryName);
-      if(shouldSetCategoryIdx(c1.categoryId)) {
-        setCategoryIdx(idx);
-        isFirstLoad.current = false;
-      } 
-      idx++;
-
-      c1.children.forEach(c2 => {
-        result.push(`  ${c2.categoryName}`);
-        if(shouldSetCategoryIdx(c2.categoryId)) {
-          setCategoryIdx(idx);
-          isFirstLoad.current = false;
-        } 
-        idx++;
-
-        c2.children.forEach(c3 => {
-          result.push(`    ${c3.categoryName}`);
-          if(shouldSetCategoryIdx(c3.categoryId)) {
-            setCategoryIdx(idx);
-            isFirstLoad.current = false;
-          } 
-          idx++;
-        })
-      })
-    });
-
-    setDropdownValues(result);
-  }, [categoryList]);
 
   const handleClose = useCallback(() => {
     setStatus('closing');
@@ -275,10 +222,6 @@ export default function NewScheduleModal({
     setDuration(value);
     if(!value) setEndDate(startDate);
   }, [startDate]);
-
-  const handleCategoryIdxChange = useCallback((idx: number) => {
-    setCategoryIdx(idx);
-  }, []);
 
   const handlePriorityChange = useCallback((value: boolean) => {
     setPriority(value);
@@ -311,17 +254,6 @@ export default function NewScheduleModal({
       isPriority: isPriority,
     });
   }, [scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
-
-  const buttonList = [
-    {
-      text: '저장',
-      onClick: handleSaveNewScheduleClick,
-    },
-    {
-      text: '취소',
-      onClick: handleClose,
-    },
-  ];
 
   return (
     <FixedModal
