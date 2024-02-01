@@ -124,11 +124,32 @@ const DropDownWrapper = styled.div`
 
 const Tips = styled.ul`
   margin-top: 2rem;
+  margin-bottom: 2rem;
   padding: 0 1rem;
 `;
 
 const Tip = styled.li`
   font-size: .75rem;
+`;
+
+const DeleteLine = styled.div`
+  width: 100%;
+  font-size: .75rem;
+  height: 1rem;
+  line-height: 1rem;
+  color: ${({ theme }) => theme.colors.warningRed};
+  user-select: none;
+`;
+
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: .75rem;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 1rem;
 `;
 
 const ModalFooter = styled.div`
@@ -348,6 +369,12 @@ export default function NewScheduleModal({
               <Tip>{`카테고리 선택 후 일시 변경시에 카테고리가 없는 '월'로의 이동 및 선택은 불가합니다.`}</Tip>
               <Tip>{`카테고리 리스트는 선택한 일시를 기준으로 일시의 시작 '월'과 종료 '월' 시점에 동시에 존재하는 카테고리들이 보여집니다.`}</Tip>
             </Tips>
+            {isUpdateMode && (
+              <DeleteLine>
+                일정을 삭제 하시겠습니까? 삭제한 일정은 복구할 수 없습니다.
+                <DeleteButton>삭제하기</DeleteButton>
+              </DeleteLine>
+            )}
           </Spinnable>
         </Container>
       </ModalBody>
