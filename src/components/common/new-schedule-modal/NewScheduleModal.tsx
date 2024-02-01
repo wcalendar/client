@@ -26,30 +26,6 @@ const ModalHeader = styled.div`
   line-height: 2.5rem;
 `;
 
-const ButtonList = styled.div`
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  gap: 1rem;
-  padding-right: 1rem;
-`;
-
-const Button = styled.button`
-  width: auto;
-  padding: 0 .5rem;
-  height: 1.875rem;
-  line-height: 1.875rem;
-  border: none;
-  border-radius: 10px;
-  background: white;
-  font-weight: bold;
-  font-size: .875rem;
-  cursor: pointer;
-`;
-
 const ModalBody = styled.div`
   position: relative;
   width: 100%;
@@ -59,7 +35,7 @@ const ModalBody = styled.div`
 
 const Container = styled.div`
   position: relative;
-  height: 30rem;
+  height: 26rem;
 `;
 
 const Line = styled.div`
@@ -97,6 +73,10 @@ const Label = styled.div`
   height: 1.75rem;
   line-height: 1.75rem;
   font-size: .875rem;
+`;
+
+const Required = styled.span`
+  color: ${({ theme }) => theme.colors.warningRed};
 `;
 
 const Input = styled.input`
@@ -149,6 +129,22 @@ const Tips = styled.ul`
 
 const Tip = styled.li`
   font-size: .75rem;
+`;
+
+const ModalFooter = styled.div`
+  width: 100%;
+  height: 4rem;
+  display: flex;
+`;
+
+const Button = styled.button`
+  flex-basis: 50%;
+  height: 100%;
+  line-height: 4rem;
+  border: none;
+  background: white;
+  font-size: 1.25rem;
+  cursor: pointer;
 `;
 
 const isScheduleToRender = (schedule: ScheduleToRender | undefined): schedule is ScheduleToRender => {
@@ -335,23 +331,16 @@ export default function NewScheduleModal({
     >
       <ModalHeader>
         {isUpdateMode ? '일정 수정' : '일정 등록'}
-        <ButtonList>
-          {buttonList.map((button, i) => (
-            <Button key={`hb-${i}`} onClick={button.onClick}>
-              {button.text}
-            </Button>
-          ))}
-        </ButtonList>
       </ModalHeader>
       <ModalBody>
         <Container>
           <Spinnable isLoading={isLoading}>
             <Line>
-              <Label>제목</Label>
+              <Label>제목<Required>*</Required></Label>
               <Input maxLength={20} value={scheduleTitle} onChange={handleChangeScheduleTitle}></Input>
             </Line>
             <Line>
-              <Label>일시</Label>
+              <Label>일시<Required>*</Required></Label>
               <DatePicker value={startDate} onChange={handleStartDateChange} />
               <Interval $disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
               <DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
@@ -367,7 +356,7 @@ export default function NewScheduleModal({
               <RadioButton label="기간 일정" checked={isDuration} onChange={() => handleDurationChange(true)} />
             </SubLine>
             <Line>
-              <Label>카테고리</Label>
+              <Label>카테고리<Required>*</Required></Label>
               <DropDownWrapper>
                 <Dropdown
                   values={dropdownValues}
@@ -379,7 +368,7 @@ export default function NewScheduleModal({
               </DropDownWrapper>
             </Line>
             <Line>
-              <Label>우선순위 추가</Label>
+              <Label>우선순위 추가<Required>*</Required></Label>
               <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
               <RadioButton label="추가하지 않음" checked={!isPriority} onChange={() => handlePriorityChange(false)} />
             </Line>
@@ -390,6 +379,14 @@ export default function NewScheduleModal({
           </Spinnable>
         </Container>
       </ModalBody>
+      <ModalFooter>
+        <Button onClick={handleClose}>
+          취소
+        </Button>
+        <Button onClick={handleSaveNewScheduleClick} style={{ fontWeight: 'bold' }}>
+          저장
+        </Button>
+      </ModalFooter>
     </FixedModal>
   )
 }

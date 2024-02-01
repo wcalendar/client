@@ -16,14 +16,14 @@ const Container = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
   height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 const Title = styled.h1`
   font-size: 1.25rem;
   font-weight: 700;
-  height: 100%;
   user-select: none;
-  line-height: calc(var(--header-height) - (var(--header-padding) * 2));
   & > a {
     text-decoration: none;
   }
