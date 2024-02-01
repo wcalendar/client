@@ -5,7 +5,7 @@ import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { ChangeEventHandler, useCallback, useRef, useState } from "react";
+import { ChangeEventHandler, useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import Spinnable from "@/components/common/spinner/Spinnable";
@@ -172,8 +172,9 @@ export default function NewScheduleModal({
   const isFixedCategoryMode = isFixedCategoryInfo(fixedCategoryInfo);
 
   const isFirstLoad = useRef(true);
+  const shouldSetCategoryIdx = isFirstLoad.current && (isFixedCategoryMode || isUpdateMode);
 
-  const shouldSetCategoryIdx = (categoryId: number) => {
+  const isFixedCategory = (categoryId: number) => {
     return isFirstLoad.current && ((isFixedCategoryMode && fixedCategoryInfo.categoryId === categoryId) || (isUpdateMode && schedule.categoryId === categoryId));
   };
 
@@ -186,11 +187,17 @@ export default function NewScheduleModal({
 
   const {
     categoryList,
-    categoryIdx,
-    dropdownValues,
+    firstCategoryIdx,
+    secondCategoryIdx,
+    thirdCategoryIdx,
+    firstDropdownValues,
+    secondDropdownValues,
+    thirdDropdownValues,
     isDropdownDisabled,
-    handleCategoryIdxChange
-  } = useCategoryListDropdown(startDate, endDate, isFirstLoad, shouldSetCategoryIdx);
+    handleFirstCategoryIdxChange,
+    handleSecondCategoryIdxChange,
+    handleThirdCategoryIdxChange,
+  } = useCategoryListDropdown(startDate, endDate, isFirstLoad, shouldSetCategoryIdx, isFixedCategory);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -237,23 +244,30 @@ export default function NewScheduleModal({
     }
 
     // Category
-    if(categoryIdx === 0){
+    if(firstCategoryIdx === 0){
       alert('카테고리를 선택해주세요');
 
       return;
     }
+
+    const newCategoryId = thirdCategoryIdx > 0 ?
+      categoryList[firstCategoryIdx].children[secondCategoryIdx].children[thirdCategoryIdx].categoryId :
+      (secondCategoryIdx > 0 ?
+        categoryList[firstCategoryIdx].children[secondCategoryIdx].categoryId :
+        categoryList[firstCategoryIdx].categoryId
+      );
 
     // TODO api
     onScheduleCreate({
       scheduleContent: newTitle,
       scheduleStartDate: time.toString(startDate, 'YYYY-MM-DD'),
       scheduleEndDate: isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
-      categoryId: categoryList[categoryIdx-1].categoryId,
+      categoryId: newCategoryId,
       schedulePriority: -1,
       isDuration: isDuration,
       isPriority: isPriority,
     });
-  }, [scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
+  }, [scheduleTitle, startDate, endDate, categoryList, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, isDuration, isPriority, onScheduleCreate]);
 
   return (
     <FixedModal
@@ -291,14 +305,40 @@ export default function NewScheduleModal({
               <Label>카테고리<Required>*</Required></Label>
               <DropDownWrapper>
                 <Dropdown
-                  values={dropdownValues}
-                  selectedIdx={categoryIdx}
+                  values={firstDropdownValues}
+                  selectedIdx={firstCategoryIdx}
                   height='1.75rem'
-                  onChange={handleCategoryIdxChange}
+                  onChange={handleFirstCategoryIdxChange}
                   disabled={isDropdownDisabled}
                 />
               </DropDownWrapper>
             </Line>
+            {firstCategoryIdx > 0 && (
+              <Line>
+                <Label>2단계 카테고리</Label>
+                <DropDownWrapper>
+                  <Dropdown
+                    values={secondDropdownValues}
+                    selectedIdx={secondCategoryIdx}
+                    height='1.75rem'
+                    onChange={handleSecondCategoryIdxChange}
+                  />
+                </DropDownWrapper>
+              </Line>
+            )}
+            {secondCategoryIdx > 0 && (
+              <Line>
+                <Label>3단계 카테고리</Label>
+                <DropDownWrapper>
+                  <Dropdown
+                    values={thirdDropdownValues}
+                    selectedIdx={thirdCategoryIdx}
+                    height='1.75rem'
+                    onChange={handleThirdCategoryIdxChange}
+                  />
+                </DropDownWrapper>
+              </Line>
+            )}
             <Line>
               <Label>우선순위 추가<Required>*</Required></Label>
               <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
