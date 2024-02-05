@@ -58,6 +58,13 @@ export interface Category {
   schedules: ScheduleToRender[];
 }
 
+export interface CategoryUpdateDto {
+  categoryTitle: string;
+  categoryDescription: string;
+  isVisible: boolean;
+  categoryColor: CategoryColor;
+}
+
 // 서버에서 오는 일정 데이터
 // GET /api/schedules/{year}/{month}
 export type ScheduleDto = {

@@ -1,4 +1,4 @@
-import { CategoryDto, NewCategoryDto, NewScheduleDto, ResDto } from "@/types";
+import { CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto } from "@/types";
 import axios from "axios";
 
 // TODO env 파일로 빼기
@@ -35,6 +35,9 @@ export const apis = {
   },
   addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/categories`, newCategoryDto)).data;
+  },
+  updateCategory: async (categoryId: string, categoryUpdateDto: CategoryUpdateDto): Promise<ResDto<string>> => {
+    return (await authAPI.put(`/categories/${categoryId}`, categoryUpdateDto)).data;
   },
   moveCategory: async (newOrderList: string[]): Promise<ResDto<string>> => {
     return (await authAPI.put(`/categories/order`, {categoryOrderList: newOrderList})).data;

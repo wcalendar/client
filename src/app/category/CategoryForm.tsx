@@ -1,9 +1,11 @@
 import { ChangeEventHandler, FormEventHandler, forwardRef, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Category, CategoryColor } from '@/types';
+import { Category, CategoryColor, CategoryUpdateDto, ErrorRes } from '@/types';
 import SimpleButton from './SimpleButton';
 import FormRadioButton from '@/components/common/FormRadioButton';
 import FormSimpleButton from './FormSimpleButton';
+import { AxiosError } from 'axios';
+import { apis } from '@/lib/apis';
 
 const Container = styled.form`
   padding-top: 4.375rem;
@@ -106,13 +108,29 @@ function CategoryForm({
     setColor(selectedCategory?.color);
   }, [selectedCategory]);
 
-  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>((e) => {
+  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target as HTMLFormElement);
+    if(!selectedCategory) return;
 
-    console.log(formData.get('categoryName'));
-  }, []);
+    const formData = new FormData(e.target as HTMLFormElement);
+    const newCategoryUpdateDto: CategoryUpdateDto = {
+      categoryTitle: formData.get('categoryName') as string,
+      categoryDescription: formData.get('categoryDescription') as string,
+      isVisible: formData.get('categoryVisible') as string,
+      categoryColor: formData.get('categoryColor') as CategoryColor,
+    };
+
+    console.log(newCategoryUpdateDto);
+
+    // try {
+    //   await apis.updateCategory(selectedCategory.id, newCategoryUpdateDto);
+    // } catch(e) {
+    //   const error = e as AxiosError<ErrorRes>;
+    //   console.log(error.response?.data);
+    // }
+
+  }, [selectedCategory]);
 
   const handleNameChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
     setName(e.target.value);
