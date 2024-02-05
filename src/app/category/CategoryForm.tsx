@@ -66,6 +66,10 @@ const ColorItem = styled.input<{ $color: CategoryColor }>`
     transform: scale(1.1);
     border: 1px solid ${({ theme }) => theme.colors.black};
   }
+
+  &:disabled::before {
+    opacity: .5;
+  }
 `;
 
 const Divider = styled.hr`
