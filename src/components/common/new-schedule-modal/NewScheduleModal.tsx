@@ -13,6 +13,7 @@ import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 import FixedModal from "../fixed-modal/FixedModal";
 import useCategoryListDropdown from "./useCategoryListDropdown";
+import useDev from "@/hooks/useDev";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -187,6 +188,7 @@ export default function NewScheduleModal({
   onScheduleCreate,
   newScheduleModalInfo
 }: NewScheduleModalProps) {
+  const { isDev } = useDev();
   const [status, setStatus] = useState<ModalStatus>('open');
 
   const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
@@ -286,6 +288,11 @@ export default function NewScheduleModal({
       scheduleEndDate: !isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
       categoryId: newCategoryId,
       isPriority: isPriority,
+    }
+
+    if(isDev()) {
+      console.log(newScheduleDto);
+      return;
     }
 
     setLoading(true);

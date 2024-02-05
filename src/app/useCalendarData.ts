@@ -1,3 +1,5 @@
+import { calendarDummyData } from "@/dummies/calendar";
+import useDev from "@/hooks/useDev";
 import { apis } from "@/lib/apis";
 import time from "@/lib/time";
 import { Category, CategoryDto, CategoryToRender, ErrorRes, Priority, ScheduleDto, ScheduleToRender } from "@/types";
@@ -10,6 +12,7 @@ export default function useCalendarData(
   selectedDate: Dayjs,
   setLoading: Dispatch<SetStateAction<boolean>>,
 ) {
+  const { isDev } = useDev();
   const daysInMonth = useMemo(() => selectedDate.daysInMonth(), [selectedDate]);
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [categoryToRenderList, setCategoryToRenderList] = useState<CategoryToRender[]>([]);
@@ -157,6 +160,13 @@ export default function useCalendarData(
   }, [daysInMonth]);
 
   const getCategoryList = async (y: number, m: number) => {
+    if(isDev()) {
+      setCategoryList(calendarDummyData[m].resultBody);
+      setLoading(false);
+
+      return;
+    }
+
     try {
       const response = await apis.getCalendarData(y, m);
 

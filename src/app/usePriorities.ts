@@ -1,3 +1,4 @@
+import useDev from "@/hooks/useDev";
 import { apis } from "@/lib/apis";
 import time from "@/lib/time";
 import { CategoryToRender, ErrorRes, Priority, ScheduleModalInfo } from "@/types";
@@ -10,6 +11,7 @@ export default function usePriorities(
   setPrioritiesByDay: Dispatch<SetStateAction<Priority[][]>>,
   handleScheduleClick: (newScheduleModalInfo: ScheduleModalInfo) => void,
 ) {
+  const { isDev } = useDev();
   const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
   const [draggedPriorityX, setDraggedPriorityX] = useState(0);
   const [draggedPriorityY, setDraggedPriorityY] = useState(0);
@@ -52,6 +54,8 @@ export default function usePriorities(
   }, []);
 
   const updatePriority = useCallback(async (scheduleOrderList: string[], scheduleDate: string) => {
+    if(isDev()) return;
+
     try {
       const response = await apis.updateSchedulePriority(scheduleOrderList, scheduleDate);
       console.log(response);

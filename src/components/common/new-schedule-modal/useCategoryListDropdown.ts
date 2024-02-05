@@ -1,3 +1,5 @@
+import { categoryListDummyData } from "@/dummies/calendar";
+import useDev from "@/hooks/useDev";
 import { apis } from "@/lib/apis";
 import { CategoryDto, ErrorRes } from "@/types";
 import { AxiosError } from "axios";
@@ -11,6 +13,7 @@ export default function useCategoryListDropdown(
   shouldSetCategoryIdx: boolean,
   isFixedCategory: (categoryId: string) => boolean
 ) {
+  const { isDev } = useDev();
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [firstDropdownValues, setFirstDropdownValues] = useState<string[]>(['-']);
   const [firstCategoryIdx, setFirstCategoryIdx] = useState(0);
@@ -36,6 +39,11 @@ export default function useCategoryListDropdown(
     const em = endDate.month();
 
     const getCategoryList = async () => {
+      if(isDev()) {
+        setCategoryList(categoryListDummyData);
+        return;
+      }
+
       try {
         const response = await apis.getCategoriesByPeriod(sy, sm, ey, em);
 

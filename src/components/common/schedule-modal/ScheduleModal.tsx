@@ -8,6 +8,7 @@ import { useCallback, useState } from "react";
 import { useModal } from "@/providers/ModalProvider/useModal";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
+import useDev from "@/hooks/useDev";
 
 const Header = styled.div`
   width: 100%;
@@ -99,6 +100,7 @@ export default function ScheduleModal({
   onUpdateClick,
   onScheduleDelete,
 }: ScheduleModalProps) {
+  const { isDev } = useDev();
   const [modalInfo, setModalInfo] = useState<ScheduleModalInfo>(scheduleModalInfo);
   const { x, y, schedule } = modalInfo;
   console.log(schedule.id);
@@ -118,6 +120,8 @@ export default function ScheduleModal({
   }, [modalInfo]);
 
   const deleteSchedule = useCallback(async (scheduleId: string) => {
+    if(isDev()) return;
+
     try {
       const response = apis.deleteSchedule(scheduleId);
       console.log(response);

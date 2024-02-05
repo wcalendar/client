@@ -11,6 +11,8 @@ import { Dayjs } from "dayjs";
 import CategoryForm from "./CategoryForm";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
+import useDev from "@/hooks/useDev";
+import { categoryListDummyData } from "@/dummies/calendar";
 
 const Container = styled.div`
   display: flex;
@@ -87,6 +89,7 @@ interface CategoryBodyProps {
 export default function CategoryBody({
   currentDate,
 }: CategoryBodyProps) {
+  const { isDev } = useDev();
   const formRef = useRef<HTMLFormElement>(null);
 
   const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
@@ -98,6 +101,11 @@ export default function CategoryBody({
   }, []);
 
   const getCategories = useCallback(async (y: number, m: number) => {
+    if(isDev()) {
+      setCategoryDtoList(categoryListDummyData);
+      return;
+    }
+
     try {
       const response = await apis.getCategories(y, m);
       console.log(response);
@@ -165,6 +173,7 @@ export default function CategoryBody({
   }, [categoryDtoList]);
 
   const handleCategoryCreate = useCallback(async () => {
+    if(isDev()) return;
     if(!selectedCategory || selectedCategory.level >= 2) return;
 
     const newCategoryDto: NewCategoryDto = {
@@ -189,6 +198,7 @@ export default function CategoryBody({
   }, [selectedCategory, currentDate]);
 
   const handleCategoryDelete = useCallback(async () => {
+    if(isDev()) return;
     if(!selectedCategory) return;
 
     try {
@@ -202,6 +212,7 @@ export default function CategoryBody({
   }, [selectedCategory, currentDate]);
 
   const handleCategoryMove = useCallback(async (direction: number) => {
+    if(isDev()) return;
     if(!selectedCategory) return;
 
     const { id: categoryId, level, parentId } = selectedCategory;
@@ -258,6 +269,8 @@ export default function CategoryBody({
   }, [handleCategoryMove]);
 
   const handleBaseCategoryCreate = useCallback(async () => {
+    if(isDev()) return;
+
     const newCategoryDto: NewCategoryDto = {
       categoryColor: 'red',
       categoryDescription: '',

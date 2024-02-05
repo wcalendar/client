@@ -6,6 +6,7 @@ import FormRadioButton from '@/components/common/FormRadioButton';
 import FormSimpleButton from './FormSimpleButton';
 import { AxiosError } from 'axios';
 import { apis } from '@/lib/apis';
+import useDev from '@/hooks/useDev';
 
 const Container = styled.form`
   padding-top: 4.375rem;
@@ -96,6 +97,7 @@ function CategoryForm({
   resetForm,
   onCategoryUpdate,
 }, ref) {
+  const { isDev } = useDev();
   const isActive = Boolean(selectedCategory);
 
   const [name, setName] = useState('');
@@ -123,7 +125,10 @@ function CategoryForm({
       categoryColor: formData.get('categoryColor') as CategoryColor,
     };
 
-    console.log(newCategoryUpdateDto);
+    if(isDev()) {
+      console.log(newCategoryUpdateDto);
+      return;
+    }
 
     try {
       await apis.updateCategory(selectedCategory.id, newCategoryUpdateDto);
