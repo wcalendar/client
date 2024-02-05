@@ -5,12 +5,15 @@ import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { ChangeEventHandler, useCallback, useMemo, useRef, useState } from "react";
+import { ChangeEventHandler, useCallback, useRef, useState } from "react";
 import styled from "styled-components";
-import { FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
+import { ErrorRes, FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import Spinnable from "@/components/common/spinner/Spinnable";
-import FixedModal from "@/components/common/fixed-modal/FixedModal";
+import { apis } from "@/lib/apis";
+import { AxiosError } from "axios";
+import FixedModal from "../fixed-modal/FixedModal";
 import useCategoryListDropdown from "./useCategoryListDropdown";
+import useDev from "@/hooks/useDev";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -177,7 +180,7 @@ const isFixedCategoryInfo = (fixedCategoryInfo: FixedCategoryInfo | undefined): 
 }
 
 export interface NewScheduleModalProps {
-  onScheduleCreate: (newSchedule: NewScheduleDto) => void;
+  onScheduleCreate: () => void;
   newScheduleModalInfo: NewScheduleModalInfo;
 }
 
@@ -185,6 +188,7 @@ export default function NewScheduleModal({
   onScheduleCreate,
   newScheduleModalInfo
 }: NewScheduleModalProps) {
+  const { isDev } = useDev();
   const [status, setStatus] = useState<ModalStatus>('open');
 
   const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
@@ -195,7 +199,7 @@ export default function NewScheduleModal({
   const isFirstLoad = useRef(true);
   const shouldSetCategoryIdx = isFirstLoad.current && (isFixedCategoryMode || isUpdateMode);
 
-  const isFixedCategory = (categoryId: number) => {
+  const isFixedCategory = (categoryId: string) => {
     return isFirstLoad.current && ((isFixedCategoryMode && fixedCategoryInfo.categoryId === categoryId) || (isUpdateMode && schedule.categoryId === categoryId));
   };
 
@@ -203,8 +207,10 @@ export default function NewScheduleModal({
   const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
   const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
   const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
-  // TODO isPriority로 수정해야함
-  const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isFinished : true);
+  const [categoryIdx, setCategoryIdx] = useState(0);
+  const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isPriority : true);
+
+  const [isLoading, setLoading] = useState(false);
 
   const {
     categoryList,
@@ -219,8 +225,6 @@ export default function NewScheduleModal({
     handleSecondCategoryIdxChange,
     handleThirdCategoryIdxChange,
   } = useCategoryListDropdown(startDate, endDate, isFirstLoad, shouldSetCategoryIdx, isFixedCategory);
-
-  const [isLoading, setLoading] = useState(false);
 
   const handleClose = useCallback(() => {
     setStatus('closing');
@@ -255,7 +259,7 @@ export default function NewScheduleModal({
     setPriority(value);
   }, []);
 
-  const handleSaveNewScheduleClick = useCallback(() => {
+  const handleSaveNewScheduleClick = useCallback(async () => {
     // Title
     const newTitle = scheduleTitle.trim();
     if(newTitle.length === 0) {
@@ -272,23 +276,35 @@ export default function NewScheduleModal({
     }
 
     const newCategoryId = thirdCategoryIdx > 0 ?
-      categoryList[firstCategoryIdx].children[secondCategoryIdx].children[thirdCategoryIdx].categoryId :
-      (secondCategoryIdx > 0 ?
-        categoryList[firstCategoryIdx].children[secondCategoryIdx].categoryId :
-        categoryList[firstCategoryIdx].categoryId
-      );
+    categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].children[thirdCategoryIdx-1].categoryId :
+    (secondCategoryIdx > 0 ?
+      categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].categoryId :
+      categoryList[firstCategoryIdx-1].categoryId
+    );
 
-    // TODO api
-    onScheduleCreate({
+    const newScheduleDto: NewScheduleDto = {
       scheduleContent: newTitle,
       scheduleStartDate: time.toString(startDate, 'YYYY-MM-DD'),
-      scheduleEndDate: isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
+      scheduleEndDate: !isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
       categoryId: newCategoryId,
-      schedulePriority: -1,
-      isDuration: isDuration,
       isPriority: isPriority,
-    });
-  }, [scheduleTitle, startDate, endDate, categoryList, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, isDuration, isPriority, onScheduleCreate]);
+    }
+
+    if(isDev()) {
+      console.log(newScheduleDto);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = isUpdateMode ? await apis.updateSchedule(newScheduleDto, schedule.id) : await apis.addSchedule(newScheduleDto);
+      setLoading(false);
+      onScheduleCreate();
+    } catch(e) {
+      const error = e as AxiosError<ErrorRes>;
+      console.log(error.response?.data);
+    }
+  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoryList, startDate, endDate, isDuration, isPriority, isUpdateMode, schedule]);
 
   return (
     <FixedModal

@@ -1,5 +1,8 @@
 import { categoryListDummyData } from "@/dummies/calendar";
-import { CategoryDto } from "@/types";
+import useDev from "@/hooks/useDev";
+import { apis } from "@/lib/apis";
+import { CategoryDto, ErrorRes } from "@/types";
+import { AxiosError } from "axios";
 import { Dayjs } from "dayjs";
 import { MutableRefObject, useCallback, useEffect, useMemo, useState } from "react";
 
@@ -8,8 +11,9 @@ export default function useCategoryListDropdown(
   endDate: Dayjs,
   isFirstLoad: MutableRefObject<boolean>,
   shouldSetCategoryIdx: boolean,
-  isFixedCategory: (categoryId: number) => boolean
+  isFixedCategory: (categoryId: string) => boolean
 ) {
+  const { isDev } = useDev();
   const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
   const [firstDropdownValues, setFirstDropdownValues] = useState<string[]>(['-']);
   const [firstCategoryIdx, setFirstCategoryIdx] = useState(0);
@@ -29,11 +33,32 @@ export default function useCategoryListDropdown(
     setSecondCategoryIdx(0);
     setThirdCategoryIdx(0);
 
+    const sy = startDate.year();
+    const sm = startDate.month();
+    const ey = endDate.year();
+    const em = endDate.month();
+
     const getCategoryList = async () => {
-      // TODO API
-      setTimeout(() => {
-        setCategoryList([...categoryListDummyData]);
-      }, 1000);
+      if(isDev()) {
+        setCategoryList(categoryListDummyData);
+        return;
+      }
+
+      try {
+        const response = await apis.getCategoriesByPeriod(sy, sm, ey, em);
+
+        setCategoryList(response.resultBody);
+      } catch(error) {
+        const e = error as AxiosError<ErrorRes>;
+        if(e.response) {
+          if(e.response.status === 401) {
+            alert('로그인이 필요한 서비스입니다.');
+            // router.push('/login');
+          }
+        } else {
+          alert('문제가 발생했습니다.');
+        }
+      }
     };
     
     getCategoryList();

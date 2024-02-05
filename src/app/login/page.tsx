@@ -2,12 +2,14 @@
 
 import Image from 'next/image';
 import styled from 'styled-components'
+import GoogleLoginButton from './GoogleLoginButton';
+import Link from 'next/link';
 
 const Container = styled.main`
   position: fixed;
-  left: calc(50% - 200px);
-  top: calc(50% - 140px);
-  width: 400px;
+  left: calc(50% - 15rem);
+  top: 10rem;
+  width: 30rem;
   height: auto;
 `;
 
@@ -22,8 +24,8 @@ const Title = styled.h1`
 
 const IconWrapper = styled.div`
   position: absolute;
-  top: -0.5rem;
-  right: 0;
+  top: -1rem;
+  right: 2.75rem;
   width: 2.375rem;
   height: 2.375rem;
 `;
@@ -31,6 +33,7 @@ const IconWrapper = styled.div`
 const Description = styled.p`
   text-align: center;
   font-size: 1.75rem;
+  font-weight: normal;
   margin-bottom: 1rem;
 `;
 
@@ -41,24 +44,7 @@ const Tip = styled.p`
   margin-bottom: 1rem;
 `;
 
-const KakaoLoginButton = styled.button`
-  display: block;
-  margin: 0 auto;
-  width: 300px;
-  height: 45px;
-  position: relative;
-  cursor: pointer;
-  border: none;
-`;
-
 export default function Login() {
-
-  const handleKakaoLoginClick = async () => {
-    // 임시
-    const response = await fetch('/');
-    const data = await response.json();
-  };
-
   return (
     <Container>
       <Title>
@@ -69,9 +55,7 @@ export default function Login() {
       </Title>
       <Description>복잡한 일정과 하루를<br />가장 쉽고 편하게 관리 하는 방법</Description>
       <Tip>카카오톡으로 3초만에 시작하기</Tip>
-      <KakaoLoginButton onClick={handleKakaoLoginClick}>
-        <Image src={'/images/kakao_login_medium_wide.png'} alt='카카오 로그인' width={300} height={45} />
-      </KakaoLoginButton>
+      <Link href={'https://wplanner.co.kr/oauth2/authorization/google'}><GoogleLoginButton /></Link>
     </Container>
   )
 }

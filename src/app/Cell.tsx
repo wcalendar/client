@@ -7,11 +7,11 @@ import styled from "styled-components";
 type CellProps = {
   start: number;
   categoryIdx: number;
-  categoryId: number;
+  categoryId: string;
   categoryColor: CategoryColor;
   onMouseOver: (categoryIdx: number) => void;
   onMouseOut: () => void;
-  onClick: (categoryId: number, day: number) => void;
+  onClick: (categoryId: string, day: number) => void;
 };
 
 const Container = styled.div<{ $start: number, $color: CategoryColor }>`

@@ -4,7 +4,7 @@ import { CategoryColor, Priority } from "@/types";
 
 type PriorityItemProps = {
   priority: Priority;
-  onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
+  onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: string, groupCode: string) => void;
   onDrag: (newX: number, newY:number, priority: Priority) => void;
   onDragEnd: (e: DragEvent<HTMLDivElement>) => void;
   onDrop: (day: number, draggableIdx: number, droppableIdx: number) => void;

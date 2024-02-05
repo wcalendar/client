@@ -1,15 +1,18 @@
 import CategoryList from "@/app/category/CategoryList";
 import Tips from "@/app/category/Tips";
 import time from "@/lib/time";
-import { Category, CategoryDto } from "@/types";
+import { Category, CategoryDto, NewCategoryDto } from "@/types";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import SimpleButton from "./SimpleButton";
-import { calendarDummyData } from "@/dummies/calendar";
 import { Dayjs } from "dayjs";
 import CategoryForm from "./CategoryForm";
+import { apis } from "@/lib/apis";
+import { AxiosError } from "axios";
+import useDev from "@/hooks/useDev";
+import { categoryListDummyData } from "@/dummies/calendar";
 
 const Container = styled.div`
   display: flex;
@@ -86,6 +89,7 @@ interface CategoryBodyProps {
 export default function CategoryBody({
   currentDate,
 }: CategoryBodyProps) {
+  const { isDev } = useDev();
   const formRef = useRef<HTMLFormElement>(null);
 
   const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
@@ -97,8 +101,20 @@ export default function CategoryBody({
   }, []);
 
   const getCategories = useCallback(async (y: number, m: number) => {
-    // TODO API
-    setCategoryDtoList(calendarDummyData[m].resultBody);
+    if(isDev()) {
+      setCategoryDtoList(categoryListDummyData);
+      return;
+    }
+
+    try {
+      const response = await apis.getCategories(y, m);
+      console.log(response);
+
+      setCategoryDtoList(response.resultBody);
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+    }
   }, []);
 
   useEffect(() => {
@@ -118,6 +134,7 @@ export default function CategoryBody({
         endDate: time.fromString(c1.categoryEndDate),
         description: c1.categoryDescription,
         isVisible: c1.categoryVisible,
+        parentId: null,
         schedules: [],
       });
 
@@ -131,6 +148,7 @@ export default function CategoryBody({
           endDate: time.fromString(c2.categoryEndDate),
           description: c2.categoryDescription,
           isVisible: c2.categoryVisible,
+          parentId: c1.categoryId,
           schedules: [],
         });
 
@@ -144,6 +162,7 @@ export default function CategoryBody({
             endDate: time.fromString(c3.categoryEndDate),
             description: c3.categoryDescription,
             isVisible: c3.categoryVisible,
+            parentId: c2.categoryId,
             schedules: [],
           });
         })
@@ -153,9 +172,130 @@ export default function CategoryBody({
     setCategoryList(newCategoryList);
   }, [categoryDtoList]);
 
+  const handleCategoryCreate = useCallback(async () => {
+    if(isDev()) return;
+    if(!selectedCategory || selectedCategory.level >= 2) return;
+
+    const newCategoryDto: NewCategoryDto = {
+      categoryColor: selectedCategory.color,
+      categoryDescription: '',
+      categoryStartDate: time.toString(currentDate, 'YYYY-MM-DD'),
+      categoryLevel: selectedCategory.level + 1,
+      categoryName: '새 카테고리',
+      categoryParentId: selectedCategory.id,
+      categoryVisible: selectedCategory.isVisible,
+    };
+
+    try {
+      await apis.addCategory(newCategoryDto);
+
+      getCategories(currentDate.year(), currentDate.month());
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+      return;
+    }
+  }, [selectedCategory, currentDate]);
+
+  const handleCategoryDelete = useCallback(async () => {
+    if(isDev()) return;
+    if(!selectedCategory) return;
+
+    try {
+      await apis.deleteCategory(selectedCategory.id, time.toString(currentDate, 'YYYY-MM-DD'));
+
+      getCategories(currentDate.year(), currentDate.month()); 
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+    }
+  }, [selectedCategory, currentDate]);
+
+  const handleCategoryMove = useCallback(async (direction: number) => {
+    if(isDev()) return;
+    if(!selectedCategory) return;
+
+    const { id: categoryId, level, parentId } = selectedCategory;
+
+    let newOrderList: string[] = [];
+    if(level === 0) {
+      newOrderList = categoryDtoList.map(c => c.categoryId);
+    } else {
+      outer: for(const c0 of categoryDtoList) {
+        if(level === 1) {
+          if(c0.categoryId === parentId) {
+            newOrderList = c0.children.map(c => c.categoryId);
+            break;
+          }
+        } else {
+          for(const c1 of c0.children) {
+            if(c1.categoryId === parentId) {
+              newOrderList = c1.children.map(c => c.categoryId);
+              break outer;
+            }
+          }
+        }
+      }
+    }
+
+    // newOrderList = selectedCategory 가 속한 리스트의 id 목록
+    const maxOrder = newOrderList.length - 1;
+    const currentOrder = newOrderList.findIndex(id => id === categoryId);
+    if(currentOrder === -1) return;
+
+    const newOrder = currentOrder + direction;
+    if(newOrder < 0 || newOrder > maxOrder) return;
+
+    const tmp = newOrderList[newOrder];
+    newOrderList[newOrder] = newOrderList[currentOrder];
+    newOrderList[currentOrder] = tmp;
+
+    try {
+      await apis.moveCategory(newOrderList);
+
+      getCategories(currentDate.year(), currentDate.month());
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+    }
+  }, [selectedCategory, categoryDtoList, currentDate]);
+
+  const handleCategoryMoveUp = useCallback(() => {
+    handleCategoryMove(-1);
+  }, [handleCategoryMove]);
+
+  const handleCategoryMoveDown = useCallback(() => {
+    handleCategoryMove(1);
+  }, [handleCategoryMove]);
+
   const handleBaseCategoryCreate = useCallback(async () => {
-    
-  }, []);
+    if(isDev()) return;
+
+    const newCategoryDto: NewCategoryDto = {
+      categoryColor: 'red',
+      categoryDescription: '',
+      categoryStartDate: time.toString(currentDate, 'YYYY-MM-DD'),
+      categoryLevel: 0,
+      categoryName: '새 카테고리',
+      categoryParentId: null,
+      categoryVisible: true,
+    };
+
+    try {
+      await apis.addCategory(newCategoryDto);
+
+      getCategories(currentDate.year(), currentDate.month());
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+      return;
+    }
+
+  }, [currentDate]);
+
+  const handleCategoryUpdate = useCallback(() => {
+    getCategories(currentDate.year(), currentDate.month());
+  }, [currentDate]);
 
   const handleCategoryItemClick = useCallback((category: Category) => {
     if(selectedCategory && selectedCategory.id === category.id) setSelectedCategory(null);
@@ -168,14 +308,14 @@ export default function CategoryBody({
         <ControlBox>
           <ControlRow>
             <ButtonBox>
-              <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>추가</SimpleButton>
-              <SimpleButton onClick={() => {}} disabled={!Boolean(selectedCategory)}>삭제</SimpleButton>
+              <SimpleButton onClick={handleCategoryCreate} disabled={!Boolean(selectedCategory)}>추가</SimpleButton>
+              <SimpleButton onClick={handleCategoryDelete} disabled={!Boolean(selectedCategory)}>삭제</SimpleButton>
             </ButtonBox>
             <ButtonBox>
-              <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
+              <Button onClick={handleCategoryMoveUp} disabled={!Boolean(selectedCategory)}>
                 <Icon path={mdiChevronUp} />
               </Button>
-              <Button onClick={() => {}} disabled={!Boolean(selectedCategory)}>
+              <Button onClick={handleCategoryMoveDown} disabled={!Boolean(selectedCategory)}>
                 <Icon path={mdiChevronDown} />
               </Button>
             </ButtonBox>
@@ -193,6 +333,7 @@ export default function CategoryBody({
       <CategoryForm
         selectedCategory={selectedCategory}
         resetForm={resetForm}
+        onCategoryUpdate={handleCategoryUpdate}
         ref={formRef}
       />
     </Container>

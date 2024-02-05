@@ -38,7 +38,7 @@ export default function CategoryList({
     <Container>
       {categoryList.map(category => (
         <CategoryItem
-          key={category.name}
+          key={`ci-${category.id}`}
           category={category}
           isSelected={selectedCategory ? (selectedCategory.id === category.id) : false}
           onClick={onCategoryItemClick}
