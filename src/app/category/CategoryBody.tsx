@@ -280,6 +280,10 @@ export default function CategoryBody({
 
   }, [currentDate]);
 
+  const handleCategoryUpdate = useCallback(() => {
+    getCategories(currentDate.year(), currentDate.month());
+  }, [currentDate]);
+
   const handleCategoryItemClick = useCallback((category: Category) => {
     if(selectedCategory && selectedCategory.id === category.id) setSelectedCategory(null);
     else setSelectedCategory({...category});
@@ -316,6 +320,7 @@ export default function CategoryBody({
       <CategoryForm
         selectedCategory={selectedCategory}
         resetForm={resetForm}
+        onCategoryUpdate={handleCategoryUpdate}
         ref={formRef}
       />
     </Container>

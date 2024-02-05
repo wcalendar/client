@@ -273,11 +273,6 @@ export default function NewScheduleModal({
       return;
     }
 
-    console.log(categoryList);
-    console.log(firstCategoryIdx);
-    console.log(secondCategoryIdx);
-    console.log(thirdCategoryIdx);
-
     const newCategoryId = thirdCategoryIdx > 0 ?
     categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].children[thirdCategoryIdx-1].categoryId :
     (secondCategoryIdx > 0 ?
@@ -293,8 +288,6 @@ export default function NewScheduleModal({
       isPriority: isPriority,
     }
 
-    console.log(newScheduleDto);
-    
     setLoading(true);
     try {
       const response = isUpdateMode ? await apis.updateSchedule(newScheduleDto, schedule.id) : await apis.addSchedule(newScheduleDto);

@@ -87,12 +87,14 @@ const colors: CategoryColor[] = ['red', 'orange', 'yellow', 'green', 'blue', 'pu
 type CategoryFormProps = {
   selectedCategory: Category | null;
   resetForm: () => void;
+  onCategoryUpdate: () => void;
 };
 
 const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
 function CategoryForm({
   selectedCategory,
   resetForm,
+  onCategoryUpdate,
 }, ref) {
   const isActive = Boolean(selectedCategory);
 
@@ -115,20 +117,21 @@ function CategoryForm({
 
     const formData = new FormData(e.target as HTMLFormElement);
     const newCategoryUpdateDto: CategoryUpdateDto = {
-      categoryTitle: formData.get('categoryName') as string,
+      categoryName: formData.get('categoryName') as string,
       categoryDescription: formData.get('categoryDescription') as string,
-      isVisible: formData.get('categoryVisible') as string,
+      categoryVisible: formData.get('categoryVisible') === 'true' ? true : false,
       categoryColor: formData.get('categoryColor') as CategoryColor,
     };
 
     console.log(newCategoryUpdateDto);
 
-    // try {
-    //   await apis.updateCategory(selectedCategory.id, newCategoryUpdateDto);
-    // } catch(e) {
-    //   const error = e as AxiosError<ErrorRes>;
-    //   console.log(error.response?.data);
-    // }
+    try {
+      await apis.updateCategory(selectedCategory.id, newCategoryUpdateDto);
+      onCategoryUpdate();
+    } catch(e) {
+      const error = e as AxiosError<ErrorRes>;
+      console.log(error.response?.data);
+    }
 
   }, [selectedCategory]);
 

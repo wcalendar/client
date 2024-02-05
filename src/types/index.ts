@@ -60,9 +60,9 @@ export interface Category {
 }
 
 export interface CategoryUpdateDto {
-  categoryTitle: string;
+  categoryName: string;
   categoryDescription: string;
-  isVisible: boolean;
+  categoryVisible: boolean;
   categoryColor: CategoryColor;
 }
 
