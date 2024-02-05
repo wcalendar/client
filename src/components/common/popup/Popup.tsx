@@ -1,4 +1,6 @@
+import { usePopup } from "@/providers/PopupProvider/usePopup";
 import { PopupInfo } from "@/types";
+import { useCallback } from "react";
 import styled from "styled-components";
 
 const Background = styled.div`
@@ -73,10 +75,15 @@ export default function Popup({
   popupInfo,
 }: PopupProps) {
   const { title, description, buttons } = popupInfo;
+  const { closePopup } = usePopup();
+
+  const handleBackgroundClick = useCallback(() => {
+    closePopup();
+  }, []);
 
   return (
     <>
-      <Background />
+      <Background onClick={handleBackgroundClick} />
       <Container>
         <Title>{title}</Title>
         <Description>{description}</Description>
