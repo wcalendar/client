@@ -185,8 +185,7 @@ export default function NewScheduleModal({
   const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
   const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
   const [categoryIdx, setCategoryIdx] = useState(0);
-  // TODO isPriority로 수정해야함
-  const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isFinished : true);
+  const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isPriority : true);
 
   const [isLoading, setLoading] = useState(false);
 

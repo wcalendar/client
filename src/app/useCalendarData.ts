@@ -67,6 +67,7 @@ export default function useCalendarData(
             startDate,
             endDate: time.fromString(lastSchedule.scheduleDate),
             isFinished: lastSchedule.isFinished,
+            isPriority: lastSchedule.isPriority,
           });
         }
 
@@ -84,6 +85,7 @@ export default function useCalendarData(
         startDate,
         endDate: time.fromString(lastSchedule.scheduleDate),
         isFinished: lastSchedule.isFinished,
+        isPriority: lastSchedule.isPriority,
       });
     }
 

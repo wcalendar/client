@@ -83,6 +83,7 @@ export type ScheduleToRender = {
   groupCode: string;
   categoryId: string;
   content: string;
+  isPriority: boolean;
   isFinished: boolean;
   startDate: Dayjs;
   endDate: Dayjs;
