@@ -152,3 +152,5 @@ export type ModalKey =
   | { key: 'search'; modalProps: SearchModalProps };
 
 export type ModalStatus = 'open' | 'closing' | 'closed';
+
+export type PopupKey = 'deleteUser' | 'deleteCategory' | 'logout' | 'deleteSchedule';
