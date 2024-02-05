@@ -3,6 +3,8 @@ import { Roboto } from 'next/font/google';
 import StyleProvider from '@/style/StyleProvider';
 import AppModal from '@/components/common/app-modal/AppModal';
 import { ModalProvider } from '@/providers/ModalProvider/ModalProvider';
+import PopupProvider from '@/providers/PopupProvider/PopupProvider';
+import AppPopup from '@/components/common/app-popup/AppPopup';
 
 const roboto = Roboto({
   weight: ['400', '700'],
@@ -25,10 +27,13 @@ export default function RootLayout({
     <html lang="ko" className={roboto.className}>
       <body>
         <StyleProvider>
-          <ModalProvider>
-            {children}
-            <AppModal />
-          </ModalProvider>
+          <PopupProvider>
+            <ModalProvider>
+              {children}
+              <AppModal />
+              <AppPopup />
+            </ModalProvider>
+          </PopupProvider>
         </StyleProvider>
       </body>
     </html>

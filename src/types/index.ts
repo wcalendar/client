@@ -3,6 +3,7 @@ import { CategoryModalProps } from "@/components/common/category-modal/CategoryM
 import { ScheduleModalProps } from "@/components/common/schedule-modal/ScheduleModal";
 import { SearchModalProps } from "@/components/common/search-modal/SearchModal";
 import { Dayjs } from "dayjs";
+import { ReactNode } from "react";
 
 export type CategoryColor =
   | 'red'
@@ -176,3 +177,14 @@ export type ModalKey =
   | { key: 'search'; modalProps: SearchModalProps };
 
 export type ModalStatus = 'open' | 'closing' | 'closed';
+
+export interface ButtonInfo {
+  label: string;
+  onClick: () => void;
+}
+
+export interface PopupInfo {
+  title: string;
+  description: ReactNode;
+  buttons: ButtonInfo[];
+}

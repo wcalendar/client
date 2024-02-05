@@ -5,13 +5,14 @@ import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
-import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEventHandler, useCallback, useRef, useState } from "react";
 import styled from "styled-components";
-import { CategoryDto, ErrorRes, FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
+import { ErrorRes, FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
 import Spinnable from "@/components/common/spinner/Spinnable";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 import FixedModal from "../fixed-modal/FixedModal";
+import useCategoryListDropdown from "./useCategoryListDropdown";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -125,11 +126,32 @@ const DropDownWrapper = styled.div`
 
 const Tips = styled.ul`
   margin-top: 2rem;
+  margin-bottom: 2rem;
   padding: 0 1rem;
 `;
 
 const Tip = styled.li`
   font-size: .75rem;
+`;
+
+const DeleteLine = styled.div`
+  width: 100%;
+  font-size: .75rem;
+  height: 1rem;
+  line-height: 1rem;
+  color: ${({ theme }) => theme.colors.warningRed};
+  user-select: none;
+`;
+
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: .75rem;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 1rem;
 `;
 
 const ModalFooter = styled.div`
@@ -173,13 +195,12 @@ export default function NewScheduleModal({
   const isFixedCategoryMode = isFixedCategoryInfo(fixedCategoryInfo);
 
   const isFirstLoad = useRef(true);
+  const shouldSetCategoryIdx = isFirstLoad.current && (isFixedCategoryMode || isUpdateMode);
 
-  const shouldSetCategoryIdx = (categoryId: string) => {
+  const isFixedCategory = (categoryId: string) => {
     return isFirstLoad.current && ((isFixedCategoryMode && fixedCategoryInfo.categoryId === categoryId) || (isUpdateMode && schedule.categoryId === categoryId));
   };
 
-  const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
-  const [dropdownValues, setDropdownValues] = useState<string[]>(['-']);
   const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');
   const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
   const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
@@ -189,79 +210,19 @@ export default function NewScheduleModal({
 
   const [isLoading, setLoading] = useState(false);
 
-  const isDropdownDisabled = useMemo(() => {
-    return categoryList.length === 0;
-  }, [categoryList]);
-
-  // 기간이 변경되면 새 카테고리 리스트를 가져옴
-  useEffect(() => {
-    setCategoryList([]);
-    setCategoryIdx(0);
-
-    const sy = startDate.year();
-    const sm = startDate.month();
-    const ey = endDate.year();
-    const em = endDate.month();
-
-    const getCategoryList = async () => {
-      try {
-        const response = await apis.getCategoriesByPeriod(sy, sm, ey, em);
-
-        setCategoryList(response.resultBody);
-      } catch(error) {
-        const e = error as AxiosError<ErrorRes>;
-        if(e.response) {
-          if(e.response.status === 401) {
-            alert('로그인이 필요한 서비스입니다.');
-            // router.push('/login');
-          }
-        } else {
-          alert('문제가 발생했습니다.');
-        }
-      }
-    };
-    
-    getCategoryList();
-  }, [startDate, endDate]);
-
-  useEffect(() => {
-    if(categoryList.length === 0) {
-      setDropdownValues(['-']);
-      return;
-    }
-
-    const result: string[] = ['-'];
-
-    let idx = 1;
-    categoryList.forEach(c1 => {
-      result.push(c1.categoryName);
-      if(shouldSetCategoryIdx(c1.categoryId)) {
-        setCategoryIdx(idx);
-        isFirstLoad.current = false;
-      } 
-      idx++;
-
-      c1.children.forEach(c2 => {
-        result.push(`  ${c2.categoryName}`);
-        if(shouldSetCategoryIdx(c2.categoryId)) {
-          setCategoryIdx(idx);
-          isFirstLoad.current = false;
-        } 
-        idx++;
-
-        c2.children.forEach(c3 => {
-          result.push(`    ${c3.categoryName}`);
-          if(shouldSetCategoryIdx(c3.categoryId)) {
-            setCategoryIdx(idx);
-            isFirstLoad.current = false;
-          } 
-          idx++;
-        })
-      })
-    });
-
-    setDropdownValues(result);
-  }, [categoryList]);
+  const {
+    categoryList,
+    firstCategoryIdx,
+    secondCategoryIdx,
+    thirdCategoryIdx,
+    firstDropdownValues,
+    secondDropdownValues,
+    thirdDropdownValues,
+    isDropdownDisabled,
+    handleFirstCategoryIdxChange,
+    handleSecondCategoryIdxChange,
+    handleThirdCategoryIdxChange,
+  } = useCategoryListDropdown(startDate, endDate, isFirstLoad, shouldSetCategoryIdx, isFixedCategory);
 
   const handleClose = useCallback(() => {
     setStatus('closing');
@@ -292,10 +253,6 @@ export default function NewScheduleModal({
     if(!value) setEndDate(startDate);
   }, [startDate]);
 
-  const handleCategoryIdxChange = useCallback((idx: number) => {
-    setCategoryIdx(idx);
-  }, []);
-
   const handlePriorityChange = useCallback((value: boolean) => {
     setPriority(value);
   }, []);
@@ -310,41 +267,44 @@ export default function NewScheduleModal({
     }
 
     // Category
-    if(categoryIdx === 0){
+    if(firstCategoryIdx === 0){
       alert('카테고리를 선택해주세요');
 
       return;
     }
 
-    const NewScheduleDto: NewScheduleDto = {
+    console.log(categoryList);
+    console.log(firstCategoryIdx);
+    console.log(secondCategoryIdx);
+    console.log(thirdCategoryIdx);
+
+    const newCategoryId = thirdCategoryIdx > 0 ?
+    categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].children[thirdCategoryIdx-1].categoryId :
+    (secondCategoryIdx > 0 ?
+      categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].categoryId :
+      categoryList[firstCategoryIdx-1].categoryId
+    );
+
+    const newScheduleDto: NewScheduleDto = {
       scheduleContent: newTitle,
       scheduleStartDate: time.toString(startDate, 'YYYY-MM-DD'),
       scheduleEndDate: !isDuration ? time.toString(startDate, 'YYYY-MM-DD') : time.toString(endDate, 'YYYY-MM-DD'),
-      categoryId: categoryList[categoryIdx-1].categoryId,
+      categoryId: newCategoryId,
       isPriority: isPriority,
     }
+
+    console.log(newScheduleDto);
     
     setLoading(true);
     try {
-      const response = isUpdateMode ? await apis.updateSchedule(NewScheduleDto, schedule.id) : await apis.addSchedule(NewScheduleDto);
+      const response = isUpdateMode ? await apis.updateSchedule(newScheduleDto, schedule.id) : await apis.addSchedule(newScheduleDto);
       setLoading(false);
       onScheduleCreate();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
     }
-  }, [isUpdateMode, schedule, scheduleTitle, startDate, endDate, categoryList, categoryIdx, isDuration, isPriority, onScheduleCreate]);
-
-  const buttonList = [
-    {
-      text: '저장',
-      onClick: handleSaveNewScheduleClick,
-    },
-    {
-      text: '취소',
-      onClick: handleClose,
-    },
-  ];
+  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoryList, startDate, endDate, isDuration, isPriority, isUpdateMode, schedule]);
 
   return (
     <FixedModal
@@ -382,14 +342,40 @@ export default function NewScheduleModal({
               <Label>카테고리<Required>*</Required></Label>
               <DropDownWrapper>
                 <Dropdown
-                  values={dropdownValues}
-                  selectedIdx={categoryIdx}
+                  values={firstDropdownValues}
+                  selectedIdx={firstCategoryIdx}
                   height='1.75rem'
-                  onChange={handleCategoryIdxChange}
+                  onChange={handleFirstCategoryIdxChange}
                   disabled={isDropdownDisabled}
                 />
               </DropDownWrapper>
             </Line>
+            {firstCategoryIdx > 0 && (
+              <Line>
+                <Label>2단계 카테고리</Label>
+                <DropDownWrapper>
+                  <Dropdown
+                    values={secondDropdownValues}
+                    selectedIdx={secondCategoryIdx}
+                    height='1.75rem'
+                    onChange={handleSecondCategoryIdxChange}
+                  />
+                </DropDownWrapper>
+              </Line>
+            )}
+            {secondCategoryIdx > 0 && (
+              <Line>
+                <Label>3단계 카테고리</Label>
+                <DropDownWrapper>
+                  <Dropdown
+                    values={thirdDropdownValues}
+                    selectedIdx={thirdCategoryIdx}
+                    height='1.75rem'
+                    onChange={handleThirdCategoryIdxChange}
+                  />
+                </DropDownWrapper>
+              </Line>
+            )}
             <Line>
               <Label>우선순위 추가<Required>*</Required></Label>
               <RadioButton label="추가" checked={isPriority} onChange={() => handlePriorityChange(true)} />
@@ -399,6 +385,12 @@ export default function NewScheduleModal({
               <Tip>{`카테고리 선택 후 일시 변경시에 카테고리가 없는 '월'로의 이동 및 선택은 불가합니다.`}</Tip>
               <Tip>{`카테고리 리스트는 선택한 일시를 기준으로 일시의 시작 '월'과 종료 '월' 시점에 동시에 존재하는 카테고리들이 보여집니다.`}</Tip>
             </Tips>
+            {isUpdateMode && (
+              <DeleteLine>
+                일정을 삭제 하시겠습니까? 삭제한 일정은 복구할 수 없습니다.
+                <DeleteButton>삭제하기</DeleteButton>
+              </DeleteLine>
+            )}
           </Spinnable>
         </Container>
       </ModalBody>
