@@ -1,4 +1,4 @@
-import { PopupKey } from "@/types";
+import { PopupInfo } from "@/types";
 import styled from "styled-components";
 
 const Background = styled.div`
@@ -17,6 +17,7 @@ const Container = styled.div`
   left: 50%;
   z-index: 25;
   transform: translateX(-50%);
+  min-width: 20rem;
   width: auto;
   height: auto;
   max-height: 90vh;
@@ -27,19 +28,64 @@ const Container = styled.div`
   box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.gray};
   transform-origin: left;
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  padding: 1rem;
+`;
+
+const Title = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: .875rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+`;
+
+const Description = styled.div`
+  width: 100%;
+  font-size: .75rem;
+  line-height: .875rem;
+  margin-bottom: 1rem;
+`;
+
+const Buttons = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+`;
+
+const Button = styled.button`
+  width: auto;
+  padding: .5rem .625rem;
+  background: none;
+  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border-radius: 10px;
+  font-size: .875rem;
+  line-height: .875rem;
+  font-weight: bold;
+  cursor: pointer;
 `;
 
 export interface PopupProps {
-  popup: PopupKey;
+  popupInfo: PopupInfo;
 }
 
 export default function Popup({
-  popup,
+  popupInfo,
 }: PopupProps) {
+  const { title, description, buttons } = popupInfo;
+
   return (
     <>
       <Background />
-      <Container>asdfasdf</Container>
+      <Container>
+        <Title>{title}</Title>
+        <Description>{description}</Description>
+        <Buttons>
+          {buttons.map((button, i) => (
+            <Button key={`pb-${button.label}`} onClick={button.onClick}>{button.label}</Button>
+          ))}
+        </Buttons>
+      </Container>
     </>
   )
 }

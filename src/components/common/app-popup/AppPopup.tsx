@@ -4,12 +4,12 @@ import { usePopup } from "@/providers/PopupProvider/usePopup";
 import Popup from "../popup/Popup";
 
 export default function AppPopup() {
-  const { popup } = usePopup();
+  const { popupInfo } = usePopup();
 
   return (
     <>
-      {popup ? (
-        <Popup popup={popup} />
+      {popupInfo ? (
+        <Popup popupInfo={popupInfo} />
       ) : (
         <></>
       )}

@@ -1,12 +1,12 @@
 'use client';
 
-import { PopupKey } from "@/types";
+import { PopupInfo } from "@/types";
 import { createContext } from "react";
 
 export interface PopupContextValue {
-  popup: PopupKey | null;
-  openPopup: (popupKey: PopupKey) => void;
+  popupInfo: PopupInfo | null;
+  openPopup: (popupInfo: PopupInfo) => void;
   closePopup: () => void;
 }
 
-export const PopupContext = createContext<PopupContextValue>({ popup: null, openPopup: () => {}, closePopup: () => {} });
+export const PopupContext = createContext<PopupContextValue>({ popupInfo: null, openPopup: () => {}, closePopup: () => {} });

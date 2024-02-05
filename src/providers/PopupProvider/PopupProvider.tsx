@@ -2,7 +2,7 @@
 
 import { ReactNode, useCallback, useState } from "react";
 import { PopupContext } from "./PopupContext";
-import { PopupKey } from "@/types";
+import { PopupInfo } from "@/types";
 
 interface PopupProviderProps {
   children: ReactNode;
@@ -11,17 +11,17 @@ interface PopupProviderProps {
 export default function PopupProvider({
   children,
 }: PopupProviderProps) {
-  const [popup, setPopup] = useState<PopupKey | null>(null);
+  const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
 
-  const openPopup = useCallback((popupKey: PopupKey) => {
-    setPopup(popupKey);
+  const openPopup = useCallback((popupInfo: PopupInfo) => {
+    setPopupInfo(popupInfo);
   }, []);
 
   const closePopup = useCallback(() => {
-    setPopup(null);
+    setPopupInfo(null);
   }, []);
 
   return (
-    <PopupContext.Provider value={{ popup, openPopup, closePopup }}>{children}</PopupContext.Provider>
+    <PopupContext.Provider value={{ popupInfo, openPopup, closePopup }}>{children}</PopupContext.Provider>
   )
 }
