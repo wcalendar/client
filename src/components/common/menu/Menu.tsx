@@ -16,6 +16,7 @@ const Container = styled.div<{ $status: ModalStatus }>`
   z-index: 10;
   padding: 1rem;
   box-shadow: 0 2px 4px 1px ${({ theme }) => theme.colors.gray};
+  cursor: default;
 `;
 
 interface MenuProps {

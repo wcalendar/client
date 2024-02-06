@@ -79,11 +79,11 @@ export default function NavBar() {
     <NavBarContainer>
       <SearchButton />
       <MenuButton icon={mdiCog}>
-        <MenuItem onClick={() => {}}>공지사항</MenuItem>
-        <MenuItem onClick={() => {}}>사용방법</MenuItem>
-        <MenuItem onClick={() => {}}>오류제보/문의하기</MenuItem>
-        <MenuItem onClick={() => {}}>이용약관</MenuItem>
-        <MenuItem onClick={() => {}}>개인정보 취급방침</MenuItem>
+        <MenuItem href=''>공지사항</MenuItem>
+        <MenuItem href=''>사용방법</MenuItem>
+        <MenuItem href=''>오류제보/문의하기</MenuItem>
+        <MenuItem href=''>이용약관</MenuItem>
+        <MenuItem href=''>개인정보 취급방침</MenuItem>
       </MenuButton>
       <MenuButton icon={mdiAccount}>
         <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
