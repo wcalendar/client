@@ -7,7 +7,7 @@ import { Priority } from "@/types";
 
 const Container = styled.div<{ $idx: number, $priority_count: number, $open: number }>`
   --priority-list-width: ${({ theme }) => theme.sizes.calendar.PriorityListWidth.desktop};
-  transition: all ease .25s;
+  transition: height ease .25s, width ease .25s, box-shadow ease .25s;
 
   @media ${({ theme }) => theme.devices.tablet} {
     --priority-list-width: ${({ theme }) => theme.sizes.calendar.PriorityListWidth.tablet};
@@ -25,7 +25,7 @@ const Container = styled.div<{ $idx: number, $priority_count: number, $open: num
   background: ${({ theme }) => theme.colors.lightBlue};
   
   ${({ theme, $open }) => $open ? `
-    box-shadow: 0 0 4px 2px ${theme.colors.gray};
+    box-shadow: 0 0 2px 1px ${theme.colors.gray};
     border-radius: 5px;
     z-index: 5;
   ` : '' }
