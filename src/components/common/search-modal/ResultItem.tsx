@@ -1,5 +1,5 @@
 import time from "@/lib/time";
-import { SearchResult } from "@/types";
+import { ScheduleToRender } from "@/types";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -21,12 +21,6 @@ const Content = styled.div`
   font-weight: bold;
 `;
 
-const Categories = styled.div`
-  height: .75rem;
-  line-height: .75rem;
-  font-size: .625rem;
-`;
-
 const Date = styled.div`
   height: .75rem;
   line-height: .75rem;
@@ -34,18 +28,17 @@ const Date = styled.div`
 `;
 
 interface ResultItemProps {
-  searchResult: SearchResult;
+  searchResult: ScheduleToRender;
 }
 
 export default function ResultItem({
   searchResult,
 }: ResultItemProps) {
-  const { content, categories, startDate, endDate } = searchResult
+  const { content, startDate, endDate } = searchResult
 
   return (
     <Container>
       <Content>{content}</Content>
-      <Categories>{categories.join('/')}</Categories>
       <Date>{`${time.toString(startDate, 'YYYY.MM.DD')} - ${time.toString(endDate, 'YYYY.MM.DD')}`}</Date>
     </Container>
   )

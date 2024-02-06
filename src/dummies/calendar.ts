@@ -1,5 +1,5 @@
 import time from "@/lib/time";
-import { CategoryDto, ResDto, ScheduleToRender, SearchResult } from "@/types";
+import { CategoryDto, ResDto, ScheduleToRender } from "@/types";
 
 const y = time.now().year();
 const m = time.now().month();
@@ -251,21 +251,8 @@ const searchDummyData: ScheduleToRender[] = [
   },
 ];
 
-const dSearchResult: SearchResult = {
-  categories: ['카테고리 1', '카테고리 2'],
-  groupCode: '101',
-  content: '밥 먹기',
-  isFinished: false,
-  startDate: time.new(y, m, 15),
-  endDate: time.new(y, m, 17),
-};
-
-const dSearchResultList: SearchResult[] =[
-  dSearchResult,
-];
-
 export {
   calendarDummyData,
   categoryListDummyData,
-  dSearchResultList,
+  searchDummyData,
 }

@@ -1,11 +1,12 @@
-import { dSearchResultList } from "@/dummies/calendar";
-import { ModalStatus, SearchResult } from "@/types";
+import { ModalStatus, ScheduleToRender } from "@/types";
 import { mdiMagnify } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ResultItem from "./ResultItem";
 import FixedModal from "../fixed-modal/FixedModal";
+import useDev from "@/hooks/useDev";
+import { searchDummyData } from "@/dummies/calendar";
 
 const Input = styled.input`
   width: 100%;
@@ -47,13 +48,17 @@ export interface SearchModalProps {
 
 export default function SearchModal({
 }: SearchModalProps) {
+  const { isDev } = useDev();
   const [modalStatus, setModalStatus] = useState<ModalStatus>('open');
-  const [resultList, setResultList] = useState<SearchResult[]>([]);
+  const [resultList, setResultList] = useState<ScheduleToRender[]>([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const getResultList = useCallback(async () => {
-    setResultList(dSearchResultList);
+    if(isDev()) {
+      setResultList(searchDummyData);
+      return;
+    }
   }, []);
 
   useEffect(() => {
