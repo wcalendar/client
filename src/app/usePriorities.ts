@@ -15,6 +15,11 @@ export default function usePriorities(
   const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
   const [draggedPriorityX, setDraggedPriorityX] = useState(0);
   const [draggedPriorityY, setDraggedPriorityY] = useState(0);
+  const [openedDay, setOpenedDay] = useState(0);
+
+  const handlePriorityListOpen = useCallback((day: number) => {
+    setOpenedDay(day);
+  }, []);
 
   const handlePriorityClick = useCallback((e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: string, groupCode: string) => {
     const category = categoryToRenderList.find(c => c.category.id === categoryId)?.category;
@@ -97,7 +102,8 @@ export default function usePriorities(
   }, [prioritiesByDay]);
 
   return {
-    draggedPriorityX, draggedPriorityY, draggedPriority,
+    draggedPriorityX, draggedPriorityY, draggedPriority, openedDay,
+    handlePriorityListOpen,
     handlePriorityClick,
     handlePriorityItemDrag,
     handlePriorityItemDragEnd,
