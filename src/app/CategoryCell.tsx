@@ -38,7 +38,6 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   margin-right: 1px;
   padding-left: .5rem;
   cursor: pointer;
-  transition: all ease .25s;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

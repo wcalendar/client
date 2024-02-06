@@ -25,7 +25,7 @@ const Container = styled.div<{ $start: number, $color: CategoryColor }>`
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: all ease .25s;
+  transition: background ease .25s, color ease .25s;
   color: white;
   border-radius: 5px;
 
