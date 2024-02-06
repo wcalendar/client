@@ -55,7 +55,7 @@ const Buttons = styled.div`
   gap: .5rem;
 `;
 
-const Button = styled.button`
+const Button = styled.button<{ warning: number }>`
   width: auto;
   padding: .5rem .625rem;
   background: none;
@@ -65,6 +65,10 @@ const Button = styled.button`
   line-height: .875rem;
   font-weight: bold;
   cursor: pointer;
+  ${({ theme, warning }) => warning ? `
+  color: ${theme.colors.warningRed};
+  font-weight: bold; 
+  ` : ''}
 `;
 
 export interface PopupProps {
@@ -89,7 +93,7 @@ export default function Popup({
         <Description>{description}</Description>
         <Buttons>
           {buttons.map((button, i) => (
-            <Button key={`pb-${button.label}`} onClick={button.onClick}>{button.label}</Button>
+            <Button key={`pb-${button.label}`} warning={button.warning ? 1 : 0} onClick={button.onClick}>{button.label}</Button>
           ))}
         </Buttons>
       </Container>

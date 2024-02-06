@@ -37,6 +37,22 @@ export default function NavBar() {
     }
   }, []);
 
+  const signOut = useCallback(async () => {
+    if(isDev()) return;
+
+    try {
+      closePopup();
+
+      await apis.signOut();
+      localStorage.removeItem('at');
+
+      router.push('/login');
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error);
+    }
+  }, []);
+
   const handleLogout = useCallback(() => {
     openPopup({
       title: '로그아웃',
@@ -46,6 +62,17 @@ export default function NavBar() {
         { label: '확인', onClick: logout },
       ],
     });
+  }, []);
+
+  const handleSignOut = useCallback(() => {
+    openPopup({
+      title: '회원탈퇴',
+      description: <>정말 탈퇴하시겠습니까?<br />탈퇴시 카테고리 및 일정이 모두 삭제됩니다</>,
+      buttons: [
+        { label: '탈퇴', onClick: signOut, warning: true },
+        { label: '취소', onClick: closePopup },
+      ],
+    })
   }, []);
 
   return (
@@ -60,7 +87,7 @@ export default function NavBar() {
       </MenuButton>
       <MenuButton icon={mdiAccount}>
         <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
-        <MenuItem onClick={() => {}}>회원탈퇴</MenuItem>
+        <MenuItem onClick={handleSignOut}>회원탈퇴</MenuItem>
       </MenuButton>
     </NavBarContainer>
   );
