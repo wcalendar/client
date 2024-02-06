@@ -430,7 +430,8 @@ export default function Home() {
   }, [categoryList, openNewScheduleModal]);
 
   const {
-    draggedPriorityX, draggedPriorityY, draggedPriority,
+    draggedPriorityX, draggedPriorityY, draggedPriority, openedDay,
+    handlePriorityListOpen,
     handlePriorityClick,
     handlePriorityItemDrag,
     handlePriorityItemDragEnd,
@@ -490,6 +491,8 @@ export default function Home() {
                     key={`pl-${i}`}
                     priorities={priorities}
                     prioritiesSize={prioritiesSize}
+                    isOpened={openedDay === i+1}
+                    onPriorityListOpen={handlePriorityListOpen}
                     onPriorityItemClick={handlePriorityClick}
                     onPriorityItemDrag={handlePriorityItemDrag}
                     onPriorityItemDragEnd={handlePriorityItemDragEnd}
