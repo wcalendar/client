@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { DragEvent, DragEventHandler, MouseEvent, useEffect, useRef, useState } from "react";
 import { CategoryColor, Priority } from "@/types";
+import Icon from "@mdi/react";
+import { mdiUnfoldMoreHorizontal } from "@mdi/js";
 
 type PriorityItemProps = {
   priority: Priority;
@@ -31,6 +33,8 @@ const Container = styled.div<{ $color: CategoryColor, $level: number, $is_finish
   margin-right: 2px;
   vertical-align: middle;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   cursor: pointer;
   transition: transform ease .25s, box-shadow ease .25s;
 
@@ -41,7 +45,7 @@ const Container = styled.div<{ $color: CategoryColor, $level: number, $is_finish
 `;
 
 const Text = styled.span<{ $is_finished: number }>`
-  width: auto;
+  flex: auto 0 1;
   height: 100%;
   font-size: .75rem;
   user-select: none;
@@ -55,6 +59,11 @@ const Text = styled.span<{ $is_finished: number }>`
   text-decoration: line-through;
   opacity: .2;
   ` : '' }
+`;
+
+const IconWrapper = styled.div`
+  flex: 1rem 0 0;
+  height: 1rem;
 `;
 
 export default function PriorityItem({
@@ -150,6 +159,9 @@ export default function PriorityItem({
         <Text $is_finished={isFinished ? 1 : 0}>
           {content}
         </Text>
+        <IconWrapper>
+          <Icon path={mdiUnfoldMoreHorizontal} />
+        </IconWrapper>
       </Container>
     </Wrapper>
   )
