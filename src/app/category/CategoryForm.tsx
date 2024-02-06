@@ -66,6 +66,10 @@ const ColorItem = styled.input<{ $color: CategoryColor }>`
     transform: scale(1.1);
     border: 1px solid ${({ theme }) => theme.colors.black};
   }
+
+  &:disabled::before {
+    opacity: .5;
+  }
 `;
 
 const Divider = styled.hr`
@@ -109,7 +113,7 @@ function CategoryForm({
     setName(selectedCategory?.name || '');
     setDescription(selectedCategory?.description || '');
     setVisible(selectedCategory?.isVisible);
-    setColor(selectedCategory?.color);
+    setColor((selectedCategory && (selectedCategory.level === 0)) ? selectedCategory.color : undefined);
   }, [selectedCategory]);
 
   const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(async (e) => {
@@ -220,7 +224,7 @@ function CategoryForm({
               type='radio'
               value={colorName}
               $color={colorName}
-              disabled={!isActive}
+              disabled={Boolean(!selectedCategory || selectedCategory.level > 0)}
               checked={color === undefined ? false : color === colorName}
               onChange={handleColorChange}
               tabIndex={i+5}
