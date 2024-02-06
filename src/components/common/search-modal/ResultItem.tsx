@@ -1,5 +1,8 @@
 import time from "@/lib/time";
+import { useModal } from "@/providers/ModalProvider/useModal";
 import { ScheduleToRender } from "@/types";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -34,10 +37,22 @@ interface ResultItemProps {
 export default function ResultItem({
   searchResult,
 }: ResultItemProps) {
-  const { content, startDate, endDate } = searchResult
+  const router = useRouter();
+  const { addModal } = useModal()
+  const { content, startDate, endDate } = searchResult;
+
+  const handleClick = useCallback(() => {
+    addModal({
+      key: 'newSchedule',
+      modalProps: {
+        newScheduleModalInfo: { schedule: searchResult },
+        onScheduleCreate: () => { router.push('/'); },
+      },
+    });
+  }, [searchResult]);
 
   return (
-    <Container>
+    <Container onClick={handleClick}>
       <Content>{content}</Content>
       <Date>{`${time.toString(startDate, 'YYYY.MM.DD')} - ${time.toString(endDate, 'YYYY.MM.DD')}`}</Date>
     </Container>
