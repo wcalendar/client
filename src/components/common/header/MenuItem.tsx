@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { MouseEventHandler, ReactNode, useCallback } from "react";
 import styled from "styled-components";
 
 const Container = styled.button`
@@ -21,13 +21,20 @@ const Container = styled.button`
 
 interface MenuItemProps {
   children: ReactNode;
+  onClick: () => void;
 }
 
 export default function MenuItem({
   children,
+  onClick,
 }: MenuItemProps) {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback((e) => {
+    e.stopPropagation();
+    onClick();
+  }, [onClick]);
+
   return (
-    <Container onClick={(e) => {e.stopPropagation();}}>
+    <Container onClick={handleClick}>
       {children}
     </Container>
   );
