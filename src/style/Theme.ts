@@ -81,9 +81,9 @@ const theme = {
         desktop: '4',
       },
       PriorityListWidth: {
-        mobile: '133px',
-        tablet: '133px',
-        desktop: '232px',
+        mobile: '8.625rem',
+        tablet: '8.625rem',
+        desktop: '14.75rem',
       },
     }
   }

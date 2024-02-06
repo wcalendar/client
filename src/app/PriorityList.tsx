@@ -15,7 +15,6 @@ const Container = styled.div<{ $idx: number, $priority_count: number, $open: num
 
   @media ${({ theme }) => theme.devices.mobile} {
     --priority-list-width: ${({ theme }) => theme.sizes.calendar.PriorityListWidth.mobile};
-    transition: none;
   }
 
   box-sizing: content-box;
