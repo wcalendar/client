@@ -1,12 +1,14 @@
-import { ModalStatus, ScheduleToRender } from "@/types";
+import { ModalStatus, ScheduleToRender, SearchedScheduleDto } from "@/types";
 import { mdiMagnify } from "@mdi/js";
 import Icon from "@mdi/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ResultItem from "./ResultItem";
 import FixedModal from "../fixed-modal/FixedModal";
 import useDev from "@/hooks/useDev";
 import { searchDummyData } from "@/dummies/calendar";
+import { apis } from "@/lib/apis";
+import { AxiosError } from "axios";
 
 const Input = styled.input`
   width: 100%;
@@ -50,36 +52,58 @@ export default function SearchModal({
 }: SearchModalProps) {
   const { isDev } = useDev();
   const [modalStatus, setModalStatus] = useState<ModalStatus>('open');
-  const [resultList, setResultList] = useState<ScheduleToRender[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
+  const [resultList, setResultList] = useState<SearchedScheduleDto[]>([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const getResultList = useCallback(async () => {
+  const getResultList = useCallback(async (newSearchTerm: string) => {
     if(isDev()) {
       setResultList(searchDummyData);
       return;
     }
+
+    try {
+      const response = await apis.searchSchedule(newSearchTerm);
+      setResultList(response.resultBody);
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+    }
+
   }, []);
 
   useEffect(() => {
     inputRef.current!.focus();
-
-    getResultList();
   });
 
   const handleModalClose = useCallback(() => {
     setModalStatus('closing');
   }, []);
 
+  const handleSearchTermChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+    setSearchTerm(e.target.value);
+
+    const newSearchTerm = e.target.value.trim();
+    if(newSearchTerm.length > 0) {
+      if(debounceTimer) clearTimeout(debounceTimer);
+      setDebounceTimer(setTimeout(() => getResultList(newSearchTerm), 1000));
+    } else {
+      if(debounceTimer) clearTimeout(debounceTimer);
+    }
+
+  }, [debounceTimer]);
+
   return (
     <FixedModal status={modalStatus} width="33.75rem" onModalClose={handleModalClose}>
-      <Input type='text' placeholder="일정 검색" ref={inputRef} />
+      <Input type="text" placeholder="일정 검색" ref={inputRef} value={searchTerm} onChange={handleSearchTermChange} />
       <IconWrapper>
         <Icon path={mdiMagnify} />
       </IconWrapper>
       <List>
         {resultList.map(result => (
-          <ResultItem key={`sr-${result.groupCode}`} searchResult={result} />
+          <ResultItem key={`sr-${result.scheduleGroupCode}`} searchResult={result} />
         ))}
       </List>
     </FixedModal>
