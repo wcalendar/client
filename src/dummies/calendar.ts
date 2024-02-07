@@ -1,5 +1,5 @@
 import time from "@/lib/time";
-import { CategoryDto, ResDto, ScheduleToRender } from "@/types";
+import { CategoryDto, ResDto, ScheduleToRender, SearchedScheduleDto } from "@/types";
 
 const y = time.now().year();
 const m = time.now().month();
@@ -188,66 +188,66 @@ const calendarDummyData: ResDto<CategoryDto[]>[] = [
 
 const categoryListDummyData: CategoryDto[] = calendarDummyData[0].resultBody;
 
-const searchDummyData: ScheduleToRender[] = [
+const searchDummyData: SearchedScheduleDto[] = [
   {
-    id: 's1',
+    scheduleId: 's1',
     categoryId: 'c1',
-    groupCode: 'g1',
-    content: "Schedule 1",
+    scheduleGroupCode: 'g1',
+    scheduleContent: "Schedule 1",
     isFinished: false,
     isPriority: true,
-    startDate: time.new(2024, 1, 2),
-    endDate: time.new(2024, 1, 3),
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 3), 'YYYY-MM-DD'),
   },
   {
-    id: 's3',
+    scheduleId: 's3',
     categoryId: 'c1',
-    groupCode: 'g2',
-    content: "Schedule 2",
+    scheduleGroupCode: 'g2',
+    scheduleContent: "Schedule 2",
     isFinished: false,
     isPriority: true,
-    startDate: time.new(2024, 1, 2),
-    endDate: time.new(2024, 1, 4),
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 4), 'YYYY-MM-DD'),
   },
   {
-    id: 's6',
+    scheduleId: 's6',
     categoryId: 'c1',
-    groupCode: 'g6',
-    content: "Schedule 6",
+    scheduleGroupCode: 'g6',
+    scheduleContent: "Schedule 6",
     isFinished: false,
     isPriority: true,
-    startDate: time.new(2024, 1, 3),
-    endDate: time.new(2024, 1, 3),
+    scheduleStartDate: time.toString(time.new(2024, 1, 3), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 3), 'YYYY-MM-DD'),
   },
   {
-    id: 's7',
+    scheduleId: 's7',
     categoryId: 'c2',
-    groupCode: 'g3',
-    content: "Schedule 3",
+    scheduleGroupCode: 'g3',
+    scheduleContent: "Schedule 3",
     isFinished: false,
     isPriority: true,
-    startDate: time.new(2024, 1, 2),
-    endDate: time.new(2024, 1, 3),
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 3), 'YYYY-MM-DD'),
   },
   {
-    id: 's9',
+    scheduleId: 's9',
     categoryId: 'c2',
-    groupCode: 'g4',
-    content: "Schedule 4",
+    scheduleGroupCode: 'g4',
+    scheduleContent: "Schedule 4",
     isFinished: false,
     isPriority: true,
-    startDate: time.new(2024, 1, 2),
-    endDate: time.new(2024, 1, 2),
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
   },
   {
-    id: 's10',
+    scheduleId: 's10',
     categoryId: 'c3',
-    groupCode: 'g5',
-    content: "Schedule 5",
+    scheduleGroupCode: 'g5',
+    scheduleContent: "Schedule 5",
     isFinished: false,
     isPriority: true,
-    startDate: time.new(2024, 1, 2),
-    endDate: time.new(2024, 1, 4),
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 4), 'YYYY-MM-DD'),
   },
 ];
 

@@ -157,6 +157,18 @@ export type NewScheduleModalInfo = {
   fixedCategoryInfo?: FixedCategoryInfo,
 }
 
+// 일정 검색 결과
+export interface SearchedScheduleDto {
+  scheduleId: string;
+  scheduleGroupCode: string;
+  categoryId: string;
+  scheduleContent: string;
+  isPriority: boolean;
+  isFinished: boolean;
+  scheduleStartDate: string;
+  scheduleEndDate: string;
+}
+
 // Modal Context 관련 타입들
 export type ModalType = 'schedule' | 'category' | 'newSchedule' | 'search';
 export type ModalProps = ( ScheduleModalProps | CategoryModalProps | NewScheduleModalProps | SearchModalProps );

@@ -1,4 +1,4 @@
-import { CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto } from "@/types";
+import { CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto, SearchedScheduleDto } from "@/types";
 import axios from "axios";
 
 // TODO env 파일로 빼기
@@ -70,5 +70,8 @@ export const apis = {
   },
   updateSchedulePriority: async (scheduleOrderList: string[], scheduleDate: string): Promise<ResDto<string>> => {
     return (await authAPI.put(`/schedules`, { scheduleOrderList, scheduleDate })).data;
+  },
+  searchSchedule: async (searchTerm: string): Promise<ResDto<SearchedScheduleDto[]>> => {
+    return (await authAPI.get(`schedules/search?content=${searchTerm}`)).data;
   },
 }
