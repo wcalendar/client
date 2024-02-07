@@ -5,7 +5,7 @@ export default function useMode(key: string) {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if(e.key === key) {
+      if(e.key === key && document.activeElement?.tagName === 'BODY') {
         e.preventDefault();
         setMode(true);
       }
