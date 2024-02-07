@@ -7,17 +7,18 @@ import { useCallback, useState } from "react";
 
 const Container = styled.main`
   position: fixed;
-  left: calc(50% - 15rem);
+  left: calc(50% - 11.25rem);
   top: 10rem;
-  width: 30rem;
+  width: 22.5rem;
   height: auto;
+  padding: 1.25rem;
 `;
 
 const Title = styled.h1`
   color: ${({ theme }) => theme.colors.blue};
   font-weight: bold;
   text-align: center;
-  font-size: 3.5rem;
+  font-size: 3.125rem;
   margin-bottom: 1rem;
   position: relative;
 `;
@@ -25,32 +26,32 @@ const Title = styled.h1`
 const IconWrapper = styled.div`
   position: absolute;
   top: -1rem;
-  right: 2.75rem;
-  width: 2.375rem;
-  height: 2.375rem;
+  right: -1rem;
+  width: 2.5rem;
+  height: 2.5rem;
 `;
 
 const SubTitle = styled.h2`
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: normal;
   line-height: 2.25rem;
   text-align: center;
 `;
 
 const DivideLine = styled.div`
-  width: 70%;
+  width: 100%;
   height: 0;
   border-bottom: 1px solid ${({ theme }) => theme.colors.black};
   margin: 1rem auto;
 `;
 
 const AgreeOptions = styled.div`
-  width: 70%;
+  width: 100%;
   margin: 0 auto;
 `;
 
 const Buttons = styled.div`
-  width: 70%;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   gap: 1rem;
