@@ -4,6 +4,9 @@ import Image from "next/image";
 import styled from "styled-components";
 import AgreeOption from "./AgreeOption";
 import { useCallback, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { AxiosError } from "axios";
+import { apis } from "@/lib/apis";
 
 const Container = styled.main`
   position: fixed;
@@ -70,6 +73,10 @@ const Button = styled.button<{ fill: number }>`
 `;
 
 export default function Terms() {
+  const state = useSearchParams().get('state');
+
+  const router = useRouter();
+
   const [isAgreeTermsOfUse, setAgreeTermsOfUse] = useState(false);
   const [isAgreePersonal, setAgreePersonal] = useState(false);
 
@@ -90,6 +97,41 @@ export default function Terms() {
   const handleIsAgreePersonalChange = useCallback(() => {
     setAgreePersonal(!isAgreePersonal);
   }, [isAgreePersonal]);
+
+  const handleAgreeClick = useCallback(async () => {
+    if(!state) {
+      alert('잘못된 접근입니다');
+      router.push('/login');
+      return;
+    }
+
+    if(!(isAgreeTermsOfUse && isAgreePersonal)) {
+      // TODO 문구 수정
+      alert('동의 안해? 왜?');
+      return;
+    }
+
+    try {
+      const response = await apis.agree({
+        didAgree: true,
+        stateId: state,
+      });
+
+      const authorization: string | undefined = response.headers['authorization']
+      if(authorization) {
+        const token = authorization.split(' ')[1];
+        localStorage.setItem('at', token);
+        localStorage.setItem('first_login', 'true');
+        router.push('/');
+      } else {
+        alert('로그인 실패');
+        router.push('/login');
+      }
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error);
+    }
+  }, [isAgreeTermsOfUse, isAgreePersonal]);
 
   return (
     <Container>
@@ -129,7 +171,7 @@ export default function Terms() {
       </AgreeOptions>
       <Buttons>
         <Button fill={0}>취소</Button>
-        <Button fill={1}>확인</Button>
+        <Button fill={1} onClick={handleAgreeClick}>확인</Button>
       </Buttons>
     </Container>
   );

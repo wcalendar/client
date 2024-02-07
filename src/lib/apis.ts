@@ -1,5 +1,5 @@
-import { CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto, SearchedScheduleDto } from "@/types";
-import axios from "axios";
+import { AgreeDto, CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto, SearchedScheduleDto } from "@/types";
+import axios, { AxiosResponse } from "axios";
 
 // TODO env 파일로 빼기
 export const serverURL = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -30,6 +30,9 @@ authAPI.interceptors.request.use((config) => {
 });
 
 export const apis = {
+  agree: async (agreeDto: AgreeDto): Promise<AxiosResponse<ResDto<string>>> => {
+    return (await noAuthAPI.post(`/terms/approval`, agreeDto));
+  },
   logout: async (): Promise<ResDto<string>> => {
     return (await authAPI.post(`/user/logout`)).data;
   },
