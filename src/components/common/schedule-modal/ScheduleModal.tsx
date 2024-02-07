@@ -139,7 +139,7 @@ export default function ScheduleModal({
   }, [schedule]);
   
   return (
-    <FloatingModal x={x} y={y} onClose={handleModalClose}>
+    <FloatingModal mobilePos="center" x={x} y={y} onClose={handleModalClose}>
       <Header>
         <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
         <CheckBox type='checkbox' checked={schedule.isFinished} onChange={handleScheduleFinish} />

@@ -1,14 +1,11 @@
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 
-type FloatingModalProps = {
-  x: number;
-  y: number;
-  onClose: () => void;
-  children: ReactNode;
-}
+type MobilePos = 'center' | 'inherit';
 
-const Container = styled.div<{ $x: string, $y: string }>`
+const Container = styled('div').withConfig({
+  shouldForwardProp: p => p !== 'mobilePos'
+})<{ $x: string, $y: string, mobilePos: MobilePos }>`
   position: absolute;
   left: ${({ $x }) => $x};
   top: ${({ $y }) => $y};
@@ -19,12 +16,27 @@ const Container = styled.div<{ $x: string, $y: string }>`
   user-select: none;
   z-index: 15;
 
-  @media ${({ theme }) => theme.devices.mobile} {
+  @media ${({ theme, mobilePos }) => theme.devices.mobile} {
+    ${({ mobilePos }) => mobilePos === 'center' ? `
     left: calc(50% - (16.875rem / 2));
+    ` : `
+    width: 12.5rem;
+    `}
+
+    
   }
 `;
 
+interface FloatingModalProps {
+  mobilePos: MobilePos;
+  x: number;
+  y: number;
+  onClose: () => void;
+  children: ReactNode;
+}
+
 export default function FloatingModal({
+  mobilePos,
   x,
   y,
   onClose,
@@ -58,7 +70,7 @@ export default function FloatingModal({
   }, []);
 
   return (
-    <Container $x={renderX} $y={renderY} ref={modalRef}>
+    <Container mobilePos={mobilePos} $x={renderX} $y={renderY} ref={modalRef}>
       {children}
     </Container>
   )
