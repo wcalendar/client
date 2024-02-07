@@ -22,6 +22,8 @@ const Title = styled.div<{ $is_finished: number }>`
   flex-grow: 1;
   font-size: .875rem;
   font-weight: bold;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
   ${({ $is_finished }) => $is_finished ? `text-decoration: line-through;` : ''}
 `;
 
