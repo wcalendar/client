@@ -3,7 +3,6 @@ import FixedModal from "../fixed-modal/FixedModal";
 import { ModalStatus } from "@/types";
 import Tutorial from "./Tutorial";
 import useDevice from "@/hooks/useDevice";
-import { useModal } from "@/providers/ModalProvider/useModal";
 
 export interface TutorialModalProps {
 
@@ -11,7 +10,6 @@ export interface TutorialModalProps {
 
 export default function TutorialModal() {
   const device = useDevice();
-  const { closeModal } = useModal();
 
   const [status, setStatus] = useState<ModalStatus>('open');
 
@@ -22,6 +20,7 @@ export default function TutorialModal() {
   return (
     <FixedModal
       width={device === 'mobile' ? '18.75rem' : '31.25rem'}
+      backgroundColor='black'
       status={status}
       onModalClose={handleClose}
     >

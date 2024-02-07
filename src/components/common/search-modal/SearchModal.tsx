@@ -96,7 +96,7 @@ export default function SearchModal({
   }, [debounceTimer]);
 
   return (
-    <FixedModal status={modalStatus} width="33.75rem" onModalClose={handleModalClose}>
+    <FixedModal status={modalStatus} width="33.75rem" backgroundColor="white" onModalClose={handleModalClose}>
       <Input type="text" placeholder="일정 검색" ref={inputRef} value={searchTerm} onChange={handleSearchTermChange} />
       <IconWrapper>
         <Icon path={mdiMagnify} />
