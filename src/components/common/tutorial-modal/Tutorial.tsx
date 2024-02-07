@@ -5,6 +5,7 @@ import Icon from "@mdi/react";
 import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
 import Image from "next/image";
 import useDevice from "@/hooks/useDevice";
+import { useModal } from "@/providers/ModalProvider/useModal";
 
 const Container = styled.div`
   padding: 1.25rem;
@@ -171,7 +172,13 @@ const tutorialInfos = [
   },
 ];
 
-const Tutorial = memo(function Tutorial() {
+interface TutorialProps {
+  onClose: () => void;
+}
+
+export default function Tutorial({
+  onClose,
+}: TutorialProps) {
   const device = useDevice();
   const [page, setPage] = useState(0);
 
@@ -186,7 +193,7 @@ const Tutorial = memo(function Tutorial() {
   return (
     <Container>
       <Header>
-        <CloseButton>
+        <CloseButton onClick={onClose}>
           <CloseButtonIcon width="100%" height='100%' />
         </CloseButton>
       </Header>
@@ -236,6 +243,4 @@ const Tutorial = memo(function Tutorial() {
       </SlideBox>
     </Container>
   );
-});
-
-export default Tutorial;
+}
