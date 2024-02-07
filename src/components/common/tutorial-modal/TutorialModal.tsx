@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import FixedModal from "../fixed-modal/FixedModal";
 import { ModalStatus } from "@/types";
 import Tutorial from "./Tutorial";
@@ -13,13 +13,18 @@ export default function TutorialModal() {
 
   const [status, setStatus] = useState<ModalStatus>('open');
 
+  const handleClose = useCallback(() => {
+    setStatus('closing');
+  }, []);
+
   return (
     <FixedModal
       width={device === 'mobile' ? '18.75rem' : '31.25rem'}
+      backgroundColor='black'
       status={status}
-      onModalClose={() => {}}
+      onModalClose={handleClose}
     >
-      <Tutorial />
+      <Tutorial onClose={handleClose} />
     </FixedModal>
   );
 }

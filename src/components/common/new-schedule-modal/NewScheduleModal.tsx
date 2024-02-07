@@ -309,6 +309,7 @@ export default function NewScheduleModal({
   return (
     <FixedModal
       width='33.75rem'
+      backgroundColor="white"
       status={status}
       onModalClose={handleClose}
     >

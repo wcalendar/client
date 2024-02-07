@@ -31,6 +31,12 @@ export interface ErrorRes {
   errorMessage: string;
 }
 
+// 약관동의 body
+export interface AgreeDto {
+  didAgree: boolean;
+  stateId: string;
+}
+
 // 서버에서 오는 카테고리 데이터
 // GET /api/schedules/{year}/{month}
 export type CategoryDto = {

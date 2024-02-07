@@ -3,7 +3,7 @@ import { ModalStatus } from "@/types";
 import { ReactNode, useCallback } from "react";
 import styled from "styled-components";
 
-const Background = styled.div<{ $status: string }>`
+const Background = styled.div<{ $status: string, backgroundColor: 'black' | 'white' }>`
   position: fixed;
   left: 0;
   top: 0;
@@ -13,7 +13,7 @@ const Background = styled.div<{ $status: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  background-color: ${({ theme, backgroundColor }) => backgroundColor === 'black' ? theme.colors.black : 'white'};
   opacity: ${({ $status }) => $status === 'open' ? '.5' : '0'};
   animation: ${({ $status }) => $status === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
 `;
@@ -43,6 +43,7 @@ interface FixedModalsProps {
   width: string;
   status: ModalStatus;
   children: ReactNode;
+  backgroundColor: 'black' | 'white';
   onModalClose: () => void;
 }
 
@@ -50,6 +51,7 @@ export default function FixedModal({
   width,
   status,
   children,
+  backgroundColor,
   onModalClose,
 }: FixedModalsProps) {
   const { closeModal } = useModal();
@@ -60,7 +62,7 @@ export default function FixedModal({
 
   return (
     <>
-      <Background $status={status} onAnimationEnd={handleAnimationEnd} onClick={onModalClose} />
+      <Background $status={status} backgroundColor={backgroundColor} onAnimationEnd={handleAnimationEnd} onClick={onModalClose} />
       <Modal $status={status} $width={width}>{children}</Modal>
     </>
   );
