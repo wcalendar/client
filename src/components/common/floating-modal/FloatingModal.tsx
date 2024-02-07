@@ -1,14 +1,14 @@
-import { ReactNode, useEffect, useMemo, useRef } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
 type MobilePos = 'center' | 'inherit';
 
 const Container = styled('div').withConfig({
-  shouldForwardProp: p => p !== 'mobilePos'
-})<{ $x: string, $y: string, mobilePos: MobilePos }>`
+  shouldForwardProp: p => !['mobilePos', 'x', 'y'].includes(p)
+})<{ x: string, y: string, mobilePos: MobilePos }>`
   position: absolute;
-  left: ${({ $x }) => $x};
-  top: ${({ $y }) => $y};
+  left: ${({ x }) => x};
+  top: ${({ y }) => y};
   width: 16.875rem;
   border: 1px solid ${({ theme }) => theme.colors.white};
   border-radius: 10px;
@@ -22,8 +22,6 @@ const Container = styled('div').withConfig({
     ` : `
     width: 12.5rem;
     `}
-
-    
   }
 `;
 
@@ -45,12 +43,12 @@ export default function FloatingModal({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const renderX = useMemo(() => {
-    if(x > (window.innerWidth / 2)) return `calc(${x}px - 16.875rem)`;
+    if(x > (window.innerWidth / 2)) return `calc(${x}px - 270px)`;
     else return `${x}px`;
   }, [x]);
 
   const renderY = useMemo(() => {
-    if((y + 150) > window.innerHeight) return `calc(${y}px - 6.875rem)`;
+    if(y + 75 > window.innerHeight) return `calc(${y}px - 75px)`;
     else return `${y}px`;
   }, [y]);
 
@@ -70,7 +68,7 @@ export default function FloatingModal({
   }, []);
 
   return (
-    <Container mobilePos={mobilePos} $x={renderX} $y={renderY} ref={modalRef}>
+    <Container mobilePos={mobilePos} x={renderX} y={renderY} ref={modalRef}>
       {children}
     </Container>
   )
