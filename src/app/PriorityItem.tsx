@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { DragEvent, DragEventHandler, MouseEvent, useEffect, useRef, useState } from "react";
+import { DragEvent, DragEventHandler, MouseEvent, TouchEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import { CategoryColor, Priority } from "@/types";
 import Icon from "@mdi/react";
 import { mdiUnfoldMoreHorizontal } from "@mdi/js";
+import { usePopup } from "@/providers/PopupProvider/usePopup";
 
 type PriorityItemProps = {
   priority: Priority;
@@ -75,9 +76,12 @@ export default function PriorityItem({
   day,
   idx,
 }: PriorityItemProps) {
+  const { openPopup, closePopup } = usePopup();
+
   const { color, level, content, isFinished, categoryId, groupCode, scheduleId } = priority;
 
   const [isDraggingOver, setDraggingOver] = useState(false);
+  const [touchTimer, setTouchTimer] = useState<NodeJS.Timeout | null>(null);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -138,6 +142,23 @@ export default function PriorityItem({
     }
   };
 
+  const openMobilePopup = useCallback(() => {
+    openPopup({
+      title: '우선순위 변경',
+      description: <>우선순위 변경은 현재 데스크탑 환경에서만 가능합니다</>,
+      buttons: [{ label: '확인', onClick: closePopup }],
+    });
+  }, []);
+
+  const handleTouchStart: TouchEventHandler<HTMLDivElement> = useCallback((e) => {
+    const timer = setTimeout(openMobilePopup, 500);
+    setTouchTimer(timer);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if(touchTimer) clearTimeout(touchTimer);
+  }, [touchTimer]);
+
   return (
     <Wrapper
       onDragOver={handleDragOver}
@@ -155,6 +176,8 @@ export default function PriorityItem({
         onDrag={(e) => onDrag(e.clientX, e.clientY, priority)}
         onDragEnd={onDragEnd}
         onDragOver={handleDragOver}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <Text $is_finished={isFinished ? 1 : 0}>
           {content}
