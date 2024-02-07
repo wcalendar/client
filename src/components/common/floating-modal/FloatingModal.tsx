@@ -1,17 +1,14 @@
-import { ReactNode, useEffect, useMemo, useRef } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
-type FloatingModalProps = {
-  x: number;
-  y: number;
-  onClose: () => void;
-  children: ReactNode;
-}
+type MobilePos = 'center' | 'inherit';
 
-const Container = styled.div<{ $x: string, $y: string }>`
+const Container = styled('div').withConfig({
+  shouldForwardProp: p => !['mobilePos', 'x', 'y'].includes(p)
+})<{ x: string, y: string, mobilePos: MobilePos }>`
   position: absolute;
-  left: ${({ $x }) => $x};
-  top: ${({ $y }) => $y};
+  left: ${({ x }) => x};
+  top: ${({ y }) => y};
   width: 16.875rem;
   border: 1px solid ${({ theme }) => theme.colors.white};
   border-radius: 10px;
@@ -19,12 +16,25 @@ const Container = styled.div<{ $x: string, $y: string }>`
   user-select: none;
   z-index: 15;
 
-  @media ${({ theme }) => theme.devices.mobile} {
+  @media ${({ theme, mobilePos }) => theme.devices.mobile} {
+    ${({ mobilePos }) => mobilePos === 'center' ? `
     left: calc(50% - (16.875rem / 2));
+    ` : `
+    width: 12.5rem;
+    `}
   }
 `;
 
+interface FloatingModalProps {
+  mobilePos: MobilePos;
+  x: number;
+  y: number;
+  onClose: () => void;
+  children: ReactNode;
+}
+
 export default function FloatingModal({
+  mobilePos,
   x,
   y,
   onClose,
@@ -33,12 +43,12 @@ export default function FloatingModal({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const renderX = useMemo(() => {
-    if(x > (window.innerWidth / 2)) return `calc(${x}px - 16.875rem)`;
+    if(x > (window.innerWidth / 2)) return `calc(${x}px - 270px)`;
     else return `${x}px`;
   }, [x]);
 
   const renderY = useMemo(() => {
-    if((y + 150) > window.innerHeight) return `calc(${y}px - 6.875rem)`;
+    if(y + 75 > window.innerHeight) return `calc(${y}px - 75px)`;
     else return `${y}px`;
   }, [y]);
 
@@ -58,7 +68,7 @@ export default function FloatingModal({
   }, []);
 
   return (
-    <Container $x={renderX} $y={renderY} ref={modalRef}>
+    <Container mobilePos={mobilePos} x={renderX} y={renderY} ref={modalRef}>
       {children}
     </Container>
   )

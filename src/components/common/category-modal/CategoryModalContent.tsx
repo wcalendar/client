@@ -15,6 +15,8 @@ const Title = styled.div`
   flex-grow: 1;
   font-size: .875rem;
   font-weight: bold;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
 `;
 
 const CloseButton = styled.button`
@@ -52,6 +54,8 @@ const Value = styled.div`
   min-height: 1rem;
   font-size: .75rem;
   line-height: 1rem;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
 `;
 
 interface CategoryModalContentProps {

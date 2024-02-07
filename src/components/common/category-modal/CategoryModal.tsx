@@ -21,7 +21,7 @@ export default function CategoryModal({
   }, []);
   
   return (
-    <FloatingModal x={x} y={y} onClose={handleClose}>
+    <FloatingModal mobilePos="inherit" x={x} y={y} onClose={handleClose}>
       <CategoryModalContent category={category} onClose={handleClose} />
     </FloatingModal>
   );

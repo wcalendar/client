@@ -6,12 +6,14 @@ import NewScheduleModal from "@/components/common/new-schedule-modal/NewSchedule
 import { useContext } from "react";
 import { ModalContext } from "@/providers/ModalProvider/ModalContext";
 import SearchModal from "../search-modal/SearchModal";
+import TutorialModal from "../tutorial-modal/TutorialModal";
 
 const modalMap = {
   schedule: ScheduleModal,
   category: CategoryModal,
   newSchedule: NewScheduleModal,
   search: SearchModal,
+  tutorial: TutorialModal,
 }
 
 export default function AppModal() {
@@ -39,6 +41,10 @@ export default function AppModal() {
         } else if(key === 'search') {
           const SearchModals = modalMap[key];
           return <SearchModals key={'modal'} {...modalProps}></SearchModals>
+          
+        } else if(key === 'tutorial') {
+          const TutorialModal = modalMap[key];
+          return <TutorialModal key={'modal'} {...modalProps}></TutorialModal>
           
         }
       })}

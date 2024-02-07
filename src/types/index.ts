@@ -3,6 +3,7 @@ import { CategoryModalProps } from "@/components/common/category-modal/CategoryM
 import { ScheduleModalProps } from "@/components/common/schedule-modal/ScheduleModal";
 import { SearchModalProps } from "@/components/common/search-modal/SearchModal";
 import { Dayjs } from "dayjs";
+import { TutorialModalProps } from "@/components/common/tutorial-modal/TutorialModal";
 import { ReactNode } from "react";
 
 export type CategoryColor =
@@ -170,13 +171,14 @@ export interface SearchedScheduleDto {
 }
 
 // Modal Context 관련 타입들
-export type ModalType = 'schedule' | 'category' | 'newSchedule' | 'search';
-export type ModalProps = ( ScheduleModalProps | CategoryModalProps | NewScheduleModalProps | SearchModalProps );
+export type ModalType = 'schedule' | 'category' | 'newSchedule' | 'search' | 'tutorial';
+export type ModalProps = ( ScheduleModalProps | CategoryModalProps | NewScheduleModalProps | SearchModalProps | TutorialModalProps );
 export type ModalKey =
   | { key: 'schedule'; modalProps: ScheduleModalProps }
   | { key: 'category'; modalProps: CategoryModalProps }
   | { key: 'newSchedule'; modalProps: NewScheduleModalProps }
-  | { key: 'search'; modalProps: SearchModalProps };
+  | { key: 'search'; modalProps: SearchModalProps }
+  | { key: 'tutorial'; modalProps: TutorialModalProps };
 
 export type ModalStatus = 'open' | 'closing' | 'closed';
 
