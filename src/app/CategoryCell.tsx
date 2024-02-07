@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Category, CategoryColor, CategoryModalInfo, ModalStatus } from "@/types";
 import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import Tooltip from "./Tooltip";
+import useDevice from "@/hooks/useDevice";
 
 const Container = styled.div<{ $line_count: number, $is_hovered: number, $color: CategoryColor }>`
   position: relative;
@@ -72,6 +73,7 @@ export default function CategoryCell({
   onCategoryClick,
   isHovered,
 }: CategoryCellProps) {
+  const device = useDevice();
   const {id, name, level, color, description, } = category;
 
   const categoryNameRef = useRef<HTMLDivElement>(null);
@@ -86,20 +88,28 @@ export default function CategoryCell({
   }, [tooltipStatus]);
 
   const handleClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
-    onCategoryClick({
-      x: e.clientX,
-      y: e.clientY,
-      category,
-    });
-  }, [category]);
+    if(device !== 'desktop' && categoryNameRef.current) {
+      const {x, y, width} = categoryNameRef.current.getBoundingClientRect();
+
+      onCategoryClick({
+        x: x + width + 16,
+        y,
+        category,
+      });
+    }
+  }, [category, device]);
 
   const handleMouseEnter = useCallback(() => {
-    setTooltipStatus('open');
-  }, []);
+    if(device === 'desktop') {
+      setTooltipStatus('open');
+    }
+  }, [device]);
 
   const handleMouseLeave = useCallback(() => {
-    setTooltipStatus('closing');
-  }, []);
+    if(device === 'desktop') {
+      setTooltipStatus('closing');
+    }
+  }, [device]);
 
   const handleTooltipAnimationEnd = useCallback(() => {
     if(tooltipStatus === 'closing') {
