@@ -151,7 +151,7 @@ export default function PriorityItem({
   }, []);
 
   const handleTouchStart: TouchEventHandler<HTMLDivElement> = useCallback((e) => {
-    const timer = setTimeout(openMobilePopup, 500);
+    const timer = setTimeout(openMobilePopup, 350);
     setTouchTimer(timer);
   }, []);
 
