@@ -79,11 +79,11 @@ export default function NavBar() {
     <NavBarContainer>
       <SearchButton />
       <MenuButton icon={mdiCog}>
-        <MenuItem href=''>공지사항</MenuItem>
-        <MenuItem href=''>사용방법</MenuItem>
-        <MenuItem href=''>오류제보/문의하기</MenuItem>
-        <MenuItem href=''>이용약관</MenuItem>
-        <MenuItem href=''>개인정보 취급방침</MenuItem>
+        <MenuItem href='https://wplannerteam.notion.site/a858124ff6254c7e8731e12a022d22d6?pvs=4'>공지사항</MenuItem>
+        <MenuItem href='https://wplannerteam.notion.site/612fd9a4bdee41b2948ea4cfbfcd254a?pvs=4'>사용방법</MenuItem>
+        <MenuItem href='http://pf.kakao.com/_ZcKxaG/chat'>오류제보/문의하기</MenuItem>
+        <MenuItem href='https://wplannerteam.notion.site/Wplanner-4f3faa443e8c4cccb9bbc9d1a27955f4?pvs=4'>이용약관</MenuItem>
+        <MenuItem href='https://wplannerteam.notion.site/Wplanner-954f56204fc948399c35509f30d173b1?pvs=4'>개인정보 취급방침</MenuItem>
       </MenuButton>
       <MenuButton icon={mdiAccount}>
         <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
