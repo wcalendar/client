@@ -181,6 +181,7 @@ export type ModalStatus = 'open' | 'closing' | 'closed';
 export interface ButtonInfo {
   label: string;
   onClick: () => void;
+  warning?: boolean;
 }
 
 export interface PopupInfo {

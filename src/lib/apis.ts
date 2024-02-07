@@ -30,6 +30,13 @@ authAPI.interceptors.request.use((config) => {
 });
 
 export const apis = {
+  logout: async (): Promise<ResDto<string>> => {
+    return (await authAPI.post(`/user/logout`)).data;
+  },
+  signOut: async (): Promise<ResDto<string>> => {
+    return (await authAPI.post(`/user/delete`)).data;
+  },
+
   getCategories: async (y: number, m: number): Promise<ResDto<CategoryDto[]>> => {
     return (await authAPI.get(`/categories/${y}/${m+1}`)).data;
   },
