@@ -1,5 +1,8 @@
 import time from "@/lib/time";
-import { SearchResult } from "@/types";
+import { useModal } from "@/providers/ModalProvider/useModal";
+import { SearchedScheduleDto } from "@/types";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -21,12 +24,6 @@ const Content = styled.div`
   font-weight: bold;
 `;
 
-const Categories = styled.div`
-  height: .75rem;
-  line-height: .75rem;
-  font-size: .625rem;
-`;
-
 const Date = styled.div`
   height: .75rem;
   line-height: .75rem;
@@ -34,19 +31,39 @@ const Date = styled.div`
 `;
 
 interface ResultItemProps {
-  searchResult: SearchResult;
+  searchResult: SearchedScheduleDto;
 }
 
 export default function ResultItem({
   searchResult,
 }: ResultItemProps) {
-  const { content, categories, startDate, endDate } = searchResult
+  const router = useRouter();
+  const { addModal } = useModal()
+  const { scheduleContent: content, scheduleStartDate: startDate, scheduleEndDate: endDate } = searchResult;
+
+  const handleClick = useCallback(() => {
+    addModal({
+      key: 'newSchedule',
+      modalProps: {
+        newScheduleModalInfo: { schedule: {
+          id: searchResult.scheduleId,
+          groupCode: searchResult.scheduleGroupCode,
+          categoryId: searchResult.categoryId,
+          content,
+          isPriority: searchResult.isPriority,
+          isFinished: searchResult.isFinished,
+          startDate: time.fromString(startDate),
+          endDate: time.fromString(endDate),
+        } },
+        onScheduleCreate: () => { router.push('/'); },
+      },
+    });
+  }, [searchResult]);
 
   return (
-    <Container>
+    <Container onClick={handleClick}>
       <Content>{content}</Content>
-      <Categories>{categories.join('/')}</Categories>
-      <Date>{`${time.toString(startDate, 'YYYY.MM.DD')} - ${time.toString(endDate, 'YYYY.MM.DD')}`}</Date>
+      <Date>{`${startDate} - ${endDate}`}</Date>
     </Container>
   )
 }

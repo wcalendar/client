@@ -1,9 +1,12 @@
 import { ChangeEventHandler, FormEventHandler, forwardRef, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Category, CategoryColor } from '@/types';
+import { Category, CategoryColor, CategoryUpdateDto, ErrorRes } from '@/types';
 import SimpleButton from './SimpleButton';
 import FormRadioButton from '@/components/common/FormRadioButton';
 import FormSimpleButton from './FormSimpleButton';
+import { AxiosError } from 'axios';
+import { apis } from '@/lib/apis';
+import useDev from '@/hooks/useDev';
 
 const Container = styled.form`
   padding-top: 4.375rem;
@@ -63,6 +66,10 @@ const ColorItem = styled.input<{ $color: CategoryColor }>`
     transform: scale(1.1);
     border: 1px solid ${({ theme }) => theme.colors.black};
   }
+
+  &:disabled::before {
+    opacity: .5;
+  }
 `;
 
 const Divider = styled.hr`
@@ -85,13 +92,16 @@ const colors: CategoryColor[] = ['red', 'orange', 'yellow', 'green', 'blue', 'pu
 type CategoryFormProps = {
   selectedCategory: Category | null;
   resetForm: () => void;
+  onCategoryUpdate: () => void;
 };
 
 const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
 function CategoryForm({
   selectedCategory,
   resetForm,
+  onCategoryUpdate,
 }, ref) {
+  const { isDev } = useDev();
   const isActive = Boolean(selectedCategory);
 
   const [name, setName] = useState('');
@@ -103,16 +113,36 @@ function CategoryForm({
     setName(selectedCategory?.name || '');
     setDescription(selectedCategory?.description || '');
     setVisible(selectedCategory?.isVisible);
-    setColor(selectedCategory?.color);
+    setColor((selectedCategory && (selectedCategory.level === 0)) ? selectedCategory.color : undefined);
   }, [selectedCategory]);
 
-  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>((e) => {
+  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target as HTMLFormElement);
+    if(!selectedCategory) return;
 
-    console.log(formData.get('categoryName'));
-  }, []);
+    const formData = new FormData(e.target as HTMLFormElement);
+    const newCategoryUpdateDto: CategoryUpdateDto = {
+      categoryName: formData.get('categoryName') as string,
+      categoryDescription: formData.get('categoryDescription') as string,
+      categoryVisible: formData.get('categoryVisible') === 'true' ? true : false,
+      categoryColor: formData.get('categoryColor') as CategoryColor,
+    };
+
+    if(isDev()) {
+      console.log(newCategoryUpdateDto);
+      return;
+    }
+
+    try {
+      await apis.updateCategory(selectedCategory.id, newCategoryUpdateDto);
+      onCategoryUpdate();
+    } catch(e) {
+      const error = e as AxiosError<ErrorRes>;
+      console.log(error.response?.data);
+    }
+
+  }, [selectedCategory]);
 
   const handleNameChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
     setName(e.target.value);
@@ -194,7 +224,7 @@ function CategoryForm({
               type='radio'
               value={colorName}
               $color={colorName}
-              disabled={!isActive}
+              disabled={Boolean(!selectedCategory || selectedCategory.level > 0)}
               checked={color === undefined ? false : color === colorName}
               onChange={handleColorChange}
               tabIndex={i+5}
@@ -204,8 +234,8 @@ function CategoryForm({
       </Row>
       <Divider />
       <FormControlButtons>
-        <FormSimpleButton tabIndex={12} value='저장' disabled={!isActive} />
         <SimpleButton onClick={handleCancel} disabled={!isActive}>취소</SimpleButton>
+        <FormSimpleButton tabIndex={12} value='저장' disabled={!isActive} />
       </FormControlButtons>
     </Container>
   );

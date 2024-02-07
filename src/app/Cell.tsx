@@ -7,11 +7,11 @@ import styled from "styled-components";
 type CellProps = {
   start: number;
   categoryIdx: number;
-  categoryId: number;
+  categoryId: string;
   categoryColor: CategoryColor;
   onMouseOver: (categoryIdx: number) => void;
   onMouseOut: () => void;
-  onClick: (categoryId: number, day: number) => void;
+  onClick: (categoryId: string, day: number) => void;
 };
 
 const Container = styled.div<{ $start: number, $color: CategoryColor }>`
@@ -19,16 +19,18 @@ const Container = styled.div<{ $start: number, $color: CategoryColor }>`
   top: 0;
   left: calc(${({ $start }) => `${$start} * (var(--cell-width) + 1px)`});
   height: 100%;
-  width: calc((var(--cell-width) + 1px) - 1px);
+  width: calc((var(--cell-width) + 1px) - 5px);
+  margin: 0 2px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: all ease .25s;
+  transition: background ease .25s, color ease .25s;
   color: white;
+  border-radius: 5px;
 
   &:hover {
-    background: ${({ theme, $color }) => theme.colors.category($color, 1)};
+    background: ${({ theme, $color }) => theme.colors.finishedCategory($color)};
     color: ${({ theme }) => theme.colors.gray};
   }
 `;

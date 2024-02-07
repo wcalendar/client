@@ -1,22 +1,15 @@
 import { CategoryColor } from "@/types";
 
 type Colors = 'Red' | 'Orange' | 'Yellow' | 'Green' | 'Blue' | 'Purple' | 'Gray';
-type CategoryColorsKeys = `category${'Main' | 'Sub'}${Colors}`;
+type CategoryColorsKeys = `category${Colors}`;
 const categoryColors: {[key in CategoryColorsKeys]: string} = {
-  categoryMainRed: '#e4617a',
-  categorySubRed: '#f1b0bc',
-  categoryMainOrange: '#e0744e',
-  categorySubOrange: '#dfb9a6',
-  categoryMainYellow: '#daa12b',
-  categorySubYellow: '#ecd095',
-  categoryMainGreen: '#26aa85',
-  categorySubGreen: '#92d4c2',
-  categoryMainBlue: '#506ee2',
-  categorySubBlue: '#a7b6f0',
-  categoryMainPurple: '#8d4de2',
-  categorySubPurple: '#c6a6f0',
-  categoryMainGray: '#777d85',
-  categorySubGray: '#bbbec2',
+  categoryRed: '#f1b0bc',
+  categoryOrange: '#efb9a6',
+  categoryYellow: '#ecd095',
+  categoryGreen: '#92d4c2',
+  categoryBlue: '#a7b6f0',
+  categoryPurple: '#c6a6f0',
+  categoryGray: '#bbbec2',
 }
 
 const theme = {
@@ -33,53 +26,54 @@ const theme = {
     lightGray: '#d9d9d9',
     white: '#ececec',
     lightBlue: '#eaeffc',
-
-    /* 범주 */
-    ...categoryColors,
+    warningRed: '#ff2323',
 
     category: (color: CategoryColor, level: number) => {
-      return categoryColors[`category${level === 0 ? 'Main' : 'Sub'}${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`];
+      return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}${level === 0 ? '' : (level === 1 ? 'cc' : '99')}`;
+    },
+    finishedCategory: (color: CategoryColor) => {
+      return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}33`;
     }
   },
 
   sizes: {
     header: {
       headerHeight: {
-        mobile: '2.5rem',
+        mobile: '5.25rem',
         tablet: '3.125rem',
         desktop: '4.375rem',
       },
       headerPadding: {
-        mobile: '.25rem',
+        mobile: '.5rem',
         tablet: '.5rem',
         desktop: '1rem',
       },
     },
     calendar: {
       cellWidth: {
-        mobile: '55px',
-        tablet: '133px',
-        desktop: '232px',
+        mobile: '3.75rem',
+        tablet: '8.625rem',
+        desktop: '14.75rem',
       },
       cellHeight: {
-        mobile: '2rem',
-        tablet: '1.5rem',
+        mobile: '1.75rem',
+        tablet: '1.75rem',
         desktop: '1.125rem',
       },
       categoryCellWidth: {
-        mobile: '133px',
-        tablet: '133px',
-        desktop: '232px',
+        mobile: '7.375rem',
+        tablet: '9.125rem',
+        desktop: '15.75rem',
       },
       memoWidth: {
-        mobile: '1rem',
-        tablet: '2rem',
-        desktop: '3.375rem',
+        mobile: '0',
+        tablet: '0',
+        desktop: '4.0625rem',
       },
       lineGap: {
-        mobile: '8px',
-        tablet: '6px',
-        desktop: '4px',
+        mobile: '1rem',
+        tablet: '1rem',
+        desktop: '.125rem',
       },
       PriorityCount: {
         mobile: '4',
@@ -87,9 +81,9 @@ const theme = {
         desktop: '4',
       },
       PriorityListWidth: {
-        mobile: '133px',
-        tablet: '133px',
-        desktop: '232px',
+        mobile: '8.625rem',
+        tablet: '8.625rem',
+        desktop: '14.75rem',
       },
     }
   }

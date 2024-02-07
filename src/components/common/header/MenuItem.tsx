@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
-import styled from "styled-components";
+import Link from "next/link";
+import { MouseEventHandler, ReactNode, useCallback } from "react";
+import styled, { css } from "styled-components";
 
-const Container = styled.button`
+const buttonStyle = css`
   position: relative;
   display: block;
   width: auto;
@@ -19,16 +20,43 @@ const Container = styled.button`
   }
 `;
 
+const ButtonContainer = styled.button`
+  ${buttonStyle}
+`;
+
+const AnchorContainer = styled(Link)`
+  ${buttonStyle}
+  text-decoration: none;
+`;
+
 interface MenuItemProps {
   children: ReactNode;
+  onClick?: () => void;
+  href?: string;
 }
 
 export default function MenuItem({
   children,
+  onClick,
+  href,
 }: MenuItemProps) {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback((e) => {
+    e.stopPropagation();
+
+    if(onClick) onClick();
+  }, [onClick]);
+
   return (
-    <Container onClick={(e) => {e.stopPropagation();}}>
-      {children}
-    </Container>
+    <>
+      {onClick ? (
+        <ButtonContainer onClick={handleClick}>
+          {children}
+        </ButtonContainer>
+      ) : ( href !== undefined ? (
+        <AnchorContainer href={href} target="_blank">
+          {children}
+        </AnchorContainer>
+      ) : <></>)}
+    </>
   );
 }

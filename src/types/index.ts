@@ -4,6 +4,7 @@ import { ScheduleModalProps } from "@/components/common/schedule-modal/ScheduleM
 import { SearchModalProps } from "@/components/common/search-modal/SearchModal";
 import { Dayjs } from "dayjs";
 import { TutorialModalProps } from "@/components/common/tutorial-modal/TutorialModal";
+import { ReactNode } from "react";
 
 export type CategoryColor =
   | 'red'
@@ -25,10 +26,15 @@ export type ResDto<T> = {
   resultBody: T;
 }
 
+export interface ErrorRes {
+  errorCode: string;
+  errorMessage: string;
+}
+
 // 서버에서 오는 카테고리 데이터
 // GET /api/schedules/{year}/{month}
 export type CategoryDto = {
-  categoryId: number;
+  categoryId: string;
   categoryName: string;
   categoryLevel: number;
   categoryColor: CategoryColor;
@@ -42,7 +48,7 @@ export type CategoryDto = {
 
 // 캘린더에 렌더링하기 쉽게 가공한 카테고리 데이터
 export interface Category {
-  id: number;
+  id: string;
   name: string;
   level: number;
   color: CategoryColor;
@@ -50,19 +56,28 @@ export interface Category {
   endDate: Dayjs;
   description: string;
   isVisible: boolean;
+  parentId: string | null;
   schedules: ScheduleToRender[];
+}
+
+export interface CategoryUpdateDto {
+  categoryName: string;
+  categoryDescription: string;
+  categoryVisible: boolean;
+  categoryColor: CategoryColor;
 }
 
 // 서버에서 오는 일정 데이터
 // GET /api/schedules/{year}/{month}
 export type ScheduleDto = {
-  scheduleId: number;
-  scheduleGroupCode: number;
-  categoryId: number;
+  scheduleId: string;
+  scheduleGroupCode: string;
+  categoryId: string;
   scheduleContent: string;
   scheduleDate: string;
   schedulePriority: number;
-  finished: boolean;
+  isPriority: boolean;
+  isFinished: boolean;
 }
 
 // 캘린더에 렌더링하기 위한 카테고리 데이터
@@ -73,10 +88,11 @@ export type CategoryToRender = {
 
 // 캘린더에 렌더링하기 위한 일정 데이터
 export type ScheduleToRender = {
-  id: number;
-  groupCode: number;
-  categoryId: number;
+  id: string;
+  groupCode: string;
+  categoryId: string;
   content: string;
+  isPriority: boolean;
   isFinished: boolean;
   startDate: Dayjs;
   endDate: Dayjs;
@@ -84,10 +100,10 @@ export type ScheduleToRender = {
 
 // 우선순위를 렌더링하기 위한 데이터
 export type Priority = {
-  categoryId: number;
-  scheduleId: number;
-  groupCode: number;
-  day: number;
+  categoryId: string;
+  scheduleId: string;
+  groupCode: string;
+  date: Dayjs;
   priority: number;
   isFinished: boolean;
   color: CategoryColor;
@@ -95,15 +111,24 @@ export type Priority = {
   content: string;
 };
 
+// 새 카테고리를 만들 때 보내는 데이터
+export interface NewCategoryDto {
+  categoryColor: CategoryColor;
+  categoryDescription: string;
+  categoryStartDate: string;
+  categoryLevel: number;
+  categoryName: string;
+  categoryParentId: string | null;
+  categoryVisible: boolean;
+}
+
 // 새 일정을 만들때 보내는 데이터
 // POST /api/schedules
 export type NewScheduleDto = {
   scheduleContent: string,
   scheduleStartDate: string,
   scheduleEndDate: string,
-  categoryId: number,
-  schedulePriority: number,
-  isDuration: boolean,
+  categoryId: string,
   isPriority: boolean,
 }
 
@@ -123,7 +148,7 @@ export type CategoryModalInfo = {
 
 // 빈 일정을 눌러 모달을 열었을 때 사용되는 데이터
 export type FixedCategoryInfo = {
-  categoryId: number;
+  categoryId: string;
   date: Dayjs;
 }
 
@@ -134,13 +159,15 @@ export type NewScheduleModalInfo = {
 }
 
 // 일정 검색 결과
-export interface SearchResult {
-  categories: string[];
-  groupCode: number;
-  content: string;
+export interface SearchedScheduleDto {
+  scheduleId: string;
+  scheduleGroupCode: string;
+  categoryId: string;
+  scheduleContent: string;
+  isPriority: boolean;
   isFinished: boolean;
-  startDate: Dayjs;
-  endDate: Dayjs;
+  scheduleStartDate: string;
+  scheduleEndDate: string;
 }
 
 // Modal Context 관련 타입들
@@ -154,3 +181,15 @@ export type ModalKey =
   | { key: 'tutorial'; modalProps: TutorialModalProps };
 
 export type ModalStatus = 'open' | 'closing' | 'closed';
+
+export interface ButtonInfo {
+  label: string;
+  onClick: () => void;
+  warning?: boolean;
+}
+
+export interface PopupInfo {
+  title: string;
+  description: ReactNode;
+  buttons: ButtonInfo[];
+}

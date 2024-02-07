@@ -13,14 +13,14 @@ import { Dayjs } from 'dayjs';
 import { NewScheduleModalProps } from '../components/common/new-schedule-modal/NewScheduleModal';
 import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
-import PriorityList from './PriorityList';
-import { CategoryModalInfo, NewScheduleDto, NewScheduleModalInfo, ScheduleDto, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { CategoryDto, CategoryModalInfo, NewScheduleModalInfo, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import { CategoryModalProps } from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
 import { useModal } from '@/providers/ModalProvider/useModal';
 import useCalendarData from './useCalendarData';
 import usePriorities from './usePriorities';
+import PriorityList from './PriorityList';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -65,6 +65,7 @@ const Calendar = styled.main`
   width: 100%;
   height: calc(100vh - var(--header-height));
   display: flex;
+  position: relative;
 `;
 
 const CategorySide = styled.aside`
@@ -205,26 +206,26 @@ const DragImage = styled.div`
 export default function Home() {
   const { modals, addModal, closeModal } = useModal();
 
+  const [isLoading, setLoading] = useState(false);
+
   const [selectedDate, setSelectedDate] = useState(time.now());
   const {
     categoryList, categoryToRenderList, prioritiesByDay,
     setCategoryList, setCategoryToRenderList, setPrioritiesByDay,
-  } = useCalendarData(selectedDate);
+    getCategoryList,
+  } = useCalendarData(selectedDate, setLoading);
 
   const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
-
-  const [isLoading, setLoading] = useState(false);
   
   const categoryBody = useRef<HTMLDivElement>(null);
   const scheduleBody = useRef<HTMLDivElement>(null);
   const [isMoveMode, onMouseDown, onMouseUp, onMouseMove] = useDragMove<HTMLDivElement>(scheduleBody);
   
-  const now = time.now();
-  const lastDayOfMonth = now.daysInMonth();
+  const daysInMonth = selectedDate.daysInMonth();
   const calendarHeaderItems = useMemo(() => {
-    let dayOfTheWeek = time.new(now.year(), now.month(), 1).day();
+    let dayOfTheWeek = time.new(selectedDate.year(), selectedDate.month(), 1).day();
 
-    return Array.from({ length: lastDayOfMonth }, (v, i) => i + 1).map(d => {
+    return Array.from({ length: daysInMonth }, (v, i) => i + 1).map(d => {
       const result = `${d}(${dayOfTheWeeks[dayOfTheWeek]})`;
 
       dayOfTheWeek++;
@@ -232,15 +233,12 @@ export default function Home() {
 
       return result;
     });
-
-    // TODO 월 선택 추가 시 월에 따라 달라져야함
-  }, [now]);
+  }, [selectedDate]);
 
   useEffect(() => {
     const categorySideBody = categoryBody.current!;
     const scheduleSideBody = scheduleBody.current!;
     const handleScheduleSideScroll = () => {
-      console.log(scheduleSideBody.scrollTop)
       categorySideBody.scrollTop = scheduleSideBody.scrollTop;
     };
     scheduleSideBody.addEventListener('scroll', handleScheduleSideScroll);
@@ -277,50 +275,22 @@ export default function Home() {
     setSelectedDate(value);
   };
 
-  const handleScheduleCreate = useCallback((newSchedule: NewScheduleDto) => {
-    const newCategoryList = [...categoryList];
+  const handleScheduleCreate = useCallback(() => {
+    setLoading(true);
 
-    const category = newCategoryList.find(c => c.categoryId === newSchedule.categoryId);
-    if(!category) {
-      alert('존재하지 않는 카테고리입니다.');
-      return;
-    }
+    const y = selectedDate.year();
+    const m = selectedDate.month();
+    getCategoryList(y, m);
 
-    const schedule: ScheduleToRender = {
-      id: -1,
-      groupCode: -2,
-      startDate: time.fromString(newSchedule.scheduleStartDate),
-      endDate: time.fromString(newSchedule.scheduleEndDate),
-      categoryId: newSchedule.categoryId,
-      content: newSchedule.scheduleContent,
-      isFinished: false,
-    };
-
-    // TODO 새로 추가하는 일정의 년월은 어떻게?
-    const scheduleDtos: ScheduleDto[] = [];
-    for(let d=schedule.startDate.date(); d<=schedule.endDate.date(); d++) {
-      scheduleDtos.push({
-        scheduleId: schedule.id,
-        categoryId: schedule.categoryId,
-        scheduleGroupCode: schedule.groupCode,
-        scheduleContent: schedule.content,
-        scheduleDate: time.toString( time.new(schedule.startDate.year(), schedule.startDate.month(), d) , 'YYYY-MM-DD'),
-        schedulePriority: prioritiesByDay[d-1][prioritiesByDay[d-1].length-1].priority + 1,
-        finished: false,
-      });
-    }
-
-    category.schedules.push(...scheduleDtos);
-
-    setCategoryList(newCategoryList);
-  }, [categoryList, prioritiesByDay]);
+    closeModal();
+  }, [selectedDate]);
 
   const router = useRouter();
   const handleMoveCategoryPage = () => {
     router.push('/category');
   };
 
-  const handleScheduleFinish = useCallback((categoryId: number, groupCode: number) => {
+  const handleScheduleFinish = useCallback((categoryId: string, groupCode: string) => {
     const newCategoryListToRender = [...categoryToRenderList];
     const category = newCategoryListToRender.find(c => c.category.id === categoryId);
     if(!category) {
@@ -363,13 +333,46 @@ export default function Home() {
       }
     }
     setPrioritiesByDay(newPriorities);
-  }, [categoryToRenderList, lastDayOfMonth, prioritiesByDay]);
+  }, [categoryToRenderList, daysInMonth, prioritiesByDay]);
+
+  const handleScheduleDelete = useCallback((categoryId: string, groupCode: string) => {
+    const newCategoryList = [...categoryList];
+    let category: CategoryDto | undefined = undefined;
+    outer: for(const c1 of newCategoryList) {
+      if(c1.categoryId === categoryId) {
+        category = c1;
+        break;
+      }
+      for(const c2 of c1.children) {
+        if(c2.categoryId === categoryId) {
+          category = c2;
+          break outer;
+        }
+        for(const c3 of c2.children) {
+          if(c3.categoryId === categoryId) {
+            category = c3;
+            break outer;
+          }
+        }
+      }
+    }
+    if(!category) {
+      alert('존재하지 않는 카테고리 입니다.');
+      return;
+    }
+
+    const newSchedules = category.schedules.filter(schedule => schedule.scheduleGroupCode !== groupCode);
+    category.schedules = newSchedules;
+
+    setCategoryList(newCategoryList);
+  }, [categoryList]);
 
   const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
     const props: ScheduleModalProps = {
       scheduleModalInfo: newScheduleModalInfo,
       onScheduleFinish: handleScheduleFinish,
       onUpdateClick: handleUpdateScheduleClick,
+      onScheduleDelete: handleScheduleDelete,
     }
     
     addModal({ key: 'schedule', modalProps: props });
@@ -400,7 +403,7 @@ export default function Home() {
     openNewScheduleModal({});
   };
 
-  const handleCellClick = useCallback((categoryId: number, day: number) => {
+  const handleCellClick = useCallback((categoryId: string, day: number) => {
     const y = selectedDate.year();
     const m = selectedDate.month();
 
@@ -426,10 +429,11 @@ export default function Home() {
     }
 
     alert('존재하지 않는 카테고리입니다.');
-  }, [openNewScheduleModal]);
+  }, [categoryList, openNewScheduleModal]);
 
   const {
-    draggedPriorityX, draggedPriorityY, draggedPriority,
+    draggedPriorityX, draggedPriorityY, draggedPriority, openedDay,
+    handlePriorityListOpen,
     handlePriorityClick,
     handlePriorityItemDrag,
     handlePriorityItemDragEnd,
@@ -470,15 +474,15 @@ export default function Home() {
             </CalendarBody>
           </CategorySide>
           <ScheduleSide ref={scheduleBody} onMouseMove={(e) => {if(isMoveMode) e.preventDefault()} }>
-            <CalendarHeader $day_count={lastDayOfMonth}>
+            <CalendarHeader $day_count={daysInMonth}>
               <HeaderSection>
                 {calendarHeaderItems.map(headerItem => (
                   <HeaderCell key={headerItem}>{headerItem}</HeaderCell>
                 ))}
               </HeaderSection>
               <PrioritySection $priority_count={prioritiesSize}>
-                <DivideLines $day_count={lastDayOfMonth}>
-                  {Array.from({ length: lastDayOfMonth }, () => null).map(
+                <DivideLines $day_count={daysInMonth}>
+                  {Array.from({ length: daysInMonth }, () => null).map(
                     (_, i) => (
                       <DivideLine key={`div${i}`} />
                     ),
@@ -489,6 +493,8 @@ export default function Home() {
                     key={`pl-${i}`}
                     priorities={priorities}
                     prioritiesSize={prioritiesSize}
+                    isOpened={openedDay === i+1}
+                    onPriorityListOpen={handlePriorityListOpen}
                     onPriorityItemClick={handlePriorityClick}
                     onPriorityItemDrag={handlePriorityItemDrag}
                     onPriorityItemDragEnd={handlePriorityItemDragEnd}
@@ -499,14 +505,14 @@ export default function Home() {
                 {draggedPriority && (<DragImage style={{ left: draggedPriorityX+20, top: draggedPriorityY+10, }} >{draggedPriority.content}</DragImage>)}
               </PrioritySection>
             </CalendarHeader>
-            <CalendarBody $day_count={lastDayOfMonth} $is_move_mode={isMoveMode ? 1 : 0}
+            <CalendarBody $day_count={daysInMonth} $is_move_mode={isMoveMode ? 1 : 0}
               onMouseDown={onMouseDown}
               onMouseUp={onMouseUp}
               onMouseMove={onMouseMove}
               onMouseLeave={onMouseUp}
             >
-              <DivideLines $day_count={lastDayOfMonth}>
-                {Array.from({ length: lastDayOfMonth }, () => null).map(
+              <DivideLines $day_count={daysInMonth}>
+                {Array.from({ length: daysInMonth }, () => null).map(
                   (_, i) => (
                     <DivideLine key={`div${i}`} />
                   ),

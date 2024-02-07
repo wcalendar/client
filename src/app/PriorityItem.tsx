@@ -1,10 +1,13 @@
 import styled from "styled-components";
-import { DragEvent, DragEventHandler, MouseEvent, useEffect, useRef, useState } from "react";
+import { DragEvent, DragEventHandler, MouseEvent, TouchEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import { CategoryColor, Priority } from "@/types";
+import Icon from "@mdi/react";
+import { mdiUnfoldMoreHorizontal } from "@mdi/js";
+import { usePopup } from "@/providers/PopupProvider/usePopup";
 
 type PriorityItemProps = {
   priority: Priority;
-  onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: number, groupCode: number) => void;
+  onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: string, groupCode: string) => void;
   onDrag: (newX: number, newY:number, priority: Priority) => void;
   onDragEnd: (e: DragEvent<HTMLDivElement>) => void;
   onDrop: (day: number, draggableIdx: number, droppableIdx: number) => void;
@@ -22,17 +25,19 @@ const Wrapper = styled.div`
   }
 `;
 
-const Container = styled.div<{ $color: CategoryColor, $level: number }>`
+const Container = styled.div<{ $color: CategoryColor, $level: number, $is_finished: number }>`
   height: var(--cell-height);
   width: calc(100% - 5px);
-  background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
+  background-color: ${({ theme, $color, $level, $is_finished }) => $is_finished ? theme.colors.finishedCategory($color) : theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-left: 2px;
   margin-right: 2px;
   vertical-align: middle;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   cursor: pointer;
-  transition: all ease .25s;
+  transition: transform ease .25s, box-shadow ease .25s;
 
   &:hover {
     transform: translateX(-.5px) translateY(-.5px);
@@ -41,7 +46,7 @@ const Container = styled.div<{ $color: CategoryColor, $level: number }>`
 `;
 
 const Text = styled.span<{ $is_finished: number }>`
-  width: auto;
+  flex: auto 0 1;
   height: 100%;
   font-size: .75rem;
   user-select: none;
@@ -49,7 +54,17 @@ const Text = styled.span<{ $is_finished: number }>`
   padding-left: .5rem;
   padding-right: .5rem;
   overflow: hidden;
-  ${({ $is_finished }) => $is_finished ? 'text-decoration: line-through;' : '' }
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  ${({ $is_finished }) => $is_finished ? `
+  text-decoration: line-through;
+  opacity: .2;
+  ` : '' }
+`;
+
+const IconWrapper = styled.div`
+  flex: 1rem 0 0;
+  height: 1rem;
 `;
 
 export default function PriorityItem({
@@ -61,9 +76,12 @@ export default function PriorityItem({
   day,
   idx,
 }: PriorityItemProps) {
+  const { openPopup, closePopup } = usePopup();
+
   const { color, level, content, isFinished, categoryId, groupCode, scheduleId } = priority;
 
   const [isDraggingOver, setDraggingOver] = useState(false);
+  const [touchTimer, setTouchTimer] = useState<NodeJS.Timeout | null>(null);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -124,6 +142,23 @@ export default function PriorityItem({
     }
   };
 
+  const openMobilePopup = useCallback(() => {
+    openPopup({
+      title: '일정 우선순위 순서 변경',
+      description: <>일정 우선순위 순서 변경은 현재 데스크탑 환경에서만<br />가능합니다</>,
+      buttons: [{ label: '확인', onClick: closePopup }],
+    });
+  }, []);
+
+  const handleTouchStart: TouchEventHandler<HTMLDivElement> = useCallback((e) => {
+    const timer = setTimeout(openMobilePopup, 350);
+    setTouchTimer(timer);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if(touchTimer) clearTimeout(touchTimer);
+  }, [touchTimer]);
+
   return (
     <Wrapper
       onDragOver={handleDragOver}
@@ -134,16 +169,22 @@ export default function PriorityItem({
       <Container
         $color={color}
         $level={level}
+        $is_finished={isFinished ? 1 : 0}
         onClick={(e) => onClick(e, categoryId, groupCode)}
         draggable
         onDragStart={handleDragStart}
         onDrag={(e) => onDrag(e.clientX, e.clientY, priority)}
         onDragEnd={onDragEnd}
         onDragOver={handleDragOver}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <Text $is_finished={isFinished ? 1 : 0}>
           {content}
         </Text>
+        <IconWrapper>
+          <Icon path={mdiUnfoldMoreHorizontal} />
+        </IconWrapper>
       </Container>
     </Wrapper>
   )
