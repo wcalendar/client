@@ -144,8 +144,8 @@ export default function PriorityItem({
 
   const openMobilePopup = useCallback(() => {
     openPopup({
-      title: '우선순위 변경',
-      description: <>우선순위 변경은 현재 데스크탑 환경에서만 가능합니다</>,
+      title: '일정 우선순위 순서 변경',
+      description: <>일정 우선순위 순서 변경은 현재 데스크탑 환경에서만<br />가능합니다</>,
       buttons: [{ label: '확인', onClick: closePopup }],
     });
   }, []);
