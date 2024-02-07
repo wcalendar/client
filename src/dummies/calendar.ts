@@ -1,5 +1,5 @@
 import time from "@/lib/time";
-import { CategoryDto, ResDto, SearchResult } from "@/types";
+import { CategoryDto, ResDto, ScheduleToRender } from "@/types";
 
 const y = time.now().year();
 const m = time.now().month();
@@ -188,21 +188,71 @@ const calendarDummyData: ResDto<CategoryDto[]>[] = [
 
 const categoryListDummyData: CategoryDto[] = calendarDummyData[0].resultBody;
 
-const dSearchResult: SearchResult = {
-  categories: ['카테고리 1', '카테고리 2'],
-  groupCode: '101',
-  content: '밥 먹기',
-  isFinished: false,
-  startDate: time.new(y, m, 15),
-  endDate: time.new(y, m, 17),
-};
-
-const dSearchResultList: SearchResult[] =[
-  dSearchResult,
+const searchDummyData: ScheduleToRender[] = [
+  {
+    id: 's1',
+    categoryId: 'c1',
+    groupCode: 'g1',
+    content: "Schedule 1",
+    isFinished: false,
+    isPriority: true,
+    startDate: time.new(2024, 1, 2),
+    endDate: time.new(2024, 1, 3),
+  },
+  {
+    id: 's3',
+    categoryId: 'c1',
+    groupCode: 'g2',
+    content: "Schedule 2",
+    isFinished: false,
+    isPriority: true,
+    startDate: time.new(2024, 1, 2),
+    endDate: time.new(2024, 1, 4),
+  },
+  {
+    id: 's6',
+    categoryId: 'c1',
+    groupCode: 'g6',
+    content: "Schedule 6",
+    isFinished: false,
+    isPriority: true,
+    startDate: time.new(2024, 1, 3),
+    endDate: time.new(2024, 1, 3),
+  },
+  {
+    id: 's7',
+    categoryId: 'c2',
+    groupCode: 'g3',
+    content: "Schedule 3",
+    isFinished: false,
+    isPriority: true,
+    startDate: time.new(2024, 1, 2),
+    endDate: time.new(2024, 1, 3),
+  },
+  {
+    id: 's9',
+    categoryId: 'c2',
+    groupCode: 'g4',
+    content: "Schedule 4",
+    isFinished: false,
+    isPriority: true,
+    startDate: time.new(2024, 1, 2),
+    endDate: time.new(2024, 1, 2),
+  },
+  {
+    id: 's10',
+    categoryId: 'c3',
+    groupCode: 'g5',
+    content: "Schedule 5",
+    isFinished: false,
+    isPriority: true,
+    startDate: time.new(2024, 1, 2),
+    endDate: time.new(2024, 1, 4),
+  },
 ];
 
 export {
   calendarDummyData,
   categoryListDummyData,
-  dSearchResultList,
+  searchDummyData,
 }
