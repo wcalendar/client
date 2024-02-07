@@ -261,6 +261,15 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    const firstLogin = localStorage.getItem('first_login');
+
+    if(firstLogin && firstLogin === 'true') {
+      addModal({ key: 'tutorial', modalProps: {}});
+      localStorage.removeItem('first_login');
+    }
+  }, []);
+
   const handleCellMouseOver = (categoryIdx: number) => {
     setHoveredCategoryIdx(categoryIdx);
   };
