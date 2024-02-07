@@ -103,9 +103,28 @@ export default function Terms() {
       </SubTitle>
       <DivideLine />
       <AgreeOptions>
-        <AgreeOption value={isAgreeTermsOfUse && isAgreePersonal} onChange={handleAllAgreeChange} all>전체 동의합니다.</AgreeOption>
-        <AgreeOption value={isAgreeTermsOfUse} onChange={handleIsAgreeTermsOfUseChange}>이용약관 동의(필수)</AgreeOption>
-        <AgreeOption value={isAgreePersonal} onChange={handleIsAgreePersonalChange}>개인정보 수집 및 이용에 대한 동의(필수)</AgreeOption>
+        <AgreeOption
+          value={isAgreeTermsOfUse && isAgreePersonal}
+          onChange={handleAllAgreeChange}
+          href=""
+          all
+        >
+          전체 동의합니다.
+        </AgreeOption>
+        <AgreeOption
+          value={isAgreeTermsOfUse}
+          onChange={handleIsAgreeTermsOfUseChange}
+          href="https://wplannerteam.notion.site/Wplanner-4f3faa443e8c4cccb9bbc9d1a27955f4?pvs=4"
+        >
+          이용약관 동의(필수)
+        </AgreeOption>
+        <AgreeOption
+          value={isAgreePersonal}
+          onChange={handleIsAgreePersonalChange}
+          href="https://wplannerteam.notion.site/Wplanner-954f56204fc948399c35509f30d173b1?pvs=4"
+        >
+          개인정보 수집 및 이용에 대한 동의(필수)
+        </AgreeOption>
       </AgreeOptions>
       <Buttons>
         <Button fill={0}>취소</Button>

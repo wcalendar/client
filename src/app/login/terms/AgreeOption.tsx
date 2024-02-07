@@ -1,5 +1,6 @@
 import { mdiCheckCircleOutline } from "@mdi/js";
 import Icon from "@mdi/react";
+import Link from "next/link";
 import { ReactNode } from "react";
 import styled from "styled-components";
 
@@ -31,19 +32,24 @@ const Title = styled.div<{ all: number }>`
   `)}
 `;
 
-const MoreButton = styled.button`
+const MoreButton = styled(Link)`
   flex: 3.5rem 0 0;
   height: 1.5rem;
+  line-height: 1.5rem;
   background-color: white;
   border: 1px solid ${({ theme }) => theme.colors.black};
   border-radius: 5px;
   cursor: pointer;
+  font-size: .75rem;
+  text-align: center;
+  text-decoration: none;
 `;
 
 interface AgreeOptionProps {
   all?: boolean;
   value: boolean;
   onChange: () => void;
+  href: string;
   children: ReactNode;
 }
 
@@ -51,6 +57,7 @@ export default function AgreeOption({
   all,
   value,
   onChange,
+  href,
   children,
 }: AgreeOptionProps) {
 
@@ -62,7 +69,7 @@ export default function AgreeOption({
       <Title all={all ? 1 : 0}>
         {children}
       </Title>
-      {!all && (<MoreButton>내용보기</MoreButton>)}
+      {!all && (<MoreButton href={href} target='_blank'>내용보기</MoreButton>)}
     </Container>
   )
 }
