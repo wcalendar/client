@@ -1,10 +1,8 @@
 import { Device } from "@/types";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function useDevice() {
-  const [width, setWidth] = useState(() => {
-    return window.innerWidth;
-  });
+  const [width, setWidth] = useState(1025);
   const device: Device = width <= 834 ? 'mobile' : (width <= 1024 ? 'tablet' : 'desktop');
 
   useEffect(() => {
