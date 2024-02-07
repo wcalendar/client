@@ -4,12 +4,17 @@ import CloseButtonIcon from "@/assets/close_btn.svg";
 import Icon from "@mdi/react";
 import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
 import Image from "next/image";
+import useDevice from "@/hooks/useDevice";
 
 const Container = styled.div`
   padding: 1.25rem;
   user-select: none;
 
   --image-size: 21.875rem;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    --image-size: 16.25rem;
+  }
 `;
 
 const Header = styled.div`
@@ -30,21 +35,15 @@ const CloseButton = styled.button`
 const SlideBox = styled.div`
   position: relative;
   width: 100%;
-  height: 30.25rem;
-  display: flex;
-`;
-
-const SlideButtonContainer = styled.div`
-  flex-basis: 1.5rem;
-  flex-shrink: 0;
-  flex-grow: 0;
   height: 100%;
   display: flex;
   align-items: center;
 `;
 
 const SlideButton = styled.button`
-  width: 1.5rem;
+  flex-basis: 1.5rem;
+  flex-shrink: 0;
+  flex-grow: 0;
   height: 1.5rem;
   background: none;
   border: none;
@@ -53,12 +52,10 @@ const SlideButton = styled.button`
 
 const SlideContent = styled.div`
   flex-grow: 1;
-  height: 100%;
 `;
 
 const SlideTitle = styled.h1`
   width: 100%;
-  height: 1.5rem;
   font-size: 1.25rem;
   line-height: 1.5rem;
   text-align: center;
@@ -67,7 +64,7 @@ const SlideTitle = styled.h1`
 
 const SlideDescription = styled.p`
   width: 100%;
-  height: 2.5rem;
+  min-height: 2.5rem;
   line-height: 1.25rem;
   font-size: .875rem;
   color: ${({ theme }) => theme.colors.black}99;
@@ -76,6 +73,10 @@ const SlideDescription = styled.p`
 
   strong {
     color: inherit;
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    min-height: 3.75rem;
   }
 `;
 
@@ -105,9 +106,21 @@ const SlideImageWrapper = styled.div`
   height: 100%:
 `;
 
+const PaginationBox = styled.div`
+  width: 100%;
+  display: flex;
+  height: .5rem;
+  justify-content: space-between;
+  align-items: center;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    height: 1.5rem;
+  }
+`;
+
 const Pagination = styled.div`
   width: 100%;
-  heigth: .5rem;
+  height: .5rem;
   display: flex;
   justify-content: center;
   gap: .5rem;
@@ -159,6 +172,7 @@ const tutorialInfos = [
 ];
 
 const Tutorial = memo(function Tutorial() {
+  const device = useDevice();
   const [page, setPage] = useState(0);
 
   const handlePrevClick = useCallback(() => {
@@ -177,11 +191,11 @@ const Tutorial = memo(function Tutorial() {
         </CloseButton>
       </Header>
       <SlideBox>
-        <SlideButtonContainer>
+        {device !== 'mobile' && (
           <SlideButton onClick={handlePrevClick}>
             <Icon path={mdiChevronLeft} />
           </SlideButton>
-        </SlideButtonContainer>
+        )}
         <SlideContent>
           <SlideTitle>{tutorialInfos[page].title}</SlideTitle>
           <SlideDescription>{tutorialInfos[page].description}</SlideDescription>
@@ -194,19 +208,31 @@ const Tutorial = memo(function Tutorial() {
               <SlideImageWrapper><Image src="/images/tutorial_image_5.png" alt="tutorial_image_5" fill/></SlideImageWrapper>
             </SlideImageContent>
           </SlideImageBox>
-          <Pagination>
-            <Page $current_page={page === 0 ? 1 : 0} />
-            <Page $current_page={page === 1 ? 1 : 0} />
-            <Page $current_page={page === 2 ? 1 : 0} />
-            <Page $current_page={page === 3 ? 1 : 0} />
-            <Page $current_page={page === 4 ? 1 : 0} />
-          </Pagination>
+          <PaginationBox>
+            {device === 'mobile' && (
+              <SlideButton onClick={handlePrevClick}>
+                <Icon path={mdiChevronLeft} />
+              </SlideButton>
+            )}
+            <Pagination>
+              <Page $current_page={page === 0 ? 1 : 0} />
+              <Page $current_page={page === 1 ? 1 : 0} />
+              <Page $current_page={page === 2 ? 1 : 0} />
+              <Page $current_page={page === 3 ? 1 : 0} />
+              <Page $current_page={page === 4 ? 1 : 0} />
+            </Pagination>
+            {device === 'mobile' && (
+              <SlideButton onClick={handleNextClick}>
+                <Icon path={mdiChevronRight} />
+              </SlideButton>
+            )}
+          </PaginationBox>
         </SlideContent>
-        <SlideButtonContainer>
+        {device !== 'mobile' && (
           <SlideButton onClick={handleNextClick}>
             <Icon path={mdiChevronRight} />
           </SlideButton>
-        </SlideButtonContainer>
+        )}
       </SlideBox>
     </Container>
   );
