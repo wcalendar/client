@@ -21,6 +21,7 @@ import { useModal } from '@/providers/ModalProvider/useModal';
 import useCalendarData from './useCalendarData';
 import usePriorities from './usePriorities';
 import PriorityList from './PriorityList';
+import useDev from '@/hooks/useDev';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -204,6 +205,7 @@ const DragImage = styled.div`
 `;
 
 export default function Home() {
+  const { isDev } = useDev();
   const { modals, addModal, closeModal } = useModal();
 
   const [isLoading, setLoading] = useState(false);
@@ -264,7 +266,7 @@ export default function Home() {
   useEffect(() => {
     const firstLogin = localStorage.getItem('first_login');
 
-    if(firstLogin && firstLogin === 'true') {
+    if((firstLogin && firstLogin === 'true') || isDev()) {
       addModal({ key: 'tutorial', modalProps: {}});
       localStorage.removeItem('first_login');
     }
