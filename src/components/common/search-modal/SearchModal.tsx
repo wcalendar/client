@@ -37,11 +37,16 @@ const IconWrapper = styled.div`
   }
 `;
 
+const ListWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: calc(100% - 3.75rem);
+  overflow-y: auto;
+`;
+
 const List = styled.ul`
   width: 100%;
-  height: 30rem;
   list-style: none;
-  overflow-y: auto;
   padding: .5rem 1rem;
 `;
 
@@ -101,11 +106,13 @@ export default function SearchModal({
       <IconWrapper>
         <Icon path={mdiMagnify} />
       </IconWrapper>
-      <List>
-        {resultList.map(result => (
-          <ResultItem key={`sr-${result.scheduleGroupCode}`} searchResult={result} />
-        ))}
-      </List>
+      <ListWrapper>
+        <List>
+          {resultList.map(result => (
+            <ResultItem key={`sr-${result.scheduleGroupCode}`} searchResult={result} />
+          ))}
+        </List>
+      </ListWrapper>
     </FixedModal>
   )
 }

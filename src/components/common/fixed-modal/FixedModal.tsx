@@ -20,17 +20,15 @@ const Background = styled.div<{ $status: string, backgroundColor: 'black' | 'whi
 
 const Modal = styled.div<{ $width: string, $status: string }>`
   position: fixed;
-  top: 15%;
+  top: 10%;
   left: 50%;
   z-index: 10;
   transform: ${({ $status }) => $status === 'open' ? 'scale(1)' : 'scale(.97)'} translateX(-50%);
   max-width: ${({ $width }) => $width};
   width: 98%;
-  height: auto;
-  max-height: 90vh;
+  height: 80vh;
   border-radius: 10px;
   overflow: hidden;
-  overflow-y: auto;
   opacity: ${({ $status }) => $status === 'open' ? '1' : '0'};
   animation: ${({ $status }) => $status === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
   background-color: white;

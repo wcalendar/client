@@ -18,6 +18,7 @@ const Container = styled.div<{ $width?: string, $height: string, $disabled: numb
   height: ${({ $height }) => $height};
   ${({ $disabled }) => $disabled ? '' : 'cursor: pointer;'}
   user-select: none;
+  background-color: white;
 `;
 
 const Input = styled.div<{ $height: string, $disabled: number }>`
@@ -69,6 +70,7 @@ const ListWrapper = styled.div`
   overflow-y: auto;
   background-color: white;
   user-select: none;
+  z-index: 1;
   animation-name: dropdown-open;
   animation-duration: .25s;
 

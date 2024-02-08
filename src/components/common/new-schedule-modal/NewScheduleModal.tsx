@@ -32,13 +32,13 @@ const ModalHeader = styled.div`
 const ModalBody = styled.div`
   position: relative;
   width: 100%;
-  height: auto;
+  height: calc(100% - 6.5rem);
   padding: 1rem;
+  overflow-y: auto;
 `;
 
 const Container = styled.div`
   position: relative;
-  height: 26rem;
 `;
 
 const Line = styled.div`

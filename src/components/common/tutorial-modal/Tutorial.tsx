@@ -1,17 +1,17 @@
-import { memo, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import styled from "styled-components";
 import CloseButtonIcon from "@/assets/close_btn.svg";
 import Icon from "@mdi/react";
 import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
 import Image from "next/image";
 import useDevice from "@/hooks/useDevice";
-import { useModal } from "@/providers/ModalProvider/useModal";
 
 const Container = styled.div`
   padding: 1.25rem;
   user-select: none;
+  height: 100%;
 
-  --image-size: 21.875rem;
+  --image-size: 21rem;
 
   @media ${({ theme }) => theme.devices.mobile} {
     --image-size: 16.25rem;
@@ -33,10 +33,16 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+ const Body = styled.div`
+  width: 100%;
+  height: calc(100% - 1.5rem);
+  overflow: hidden;
+  overflow-y: auto;
+ `;
+
 const SlideBox = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
 `;
@@ -197,50 +203,52 @@ export default function Tutorial({
           <CloseButtonIcon width="100%" height='100%' />
         </CloseButton>
       </Header>
-      <SlideBox>
-        {device !== 'mobile' && (
-          <SlideButton onClick={handlePrevClick}>
-            <Icon path={mdiChevronLeft} />
-          </SlideButton>
-        )}
-        <SlideContent>
-          <SlideTitle>{tutorialInfos[page].title}</SlideTitle>
-          <SlideDescription>{tutorialInfos[page].description}</SlideDescription>
-          <SlideImageBox>
-            <SlideImageContent $page={page}>
-              <SlideImageWrapper><Image src="/images/tutorial_image_1.png" alt="tutorial_image_1" fill/></SlideImageWrapper>
-              <SlideImageWrapper><Image src="/images/tutorial_image_2.png" alt="tutorial_image_2" fill/></SlideImageWrapper>
-              <SlideImageWrapper><Image src="/images/tutorial_image_3.png" alt="tutorial_image_3" fill/></SlideImageWrapper>
-              <SlideImageWrapper><Image src="/images/tutorial_image_4.png" alt="tutorial_image_4" fill/></SlideImageWrapper>
-              <SlideImageWrapper><Image src="/images/tutorial_image_5.png" alt="tutorial_image_5" fill/></SlideImageWrapper>
-            </SlideImageContent>
-          </SlideImageBox>
-          <PaginationBox>
-            {device === 'mobile' && (
-              <SlideButton onClick={handlePrevClick}>
-                <Icon path={mdiChevronLeft} />
-              </SlideButton>
-            )}
-            <Pagination>
-              <Page $current_page={page === 0 ? 1 : 0} />
-              <Page $current_page={page === 1 ? 1 : 0} />
-              <Page $current_page={page === 2 ? 1 : 0} />
-              <Page $current_page={page === 3 ? 1 : 0} />
-              <Page $current_page={page === 4 ? 1 : 0} />
-            </Pagination>
-            {device === 'mobile' && (
-              <SlideButton onClick={handleNextClick}>
-                <Icon path={mdiChevronRight} />
-              </SlideButton>
-            )}
-          </PaginationBox>
-        </SlideContent>
-        {device !== 'mobile' && (
-          <SlideButton onClick={handleNextClick}>
-            <Icon path={mdiChevronRight} />
-          </SlideButton>
-        )}
-      </SlideBox>
+      <Body>
+        <SlideBox>
+          {device !== 'mobile' && (
+            <SlideButton onClick={handlePrevClick}>
+              <Icon path={mdiChevronLeft} />
+            </SlideButton>
+          )}
+          <SlideContent>
+            <SlideTitle>{tutorialInfos[page].title}</SlideTitle>
+            <SlideDescription>{tutorialInfos[page].description}</SlideDescription>
+            <SlideImageBox>
+              <SlideImageContent $page={page}>
+                <SlideImageWrapper><Image src="/images/tutorial_image_1.png" alt="tutorial_image_1" fill/></SlideImageWrapper>
+                <SlideImageWrapper><Image src="/images/tutorial_image_2.png" alt="tutorial_image_2" fill/></SlideImageWrapper>
+                <SlideImageWrapper><Image src="/images/tutorial_image_3.png" alt="tutorial_image_3" fill/></SlideImageWrapper>
+                <SlideImageWrapper><Image src="/images/tutorial_image_4.png" alt="tutorial_image_4" fill/></SlideImageWrapper>
+                <SlideImageWrapper><Image src="/images/tutorial_image_5.png" alt="tutorial_image_5" fill/></SlideImageWrapper>
+              </SlideImageContent>
+            </SlideImageBox>
+            <PaginationBox>
+              {device === 'mobile' && (
+                <SlideButton onClick={handlePrevClick}>
+                  <Icon path={mdiChevronLeft} />
+                </SlideButton>
+              )}
+              <Pagination>
+                <Page $current_page={page === 0 ? 1 : 0} />
+                <Page $current_page={page === 1 ? 1 : 0} />
+                <Page $current_page={page === 2 ? 1 : 0} />
+                <Page $current_page={page === 3 ? 1 : 0} />
+                <Page $current_page={page === 4 ? 1 : 0} />
+              </Pagination>
+              {device === 'mobile' && (
+                <SlideButton onClick={handleNextClick}>
+                  <Icon path={mdiChevronRight} />
+                </SlideButton>
+              )}
+            </PaginationBox>
+          </SlideContent>
+          {device !== 'mobile' && (
+            <SlideButton onClick={handleNextClick}>
+              <Icon path={mdiChevronRight} />
+            </SlideButton>
+          )}
+        </SlideBox>
+      </Body>
     </Container>
   );
 }
