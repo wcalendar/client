@@ -26,11 +26,9 @@ const Modal = styled.div<{ $width: string, $status: string }>`
   transform: ${({ $status }) => $status === 'open' ? 'scale(1)' : 'scale(.97)'} translateX(-50%);
   max-width: ${({ $width }) => $width};
   width: 98%;
-  height: auto;
-  max-height: 80vh;
+  height: 80vh;
   border-radius: 10px;
   overflow: hidden;
-  overflow-y: auto;
   opacity: ${({ $status }) => $status === 'open' ? '1' : '0'};
   animation: ${({ $status }) => $status === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
   background-color: white;
