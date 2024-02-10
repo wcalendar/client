@@ -3,10 +3,11 @@
 import Image from "next/image";
 import styled from "styled-components";
 import AgreeOption from "./AgreeOption";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AxiosError } from "axios";
 import { apis } from "@/lib/apis";
+import useDev from "@/hooks/useDev";
 
 const Container = styled.main`
   position: fixed;
@@ -73,12 +74,22 @@ const Button = styled.button<{ fill: number }>`
 `;
 
 export default function Terms() {
+  const { isDev } = useDev();
+
   const state = useSearchParams().get('state');
 
   const router = useRouter();
 
   const [isAgreeTermsOfUse, setAgreeTermsOfUse] = useState(false);
   const [isAgreePersonal, setAgreePersonal] = useState(false);
+
+  useEffect(() => {
+    if(isDev()) return;
+    if(!state) {
+      alert('잘못된 접근입니다');
+      router.push('/login');
+    }
+  }, []);
 
   const handleAllAgreeChange = useCallback(() => {
     if(isAgreeTermsOfUse && isAgreePersonal) {
@@ -97,6 +108,10 @@ export default function Terms() {
   const handleIsAgreePersonalChange = useCallback(() => {
     setAgreePersonal(!isAgreePersonal);
   }, [isAgreePersonal]);
+
+  const handleCancelClick = useCallback(() => {
+    router.push('/login');
+  }, []);
 
   const handleAgreeClick = useCallback(async () => {
     if(!state) {
@@ -170,7 +185,7 @@ export default function Terms() {
         </AgreeOption>
       </AgreeOptions>
       <Buttons>
-        <Button fill={0}>취소</Button>
+        <Button fill={0} onClick={handleCancelClick}>취소</Button>
         <Button fill={1} onClick={handleAgreeClick}>확인</Button>
       </Buttons>
     </Container>
