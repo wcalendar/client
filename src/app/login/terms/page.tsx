@@ -98,6 +98,10 @@ export default function Terms() {
     setAgreePersonal(!isAgreePersonal);
   }, [isAgreePersonal]);
 
+  const handleCancelClick = useCallback(() => {
+    router.push('/login');
+  }, []);
+
   const handleAgreeClick = useCallback(async () => {
     if(!state) {
       alert('잘못된 접근입니다');
@@ -170,7 +174,7 @@ export default function Terms() {
         </AgreeOption>
       </AgreeOptions>
       <Buttons>
-        <Button fill={0}>취소</Button>
+        <Button fill={0} onClick={handleCancelClick}>취소</Button>
         <Button fill={1} onClick={handleAgreeClick}>확인</Button>
       </Buttons>
     </Container>
