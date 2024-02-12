@@ -34,6 +34,7 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor, isSelec
   margin-left: ${({ $level }) => $level * 0.5}rem;
   padding-left: .5rem;
   cursor: pointer;
+  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   ${({ isSelected }) => isSelected ? `
