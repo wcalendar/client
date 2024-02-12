@@ -72,7 +72,7 @@ const theme = {
       },
       lineGap: {
         mobile: '1rem',
-        tablet: '1rem',
+        tablet: '.5rem',
         desktop: '.125rem',
       },
       PriorityCount: {

@@ -13,13 +13,16 @@ const Container = styled.ul`
   overflow-y: auto;
 
   --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.desktop};
+  --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
     --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.tablet};
+    --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
     --line-gap: ${({ theme }) => theme.sizes.calendar.lineGap.mobile};
+    --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
   }
 `;
 
