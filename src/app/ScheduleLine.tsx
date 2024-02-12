@@ -79,15 +79,20 @@ export default function ScheduleLine({
   
   const schedulesByLine = useMemo(() => {
     return categoryToRender.lines.map(line => {
-      const scheduleList: ScheduleToRender[] = [];
+      const scheduleList: (ScheduleToRender | null | undefined)[] = [];
 
       let groupCode: string | undefined = undefined;
       for(let i=0; i<line.length; i++) {
-        if(!line[i]) continue;
-        if(groupCode && groupCode === line[i]!.groupCode) continue;
-
-        scheduleList.push(line[i]!);
-        groupCode = line[i]!.groupCode;
+        if(line[i] === null) {
+          scheduleList.push(null);
+        } else {
+          if(groupCode && groupCode === line[i]!.groupCode) {
+            scheduleList.push(undefined);
+          } else {
+            scheduleList.push(line[i]!);
+            groupCode = line[i]!.groupCode;
+          }
+        }
       }
 
       return scheduleList;
@@ -106,7 +111,7 @@ export default function ScheduleLine({
 
   return (
     <Container $line_count={lines.length}>
-      {lines.map((line, lineIdx) => (
+      {schedulesByLine.map((line, lineIdx) => (
         <Line key={`${category.id}-${lineIdx}`}>
           {line.map((schedule, scheduleIdx) => schedule ? (
             <ScheduleItem
@@ -122,7 +127,7 @@ export default function ScheduleLine({
                 {schedule.content}
               </ScheduleItemText>
             </ScheduleItem>
-          ) : (
+          ) : (schedule === null ? (
             <Cell
               key={`c-${category.id}-${lineIdx}-${scheduleIdx}`}
               start={scheduleIdx}
@@ -133,7 +138,9 @@ export default function ScheduleLine({
               onMouseOut={onCellMouseOut}
               onClick={onCellClick}
             />
-          ))}
+          ) : (
+            <></>
+          )))}
         </Line>
       ))}
     </Container>
