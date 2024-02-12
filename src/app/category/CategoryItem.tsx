@@ -34,6 +34,8 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor, isSelec
   margin-left: ${({ $level }) => $level * 0.5}rem;
   padding-left: .5rem;
   cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   ${({ isSelected }) => isSelected ? `
   text-decoration: underline;
   font-weight: bold;
@@ -52,6 +54,8 @@ const Description = styled.div<{ $level: number, $color: CategoryColor }>`
   border-radius: 5px;
   padding-left: .5rem;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   @media ${({ theme }) => theme.devices.tablet} {
     display: none;
