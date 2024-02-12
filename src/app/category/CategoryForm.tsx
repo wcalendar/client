@@ -126,7 +126,7 @@ function CategoryForm({
       categoryName: formData.get('categoryName') as string,
       categoryDescription: formData.get('categoryDescription') as string,
       categoryVisible: formData.get('categoryVisible') === 'true' ? true : false,
-      categoryColor: formData.get('categoryColor') as CategoryColor,
+      categoryColor: selectedCategory.level === 0 ? formData.get('categoryColor') as CategoryColor : selectedCategory.color,
     };
 
     if(isDev()) {
