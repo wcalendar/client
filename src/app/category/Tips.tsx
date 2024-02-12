@@ -23,4 +23,8 @@ const Container = styled.ul`
   font-size: .75rem;
   gap: 0.5rem;
   padding: 1rem;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    display: none;
+  }
 `;

@@ -17,14 +17,24 @@ import { categoryListDummyData } from "@/dummies/calendar";
 const Container = styled.div`
   display: flex;
   width: 100%;
+  height: calc(100vh - 2.5rem - var(--header-height));
   padding: 1.25rem;
   gap: 1.25rem;
+  overflow-y: auto;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    flex-direction: column;
+  }
 `;
 
 const CategorySide = styled.div`
   display: flex;
   flex-direction: column;
   width: 19.375rem;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    width: 100%;
+  }
 `;
 
 const ControlBox = styled.div`
