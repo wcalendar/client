@@ -17,8 +17,15 @@ import { categoryListDummyData } from "@/dummies/calendar";
 const Container = styled.div`
   display: flex;
   width: 100%;
+  height: calc(100vh - 2.5rem - var(--header-height));
   padding: 1.25rem;
   gap: 1.25rem;
+  overflow-y: auto;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    flex-direction: column;
+    gap: 0;
+  }
 `;
 
 const CategorySide = styled.div`

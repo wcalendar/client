@@ -9,7 +9,16 @@ import { apis } from '@/lib/apis';
 import useDev from '@/hooks/useDev';
 
 const Container = styled.form`
+  width: 28.125rem;
   padding-top: 4.375rem;
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    width: 20.625rem;
+  }
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    padding-top: 1rem;
+  }
 `;
 
 const Row = styled.div`
@@ -19,14 +28,18 @@ const Row = styled.div`
 `;
 
 const Label = styled.label`
-  width: 6.25rem;
+  flex: 6.25rem 0 0;
   height: 100%;
   line-height: 1.75rem;
   font-size: .875rem;
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex: 5.125rem 0 0;
+  }
 `;
 
 const TextInput = styled.input`
-  width: 21.5rem;
+  flex-grow: 1;
   height: 1.75rem;
   line-height: 1.75rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
@@ -36,6 +49,7 @@ const TextInput = styled.input`
 `;
 
 const ColorSelector = styled.div`
+  flex-grow: 1;
   display: flex;
   align-items: center;
   gap: 16px;

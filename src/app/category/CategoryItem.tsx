@@ -16,7 +16,7 @@ const Container = styled.div<{ $color: CategoryColor, isSelected: number }>`
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 1.125rem;
+  height: calc(var(--cell-height));
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -26,14 +26,17 @@ const Wrapper = styled.div`
 
 const CategoryName = styled.div<{ $level: number, $color: CategoryColor, isSelected: number}>`
   width: calc(10.375rem - ${({ $level }) => 1 + ($level * 0.5)}rem);
-  height: 1.125rem;
-  line-height: 1.125rem;
+  height: var(--cell-height);
+  line-height: var(--cell-height);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   margin-right: 1px;
   margin-left: ${({ $level }) => $level * 0.5}rem;
   padding-left: .5rem;
   cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   ${({ isSelected }) => isSelected ? `
   text-decoration: underline;
   font-weight: bold;
@@ -46,12 +49,14 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor, isSelec
 
 const Description = styled.div<{ $level: number, $color: CategoryColor }>`
   width: calc(4rem - 1px);
-  height: 1.125rem;
-  line-height: 1.125rem;
+  height: var(--cell-height);
+  line-height: var(--cell-height);
   background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
   border-radius: 5px;
   padding-left: .5rem;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   @media ${({ theme }) => theme.devices.tablet} {
     display: none;
