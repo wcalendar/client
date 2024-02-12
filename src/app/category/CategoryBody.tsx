@@ -24,6 +24,7 @@ const Container = styled.div`
 
   @media ${({ theme }) => theme.devices.mobile} {
     flex-direction: column;
+    gap: 0;
   }
 `;
 
@@ -31,10 +32,6 @@ const CategorySide = styled.div`
   display: flex;
   flex-direction: column;
   width: 19.375rem;
-
-  @media ${({ theme }) => theme.devices.mobile} {
-    width: 100%;
-  }
 `;
 
 const ControlBox = styled.div`
