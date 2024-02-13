@@ -5,6 +5,8 @@ import AppModal from '@/components/common/app-modal/AppModal';
 import { ModalProvider } from '@/providers/ModalProvider/ModalProvider';
 import PopupProvider from '@/providers/PopupProvider/PopupProvider';
 import AppPopup from '@/components/common/app-popup/AppPopup';
+import Header from '@/components/common/header/Header';
+import { CurrentDateProvider } from '@/providers/CurrentDateProvider/CurrentDateProvider';
 
 const roboto = Roboto({
   weight: ['400', '700'],
@@ -27,13 +29,16 @@ export default function RootLayout({
     <html lang="ko" className={roboto.className}>
       <body>
         <StyleProvider>
-          <PopupProvider>
-            <ModalProvider>
-              {children}
-              <AppModal />
-              <AppPopup />
-            </ModalProvider>
-          </PopupProvider>
+          <CurrentDateProvider>
+            <PopupProvider>
+              <ModalProvider>
+                <Header />
+                {children}
+                <AppModal />
+                <AppPopup />
+              </ModalProvider>
+            </PopupProvider>
+          </CurrentDateProvider>
         </StyleProvider>
       </body>
     </html>

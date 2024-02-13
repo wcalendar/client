@@ -1,6 +1,5 @@
 'use client';
 
-import Header from '@/components/common/header/Header';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import HeaderCell from './HeaderCell';
@@ -29,9 +28,7 @@ const prioritiesSize = 3;
 const Container = styled.div`
   width: 100%;
   overflow: hidden;
-
-  --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
-  --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
+  
   --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
   --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
   --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.desktop};
@@ -40,8 +37,7 @@ const Container = styled.div`
   --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
-    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
-    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
+    
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
     --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.tablet};
@@ -51,8 +47,6 @@ const Container = styled.div`
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
-    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
-    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
     --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.mobile};
@@ -451,7 +445,6 @@ export default function Home() {
 
   return (
     <Container>
-      <Header date={selectedDate} onDateChange={handleSelectedDateChange} />
       <Calendar>
         <Spinnable isLoading={isLoading}>
           <CategorySide ref={categoryBody}>

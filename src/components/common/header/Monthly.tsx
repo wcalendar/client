@@ -6,11 +6,6 @@ import time from '@/lib/time';
 import Icon from '@mdi/react';
 import { mdiChevronLeftBoxOutline, mdiChevronRightBoxOutline } from '@mdi/js';
 
-type MonthlyProps = {
-  value: Dayjs;
-  onChange: (value: Dayjs) => void;
-}
-
 const Container = styled.div`
   display: flex;
   align-items: center;
@@ -39,6 +34,11 @@ const Date = styled.div`
   line-height: 1.875rem;
   cursor: pointer;
 `;
+
+type MonthlyProps = {
+  value: Dayjs;
+  onChange: (value: Dayjs) => void;
+}
 
 export default function Monthly({
   value,

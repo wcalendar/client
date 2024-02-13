@@ -6,8 +6,10 @@ import { createContext } from "react";
 
 export interface ModalContextValue {
   currentDate: Dayjs;
+  setCurrentDate: (newDate: Dayjs) => void;
 }
 
 export const CurrentDateContext = createContext<ModalContextValue>({
   currentDate: time.now(),
+  setCurrentDate: () => {},
 });

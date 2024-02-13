@@ -19,6 +19,6 @@ export const CurrentDateProvider = ({
   }, []);
 
   return (
-    <CurrentDateContext.Provider value={{ currentDate: date }}>{children}</CurrentDateContext.Provider>
+    <CurrentDateContext.Provider value={{ currentDate: date, setCurrentDate }}>{children}</CurrentDateContext.Provider>
   )
 };
