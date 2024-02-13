@@ -63,7 +63,6 @@ export default function usePriorities(
 
     try {
       const response = await apis.updateSchedulePriority(scheduleOrderList, scheduleDate);
-      console.log(response);
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
