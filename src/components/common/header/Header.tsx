@@ -1,16 +1,15 @@
+'use client';
+
 import styled from 'styled-components';
 import Logo from './Logo';
 import NavBar from './NavBar';
 import Monthly from './Monthly';
-import { Dayjs } from 'dayjs';
 import useDevice from '@/hooks/useDevice';
+import { usePathname } from 'next/navigation';
+import { useCurrentDate } from '@/providers/CurrentDateProvider/useCurrentDate';
 
-type HeaderProps = {
-  date: Dayjs;
-  onDateChange: (value: Dayjs) => void;
-}
-
-const Container = styled.header`
+const Container = styled.header.withConfig({ shouldForwardProp: p => !['isHeaderVisible'].includes(p) })<{ isHeaderVisible: number }>`
+  ${({ isHeaderVisible }) => isHeaderVisible ? '' : 'display: none;'}
   width: 100%;
   height: var(--header-height);
   background: white;
@@ -44,24 +43,25 @@ const NavContainer = styled.div`
   }
 `;
 
-export default function Header({
-  date,
-  onDateChange,
-}: HeaderProps) {
+export default function Header() {
+  const path = usePathname();
+  const isHeaderVisible = path !== '/login' && path !== '/login/terms';
+
   const device = useDevice();
+  const { currentDate, setCurrentDate } = useCurrentDate();
 
   return (
-    <Container>
+    <Container isHeaderVisible={isHeaderVisible ? 1 : 0}>
       <Row>
         <Logo />
         <NavContainer>
-          {device !== 'mobile' && (<Monthly value={date} onChange={onDateChange}/>)}
+          {device !== 'mobile' && (<Monthly value={currentDate} onChange={setCurrentDate}/>)}
           <NavBar />
         </NavContainer>
       </Row>
       {device === 'mobile' && (
         <Row>
-          <Monthly value={date} onChange={onDateChange}/>
+          <Monthly value={currentDate} onChange={setCurrentDate}/>
         </Row>
       )}
     </Container>

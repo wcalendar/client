@@ -13,6 +13,19 @@ const GlobalStyle = createGlobalStyle`
 
   html {
     overflow: hidden;
+
+    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
+    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
+
+    @media ${({ theme }) => theme.devices.tablet} {
+      --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
+      --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
+    }
+
+    @media ${({ theme }) => theme.devices.mobile} {
+      --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
+      --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
+    }
   }
 
   @keyframes fadeIn {

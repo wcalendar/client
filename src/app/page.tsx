@@ -1,6 +1,5 @@
 'use client';
 
-import Header from '@/components/common/header/Header';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import HeaderCell from './HeaderCell';
@@ -9,7 +8,6 @@ import ScheduleLine from './ScheduleLine';
 import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
-import { Dayjs } from 'dayjs';
 import { NewScheduleModalProps } from '../components/common/new-schedule-modal/NewScheduleModal';
 import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
@@ -22,6 +20,7 @@ import useCalendarData from './useCalendarData';
 import usePriorities from './usePriorities';
 import PriorityList from './PriorityList';
 import useDev from '@/hooks/useDev';
+import { useCurrentDate } from '@/providers/CurrentDateProvider/useCurrentDate';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -29,9 +28,7 @@ const prioritiesSize = 3;
 const Container = styled.div`
   width: 100%;
   overflow: hidden;
-
-  --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
-  --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
+  
   --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.desktop};
   --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.desktop};
   --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.desktop};
@@ -40,8 +37,7 @@ const Container = styled.div`
   --priority-count: ${({ theme }) => theme.sizes.calendar.PriorityCount.desktop};
 
   @media ${({ theme }) => theme.devices.tablet} {
-    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
-    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
+    
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.tablet};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.tablet};
     --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.tablet};
@@ -51,8 +47,6 @@ const Container = styled.div`
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
-    --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
-    --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
     --cell-width: ${({ theme }) => theme.sizes.calendar.cellWidth.mobile};
     --cell-height: ${({ theme }) => theme.sizes.calendar.cellHeight.mobile};
     --category-cell-width: ${({ theme }) => theme.sizes.calendar.categoryCellWidth.mobile};
@@ -210,12 +204,13 @@ export default function Home() {
 
   const [isLoading, setLoading] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState(time.now());
+  const { currentDate } = useCurrentDate();
+
   const {
     categoryList, categoryToRenderList, prioritiesByDay,
     setCategoryList, setCategoryToRenderList, setPrioritiesByDay,
     getCategoryList,
-  } = useCalendarData(selectedDate, setLoading);
+  } = useCalendarData(currentDate, setLoading);
 
   const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
   
@@ -223,9 +218,9 @@ export default function Home() {
   const scheduleBody = useRef<HTMLDivElement>(null);
   const [isMoveMode, onMouseDown, onMouseUp, onMouseMove] = useDragMove<HTMLDivElement>(scheduleBody);
   
-  const daysInMonth = selectedDate.daysInMonth();
+  const daysInMonth = currentDate.daysInMonth();
   const calendarHeaderItems = useMemo(() => {
-    let dayOfTheWeek = time.new(selectedDate.year(), selectedDate.month(), 1).day();
+    let dayOfTheWeek = time.new(currentDate.year(), currentDate.month(), 1).day();
 
     return Array.from({ length: daysInMonth }, (v, i) => i + 1).map(d => {
       const result = `${d}(${dayOfTheWeeks[dayOfTheWeek]})`;
@@ -235,7 +230,7 @@ export default function Home() {
 
       return result;
     });
-  }, [selectedDate]);
+  }, [currentDate]);
 
   useEffect(() => {
     const categorySideBody = categoryBody.current!;
@@ -280,19 +275,15 @@ export default function Home() {
     setHoveredCategoryIdx(-1);
   }
 
-  const handleSelectedDateChange = (value: Dayjs) => {
-    setSelectedDate(value);
-  };
-
   const handleScheduleCreate = useCallback(() => {
     setLoading(true);
 
-    const y = selectedDate.year();
-    const m = selectedDate.month();
+    const y = currentDate.year();
+    const m = currentDate.month();
     getCategoryList(y, m);
 
     closeModal();
-  }, [selectedDate]);
+  }, [currentDate]);
 
   const router = useRouter();
   const handleMoveCategoryPage = () => {
@@ -413,8 +404,8 @@ export default function Home() {
   };
 
   const handleCellClick = useCallback((categoryId: string, day: number) => {
-    const y = selectedDate.year();
-    const m = selectedDate.month();
+    const y = currentDate.year();
+    const m = currentDate.month();
 
     for(const c1 of categoryList) {
       if(c1.categoryId === categoryId) {
@@ -438,7 +429,7 @@ export default function Home() {
     }
 
     alert('존재하지 않는 카테고리입니다.');
-  }, [categoryList, openNewScheduleModal]);
+  }, [currentDate, categoryList, openNewScheduleModal]);
 
   const {
     draggedPriorityX, draggedPriorityY, draggedPriority, openedDay,
@@ -451,7 +442,6 @@ export default function Home() {
 
   return (
     <Container>
-      <Header date={selectedDate} onDateChange={handleSelectedDateChange} />
       <Calendar>
         <Spinnable isLoading={isLoading}>
           <CategorySide ref={categoryBody}>
