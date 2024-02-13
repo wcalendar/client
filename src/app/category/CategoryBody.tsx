@@ -13,6 +13,7 @@ import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 import useDev from "@/hooks/useDev";
 import { categoryListDummyData } from "@/dummies/calendar";
+import { usePopup } from "@/providers/PopupProvider/usePopup";
 
 const Container = styled.div`
   display: flex;
@@ -98,6 +99,8 @@ export default function CategoryBody({
 }: CategoryBodyProps) {
   const { isDev } = useDev();
   const formRef = useRef<HTMLFormElement>(null);
+
+  const { openPopup, closePopup } = usePopup();
 
   const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -278,6 +281,16 @@ export default function CategoryBody({
   const handleBaseCategoryCreate = useCallback(async () => {
     if(isDev()) return;
 
+    if(categoryDtoList.length >= 10) {
+      openPopup({
+        title: '카테고리 생성 실패',
+        description: <>카테고리는 단계당 최대 10개 까지 생성이 가능합니다</>,
+        buttons: [{ label: '확인', onClick: closePopup }],
+      });
+
+      return;
+    }
+
     const newCategoryDto: NewCategoryDto = {
       categoryColor: 'red',
       categoryDescription: '',
@@ -298,7 +311,7 @@ export default function CategoryBody({
       return;
     }
 
-  }, [currentDate]);
+  }, [currentDate, categoryDtoList]);
 
   const handleCategoryUpdate = useCallback(() => {
     getCategories(currentDate.year(), currentDate.month());
