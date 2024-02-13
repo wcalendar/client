@@ -8,7 +8,6 @@ import ScheduleLine from './ScheduleLine';
 import Icon from '@mdi/react';
 import { mdiPlus } from '@mdi/js';
 import time from '@/lib/time';
-import { Dayjs } from 'dayjs';
 import { NewScheduleModalProps } from '../components/common/new-schedule-modal/NewScheduleModal';
 import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
@@ -21,6 +20,7 @@ import useCalendarData from './useCalendarData';
 import usePriorities from './usePriorities';
 import PriorityList from './PriorityList';
 import useDev from '@/hooks/useDev';
+import { useCurrentDate } from '@/providers/CurrentDateProvider/useCurrentDate';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -204,12 +204,13 @@ export default function Home() {
 
   const [isLoading, setLoading] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState(time.now());
+  const { currentDate } = useCurrentDate();
+
   const {
     categoryList, categoryToRenderList, prioritiesByDay,
     setCategoryList, setCategoryToRenderList, setPrioritiesByDay,
     getCategoryList,
-  } = useCalendarData(selectedDate, setLoading);
+  } = useCalendarData(currentDate, setLoading);
 
   const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
   
@@ -217,9 +218,9 @@ export default function Home() {
   const scheduleBody = useRef<HTMLDivElement>(null);
   const [isMoveMode, onMouseDown, onMouseUp, onMouseMove] = useDragMove<HTMLDivElement>(scheduleBody);
   
-  const daysInMonth = selectedDate.daysInMonth();
+  const daysInMonth = currentDate.daysInMonth();
   const calendarHeaderItems = useMemo(() => {
-    let dayOfTheWeek = time.new(selectedDate.year(), selectedDate.month(), 1).day();
+    let dayOfTheWeek = time.new(currentDate.year(), currentDate.month(), 1).day();
 
     return Array.from({ length: daysInMonth }, (v, i) => i + 1).map(d => {
       const result = `${d}(${dayOfTheWeeks[dayOfTheWeek]})`;
@@ -229,7 +230,7 @@ export default function Home() {
 
       return result;
     });
-  }, [selectedDate]);
+  }, [currentDate]);
 
   useEffect(() => {
     const categorySideBody = categoryBody.current!;
@@ -274,19 +275,15 @@ export default function Home() {
     setHoveredCategoryIdx(-1);
   }
 
-  const handleSelectedDateChange = (value: Dayjs) => {
-    setSelectedDate(value);
-  };
-
   const handleScheduleCreate = useCallback(() => {
     setLoading(true);
 
-    const y = selectedDate.year();
-    const m = selectedDate.month();
+    const y = currentDate.year();
+    const m = currentDate.month();
     getCategoryList(y, m);
 
     closeModal();
-  }, [selectedDate]);
+  }, [currentDate]);
 
   const router = useRouter();
   const handleMoveCategoryPage = () => {
@@ -407,8 +404,8 @@ export default function Home() {
   };
 
   const handleCellClick = useCallback((categoryId: string, day: number) => {
-    const y = selectedDate.year();
-    const m = selectedDate.month();
+    const y = currentDate.year();
+    const m = currentDate.month();
 
     for(const c1 of categoryList) {
       if(c1.categoryId === categoryId) {
@@ -432,7 +429,7 @@ export default function Home() {
     }
 
     alert('존재하지 않는 카테고리입니다.');
-  }, [categoryList, openNewScheduleModal]);
+  }, [currentDate, categoryList, openNewScheduleModal]);
 
   const {
     draggedPriorityX, draggedPriorityY, draggedPriority, openedDay,
