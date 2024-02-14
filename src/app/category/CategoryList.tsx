@@ -5,7 +5,7 @@ import CategoryItem from './CategoryItem';
 const Container = styled.ul`
   width: 100%;
   list-style: none;
-  min-height: 18rem;
+  height: 18rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
   padding: 1rem;
   border-radius: 4px;
