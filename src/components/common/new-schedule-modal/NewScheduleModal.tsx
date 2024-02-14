@@ -14,6 +14,7 @@ import { AxiosError } from "axios";
 import FixedModal from "../fixed-modal/FixedModal";
 import useCategoryListDropdown from "./useCategoryListDropdown";
 import useDev from "@/hooks/useDev";
+import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -189,6 +190,8 @@ export default function NewScheduleModal({
   newScheduleModalInfo
 }: NewScheduleModalProps) {
   const { isDev } = useDev();
+  const { currentDate } = useCurrentDate();
+
   const [status, setStatus] = useState<ModalStatus>('open');
 
   const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
@@ -205,8 +208,8 @@ export default function NewScheduleModal({
 
   const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');
   const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
-  const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
-  const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : time.now()));
+  const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : currentDate));
+  const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : currentDate));
   const [categoryIdx, setCategoryIdx] = useState(0);
   const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isPriority : true);
 

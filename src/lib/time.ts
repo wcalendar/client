@@ -17,7 +17,9 @@ const time = {
   /**
    * @returns 주어진 연, 월, 일 날짜가 저장된 Dayjs객체
    */
-  new: (year: number, month: number, day?: number): Dayjs => dayjs(new Date(year, month, day)),
+  new: (year: number, month: number, day?: number): Dayjs => {
+    return dayjs(new Date(year, month, day ? day : 1));
+  },
   /**
    * Date 객체를 Dayjs 객체로 변환하는 함수
    */

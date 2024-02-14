@@ -102,8 +102,6 @@ export default function CategoryBody({
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  const { openPopup, closePopup } = usePopup();
-
   const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
