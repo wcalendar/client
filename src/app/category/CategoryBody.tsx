@@ -13,6 +13,7 @@ import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 import useDev from "@/hooks/useDev";
 import { categoryListDummyData } from "@/dummies/calendar";
+import { usePopup } from "@/providers/PopupProvider/usePopup";
 
 const Container = styled.div`
   display: flex;
@@ -97,6 +98,8 @@ export default function CategoryBody({
   currentDate,
 }: CategoryBodyProps) {
   const { isDev } = useDev();
+  const { openPopup, closePopup } = usePopup();
+
   const formRef = useRef<HTMLFormElement>(null);
 
   const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
@@ -204,19 +207,33 @@ export default function CategoryBody({
     }
   }, [selectedCategory, currentDate]);
 
-  const handleCategoryDelete = useCallback(async () => {
+  const deleteCategory = useCallback(async () => {
+    closePopup();
+
     if(isDev()) return;
-    if(!selectedCategory) return;
 
     try {
-      await apis.deleteCategory(selectedCategory.id, time.toString(currentDate, 'YYYY-MM-DD'));
+      await apis.deleteCategory(selectedCategory!.id, time.toString(currentDate, 'YYYY-MM-DD'));
 
-      getCategories(currentDate.year(), currentDate.month()); 
+      getCategories(currentDate.year(), currentDate.month());
     } catch(e) {
       const error = e as AxiosError;
       console.log(error.response?.data);
     }
   }, [selectedCategory, currentDate]);
+
+  const handleCategoryDelete = useCallback(async () => {
+    if(!selectedCategory) return;
+
+    openPopup({
+      title: '카테고리 삭제',
+      description: <>카테고리를 삭제하시겠습니까?<br />삭제시 카테고리에 포함된 일정과 하위카테고리 모두 삭제됩니다</>,
+      buttons: [
+        { label: '삭제', onClick: deleteCategory, warning: true },
+        { label: '취소', onClick: closePopup },
+      ]
+    });
+  }, [selectedCategory]);
 
   const handleCategoryMove = useCallback(async (direction: number) => {
     if(isDev()) return;
