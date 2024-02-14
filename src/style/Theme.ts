@@ -71,8 +71,8 @@ const theme = {
         desktop: '4.0625rem',
       },
       lineGap: {
-        mobile: '1rem',
-        tablet: '.5rem',
+        mobile: '.5rem',
+        tablet: '.25rem',
         desktop: '.125rem',
       },
       PriorityCount: {

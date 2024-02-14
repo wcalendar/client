@@ -4,7 +4,9 @@ import Icon from '@mdi/react';
 import { useCallback } from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div<{ $color: CategoryColor, isSelected: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['isSelected'].includes(p),
+})<{ isSelected: number }>`
   width: 100%;
   transition: padding .25s ease;
   ${({ isSelected }) => isSelected ? `
@@ -24,14 +26,16 @@ const Wrapper = styled.div`
   user-select: none;
 `;
 
-const CategoryName = styled.div<{ $level: number, $color: CategoryColor, isSelected: number}>`
-  width: calc(10.375rem - ${({ $level }) => 1 + ($level * 0.5)}rem);
+const CategoryName = styled.div.withConfig({
+  shouldForwardProp: p => !['level', 'color', 'isSelected'].includes(p),
+})<{ level: number, color: CategoryColor, isSelected: number}>`
+  width: calc(10.375rem - ${({ level }) => 1 + (level * 0.5)}rem);
   height: var(--cell-height);
   line-height: var(--cell-height);
-  background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
+  background-color: ${({ theme, color, level }) => theme.colors.category(color, level)};
   border-radius: 5px;
   margin-right: 1px;
-  margin-left: ${({ $level }) => $level * 0.5}rem;
+  margin-left: ${({ level }) => level * 0.5}rem;
   padding-left: .5rem;
   cursor: pointer;
   overflow: hidden;
@@ -43,7 +47,7 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor, isSelec
   ` : ''}
 
   @media ${({ theme }) => theme.devices.tablet} {
-    width: calc(14.375rem - ${({ $level }) => 1 + ($level * 0.5)}rem);
+    width: calc(14.375rem - ${({ level }) => 1 + (level * 0.5)}rem);
   }
 `;
 
@@ -87,9 +91,9 @@ export default function CategoryItem({
   }, [category, onClick]);
 
   return (
-    <Container $color={color} isSelected={isSelected ? 1 : 0}>
+    <Container isSelected={isSelected ? 1 : 0}>
       <Wrapper>
-        <CategoryName $color={color} $level={level} isSelected={isSelected ? 1 : 0} onClick={handleClick}>
+        <CategoryName color={color} level={level} isSelected={isSelected ? 1 : 0} onClick={handleClick}>
           {name}
         </CategoryName>
         <Description $level={level} $color={color} onClick={handleClick}>
