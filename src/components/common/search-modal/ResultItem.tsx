@@ -37,7 +37,6 @@ interface ResultItemProps {
 export default function ResultItem({
   searchResult,
 }: ResultItemProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const { addModal, closeModal } = useModal()
   const { scheduleContent: content, scheduleStartDate: startDate, scheduleEndDate: endDate } = searchResult;
@@ -46,16 +45,24 @@ export default function ResultItem({
     addModal({
       key: 'newSchedule',
       modalProps: {
-        newScheduleModalInfo: { schedule: {
-          id: searchResult.scheduleId,
-          groupCode: searchResult.scheduleGroupCode,
-          categoryId: searchResult.categoryId,
-          content,
-          isPriority: searchResult.isPriority,
-          isFinished: searchResult.isFinished,
-          startDate: time.fromString(startDate),
-          endDate: time.fromString(endDate),
-        } },
+        newScheduleModalInfo: {
+          updateScheduleInfo: {
+            schedule: {
+              id: searchResult.scheduleId,
+              groupCode: searchResult.scheduleGroupCode,
+              categoryId: searchResult.categoryId,
+              content,
+              isPriority: searchResult.isPriority,
+              isFinished: searchResult.isFinished,
+              startDate: time.fromString(startDate),
+              endDate: time.fromString(endDate),
+            },
+            onScheduleDelete: () => {
+              closeModal();
+              if(pathname === '/') location.reload();
+            }
+          },
+        },
         onScheduleCreate: () => {
           closeModal();
           if(pathname === '/') location.reload();

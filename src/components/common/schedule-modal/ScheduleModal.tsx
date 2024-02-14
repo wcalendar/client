@@ -9,6 +9,7 @@ import { useModal } from "@/providers/ModalProvider/useModal";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 import useDev from "@/hooks/useDev";
+import { usePopup } from "@/providers/PopupProvider/usePopup";
 
 const Header = styled.div`
   width: 100%;
@@ -103,10 +104,12 @@ export default function ScheduleModal({
   onScheduleDelete,
 }: ScheduleModalProps) {
   const { isDev } = useDev();
+  const { openPopup, closePopup } = usePopup();
+
   const [modalInfo, setModalInfo] = useState<ScheduleModalInfo>(scheduleModalInfo);
   const { x, y, schedule } = modalInfo;
 
-  const {closeModal} = useModal();
+  const { closeModal } = useModal();
 
   const handleModalClose = useCallback(() => {
     closeModal();
@@ -120,23 +123,31 @@ export default function ScheduleModal({
     setModalInfo(newModalInfo);
   }, [modalInfo]);
 
-  const deleteSchedule = useCallback(async (scheduleId: string) => {
+  const deleteSchedule = useCallback(async () => {
+    closePopup();
+
     if(isDev()) return;
 
     try {
-      const response = apis.deleteSchedule(scheduleId);
+      const response = apis.deleteSchedule(schedule.id);
+      onScheduleDelete(schedule.categoryId, schedule.groupCode);
+      closeModal();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
     }
-  }, []);
-
-  const handleScheduleDelete = useCallback(() => {
-    if(confirm('일정을 삭제하시겠습니까?')) {
-      onScheduleDelete(schedule.categoryId, schedule.groupCode);
-      deleteSchedule(schedule.id);
-    }
   }, [schedule]);
+
+  const handleScheduleDeleteClick = useCallback(() => {
+    openPopup({
+      title: '일정 삭제',
+      description: <>일정을 삭제하시겠습니까?</>,
+      buttons: [
+        { label: '삭제', onClick: deleteSchedule, warning: true },
+        { label: '취소', onClick: closePopup },
+      ],
+    });
+  }, []);
   
   return (
     <FloatingModal mobilePos="center" x={x} y={y} onClose={handleModalClose}>
@@ -154,7 +165,7 @@ export default function ScheduleModal({
         </Line>
         <ButtonBox>
           <Button onClick={() => onUpdateClick(schedule)}>수정</Button>
-          <Button onClick={handleScheduleDelete}>삭제</Button>
+          <Button onClick={handleScheduleDeleteClick}>삭제</Button>
         </ButtonBox>
       </Body>
     </FloatingModal>

@@ -7,7 +7,7 @@ import Icon from "@mdi/react";
 import { Dayjs } from "dayjs";
 import { ChangeEventHandler, useCallback, useRef, useState } from "react";
 import styled from "styled-components";
-import { ErrorRes, FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, ScheduleToRender } from "@/types";
+import { ErrorRes, FixedCategoryInfo, ModalStatus, NewScheduleDto, NewScheduleModalInfo, UpdateScheduleInfo } from "@/types";
 import Spinnable from "@/components/common/spinner/Spinnable";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
@@ -15,6 +15,7 @@ import FixedModal from "../fixed-modal/FixedModal";
 import useCategoryListDropdown from "./useCategoryListDropdown";
 import useDev from "@/hooks/useDev";
 import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
+import { usePopup } from "@/providers/PopupProvider/usePopup";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -172,8 +173,8 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const isScheduleToRender = (schedule: ScheduleToRender | undefined): schedule is ScheduleToRender => {
-  return Boolean(schedule);
+const isUpdateScheduleInfo = (updateScheduleInfo: UpdateScheduleInfo | undefined): updateScheduleInfo is UpdateScheduleInfo => {
+  return Boolean(updateScheduleInfo);
 }
 
 const isFixedCategoryInfo = (fixedCategoryInfo: FixedCategoryInfo | undefined): fixedCategoryInfo is FixedCategoryInfo => {
@@ -191,27 +192,27 @@ export default function NewScheduleModal({
 }: NewScheduleModalProps) {
   const { isDev } = useDev();
   const { currentDate } = useCurrentDate();
+  const { openPopup, closePopup } = usePopup();
 
   const [status, setStatus] = useState<ModalStatus>('open');
 
-  const { schedule, fixedCategoryInfo } = newScheduleModalInfo;
+  const { updateScheduleInfo, fixedCategoryInfo } = newScheduleModalInfo;
 
-  const isUpdateMode = isScheduleToRender(schedule);
+  const isUpdateMode = isUpdateScheduleInfo(updateScheduleInfo);
   const isFixedCategoryMode = isFixedCategoryInfo(fixedCategoryInfo);
 
   const isFirstLoad = useRef(true);
   const shouldSetCategoryIdx = isFirstLoad.current && (isFixedCategoryMode || isUpdateMode);
 
   const isFixedCategory = (categoryId: string) => {
-    return isFirstLoad.current && ((isFixedCategoryMode && fixedCategoryInfo.categoryId === categoryId) || (isUpdateMode && schedule.categoryId === categoryId));
+    return isFirstLoad.current && ((isFixedCategoryMode && fixedCategoryInfo.categoryId === categoryId) || (isUpdateMode && updateScheduleInfo.schedule.categoryId === categoryId));
   };
 
-  const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? schedule.content : '');
-  const [isDuration, setDuration] = useState(isUpdateMode ? !schedule.startDate.isSame(schedule.endDate) : false);
-  const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : currentDate));
-  const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : currentDate));
-  const [categoryIdx, setCategoryIdx] = useState(0);
-  const [isPriority, setPriority] = useState(isUpdateMode ? schedule.isPriority : true);
+  const [scheduleTitle, setScheduleTitle] = useState(isUpdateMode ? updateScheduleInfo.schedule.content : '');
+  const [isDuration, setDuration] = useState(isUpdateMode ? !updateScheduleInfo.schedule.startDate.isSame(updateScheduleInfo.schedule.endDate) : false);
+  const [startDate, setStartDate] = useState<Dayjs>(isUpdateMode ? updateScheduleInfo.schedule.startDate : (isFixedCategoryMode ? fixedCategoryInfo.date : currentDate));
+  const [endDate, setEndDate] = useState<Dayjs>(isUpdateMode ? updateScheduleInfo.schedule.endDate : (isFixedCategoryMode ? fixedCategoryInfo.date : currentDate));
+  const [isPriority, setPriority] = useState(isUpdateMode ? updateScheduleInfo.schedule.isPriority : true);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -262,6 +263,33 @@ export default function NewScheduleModal({
     setPriority(value);
   }, []);
 
+  const deleteSchedule = useCallback(async () => {
+    closePopup();
+
+    if(isDev()) return;
+
+    try {
+      await apis.deleteSchedule(updateScheduleInfo!.schedule.id);
+      updateScheduleInfo!.onScheduleDelete(updateScheduleInfo!.schedule.id, updateScheduleInfo!.schedule.groupCode);
+    } catch(e) {
+      const error = e as AxiosError<ErrorRes>;
+      console.log(error.response?.data);
+    }
+  }, [updateScheduleInfo]);
+
+  const handleDeleteScheduleClick = useCallback(() => {
+    if(!isUpdateMode) return;
+
+    openPopup({
+      title: '일정 삭제',
+      description: <>일정을 삭제하시겠습니까?</>,
+      buttons: [
+        { label: '삭제', onClick: deleteSchedule, warning: true },
+        { label: '취소', onClick: closePopup },
+      ],
+    });
+  }, [isUpdateMode]);
+
   const handleSaveNewScheduleClick = useCallback(async () => {
     // Title
     const newTitle = scheduleTitle.trim();
@@ -300,14 +328,14 @@ export default function NewScheduleModal({
 
     setLoading(true);
     try {
-      const response = isUpdateMode ? await apis.updateSchedule(newScheduleDto, schedule.id) : await apis.addSchedule(newScheduleDto);
+      const response = isUpdateMode ? await apis.updateSchedule(newScheduleDto, updateScheduleInfo.schedule.id) : await apis.addSchedule(newScheduleDto);
       setLoading(false);
       onScheduleCreate();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
     }
-  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoryList, startDate, endDate, isDuration, isPriority, isUpdateMode, schedule]);
+  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoryList, startDate, endDate, isDuration, isPriority, isUpdateMode, updateScheduleInfo]);
 
   return (
     <FixedModal
@@ -392,7 +420,7 @@ export default function NewScheduleModal({
             {isUpdateMode && (
               <DeleteLine>
                 일정을 삭제 하시겠습니까? 삭제한 일정은 복구할 수 없습니다.
-                <DeleteButton>삭제하기</DeleteButton>
+                <DeleteButton onClick={handleDeleteScheduleClick}>삭제하기</DeleteButton>
               </DeleteLine>
             )}
           </Spinnable>

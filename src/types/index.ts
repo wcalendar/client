@@ -152,6 +152,12 @@ export type CategoryModalInfo = {
   category: Category,
 }
 
+// 일정 수정을 위해 모달을 열었을 때 사용되는 데이터
+export interface UpdateScheduleInfo {
+  schedule: ScheduleToRender;
+  onScheduleDelete: (categoryId: string, groupCode: string) => void;
+}
+
 // 빈 일정을 눌러 모달을 열었을 때 사용되는 데이터
 export type FixedCategoryInfo = {
   categoryId: string;
@@ -160,7 +166,7 @@ export type FixedCategoryInfo = {
 
 // 새 일정 생성 모달에 필요한 데이터
 export type NewScheduleModalInfo = {
-  schedule?: ScheduleToRender,
+  updateScheduleInfo?: UpdateScheduleInfo,
   fixedCategoryInfo?: FixedCategoryInfo,
 }
 
