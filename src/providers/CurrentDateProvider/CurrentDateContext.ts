@@ -10,6 +10,6 @@ export interface ModalContextValue {
 }
 
 export const CurrentDateContext = createContext<ModalContextValue>({
-  currentDate: time.now(),
+  currentDate: time.new(time.now().year(), time.now().month()),
   setCurrentDate: () => {},
 });

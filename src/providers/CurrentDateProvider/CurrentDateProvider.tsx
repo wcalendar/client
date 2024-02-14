@@ -12,7 +12,7 @@ interface CurrentDateProviderProps {
 export const CurrentDateProvider = ({
   children,
 }: CurrentDateProviderProps) => {
-  const [date, setDate] = useState<Dayjs>(time.now());
+  const [date, setDate] = useState<Dayjs>(time.new(time.now().year(), time.now().month()));
 
   const setCurrentDate = useCallback((newDate: Dayjs) => {
     setDate(newDate);
