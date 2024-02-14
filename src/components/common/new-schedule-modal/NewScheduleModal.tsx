@@ -270,7 +270,7 @@ export default function NewScheduleModal({
 
     try {
       await apis.deleteSchedule(updateScheduleInfo!.schedule.id);
-      updateScheduleInfo!.onScheduleDelete(updateScheduleInfo!.schedule.id, updateScheduleInfo!.schedule.groupCode);
+      updateScheduleInfo!.onScheduleDelete(updateScheduleInfo!.schedule.categoryId, updateScheduleInfo!.schedule.groupCode);
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
