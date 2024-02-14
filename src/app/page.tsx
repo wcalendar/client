@@ -396,7 +396,7 @@ export default function Home() {
   }, [handleScheduleCreate]);
 
   const handleUpdateScheduleClick = useCallback((schedule: ScheduleToRender) => {
-    openNewScheduleModal({ schedule });
+    openNewScheduleModal({ updateScheduleInfo: { schedule, onScheduleDelete: handleScheduleDelete } });
   }, [openNewScheduleModal]);
 
   const handleOpenNewScheduleModal = () => {
