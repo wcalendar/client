@@ -1,7 +1,7 @@
 import time from "@/lib/time";
 import { useModal } from "@/providers/ModalProvider/useModal";
 import { SearchedScheduleDto } from "@/types";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import styled from "styled-components";
 
@@ -38,7 +38,8 @@ export default function ResultItem({
   searchResult,
 }: ResultItemProps) {
   const router = useRouter();
-  const { addModal } = useModal()
+  const pathname = usePathname();
+  const { addModal, closeModal } = useModal()
   const { scheduleContent: content, scheduleStartDate: startDate, scheduleEndDate: endDate } = searchResult;
 
   const handleClick = useCallback(() => {
@@ -55,7 +56,10 @@ export default function ResultItem({
           startDate: time.fromString(startDate),
           endDate: time.fromString(endDate),
         } },
-        onScheduleCreate: () => { router.push('/'); },
+        onScheduleCreate: () => {
+          closeModal();
+          if(pathname === '/') location.reload();
+        },
       },
     });
   }, [searchResult]);
