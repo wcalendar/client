@@ -105,7 +105,6 @@ export default function ScheduleModal({
   const { isDev } = useDev();
   const [modalInfo, setModalInfo] = useState<ScheduleModalInfo>(scheduleModalInfo);
   const { x, y, schedule } = modalInfo;
-  console.log(schedule.id);
 
   const {closeModal} = useModal();
 
@@ -126,7 +125,6 @@ export default function ScheduleModal({
 
     try {
       const response = apis.deleteSchedule(scheduleId);
-      console.log(response);
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);

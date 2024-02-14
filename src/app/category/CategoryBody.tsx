@@ -13,6 +13,7 @@ import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 import useDev from "@/hooks/useDev";
 import { categoryListDummyData } from "@/dummies/calendar";
+import { usePopup } from "@/providers/PopupProvider/usePopup";
 
 const Container = styled.div`
   display: flex;
@@ -99,6 +100,8 @@ export default function CategoryBody({
   const { isDev } = useDev();
   const formRef = useRef<HTMLFormElement>(null);
 
+  const { openPopup, closePopup } = usePopup();
+
   const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -115,7 +118,6 @@ export default function CategoryBody({
 
     try {
       const response = await apis.getCategories(y, m);
-      console.log(response);
 
       setCategoryDtoList(response.resultBody);
     } catch(e) {
@@ -183,6 +185,28 @@ export default function CategoryBody({
     if(isDev()) return;
     if(!selectedCategory || selectedCategory.level >= 2) return;
 
+    const firstChildIdx = categoryList.findIndex(c => c.parentId === selectedCategory.id);
+    if(firstChildIdx > -1) {
+      let lastChildIdx = firstChildIdx;
+      for(let i = firstChildIdx+1; i<categoryList.length; i++) {
+        if(categoryList[i].parentId === selectedCategory.id) {
+          lastChildIdx = i;
+        } else break;
+      }
+
+      const categoryCount = lastChildIdx - firstChildIdx + 1;
+
+      if(categoryCount >= 10) {
+        openPopup({
+          title: '카테고리 생성 실패',
+          description: <>카테고리는 단계당 최대 10개 까지 생성이 가능합니다</>,
+          buttons: [{ label: '확인', onClick: closePopup }],
+        });
+  
+        return;
+      }
+    }
+
     const newCategoryDto: NewCategoryDto = {
       categoryColor: selectedCategory.color,
       categoryDescription: '',
@@ -202,7 +226,7 @@ export default function CategoryBody({
       console.log(error.response?.data);
       return;
     }
-  }, [selectedCategory, currentDate]);
+  }, [selectedCategory, currentDate, categoryList]);
 
   const handleCategoryDelete = useCallback(async () => {
     if(isDev()) return;
@@ -278,6 +302,16 @@ export default function CategoryBody({
   const handleBaseCategoryCreate = useCallback(async () => {
     if(isDev()) return;
 
+    if(categoryDtoList.length >= 10) {
+      openPopup({
+        title: '카테고리 생성 실패',
+        description: <>카테고리는 단계당 최대 10개 까지 생성이 가능합니다</>,
+        buttons: [{ label: '확인', onClick: closePopup }],
+      });
+
+      return;
+    }
+
     const newCategoryDto: NewCategoryDto = {
       categoryColor: 'red',
       categoryDescription: '',
@@ -298,7 +332,7 @@ export default function CategoryBody({
       return;
     }
 
-  }, [currentDate]);
+  }, [currentDate, categoryDtoList]);
 
   const handleCategoryUpdate = useCallback(() => {
     getCategories(currentDate.year(), currentDate.month());
