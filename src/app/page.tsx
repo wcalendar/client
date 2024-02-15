@@ -21,7 +21,6 @@ import usePriorities from './usePriorities';
 import PriorityList from './PriorityList';
 import useDev from '@/hooks/useDev';
 import { useCurrentDate } from '@/providers/CurrentDateProvider/useCurrentDate';
-import { group } from 'console';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -212,7 +211,6 @@ export default function Home() {
     setCategoryList, setCategoryToRenderList, setPrioritiesByDay,
     getCategoryList,
   } = useCalendarData(currentDate, setLoading);
-  console.log(categoryList);
 
   const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
   

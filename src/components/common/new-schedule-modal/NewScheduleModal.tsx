@@ -16,6 +16,7 @@ import useCategoryListDropdown from "./useCategoryListDropdown";
 import useDev from "@/hooks/useDev";
 import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
+import { useModal } from "@/providers/ModalProvider/useModal";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -193,6 +194,7 @@ export default function NewScheduleModal({
   const { isDev } = useDev();
   const { currentDate } = useCurrentDate();
   const { openPopup, closePopup } = usePopup();
+  const { closeModal } = useModal();
 
   const [status, setStatus] = useState<ModalStatus>('open');
 
@@ -271,6 +273,8 @@ export default function NewScheduleModal({
     try {
       await apis.deleteSchedule(updateScheduleInfo!.schedule.id);
       updateScheduleInfo!.onScheduleDelete(updateScheduleInfo!.schedule.categoryId, updateScheduleInfo!.schedule.groupCode);
+
+      closeModal();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
