@@ -35,14 +35,7 @@ const Description = styled.p`
   text-align: center;
   font-size: 1.5rem;
   font-weight: normal;
-  margin-bottom: 1rem;
-`;
-
-const Tip = styled.p`
-  text-align: center;
-  color: ${({ theme }) => theme.colors.gray};
-  font-size: .875rem;
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
 `;
 
 export default function Login() {
@@ -55,7 +48,6 @@ export default function Login() {
         </IconWrapper>
       </Title>
       <Description>복잡한 일정과 하루를<br />가장 쉽고 편하게 관리 하는 방법</Description>
-      <Tip>카카오톡으로 3초만에 시작하기</Tip>
       <Link href={'https://wplanner.co.kr/oauth2/authorization/google'}><GoogleLoginButton /></Link>
     </Container>
   )
