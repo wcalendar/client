@@ -1,4 +1,4 @@
-import { calendarDummyData, categoryListDummyData } from "@/dummies/calendar";
+import { calendarDummyData, categoryListDummyData, searchDummyData } from "@/dummies/calendar";
 import { AgreeDto, CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto, SearchedScheduleDto } from "@/types";
 import axios, { AxiosResponse } from "axios";
 
@@ -39,6 +39,10 @@ export const fetchers = {
     if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(categoryListDummyData));
     else return authAPI.get<ResDto<CategoryDto[]>>(`${url}/${year}/${month+1}`).then(res => res.data.resultBody);
   },
+  searchSchedule: ([url, isDev, searchTerm]: [string, boolean, string]) => {
+    if(isDev) return new Promise<SearchedScheduleDto[]>((resolve) => resolve(searchDummyData));
+    else return authAPI.get<ResDto<SearchedScheduleDto[]>>(`${url}?content=${searchTerm}`).then(res => res.data.resultBody);
+  }
 };
 
 export const apis = {
@@ -79,8 +83,5 @@ export const apis = {
   },
   updateSchedulePriority: async (scheduleOrderList: string[], scheduleDate: string): Promise<ResDto<string>> => {
     return (await authAPI.put(`/schedules`, { scheduleOrderList, scheduleDate })).data;
-  },
-  searchSchedule: async (searchTerm: string): Promise<ResDto<SearchedScheduleDto[]>> => {
-    return (await authAPI.get(`schedules/search?content=${searchTerm}`)).data;
   },
 }
