@@ -16,11 +16,12 @@ import { CategoryModalProps } from '@/components/common/category-modal/CategoryM
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
 import { useModal } from '@/providers/ModalProvider/useModal';
-import useCalendarData from './useCalendarData';
 import usePriorities from './usePriorities';
 import PriorityList from './PriorityList';
 import useDev from '@/hooks/useDev';
 import { useCurrentDate } from '@/providers/CurrentDateProvider/useCurrentDate';
+import useCalendar from './useCalendar';
+import useCalendarData from '@/swr/useCalendarData';
 
 const dayOfTheWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 const prioritiesSize = 3;
@@ -202,15 +203,14 @@ export default function Home() {
   const { isDev } = useDev();
   const { modals, addModal, closeModal } = useModal();
 
-  const [isLoading, setLoading] = useState(false);
-
   const { currentDate } = useCurrentDate();
 
   const {
-    categoryList, categoryToRenderList, prioritiesByDay,
-    setCategoryList, setCategoryToRenderList, setPrioritiesByDay,
-    getCategoryList,
-  } = useCalendarData(currentDate, setLoading);
+    categoryToRenderList, prioritiesByDay,
+    setCategoryToRenderList, setPrioritiesByDay,
+  } = useCalendar();
+
+  const { calendarData, isCalendarDateLoading, mutateCalendarData } = useCalendarData();
 
   const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
   
@@ -275,16 +275,6 @@ export default function Home() {
     setHoveredCategoryIdx(-1);
   }
 
-  const handleScheduleCreate = useCallback(() => {
-    setLoading(true);
-
-    const y = currentDate.year();
-    const m = currentDate.month();
-    getCategoryList(y, m);
-
-    closeModal();
-  }, [currentDate]);
-
   const router = useRouter();
   const handleMoveCategoryPage = () => {
     router.push('/category');
@@ -335,44 +325,11 @@ export default function Home() {
     setPrioritiesByDay(newPriorities);
   }, [categoryToRenderList, daysInMonth, prioritiesByDay]);
 
-  const handleScheduleDelete = useCallback((categoryId: string, groupCode: string) => {
-    const newCategoryList = [...categoryList];
-    let category: CategoryDto | undefined = undefined;
-    outer: for(const c1 of newCategoryList) {
-      if(c1.categoryId === categoryId) {
-        category = c1;
-        break;
-      }
-      for(const c2 of c1.children) {
-        if(c2.categoryId === categoryId) {
-          category = c2;
-          break outer;
-        }
-        for(const c3 of c2.children) {
-          if(c3.categoryId === categoryId) {
-            category = c3;
-            break outer;
-          }
-        }
-      }
-    }
-    if(!category) {
-      alert('존재하지 않는 카테고리 입니다.');
-      return;
-    }
-
-    const newSchedules = category.schedules.filter(schedule => schedule.scheduleGroupCode !== groupCode);
-    category.schedules = newSchedules;
-
-    setCategoryList(newCategoryList);
-  }, [categoryList]);
-
   const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
     const props: ScheduleModalProps = {
       scheduleModalInfo: newScheduleModalInfo,
       onScheduleFinish: handleScheduleFinish,
       onUpdateClick: handleUpdateScheduleClick,
-      onScheduleDelete: handleScheduleDelete,
     }
     
     addModal({ key: 'schedule', modalProps: props });
@@ -389,15 +346,14 @@ export default function Home() {
   const openNewScheduleModal = useCallback((newScheduleModalInfo: NewScheduleModalInfo) => {
     const props: NewScheduleModalProps = {
       newScheduleModalInfo,
-      onScheduleCreate: handleScheduleCreate,
     }
 
-    addModal({ key: 'newSchedule', modalProps: props })
-  }, [handleScheduleCreate]);
+    addModal({ key: 'newSchedule', modalProps: props });
+  }, []);
 
   const handleUpdateScheduleClick = useCallback((schedule: ScheduleToRender) => {
-    openNewScheduleModal({ updateScheduleInfo: { schedule, onScheduleDelete: handleScheduleDelete } });
-  }, [openNewScheduleModal, handleScheduleDelete]);
+    openNewScheduleModal({ updateScheduleInfo: { schedule } });
+  }, [openNewScheduleModal]);
 
   const handleOpenNewScheduleModal = () => {
     openNewScheduleModal({});
@@ -407,7 +363,7 @@ export default function Home() {
     const y = currentDate.year();
     const m = currentDate.month();
 
-    for(const c1 of categoryList) {
+    for(const c1 of calendarData!) {
       if(c1.categoryId === categoryId) {
         openNewScheduleModal({ fixedCategoryInfo: { categoryId: c1.categoryId, date: time.new(y, m, day) } });
         return;
@@ -429,7 +385,7 @@ export default function Home() {
     }
 
     alert('존재하지 않는 카테고리입니다.');
-  }, [currentDate, categoryList, openNewScheduleModal]);
+  }, [currentDate, calendarData, openNewScheduleModal]);
 
   const {
     draggedPriorityX, draggedPriorityY, draggedPriority, openedDay,
@@ -443,7 +399,7 @@ export default function Home() {
   return (
     <Container>
       <Calendar>
-        <Spinnable isLoading={isLoading}>
+        <Spinnable isLoading={isCalendarDateLoading}>
           <CategorySide ref={categoryBody}>
             <CalendarHeader $day_count={1}>
               <HeaderSection>
