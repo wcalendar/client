@@ -242,6 +242,7 @@ export default function CategoryBody({
       await apis.deleteCategory(selectedCategory!.id, time.toString(currentDate, 'YYYY-MM-DD'));
 
       getCategories(currentDate.year(), currentDate.month());
+      setSelectedCategory(null);
     } catch(e) {
       const error = e as AxiosError;
       console.log(error.response?.data);
