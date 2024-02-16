@@ -1,3 +1,4 @@
+import { calendarDummyData } from "@/dummies/calendar";
 import { AgreeDto, CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto, SearchedScheduleDto } from "@/types";
 import axios, { AxiosResponse } from "axios";
 
@@ -30,7 +31,10 @@ authAPI.interceptors.request.use((config) => {
 });
 
 export const fetchers = {
-  getCalendarData: (url: string) => authAPI.get<ResDto<CategoryDto[]>>(url).then(res => res.data.resultBody),
+  getCalendarData: ([url, isDev, year, month]: [string, boolean, number, number]) => {
+    if(isDev) return calendarDummyData[0].resultBody;
+    else return authAPI.get<ResDto<CategoryDto[]>>(`${url}/${year}/${month+1}`).then(res => res.data.resultBody);
+  },
 };
 
 export const apis = {
