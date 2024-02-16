@@ -29,6 +29,10 @@ authAPI.interceptors.request.use((config) => {
   return config;
 });
 
+export const fetchers = {
+  getCalendarData: (url: string) => authAPI.get<ResDto<CategoryDto[]>>(url).then(res => res.data.resultBody),
+};
+
 export const apis = {
   agree: async (agreeDto: AgreeDto): Promise<AxiosResponse<ResDto<string>>> => {
     return (await noAuthAPI.post(`/terms/approval`, agreeDto));
