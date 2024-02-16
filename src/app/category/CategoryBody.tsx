@@ -102,7 +102,6 @@ export default function CategoryBody({
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [categoryDtoList, setCategoryDtoList] = useState<CategoryDto[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
@@ -110,27 +109,7 @@ export default function CategoryBody({
     formRef.current!.reset();
   }, []);
 
-  const getCategories = useCallback(async (y: number, m: number) => {
-    if(isDev()) {
-      setCategoryDtoList(categoryListDummyData);
-      return;
-    }
-
-    try {
-      const response = await apis.getCategories(y, m);
-
-      setCategoryDtoList(response.resultBody);
-    } catch(e) {
-      const error = e as AxiosError;
-      console.log(error.response?.data);
-    }
-  }, []);
-
-  useEffect(() => {
-    getCategories(currentDate.year(), currentDate.month());
-  }, [currentDate]);
-
-  useEffect(() => {
+  const toCategoryList = useCallback((categoryDtoList: CategoryDto[]) => {
     const newCategoryList: Category[] = [];
 
     categoryDtoList.forEach(c1 => {
@@ -178,8 +157,34 @@ export default function CategoryBody({
       })
     });
 
-    setCategoryList(newCategoryList);
-  }, [categoryDtoList]);
+    return newCategoryList
+  }, []);
+
+  const getCategories = useCallback(async (y: number, m: number, categoryIdToSelect?: string) => {
+    if(isDev()) {
+      setCategoryList(toCategoryList(categoryListDummyData));
+      return;
+    }
+
+    try {
+      const response = await apis.getCategories(y, m);
+
+      const newCategoryList = toCategoryList(response.resultBody);
+      setCategoryList(newCategoryList);
+      if(categoryIdToSelect) {
+        const newSelectedCategory = newCategoryList.find(c => c.id === categoryIdToSelect);
+        console.log(newSelectedCategory);
+        if(newSelectedCategory) setSelectedCategory(newSelectedCategory);
+      }
+    } catch(e) {
+      const error = e as AxiosError;
+      console.log(error.response?.data);
+    }
+  }, []);
+
+  useEffect(() => {
+    getCategories(currentDate.year(), currentDate.month());
+  }, [currentDate]);
 
   const handleCategoryCreate = useCallback(async () => {
     if(isDev()) return;
@@ -218,9 +223,9 @@ export default function CategoryBody({
     };
 
     try {
-      await apis.addCategory(newCategoryDto);
+      const response = await apis.addCategory(newCategoryDto);
 
-      getCategories(currentDate.year(), currentDate.month());
+      getCategories(currentDate.year(), currentDate.month(), response.resultBody.categoryId);
     } catch(e) {
       const error = e as AxiosError;
       console.log(error.response?.data);
@@ -264,23 +269,9 @@ export default function CategoryBody({
 
     let newOrderList: string[] = [];
     if(level === 0) {
-      newOrderList = categoryDtoList.map(c => c.categoryId);
+      newOrderList = categoryList.filter(c => c.level === 0).map(c => c.id);
     } else {
-      outer: for(const c0 of categoryDtoList) {
-        if(level === 1) {
-          if(c0.categoryId === parentId) {
-            newOrderList = c0.children.map(c => c.categoryId);
-            break;
-          }
-        } else {
-          for(const c1 of c0.children) {
-            if(c1.categoryId === parentId) {
-              newOrderList = c1.children.map(c => c.categoryId);
-              break outer;
-            }
-          }
-        }
-      }
+      newOrderList = categoryList.filter(c => c.parentId === parentId).map(c => c.id);
     }
 
     // newOrderList = selectedCategory 가 속한 리스트의 id 목록
@@ -303,7 +294,7 @@ export default function CategoryBody({
       const error = e as AxiosError;
       console.log(error.response?.data);
     }
-  }, [selectedCategory, categoryDtoList, currentDate]);
+  }, [selectedCategory, categoryList, currentDate]);
 
   const handleCategoryMoveUp = useCallback(() => {
     handleCategoryMove(-1);
@@ -316,7 +307,8 @@ export default function CategoryBody({
   const handleBaseCategoryCreate = useCallback(async () => {
     if(isDev()) return;
 
-    if(categoryDtoList.length >= 10) {
+    const baseCategoryList = categoryList.filter(c => c.level === 0);
+    if(baseCategoryList.length >= 10) {
       openPopup({
         title: '카테고리 생성 실패',
         description: <>카테고리는 단계당 최대 10개 까지 생성이 가능합니다</>,
@@ -337,16 +329,16 @@ export default function CategoryBody({
     };
 
     try {
-      await apis.addCategory(newCategoryDto);
+      const response = await apis.addCategory(newCategoryDto);
 
-      getCategories(currentDate.year(), currentDate.month());
+      getCategories(currentDate.year(), currentDate.month(), response.resultBody.categoryId);
     } catch(e) {
       const error = e as AxiosError;
       console.log(error.response?.data);
       return;
     }
 
-  }, [currentDate, categoryDtoList]);
+  }, [currentDate, categoryList]);
 
   const handleCategoryUpdate = useCallback(() => {
     getCategories(currentDate.year(), currentDate.month());

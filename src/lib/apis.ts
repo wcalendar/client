@@ -43,7 +43,7 @@ export const apis = {
   getCategories: async (y: number, m: number): Promise<ResDto<CategoryDto[]>> => {
     return (await authAPI.get(`/categories/${y}/${m+1}`)).data;
   },
-  addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<string>> => {
+  addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<{ categoryId: string }>> => {
     return (await authAPI.post(`/categories`, newCategoryDto)).data;
   },
   updateCategory: async (categoryId: string, categoryUpdateDto: CategoryUpdateDto): Promise<ResDto<string>> => {
