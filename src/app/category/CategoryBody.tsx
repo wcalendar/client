@@ -32,7 +32,7 @@ const Container = styled.div`
 const CategorySide = styled.div`
   display: flex;
   flex-direction: column;
-  width: 19.375rem;
+  width: 17.5rem;
 `;
 
 const ControlBox = styled.div`
