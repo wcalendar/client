@@ -12,8 +12,8 @@ import CategoryForm from "./CategoryForm";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 import useDev from "@/hooks/useDev";
-import { categoryListDummyData } from "@/dummies/calendar";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
+import useCategoriesData from "@/swr/useCategoriesData";
 
 const Container = styled.div`
   display: flex;
@@ -99,10 +99,12 @@ export default function CategoryBody({
 }: CategoryBodyProps) {
   const { isDev } = useDev();
   const { openPopup, closePopup } = usePopup();
+  const { categoriesData, iscategoriesDataLoading, mutateCategoriesData } = useCategoriesData();
 
   const formRef = useRef<HTMLFormElement>(null);
 
   const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [categoryIdToSelect, setCategoryIdToSelect] = useState<string>();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
   const resetForm = useCallback(() => {
@@ -160,31 +162,20 @@ export default function CategoryBody({
     return newCategoryList
   }, []);
 
-  const getCategories = useCallback(async (y: number, m: number, categoryIdToSelect?: string) => {
-    if(isDev()) {
-      setCategoryList(toCategoryList(categoryListDummyData));
-      return;
-    }
-
-    try {
-      const response = await apis.getCategories(y, m);
-
-      const newCategoryList = toCategoryList(response.resultBody);
-      setCategoryList(newCategoryList);
-      if(categoryIdToSelect) {
-        const newSelectedCategory = newCategoryList.find(c => c.id === categoryIdToSelect);
-        console.log(newSelectedCategory);
-        if(newSelectedCategory) setSelectedCategory(newSelectedCategory);
-      }
-    } catch(e) {
-      const error = e as AxiosError;
-      console.log(error.response?.data);
-    }
-  }, []);
+  useEffect(() => {
+    if(categoriesData) setCategoryList(toCategoryList(categoriesData));
+  }, [categoriesData]);
 
   useEffect(() => {
-    getCategories(currentDate.year(), currentDate.month());
-  }, [currentDate]);
+    if(categoryIdToSelect) {
+      const newSelectedCategory = categoryList.find(c => c.id === categoryIdToSelect);
+      if(newSelectedCategory) {
+        setSelectedCategory(newSelectedCategory);
+
+        setCategoryIdToSelect(undefined);
+      }
+    }
+  }, [categoryList, categoryIdToSelect])
 
   const handleCategoryCreate = useCallback(async () => {
     if(isDev()) return;
@@ -225,7 +216,8 @@ export default function CategoryBody({
     try {
       const response = await apis.addCategory(newCategoryDto);
 
-      getCategories(currentDate.year(), currentDate.month(), response.resultBody.categoryId);
+      setCategoryIdToSelect(response.resultBody.categoryId);
+      mutateCategoriesData();
     } catch(e) {
       const error = e as AxiosError;
       console.log(error.response?.data);
@@ -241,7 +233,7 @@ export default function CategoryBody({
     try {
       await apis.deleteCategory(selectedCategory!.id, time.toString(currentDate, 'YYYY-MM-DD'));
 
-      getCategories(currentDate.year(), currentDate.month());
+      mutateCategoriesData();
       setSelectedCategory(null);
     } catch(e) {
       const error = e as AxiosError;
@@ -290,7 +282,7 @@ export default function CategoryBody({
     try {
       await apis.moveCategory(newOrderList);
 
-      getCategories(currentDate.year(), currentDate.month());
+      mutateCategoriesData();
     } catch(e) {
       const error = e as AxiosError;
       console.log(error.response?.data);
@@ -332,7 +324,8 @@ export default function CategoryBody({
     try {
       const response = await apis.addCategory(newCategoryDto);
 
-      getCategories(currentDate.year(), currentDate.month(), response.resultBody.categoryId);
+      setCategoryIdToSelect(response.resultBody.categoryId);
+      mutateCategoriesData();
     } catch(e) {
       const error = e as AxiosError;
       console.log(error.response?.data);
@@ -342,8 +335,8 @@ export default function CategoryBody({
   }, [currentDate, categoryList]);
 
   const handleCategoryUpdate = useCallback(() => {
-    getCategories(currentDate.year(), currentDate.month());
-  }, [currentDate]);
+    mutateCategoriesData();
+  }, []);
 
   const handleCategoryItemClick = useCallback((category: Category) => {
     if(selectedCategory && selectedCategory.id === category.id) setSelectedCategory(null);

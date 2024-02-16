@@ -1,4 +1,4 @@
-import { calendarDummyData } from "@/dummies/calendar";
+import { calendarDummyData, categoryListDummyData } from "@/dummies/calendar";
 import { AgreeDto, CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto, SearchedScheduleDto } from "@/types";
 import axios, { AxiosResponse } from "axios";
 
@@ -32,7 +32,11 @@ authAPI.interceptors.request.use((config) => {
 
 export const fetchers = {
   getCalendarData: ([url, isDev, year, month]: [string, boolean, number, number]) => {
-    if(isDev) return calendarDummyData[0].resultBody;
+    if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(calendarDummyData[0].resultBody));
+    else return authAPI.get<ResDto<CategoryDto[]>>(`${url}/${year}/${month+1}`).then(res => res.data.resultBody);
+  },
+  getCategories: ([url, isDev, year, month]: [string, boolean, number, number]) => {
+    if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(categoryListDummyData));
     else return authAPI.get<ResDto<CategoryDto[]>>(`${url}/${year}/${month+1}`).then(res => res.data.resultBody);
   },
 };
@@ -48,9 +52,6 @@ export const apis = {
     return (await authAPI.post(`/user/delete`)).data;
   },
 
-  getCategories: async (y: number, m: number): Promise<ResDto<CategoryDto[]>> => {
-    return (await authAPI.get(`/categories/${y}/${m+1}`)).data;
-  },
   addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<{ categoryId: string }>> => {
     return (await authAPI.post(`/categories`, newCategoryDto)).data;
   },
