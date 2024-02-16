@@ -48,7 +48,7 @@ export default function Login() {
         </IconWrapper>
       </Title>
       <Description>복잡한 일정과 하루를<br />가장 쉽고 편하게 관리 하는 방법</Description>
-      <Link href={'https://wplanner.co.kr/oauth2/authorization/google'}><GoogleLoginButton /></Link>
+      <Link href={`${process.env.NEXT_PUBLIC_SERVER_URL}oauth2/authorization/google`}><GoogleLoginButton /></Link>
     </Container>
   )
 }
