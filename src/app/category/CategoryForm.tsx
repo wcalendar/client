@@ -149,7 +149,7 @@ function CategoryForm({
     }
 
     try {
-      await apis.updateCategory(selectedCategory.id, newCategoryUpdateDto);
+      const response = await apis.updateCategory(selectedCategory.id, newCategoryUpdateDto);
       onCategoryUpdate();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
