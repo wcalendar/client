@@ -11,6 +11,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.4.1",
     "@mdi/js": "^7.3.67",
     "@mdi/react": "^1.6.1",
     "@next/third-parties": "^14.1.0",
