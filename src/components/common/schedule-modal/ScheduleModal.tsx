@@ -93,13 +93,11 @@ const Button = styled.button`
 
 export type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
-  onScheduleFinish: (categoryId: string, groupCode: string) => void;
   onUpdateClick: (schedule: ScheduleToRender) => void;
 }
 
 export default function ScheduleModal({
   scheduleModalInfo,
-  onScheduleFinish,
   onUpdateClick,
 }: ScheduleModalProps) {
   const { isDev } = useDev();
@@ -115,13 +113,21 @@ export default function ScheduleModal({
     closeModal();
   }, []);
 
-  const handleScheduleFinish = useCallback(() => {
-    onScheduleFinish(schedule.categoryId, schedule.groupCode);
-
+  const handleScheduleFinish = useCallback(async () => {
+    if(!isDev()) {
+      try {
+        await apis.finishSchedule(schedule.id, !schedule.isFinished);
+        mutateCalendarData();
+      } catch(e) {
+        const error = e as AxiosError;
+        console.log(error.response?.data); 
+      }
+    }
+    
     const newModalInfo = {...modalInfo};
     newModalInfo.schedule.isFinished = !newModalInfo.schedule.isFinished;
     setModalInfo(newModalInfo);
-  }, [modalInfo]);
+  }, [schedule, modalInfo]);
 
   const deleteSchedule = useCallback(async () => {
     closePopup();

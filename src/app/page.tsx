@@ -280,60 +280,14 @@ export default function Home() {
     router.push('/category');
   };
 
-  const handleScheduleFinish = useCallback((categoryId: string, groupCode: string) => {
-    const newCategoryListToRender = [...categoryToRenderList];
-    const category = newCategoryListToRender.find(c => c.category.id === categoryId);
-    if(!category) {
-      alert('존재하지 않는 일정입니다.');
-      return;
-    }
-
-    let foundSchedule: ScheduleToRender | undefined;
-    let isScheduleFound = false;
-    for(const line of category.lines) {
-      for(const schedule of line) {
-        if(schedule && schedule.groupCode === groupCode) {
-          isScheduleFound = true;
-          foundSchedule = {...schedule};
-          break;
-        }
-      }
-
-      if(isScheduleFound) break;
-    }
-    if(!foundSchedule) {
-      alert('존재하지 않는 일정입니다.');
-      return;
-    }
-
-    const newIsFinished = !(foundSchedule.isFinished);
-    foundSchedule.isFinished = newIsFinished;
-    setCategoryToRenderList(newCategoryListToRender);
-
-    // 우선순위
-    const startDay = foundSchedule.startDate.date();
-    const endDay = foundSchedule.endDate.date();
-    const newPriorities = [...prioritiesByDay];
-    for(let i=startDay; i<=endDay; i++) {
-      for(let j=0; j<newPriorities[i-1].length; j++) {
-        if(newPriorities[i-1][j].groupCode === groupCode) {
-          newPriorities[i-1][j].isFinished = newIsFinished;
-          break;
-        }
-      }
-    }
-    setPrioritiesByDay(newPriorities);
-  }, [categoryToRenderList, daysInMonth, prioritiesByDay]);
-
   const handleScheduleClick = useCallback((newScheduleModalInfo: ScheduleModalInfo) => {
     const props: ScheduleModalProps = {
       scheduleModalInfo: newScheduleModalInfo,
-      onScheduleFinish: handleScheduleFinish,
       onUpdateClick: handleUpdateScheduleClick,
     }
     
     addModal({ key: 'schedule', modalProps: props });
-  }, [handleScheduleFinish]);
+  }, []);
 
   const handleCategoryClick = useCallback((newCategoryModalInfo: CategoryModalInfo) => {
     const props: CategoryModalProps = {
