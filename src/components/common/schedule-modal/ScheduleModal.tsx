@@ -122,6 +122,7 @@ export default function ScheduleModal({
     if(!isDev()) {
       try {
         await apis.finishSchedule(schedule.id, !schedule.isFinished);
+        trackAmpEvent('Finish Schedule');
         mutateCalendarData();
       } catch(e) {
         const error = e as AxiosError<any>;
@@ -132,7 +133,7 @@ export default function ScheduleModal({
     const newModalInfo = {...modalInfo};
     newModalInfo.schedule.isFinished = !newModalInfo.schedule.isFinished;
     setModalInfo(newModalInfo);
-  }, [schedule, modalInfo]);
+  }, [schedule, modalInfo, trackAmpEvent]);
 
   const deleteSchedule = useCallback(async () => {
     closePopup();
