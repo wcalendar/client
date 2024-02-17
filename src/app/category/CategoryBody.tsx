@@ -14,6 +14,7 @@ import { AxiosError } from "axios";
 import useDev from "@/hooks/useDev";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
 import useCategoriesData from "@/swr/useCategoriesData";
+import useExceptionPopup from "@/hooks/useExceptionPopup";
 
 const Container = styled.div`
   display: flex;
@@ -98,6 +99,7 @@ export default function CategoryBody({
   currentDate,
 }: CategoryBodyProps) {
   const { isDev } = useDev();
+  const openExceptionPopup = useExceptionPopup();
   const { openPopup, closePopup } = usePopup();
   const { categoriesData, iscategoriesDataLoading, mutateCategoriesData } = useCategoriesData();
 
@@ -219,9 +221,8 @@ export default function CategoryBody({
       setCategoryIdToSelect(response.resultBody.categoryId);
       mutateCategoriesData();
     } catch(e) {
-      const error = e as AxiosError;
-      console.log(error.response?.data);
-      return;
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, [selectedCategory, currentDate, categoryList]);
 
@@ -236,8 +237,8 @@ export default function CategoryBody({
       mutateCategoriesData();
       setSelectedCategory(null);
     } catch(e) {
-      const error = e as AxiosError;
-      console.log(error.response?.data);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, [selectedCategory, currentDate]);
 
@@ -284,8 +285,8 @@ export default function CategoryBody({
 
       mutateCategoriesData();
     } catch(e) {
-      const error = e as AxiosError;
-      console.log(error.response?.data);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, [selectedCategory, categoryList, currentDate]);
 
@@ -327,11 +328,9 @@ export default function CategoryBody({
       setCategoryIdToSelect(response.resultBody.categoryId);
       mutateCategoriesData();
     } catch(e) {
-      const error = e as AxiosError;
-      console.log(error.response?.data);
-      return;
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
-
   }, [currentDate, categoryList]);
 
   const handleCategoryUpdate = useCallback(() => {

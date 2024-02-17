@@ -9,6 +9,7 @@ import { AxiosError } from 'axios';
 import { apis } from '@/lib/apis';
 import useDev from '@/hooks/useDev';
 import { useRouter } from 'next/navigation';
+import useExceptionPopup from '@/hooks/useExceptionPopup';
 
 const NavBarContainer = styled.div`
   display: flex;
@@ -18,6 +19,8 @@ const NavBarContainer = styled.div`
 
 export default function NavBar() {
   const { isDev } = useDev();
+  const openExceptionPopup = useExceptionPopup();
+  
   const { openPopup, closePopup } = usePopup();
   const router = useRouter();
 
@@ -32,8 +35,8 @@ export default function NavBar() {
 
       router.push('/login');
     } catch(e) {
-      const error = e as AxiosError;
-      console.log(error);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, []);
 
@@ -48,8 +51,8 @@ export default function NavBar() {
 
       router.push('/login');
     } catch(e) {
-      const error = e as AxiosError;
-      console.log(error);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, []);
 
