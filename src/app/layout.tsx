@@ -7,6 +7,9 @@ import PopupProvider from '@/providers/PopupProvider/PopupProvider';
 import AppPopup from '@/components/common/app-popup/AppPopup';
 import Header from '@/components/common/header/Header';
 import { CurrentDateProvider } from '@/providers/CurrentDateProvider/CurrentDateProvider';
+import { SWRConfig } from 'swr';
+import { AxiosError } from 'axios';
+import SWRConfigProvider from '@/lib/SWRConfigProvider';
 
 const roboto = Roboto({
   weight: ['400', '700'],
@@ -32,10 +35,12 @@ export default function RootLayout({
           <CurrentDateProvider>
             <PopupProvider>
               <ModalProvider>
-                <Header />
-                {children}
-                <AppModal />
-                <AppPopup />
+                <SWRConfigProvider>
+                  <Header />
+                  {children}
+                  <AppModal />
+                  <AppPopup />
+                </SWRConfigProvider>
               </ModalProvider>
             </PopupProvider>
           </CurrentDateProvider>
