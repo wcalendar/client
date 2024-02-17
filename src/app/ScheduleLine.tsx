@@ -116,8 +116,8 @@ export default function ScheduleLine({
           {line.map((schedule, scheduleIdx) => schedule ? (
             <ScheduleItem
               key={`s-${schedule.groupCode}-${scheduleIdx}`}
-              $start={schedule.startDate.date()}
-              $end={schedule.endDate.date()}
+              $start={schedule.startDayToRender}
+              $end={schedule.endDayToRender}
               $color={category.color}
               $level={category.level}
               $is_finished={schedule.isFinished ? 1 : 0}

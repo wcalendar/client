@@ -1,4 +1,4 @@
-import { ModalStatus, ScheduleToRender, SearchedScheduleDto } from "@/types";
+import { ModalStatus } from "@/types";
 import { mdiMagnify } from "@mdi/js";
 import Icon from "@mdi/react";
 import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from "react";
@@ -6,9 +6,7 @@ import styled from "styled-components";
 import ResultItem from "./ResultItem";
 import FixedModal from "../fixed-modal/FixedModal";
 import useDev from "@/hooks/useDev";
-import { searchDummyData } from "@/dummies/calendar";
-import { apis } from "@/lib/apis";
-import { AxiosError } from "axios";
+import useSearchData from "@/swr/useSearchData";
 
 const Input = styled.input`
   width: 100%;
@@ -55,29 +53,14 @@ export interface SearchModalProps {
 
 export default function SearchModal({
 }: SearchModalProps) {
-  const { isDev } = useDev();
   const [modalStatus, setModalStatus] = useState<ModalStatus>('open');
+  const [searchText, setSearchText] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
-  const [resultList, setResultList] = useState<SearchedScheduleDto[]>([]);
+
+  const { searchData } = useSearchData(searchTerm);
 
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const getResultList = useCallback(async (newSearchTerm: string) => {
-    if(isDev()) {
-      setResultList(searchDummyData);
-      return;
-    }
-
-    try {
-      const response = await apis.searchSchedule(newSearchTerm);
-      setResultList(response.resultBody);
-    } catch(e) {
-      const error = e as AxiosError;
-      console.log(error.response?.data);
-    }
-
-  }, []);
 
   useEffect(() => {
     inputRef.current!.focus();
@@ -88,12 +71,12 @@ export default function SearchModal({
   }, []);
 
   const handleSearchTermChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
-    setSearchTerm(e.target.value);
+    setSearchText(e.target.value);
 
     const newSearchTerm = e.target.value.trim();
     if(newSearchTerm.length > 0) {
       if(debounceTimer) clearTimeout(debounceTimer);
-      setDebounceTimer(setTimeout(() => getResultList(newSearchTerm), 1000));
+      setDebounceTimer(setTimeout(() => setSearchTerm(newSearchTerm), 750));
     } else {
       if(debounceTimer) clearTimeout(debounceTimer);
     }
@@ -102,15 +85,15 @@ export default function SearchModal({
 
   return (
     <FixedModal status={modalStatus} width="33.75rem" backgroundColor="white" onModalClose={handleModalClose}>
-      <Input type="text" placeholder="일정 검색" ref={inputRef} value={searchTerm} onChange={handleSearchTermChange} />
+      <Input type="text" placeholder="일정 검색" ref={inputRef} value={searchText} onChange={handleSearchTermChange} />
       <IconWrapper>
         <Icon path={mdiMagnify} />
       </IconWrapper>
       <ListWrapper>
         <List>
-          {resultList.map(result => (
+          {searchData ? searchData.map(result => (
             <ResultItem key={`sr-${result.scheduleGroupCode}`} searchResult={result} />
-          ))}
+          )) : <></>}
         </List>
       </ListWrapper>
     </FixedModal>

@@ -1,3 +1,4 @@
+import { calendarDummyData, categoryListDummyData, searchDummyData } from "@/dummies/calendar";
 import { AgreeDto, CategoryDto, CategoryUpdateDto, NewCategoryDto, NewScheduleDto, ResDto, SearchedScheduleDto } from "@/types";
 import axios, { AxiosResponse } from "axios";
 
@@ -29,6 +30,25 @@ authAPI.interceptors.request.use((config) => {
   return config;
 });
 
+export const fetchers = {
+  getCalendarData: ([url, isDev, year, month]: [string, boolean, number, number]) => {
+    if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(calendarDummyData[0].resultBody));
+    else return authAPI.get<ResDto<CategoryDto[]>>(`${url}/${year}/${month+1}`).then(res => res.data.resultBody);
+  },
+  getCategories: ([url, isDev, year, month]: [string, boolean, number, number]) => {
+    if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(categoryListDummyData));
+    else return authAPI.get<ResDto<CategoryDto[]>>(`${url}/${year}/${month+1}`).then(res => res.data.resultBody);
+  },
+  getCategoriesByPeriod: ([url, isDev, sy, sm, ey, em]: [string, boolean, number, number, number, number]) => {
+    if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(categoryListDummyData));
+    else return authAPI.get<ResDto<CategoryDto[]>>(`${url}?startYear=${sy}&startMonth=${sm+1}&endYear=${ey}&endMonth=${em+1}`).then(res => res.data.resultBody);
+  },
+  searchSchedule: ([url, isDev, searchTerm]: [string, boolean, string]) => {
+    if(isDev) return new Promise<SearchedScheduleDto[]>((resolve) => resolve(searchDummyData));
+    else return authAPI.get<ResDto<SearchedScheduleDto[]>>(`${url}?content=${searchTerm}`).then(res => res.data.resultBody);
+  }
+};
+
 export const apis = {
   agree: async (agreeDto: AgreeDto): Promise<AxiosResponse<ResDto<string>>> => {
     return (await noAuthAPI.post(`/terms/approval`, agreeDto));
@@ -40,9 +60,6 @@ export const apis = {
     return (await authAPI.post(`/user/delete`)).data;
   },
 
-  getCategories: async (y: number, m: number): Promise<ResDto<CategoryDto[]>> => {
-    return (await authAPI.get(`/categories/${y}/${m+1}`)).data;
-  },
   addCategory: async (newCategoryDto: NewCategoryDto): Promise<ResDto<{ categoryId: string }>> => {
     return (await authAPI.post(`/categories`, newCategoryDto)).data;
   },
@@ -56,25 +73,19 @@ export const apis = {
     return (await authAPI.put(`/categories/${categoryId}/end-date`, { endDate })).data;
   },
 
-  getCalendarData: async (y: number, m: number): Promise<ResDto<CategoryDto[]>> => {
-    return (await authAPI.get(`/schedules/${y}/${m+1}`)).data;
-  },
-  getCategoriesByPeriod: async (sy: number, sm: number, ey: number, em: number): Promise<ResDto<CategoryDto[]>> => {
-    return (await authAPI.get(`/categories?startYear=${sy}&startMonth=${sm+1}&endYear=${ey}&endMonth=${em+1}`)).data;
-  },
   addSchedule: async (newScheduleDto: NewScheduleDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/schedules`, newScheduleDto)).data;
   },
   updateSchedule: async (newScheduleDto: NewScheduleDto, scheduleId: string): Promise<ResDto<string>> => {
     return (await authAPI.put(`/schedules/${scheduleId}`, newScheduleDto)).data;
   },
+  finishSchedule: async (scheduleId: string, isFinished: boolean): Promise<ResDto<string>> => {
+    return (await authAPI.put(`/schedules/${scheduleId}/end/${isFinished}`)).data;
+  },
   deleteSchedule: async (scheduleId: string): Promise<ResDto<string>> => {
     return (await authAPI.delete(`/schedules/${scheduleId}`)).data;
   },
   updateSchedulePriority: async (scheduleOrderList: string[], scheduleDate: string): Promise<ResDto<string>> => {
     return (await authAPI.put(`/schedules`, { scheduleOrderList, scheduleDate })).data;
-  },
-  searchSchedule: async (searchTerm: string): Promise<ResDto<SearchedScheduleDto[]>> => {
-    return (await authAPI.get(`schedules/search?content=${searchTerm}`)).data;
   },
 }

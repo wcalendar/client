@@ -81,6 +81,8 @@ export type ScheduleDto = {
   categoryId: string;
   scheduleContent: string;
   scheduleDate: string;
+  scheduleStartDate: string;
+  scheduleEndDate: string;
   schedulePriority: number;
   isPriority: boolean;
   isFinished: boolean;
@@ -102,6 +104,8 @@ export type ScheduleToRender = {
   isFinished: boolean;
   startDate: Dayjs;
   endDate: Dayjs;
+  startDayToRender: number;
+  endDayToRender: number;
 }
 
 // 우선순위를 렌더링하기 위한 데이터
@@ -155,7 +159,6 @@ export type CategoryModalInfo = {
 // 일정 수정을 위해 모달을 열었을 때 사용되는 데이터
 export interface UpdateScheduleInfo {
   schedule: ScheduleToRender;
-  onScheduleDelete: (categoryId: string, groupCode: string) => void;
 }
 
 // 빈 일정을 눌러 모달을 열었을 때 사용되는 데이터

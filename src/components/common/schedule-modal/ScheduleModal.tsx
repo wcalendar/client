@@ -10,6 +10,7 @@ import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 import useDev from "@/hooks/useDev";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
+import useCalendarData from "@/swr/useCalendarData";
 
 const Header = styled.div`
   width: 100%;
@@ -92,19 +93,16 @@ const Button = styled.button`
 
 export type ScheduleModalProps = {
   scheduleModalInfo: ScheduleModalInfo;
-  onScheduleFinish: (categoryId: string, groupCode: string) => void;
   onUpdateClick: (schedule: ScheduleToRender) => void;
-  onScheduleDelete: (categoryId: string, groupCode: string) => void;
 }
 
 export default function ScheduleModal({
   scheduleModalInfo,
-  onScheduleFinish,
   onUpdateClick,
-  onScheduleDelete,
 }: ScheduleModalProps) {
   const { isDev } = useDev();
   const { openPopup, closePopup } = usePopup();
+  const { mutateCalendarData } = useCalendarData();
 
   const [modalInfo, setModalInfo] = useState<ScheduleModalInfo>(scheduleModalInfo);
   const { x, y, schedule } = modalInfo;
@@ -115,13 +113,21 @@ export default function ScheduleModal({
     closeModal();
   }, []);
 
-  const handleScheduleFinish = useCallback(() => {
-    onScheduleFinish(schedule.categoryId, schedule.groupCode);
-
+  const handleScheduleFinish = useCallback(async () => {
+    if(!isDev()) {
+      try {
+        await apis.finishSchedule(schedule.id, !schedule.isFinished);
+        mutateCalendarData();
+      } catch(e) {
+        const error = e as AxiosError;
+        console.log(error.response?.data); 
+      }
+    }
+    
     const newModalInfo = {...modalInfo};
     newModalInfo.schedule.isFinished = !newModalInfo.schedule.isFinished;
     setModalInfo(newModalInfo);
-  }, [modalInfo]);
+  }, [schedule, modalInfo]);
 
   const deleteSchedule = useCallback(async () => {
     closePopup();
@@ -129,8 +135,8 @@ export default function ScheduleModal({
     if(isDev()) return;
 
     try {
-      const response = apis.deleteSchedule(schedule.id);
-      onScheduleDelete(schedule.categoryId, schedule.groupCode);
+      await apis.deleteSchedule(schedule.id);
+      mutateCalendarData();
       closeModal();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
