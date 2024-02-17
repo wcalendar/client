@@ -56,6 +56,8 @@ export default function ResultItem({
               isFinished: searchResult.isFinished,
               startDate: time.fromString(startDate),
               endDate: time.fromString(endDate),
+              startDayToRender: 0,
+              endDayToRender: 0,
             },
           },
         },
