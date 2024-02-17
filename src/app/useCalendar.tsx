@@ -1,24 +1,18 @@
-import { calendarDummyData } from "@/dummies/calendar";
-import useDev from "@/hooks/useDev";
-import { apis } from "@/lib/apis";
 import time from "@/lib/time";
-import { Category, CategoryDto, CategoryToRender, ErrorRes, Priority, ScheduleDto, ScheduleToRender } from "@/types";
-import { AxiosError } from "axios";
+import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
+import useCalendarData from "@/swr/useCalendarData";
+import { Category, CategoryDto, CategoryToRender, Priority, ScheduleDto, ScheduleToRender } from "@/types";
 import { Dayjs } from "dayjs";
-import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-export default function useCalendarData(
-  selectedDate: Dayjs,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-) {
-  const { isDev } = useDev();
-  const daysInMonth = useMemo(() => selectedDate.daysInMonth(), [selectedDate]);
-  const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
+export default function useCalendar() {
+  const { currentDate } = useCurrentDate();
+  const daysInMonth = useMemo(() => currentDate.daysInMonth(), [currentDate]);
+
   const [categoryToRenderList, setCategoryToRenderList] = useState<CategoryToRender[]>([]);
   const [prioritiesByDay, setPrioritiesByDay] = useState<Priority[][]>([]);
 
-  const router = useRouter();
+  const { calendarData } = useCalendarData();
 
   // CategoryDto를 CategoryToRender 타입으로 변환해주는 함수
   const toCategoryRender = useCallback((parentId: string | null, category: CategoryDto, newPriorities: Priority[][]): CategoryToRender => {
@@ -159,44 +153,9 @@ export default function useCalendarData(
     setCategoryToRenderList(newCategoryToRenderList);
   }, [daysInMonth]);
 
-  const getCategoryList = async (y: number, m: number) => {
-    if(isDev()) {
-      setCategoryList(calendarDummyData[m].resultBody);
-      setLoading(false);
-
-      return;
-    }
-
-    try {
-      const response = await apis.getCalendarData(y, m);
-
-      setCategoryList(response.resultBody);
-
-      setLoading(false);
-    } catch(error) {
-      const e = error as AxiosError<ErrorRes>;
-      if(e.response) {
-        if(e.response.status === 401 || e.response.status === 404) {
-          alert('로그인이 필요한 서비스입니다.');
-          router.push('/login');
-        }
-      } else {
-        alert('문제가 발생했습니다.');
-      }
-    }
-  };
-
   useEffect(() => {
-    setLoading(true);
+    if(calendarData) toRenderingData(calendarData);
+  }, [calendarData]);
 
-    const y = selectedDate.year();
-    const m = selectedDate.month();
-    getCategoryList(y, m);
-  }, [selectedDate]);
-
-  useEffect(() => {
-    toRenderingData(categoryList);
-  }, [categoryList]);
-
-  return { categoryList, categoryToRenderList, prioritiesByDay, setCategoryList, setCategoryToRenderList, setPrioritiesByDay, getCategoryList, };
+  return { categoryToRenderList, prioritiesByDay, setCategoryToRenderList, setPrioritiesByDay, };
 }

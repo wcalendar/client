@@ -57,15 +57,7 @@ export default function ResultItem({
               startDate: time.fromString(startDate),
               endDate: time.fromString(endDate),
             },
-            onScheduleDelete: () => {
-              closeModal();
-              if(pathname === '/') location.reload();
-            }
           },
-        },
-        onScheduleCreate: () => {
-          closeModal();
-          if(pathname === '/') location.reload();
         },
       },
     });

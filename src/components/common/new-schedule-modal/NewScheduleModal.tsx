@@ -17,6 +17,7 @@ import useDev from "@/hooks/useDev";
 import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
 import { useModal } from "@/providers/ModalProvider/useModal";
+import useCalendarData from "@/swr/useCalendarData";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -183,18 +184,18 @@ const isFixedCategoryInfo = (fixedCategoryInfo: FixedCategoryInfo | undefined): 
 }
 
 export interface NewScheduleModalProps {
-  onScheduleCreate: () => void;
   newScheduleModalInfo: NewScheduleModalInfo;
 }
 
 export default function NewScheduleModal({
-  onScheduleCreate,
   newScheduleModalInfo
 }: NewScheduleModalProps) {
   const { isDev } = useDev();
   const { currentDate } = useCurrentDate();
   const { openPopup, closePopup } = usePopup();
   const { closeModal } = useModal();
+
+  const { mutateCalendarData } = useCalendarData();
 
   const [status, setStatus] = useState<ModalStatus>('open');
 
@@ -219,7 +220,7 @@ export default function NewScheduleModal({
   const [isLoading, setLoading] = useState(false);
 
   const {
-    categoryList,
+    categoriesByPeriodData,
     firstCategoryIdx,
     secondCategoryIdx,
     thirdCategoryIdx,
@@ -272,8 +273,7 @@ export default function NewScheduleModal({
 
     try {
       await apis.deleteSchedule(updateScheduleInfo!.schedule.id);
-      updateScheduleInfo!.onScheduleDelete(updateScheduleInfo!.schedule.categoryId, updateScheduleInfo!.schedule.groupCode);
-
+      mutateCalendarData();
       closeModal();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
@@ -310,11 +310,13 @@ export default function NewScheduleModal({
       return;
     }
 
+    if(!categoriesByPeriodData) return;
+
     const newCategoryId = thirdCategoryIdx > 0 ?
-    categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].children[thirdCategoryIdx-1].categoryId :
+    categoriesByPeriodData[firstCategoryIdx-1].children[secondCategoryIdx-1].children[thirdCategoryIdx-1].categoryId :
     (secondCategoryIdx > 0 ?
-      categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].categoryId :
-      categoryList[firstCategoryIdx-1].categoryId
+      categoriesByPeriodData[firstCategoryIdx-1].children[secondCategoryIdx-1].categoryId :
+      categoriesByPeriodData[firstCategoryIdx-1].categoryId
     );
 
     const newScheduleDto: NewScheduleDto = {
@@ -334,12 +336,13 @@ export default function NewScheduleModal({
     try {
       const response = isUpdateMode ? await apis.updateSchedule(newScheduleDto, updateScheduleInfo.schedule.id) : await apis.addSchedule(newScheduleDto);
       setLoading(false);
-      onScheduleCreate();
+      mutateCalendarData();
+      closeModal();
     } catch(e) {
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
     }
-  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoryList, startDate, endDate, isDuration, isPriority, isUpdateMode, updateScheduleInfo]);
+  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoriesByPeriodData, startDate, endDate, isDuration, isPriority, isUpdateMode, updateScheduleInfo]);
 
   return (
     <FixedModal
