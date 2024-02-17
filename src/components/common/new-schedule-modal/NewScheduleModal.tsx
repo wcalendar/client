@@ -220,7 +220,7 @@ export default function NewScheduleModal({
   const [isLoading, setLoading] = useState(false);
 
   const {
-    categoryList,
+    categoriesByPeriodData,
     firstCategoryIdx,
     secondCategoryIdx,
     thirdCategoryIdx,
@@ -310,11 +310,13 @@ export default function NewScheduleModal({
       return;
     }
 
+    if(!categoriesByPeriodData) return;
+
     const newCategoryId = thirdCategoryIdx > 0 ?
-    categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].children[thirdCategoryIdx-1].categoryId :
+    categoriesByPeriodData[firstCategoryIdx-1].children[secondCategoryIdx-1].children[thirdCategoryIdx-1].categoryId :
     (secondCategoryIdx > 0 ?
-      categoryList[firstCategoryIdx-1].children[secondCategoryIdx-1].categoryId :
-      categoryList[firstCategoryIdx-1].categoryId
+      categoriesByPeriodData[firstCategoryIdx-1].children[secondCategoryIdx-1].categoryId :
+      categoriesByPeriodData[firstCategoryIdx-1].categoryId
     );
 
     const newScheduleDto: NewScheduleDto = {
@@ -340,7 +342,7 @@ export default function NewScheduleModal({
       const error = e as AxiosError<ErrorRes>;
       console.log(error.response?.data);
     }
-  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoryList, startDate, endDate, isDuration, isPriority, isUpdateMode, updateScheduleInfo]);
+  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoriesByPeriodData, startDate, endDate, isDuration, isPriority, isUpdateMode, updateScheduleInfo]);
 
   return (
     <FixedModal

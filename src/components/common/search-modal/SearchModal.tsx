@@ -53,7 +53,6 @@ export interface SearchModalProps {
 
 export default function SearchModal({
 }: SearchModalProps) {
-  const { isDev } = useDev();
   const [modalStatus, setModalStatus] = useState<ModalStatus>('open');
   const [searchText, setSearchText] = useState('');
   const [searchTerm, setSearchTerm] = useState('');

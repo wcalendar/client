@@ -210,7 +210,7 @@ export default function Home() {
     setCategoryToRenderList, setPrioritiesByDay,
   } = useCalendar();
 
-  const { calendarData, isCalendarDateLoading, mutateCalendarData } = useCalendarData();
+  const { calendarData, isCalendarDataLoading: isCalendarDateLoading, mutateCalendarData } = useCalendarData();
 
   const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState(-1);
   

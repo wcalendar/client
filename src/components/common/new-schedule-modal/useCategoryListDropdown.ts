@@ -1,8 +1,5 @@
-import { categoryListDummyData } from "@/dummies/calendar";
 import useDev from "@/hooks/useDev";
-import { apis } from "@/lib/apis";
-import { CategoryDto, ErrorRes } from "@/types";
-import { AxiosError } from "axios";
+import useCategoriesByPeriodData from "@/swr/useCategoriesByPeriodData";
 import { Dayjs } from "dayjs";
 import { MutableRefObject, useCallback, useEffect, useMemo, useState } from "react";
 
@@ -13,8 +10,8 @@ export default function useCategoryListDropdown(
   shouldSetCategoryIdx: boolean,
   isFixedCategory: (categoryId: string) => boolean
 ) {
-  const { isDev } = useDev();
-  const [categoryList, setCategoryList] = useState<CategoryDto[]>([]);
+  const { categoriesByPeriodData } = useCategoriesByPeriodData(startDate.year(), startDate.month(), endDate.year(), endDate.month());
+
   const [firstDropdownValues, setFirstDropdownValues] = useState<string[]>(['-']);
   const [firstCategoryIdx, setFirstCategoryIdx] = useState(0);
   const [secondDropdownValues, setSecondDropdownValues] = useState<string[]>(['-']);
@@ -23,59 +20,29 @@ export default function useCategoryListDropdown(
   const [thirdCategoryIdx, setThirdCategoryIdx] = useState(0);
 
   const isDropdownDisabled = useMemo(() => {
-    return categoryList.length === 0;
-  }, [categoryList]);
+    return !categoriesByPeriodData || categoriesByPeriodData.length === 0;
+  }, [categoriesByPeriodData]);
 
   // 기간이 변경되면 새 카테고리 리스트를 가져옴
   useEffect(() => {
-    setCategoryList([]);
+    // setCategoryList([]);
     setFirstCategoryIdx(0);
     setSecondCategoryIdx(0);
     setThirdCategoryIdx(0);
-
-    const sy = startDate.year();
-    const sm = startDate.month();
-    const ey = endDate.year();
-    const em = endDate.month();
-
-    const getCategoryList = async () => {
-      if(isDev()) {
-        setCategoryList(categoryListDummyData);
-        return;
-      }
-
-      try {
-        const response = await apis.getCategoriesByPeriod(sy, sm, ey, em);
-
-        setCategoryList(response.resultBody);
-      } catch(error) {
-        const e = error as AxiosError<ErrorRes>;
-        if(e.response) {
-          if(e.response.status === 401) {
-            alert('로그인이 필요한 서비스입니다.');
-            // router.push('/login');
-          }
-        } else {
-          alert('문제가 발생했습니다.');
-        }
-      }
-    };
-    
-    getCategoryList();
   }, [startDate, endDate]);
 
   useEffect(() => {
-    if(categoryList.length === 0) {
+    if(!categoriesByPeriodData || categoriesByPeriodData.length === 0) {
       setFirstDropdownValues(['-']);
       setSecondDropdownValues(['-']);
       setThirdDropdownValues(['-']);
       return;
     }
 
-    setFirstDropdownValues(['-', ...categoryList.map(c => c.categoryName)]);
+    setFirstDropdownValues(['-', ...categoriesByPeriodData.map(c => c.categoryName)]);
     if(shouldSetCategoryIdx) {
-      outer: for(let i0=0; i0<categoryList.length; i0++) {
-        const c0 = categoryList[i0];
+      outer: for(let i0=0; i0<categoriesByPeriodData.length; i0++) {
+        const c0 = categoriesByPeriodData[i0];
         if(isFixedCategory(c0.categoryId)) {
           setFirstCategoryIdx(i0 + 1);
           setSecondDropdownValues(['-', ...c0.children.map(c => c.categoryName)]);
@@ -109,27 +76,29 @@ export default function useCategoryListDropdown(
         }
       }
     }
-  }, [categoryList]);
+  }, [categoriesByPeriodData]);
 
   const handleFirstCategoryIdxChange = useCallback((idx: number) => {
+    if(!categoriesByPeriodData) return;
     setFirstCategoryIdx(idx);
     setSecondCategoryIdx(0);
     setThirdCategoryIdx(0);
-    setSecondDropdownValues(idx === 0 ? ['-'] : ['-', ...categoryList[idx-1].children.map(c => c.categoryName)]);
-  }, [categoryList]);
+    setSecondDropdownValues(idx === 0 ? ['-'] : ['-', ...categoriesByPeriodData[idx-1].children.map(c => c.categoryName)]);
+  }, [categoriesByPeriodData]);
 
   const handleSecondCategoryIdxChange = useCallback((idx: number) => {
+    if(!categoriesByPeriodData) return;
     setSecondCategoryIdx(idx);
     setThirdCategoryIdx(0);
-    setThirdDropdownValues(idx === 0 ? ['-'] : ['-', ...categoryList[firstCategoryIdx-1].children[idx-1].children.map(c => c.categoryName)]);
-  }, [categoryList, firstCategoryIdx]);
+    setThirdDropdownValues(idx === 0 ? ['-'] : ['-', ...categoriesByPeriodData[firstCategoryIdx-1].children[idx-1].children.map(c => c.categoryName)]);
+  }, [categoriesByPeriodData, firstCategoryIdx]);
 
   const handleThirdCategoryIdxChange = useCallback((idx: number) => {
     setThirdCategoryIdx(idx);
   }, []);
 
   return {
-    categoryList,
+    categoriesByPeriodData,
     firstCategoryIdx,
     secondCategoryIdx,
     thirdCategoryIdx,

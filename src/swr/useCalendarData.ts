@@ -12,7 +12,7 @@ export default function useCalendarData() {
 
   return {
     calendarData: data,
-    isCalendarDateLoading: isLoading,
+    isCalendarDataLoading: isLoading,
     mutateCalendarData: mutate,
   };
 }

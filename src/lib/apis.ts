@@ -39,6 +39,10 @@ export const fetchers = {
     if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(categoryListDummyData));
     else return authAPI.get<ResDto<CategoryDto[]>>(`${url}/${year}/${month+1}`).then(res => res.data.resultBody);
   },
+  getCategoriesByPeriod: ([url, isDev, sy, sm, ey, em]: [string, boolean, number, number, number, number]) => {
+    if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(categoryListDummyData));
+    else return authAPI.get<ResDto<CategoryDto[]>>(`${url}?startYear=${sy}&startMonth=${sm+1}&endYear=${ey}&endMonth=${em+1}`).then(res => res.data.resultBody);
+  },
   searchSchedule: ([url, isDev, searchTerm]: [string, boolean, string]) => {
     if(isDev) return new Promise<SearchedScheduleDto[]>((resolve) => resolve(searchDummyData));
     else return authAPI.get<ResDto<SearchedScheduleDto[]>>(`${url}?content=${searchTerm}`).then(res => res.data.resultBody);
@@ -69,9 +73,6 @@ export const apis = {
     return (await authAPI.put(`/categories/${categoryId}/end-date`, { endDate })).data;
   },
 
-  getCategoriesByPeriod: async (sy: number, sm: number, ey: number, em: number): Promise<ResDto<CategoryDto[]>> => {
-    return (await authAPI.get(`/categories?startYear=${sy}&startMonth=${sm+1}&endYear=${ey}&endMonth=${em+1}`)).data;
-  },
   addSchedule: async (newScheduleDto: NewScheduleDto): Promise<ResDto<string>> => {
     return (await authAPI.post(`/schedules`, newScheduleDto)).data;
   },
