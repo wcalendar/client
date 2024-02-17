@@ -81,6 +81,8 @@ export type ScheduleDto = {
   categoryId: string;
   scheduleContent: string;
   scheduleDate: string;
+  scheduleStartDate: string;
+  scheduleEndDate: string;
   schedulePriority: number;
   isPriority: boolean;
   isFinished: boolean;
@@ -102,6 +104,8 @@ export type ScheduleToRender = {
   isFinished: boolean;
   startDate: Dayjs;
   endDate: Dayjs;
+  startDayToRender: number;
+  endDayToRender: number;
 }
 
 // 우선순위를 렌더링하기 위한 데이터
