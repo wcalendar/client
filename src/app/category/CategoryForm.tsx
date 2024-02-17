@@ -17,6 +17,7 @@ const Container = styled.form`
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
+    width: 17.5rem;
     padding-top: 1rem;
   }
 `;
@@ -36,6 +37,10 @@ const Label = styled.label`
   @media ${({ theme }) => theme.devices.tablet} {
     flex: 5.125rem 0 0;
   }
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex: 4rem 0 0;
+  }
 `;
 
 const TextInput = styled.input`
@@ -54,6 +59,10 @@ const ColorSelector = styled.div`
   align-items: center;
   gap: 16px;
   list-style: none;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    gap: 8px;
+  }
 `;
 
 const ColorItem = styled.input<{ $color: CategoryColor }>`
