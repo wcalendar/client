@@ -19,6 +19,7 @@ import { usePopup } from "@/providers/PopupProvider/usePopup";
 import { useModal } from "@/providers/ModalProvider/useModal";
 import useCalendarData from "@/swr/useCalendarData";
 import useExceptionPopup from "@/hooks/useExceptionPopup";
+import useAmplitude from "@/providers/AmplitudeProvider/useAmplitude";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -193,6 +194,7 @@ export default function NewScheduleModal({
 }: NewScheduleModalProps) {
   const { isDev } = useDev();
   const openExceptionPopup = useExceptionPopup();
+  const { trackAmpEvent } = useAmplitude();
 
   const { currentDate } = useCurrentDate();
   const { openPopup, closePopup } = usePopup();
@@ -337,7 +339,13 @@ export default function NewScheduleModal({
 
     setLoading(true);
     try {
-      const response = isUpdateMode ? await apis.updateSchedule(newScheduleDto, updateScheduleInfo.schedule.id) : await apis.addSchedule(newScheduleDto);
+      if(isUpdateMode) {
+        await apis.updateSchedule(newScheduleDto, updateScheduleInfo.schedule.id);
+        trackAmpEvent('Update Schedule');
+      } else {
+        await apis.addSchedule(newScheduleDto);
+        trackAmpEvent('Create Schedule');
+      }
       setLoading(false);
       mutateCalendarData();
       closeModal();
@@ -345,7 +353,7 @@ export default function NewScheduleModal({
       const error = e as AxiosError<any>;
       openExceptionPopup(error);
     }
-  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoriesByPeriodData, startDate, endDate, isDuration, isPriority, isUpdateMode, updateScheduleInfo]);
+  }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoriesByPeriodData, startDate, endDate, isDuration, isPriority, isUpdateMode, updateScheduleInfo, trackAmpEvent]);
 
   return (
     <FixedModal

@@ -22,7 +22,7 @@ export default function AmplitudeProvider({
     }
   }, []);
 
-  const trackAmpEvent = useCallback((event: string, properties: Record<string, any>) => {
+  const trackAmpEvent = useCallback((event: string, properties?: Record<string, any>) => {
     if(canAmplitudeTrack) track(event, properties);
   }, [canAmplitudeTrack]);
   
