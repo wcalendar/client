@@ -18,6 +18,7 @@ import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
 import { useModal } from "@/providers/ModalProvider/useModal";
 import useCalendarData from "@/swr/useCalendarData";
+import useExceptionPopup from "@/hooks/useExceptionPopup";
 
 const ModalHeader = styled.div`
   position: relative;
@@ -191,6 +192,8 @@ export default function NewScheduleModal({
   newScheduleModalInfo
 }: NewScheduleModalProps) {
   const { isDev } = useDev();
+  const openExceptionPopup = useExceptionPopup();
+
   const { currentDate } = useCurrentDate();
   const { openPopup, closePopup } = usePopup();
   const { closeModal } = useModal();
@@ -276,8 +279,8 @@ export default function NewScheduleModal({
       mutateCalendarData();
       closeModal();
     } catch(e) {
-      const error = e as AxiosError<ErrorRes>;
-      console.log(error.response?.data);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, [updateScheduleInfo]);
 
@@ -339,8 +342,8 @@ export default function NewScheduleModal({
       mutateCalendarData();
       closeModal();
     } catch(e) {
-      const error = e as AxiosError<ErrorRes>;
-      console.log(error.response?.data);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, [scheduleTitle, firstCategoryIdx, secondCategoryIdx, thirdCategoryIdx, categoriesByPeriodData, startDate, endDate, isDuration, isPriority, isUpdateMode, updateScheduleInfo]);
 

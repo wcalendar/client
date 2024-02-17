@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { AxiosError } from "axios";
 import { apis } from "@/lib/apis";
 import useDev from "@/hooks/useDev";
+import useExceptionPopup from "@/hooks/useExceptionPopup";
 
 const Container = styled.main`
   position: fixed;
@@ -75,6 +76,7 @@ const Button = styled.button<{ fill: number }>`
 
 export default function Terms() {
   const { isDev } = useDev();
+  const openExceptionPopup = useExceptionPopup();
 
   const state = useSearchParams().get('state');
 
@@ -143,8 +145,8 @@ export default function Terms() {
         router.push('/login');
       }
     } catch(e) {
-      const error = e as AxiosError;
-      console.log(error);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, [isAgreeTermsOfUse, isAgreePersonal]);
 

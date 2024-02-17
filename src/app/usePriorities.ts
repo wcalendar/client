@@ -1,4 +1,5 @@
 import useDev from "@/hooks/useDev";
+import useExceptionPopup from "@/hooks/useExceptionPopup";
 import { apis } from "@/lib/apis";
 import time from "@/lib/time";
 import { CategoryToRender, ErrorRes, Priority, ScheduleModalInfo } from "@/types";
@@ -12,6 +13,8 @@ export default function usePriorities(
   handleScheduleClick: (newScheduleModalInfo: ScheduleModalInfo) => void,
 ) {
   const { isDev } = useDev();
+  const openExceptionPopup = useExceptionPopup();
+
   const [draggedPriority, setDraggedPriority] = useState<Priority | null>(null);
   const [draggedPriorityX, setDraggedPriorityX] = useState(0);
   const [draggedPriorityY, setDraggedPriorityY] = useState(0);
@@ -64,8 +67,8 @@ export default function usePriorities(
     try {
       const response = await apis.updateSchedulePriority(scheduleOrderList, scheduleDate);
     } catch(e) {
-      const error = e as AxiosError<ErrorRes>;
-      console.log(error.response?.data);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, []);
 

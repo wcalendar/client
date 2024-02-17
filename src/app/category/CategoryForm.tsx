@@ -7,6 +7,7 @@ import FormSimpleButton from './FormSimpleButton';
 import { AxiosError } from 'axios';
 import { apis } from '@/lib/apis';
 import useDev from '@/hooks/useDev';
+import useExceptionPopup from '@/hooks/useExceptionPopup';
 
 const Container = styled.form`
   width: 28.125rem;
@@ -125,6 +126,7 @@ function CategoryForm({
   onCategoryUpdate,
 }, ref) {
   const { isDev } = useDev();
+  const openExceptionPopup = useExceptionPopup();
   const isActive = Boolean(selectedCategory);
 
   const [name, setName] = useState('');
@@ -161,8 +163,8 @@ function CategoryForm({
       const response = await apis.updateCategory(selectedCategory.id, newCategoryUpdateDto);
       onCategoryUpdate();
     } catch(e) {
-      const error = e as AxiosError<ErrorRes>;
-      console.log(error.response?.data);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
 
   }, [selectedCategory]);
