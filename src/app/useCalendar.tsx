@@ -34,8 +34,6 @@ export default function useCalendar() {
     const rangeSchedules: ScheduleToRender[] = [];
 
     let scheduleGroupCode = '-1';
-    let startDate: Dayjs | undefined;
-    let lastSchedule: ScheduleDto | undefined;
     category.schedules.forEach(schedule => {
       const date = time.fromString(schedule.scheduleDate);
       if(schedule.isPriority) {
@@ -54,54 +52,43 @@ export default function useCalendar() {
 
       if(schedule.scheduleGroupCode !== scheduleGroupCode) {
         scheduleGroupCode = schedule.scheduleGroupCode;
-        
-        if(startDate && lastSchedule) {
-          rangeSchedules.push({
-            id: lastSchedule.scheduleId,
-            groupCode: lastSchedule.scheduleGroupCode,
-            categoryId: lastSchedule.categoryId,
-            content: lastSchedule.scheduleContent,
-            startDate,
-            endDate: time.fromString(lastSchedule.scheduleDate),
-            isFinished: lastSchedule.isFinished,
-            isPriority: lastSchedule.isPriority,
-          });
-        }
 
-        startDate = date;
+        const startDate = time.fromString(schedule.scheduleStartDate);
+        const endDate = time.fromString(schedule.scheduleEndDate);
+        const startDayToRender = startDate.year() < currentDate.year() ? 1 : (startDate.month() < currentDate.month() ? 1 : startDate.date());
+        const endDayToRender = endDate.year() > currentDate.year() ? currentDate.daysInMonth() : (endDate.month() > currentDate.month() ? currentDate.daysInMonth() : endDate.date());
+
+        rangeSchedules.push({
+          id: schedule.scheduleId,
+          groupCode: schedule.scheduleGroupCode,
+          categoryId: schedule.categoryId,
+          content: schedule.scheduleContent,
+          startDate,
+          endDate,
+          isFinished: schedule.isFinished,
+          isPriority: schedule.isPriority,
+          startDayToRender,
+          endDayToRender,
+        });
       }
-
-      lastSchedule = schedule;
     });
-    if(startDate && lastSchedule) {
-      rangeSchedules.push({
-        id: lastSchedule.scheduleId,
-        categoryId: lastSchedule.categoryId,
-        groupCode: lastSchedule.scheduleGroupCode,
-        content: lastSchedule.scheduleContent,
-        startDate,
-        endDate: time.fromString(lastSchedule.scheduleDate),
-        isFinished: lastSchedule.isFinished,
-        isPriority: lastSchedule.isPriority,
-      });
-    }
 
     // 일정 시작 날짜가 빠른 순서대로 -> 날짜가 같으면 기간이 더 긴 일정이 우선
-    rangeSchedules.sort((a, b) => a.startDate.date() === b.startDate.date() ? (b.endDate.date() - b.startDate.date()) - (a.endDate.date() - a.startDate.date()) : a.startDate.date() - b.startDate.date());
+    rangeSchedules.sort((a, b) => a.startDayToRender === b.startDayToRender ? (b.endDayToRender - b.startDayToRender) - (a.endDayToRender - a.startDayToRender) : a.startDayToRender - b.startDayToRender);
 
     rangeSchedules.forEach(schedule => {
       const lineCount = lines.length;
-      const {startDate, endDate} = schedule;
+      const {startDayToRender, endDayToRender} = schedule;
       newCategory.schedules.push(schedule);
 
       let isAllocated = false;
       for (let i = 0; i < lineCount; i++) {
         // 해당 라인에 이미 할당된 일정이 있다면 다음 라인으로
-        if (lines[i][startDate.date() - 1]) continue;
+        if (lines[i][startDayToRender - 1]) continue;
 
         // 할당된 일정이 없다면 일정 할당
         isAllocated = true;
-        for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
+        for (let day = startDayToRender - 1; day <= endDayToRender - 1; day++) {
           lines[i][day] = schedule;
         }
         break;
@@ -110,7 +97,7 @@ export default function useCalendar() {
       // 모든 라인에 할당되어 있으면 새 라인 생성하고 할당
       if (!isAllocated) {
         lines.push(Array.from({length: daysInMonth}, () => null));
-        for (let day = startDate.date() - 1; day <= endDate.date() - 1; day++) {
+        for (let day = startDayToRender - 1; day <= endDayToRender - 1; day++) {
           lines[lines.length - 1][day] = schedule;
         }
       }
@@ -120,7 +107,7 @@ export default function useCalendar() {
       category: newCategory,
       lines,
     };
-  }, [daysInMonth]);
+  }, [daysInMonth, currentDate]);
 
   /**
    * 서버에서 받은 카테고리 데이터를 화면에 렌더링하기 쉽게 다듬어주는 함수
