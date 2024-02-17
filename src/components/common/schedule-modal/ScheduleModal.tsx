@@ -11,6 +11,7 @@ import { AxiosError } from "axios";
 import useDev from "@/hooks/useDev";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
 import useCalendarData from "@/swr/useCalendarData";
+import useExceptionPopup from "@/hooks/useExceptionPopup";
 
 const Header = styled.div`
   width: 100%;
@@ -101,6 +102,8 @@ export default function ScheduleModal({
   onUpdateClick,
 }: ScheduleModalProps) {
   const { isDev } = useDev();
+  const openExceptionPopup = useExceptionPopup();
+
   const { openPopup, closePopup } = usePopup();
   const { mutateCalendarData } = useCalendarData();
 
@@ -119,8 +122,8 @@ export default function ScheduleModal({
         await apis.finishSchedule(schedule.id, !schedule.isFinished);
         mutateCalendarData();
       } catch(e) {
-        const error = e as AxiosError;
-        console.log(error.response?.data); 
+        const error = e as AxiosError<any>;
+        openExceptionPopup(error);
       }
     }
     
@@ -139,8 +142,8 @@ export default function ScheduleModal({
       mutateCalendarData();
       closeModal();
     } catch(e) {
-      const error = e as AxiosError<ErrorRes>;
-      console.log(error.response?.data);
+      const error = e as AxiosError<any>;
+      openExceptionPopup(error);
     }
   }, [schedule]);
 
