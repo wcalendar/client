@@ -9,6 +9,7 @@ import Header from '@/components/common/header/Header';
 import { CurrentDateProvider } from '@/providers/CurrentDateProvider/CurrentDateProvider';
 import SWRConfigProvider from '@/lib/SWRConfigProvider';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import AmplitudeProvider from '@/providers/AmplitudeProvider/AmplitudeProvider';
 
 const roboto = Roboto({
   weight: ['400', '700'],
@@ -32,18 +33,20 @@ export default function RootLayout({
       <GoogleAnalytics gaId='G-FVMDZBSF4Q' />
       <body>
         <StyleProvider>
-          <CurrentDateProvider>
-            <PopupProvider>
-              <ModalProvider>
-                <SWRConfigProvider>
-                  <Header />
-                  {children}
-                  <AppModal />
-                  <AppPopup />
-                </SWRConfigProvider>
-              </ModalProvider>
-            </PopupProvider>
-          </CurrentDateProvider>
+          <AmplitudeProvider>
+            <CurrentDateProvider>
+              <PopupProvider>
+                <ModalProvider>
+                  <SWRConfigProvider>
+                    <Header />
+                    {children}
+                    <AppModal />
+                    <AppPopup />
+                  </SWRConfigProvider>
+                </ModalProvider>
+              </PopupProvider>
+            </CurrentDateProvider>
+          </AmplitudeProvider>
         </StyleProvider>
       </body>
     </html>
