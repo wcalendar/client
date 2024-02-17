@@ -278,13 +278,14 @@ export default function NewScheduleModal({
 
     try {
       await apis.deleteSchedule(updateScheduleInfo!.schedule.id);
+      trackAmpEvent('Delete Schedule');
       mutateCalendarData();
       closeModal();
     } catch(e) {
       const error = e as AxiosError<any>;
       openExceptionPopup(error);
     }
-  }, [updateScheduleInfo]);
+  }, [updateScheduleInfo, trackAmpEvent]);
 
   const handleDeleteScheduleClick = useCallback(() => {
     if(!isUpdateMode) return;

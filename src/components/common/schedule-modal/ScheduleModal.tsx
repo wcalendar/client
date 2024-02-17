@@ -12,6 +12,7 @@ import useDev from "@/hooks/useDev";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
 import useCalendarData from "@/swr/useCalendarData";
 import useExceptionPopup from "@/hooks/useExceptionPopup";
+import useAmplitude from "@/providers/AmplitudeProvider/useAmplitude";
 
 const Header = styled.div`
   width: 100%;
@@ -103,6 +104,7 @@ export default function ScheduleModal({
 }: ScheduleModalProps) {
   const { isDev } = useDev();
   const openExceptionPopup = useExceptionPopup();
+  const { trackAmpEvent } = useAmplitude();
 
   const { openPopup, closePopup } = usePopup();
   const { mutateCalendarData } = useCalendarData();
@@ -139,13 +141,14 @@ export default function ScheduleModal({
 
     try {
       await apis.deleteSchedule(schedule.id);
+      trackAmpEvent('Delete Schedule');
       mutateCalendarData();
       closeModal();
     } catch(e) {
       const error = e as AxiosError<any>;
       openExceptionPopup(error);
     }
-  }, [schedule]);
+  }, [schedule, trackAmpEvent]);
 
   const handleScheduleDeleteClick = useCallback(() => {
     openPopup({
