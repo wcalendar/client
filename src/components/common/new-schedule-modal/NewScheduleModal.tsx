@@ -278,7 +278,7 @@ export default function NewScheduleModal({
 
     try {
       await apis.deleteSchedule(updateScheduleInfo!.schedule.id);
-      trackAmpEvent('Delete Schedule');
+      trackAmpEvent('Schedule', { Type: 'Delete' });
       mutateCalendarData();
       closeModal();
     } catch(e) {
@@ -342,10 +342,10 @@ export default function NewScheduleModal({
     try {
       if(isUpdateMode) {
         await apis.updateSchedule(newScheduleDto, updateScheduleInfo.schedule.id);
-        trackAmpEvent('Update Schedule');
+        trackAmpEvent('Schedule', { Type: 'Update' });
       } else {
         await apis.addSchedule(newScheduleDto);
-        trackAmpEvent('Create Schedule');
+        trackAmpEvent('Schedule', { Type: 'Create' });
       }
       setLoading(false);
       mutateCalendarData();

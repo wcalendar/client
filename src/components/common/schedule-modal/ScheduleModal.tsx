@@ -122,7 +122,7 @@ export default function ScheduleModal({
     if(!isDev()) {
       try {
         await apis.finishSchedule(schedule.id, !schedule.isFinished);
-        trackAmpEvent('Finish Schedule');
+        trackAmpEvent('Schedule', { Type: 'Finish' });
         mutateCalendarData();
       } catch(e) {
         const error = e as AxiosError<any>;
@@ -142,7 +142,7 @@ export default function ScheduleModal({
 
     try {
       await apis.deleteSchedule(schedule.id);
-      trackAmpEvent('Delete Schedule');
+      trackAmpEvent('Schedule', { Type: 'Delete' });
       mutateCalendarData();
       closeModal();
     } catch(e) {
