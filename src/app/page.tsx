@@ -363,7 +363,6 @@ export default function Home() {
       <Calendar>
         <Spinnable isLoading={isCalendarDateLoading}>
           <CategorySide ref={categoryBody}>
-          <button>asdfsdf</button>
             <CalendarHeader dayCount={1}>
               <HeaderSection>
                 <HeaderCell isCategory>
