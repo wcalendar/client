@@ -112,14 +112,6 @@ const Interval = styled.div<{ disabled: number }>`
   justify-content: center;
   align-items: center;
   ${({ theme, disabled }) => disabled ? `color: ${theme.colors.gray};` : ''}
-
-  svg {
-    color: inherit;
-  }
-
-  path {
-    color: inherit;
-  }
 `;
 
 const DropDownWrapper = styled.div`

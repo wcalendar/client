@@ -39,12 +39,6 @@ const IconWrapper = styled.div`
   width: var(--cell-height);
   height: var(--cell-height);
   color: inherit;
-  svg {
-    color: inherit;
-  }
-  path {
-    color: inherit;
-  }
 `;
 
 export default function Cell({

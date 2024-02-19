@@ -18,9 +18,6 @@ const IconWrapper = styled.div<{ checked: number }>`
   color: ${({ checked, theme }) => checked ? theme.colors.blue : theme.colors.gray};
   cursor: pointer;
   transition: color .25s ease;
-
-  svg { color: inherit; }
-  path { color: inherit; }
 `;
 
 const Title = styled.div<{ all: number }>`

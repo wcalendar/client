@@ -23,14 +23,6 @@ const Container = styled.div.withConfig({
   &:hover {
     color: ${({ theme }) => theme.colors.blue};
   }
-
-  svg {
-    color: inherit;
-  }
-
-  path {
-    color: inherit;
-  }
 `;
 
 interface MenuButtonProps {

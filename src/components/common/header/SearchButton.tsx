@@ -20,14 +20,6 @@ const Container = styled.button`
   &:hover {
     color: ${({ theme }) => theme.colors.blue};
   }
-
-  svg {
-    color: inherit;
-  }
-
-  path {
-    color: inherit;
-  }
 `;
 
 export default function SearchButton() {
