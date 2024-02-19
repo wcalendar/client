@@ -4,7 +4,9 @@ import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "@/types";
 import { CategoryColor } from "@/types";
 import Cell from "./Cell";
 
-const Container = styled.div<{ lineCount: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['lineCount'].includes(p),
+})<{ lineCount: number }>`
   width: 100%;
   height: calc(${({ lineCount }) => `(var(--cell-height) * ${lineCount}) + (${lineCount - 1} * var(--line-gap))`});
   margin-bottom: var(--line-gap);
@@ -18,7 +20,9 @@ const Line = styled.div`
 `;
 
 // box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
-const ScheduleItem = styled.div<{ start: number, end: number, color: CategoryColor, level: number, isFinished: number }>`
+const ScheduleItem = styled.div.withConfig({
+  shouldForwardProp: p => !['start', 'end', 'color', 'level', 'isFinished'].includes(p),
+})<{ start: number, end: number, color: CategoryColor, level: number, isFinished: number }>`
   position: absolute;
   top: 0;
   left: calc(${({ start }) => `${start - 1} * (var(--cell-width) + 1px)`});
@@ -39,7 +43,9 @@ const ScheduleItem = styled.div<{ start: number, end: number, color: CategoryCol
   }
 `;
 
-const ScheduleItemText = styled.span<{ isFinished: number }>`
+const ScheduleItemText = styled.span.withConfig({
+  shouldForwardProp: p => !['isFinished'].includes(p),
+})<{ isFinished: number }>`
   position: sticky;
   left: 0;
   width: auto;

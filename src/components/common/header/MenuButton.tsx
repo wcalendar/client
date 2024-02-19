@@ -4,7 +4,9 @@ import styled from "styled-components";
 import Menu from "../menu/Menu";
 import { ModalStatus } from "@/types";
 
-const Container = styled.div<{ isOpen: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['isOpen'].includes(p),
+})<{ isOpen: number }>`
   position: relative;
   width: 1.5rem;
   height: 1.5rem;

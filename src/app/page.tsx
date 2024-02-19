@@ -80,7 +80,9 @@ const ScheduleSide = styled.div`
   overflow-y: auto;
 `;
 
-const CalendarHeader = styled.div<{ dayCount: number }>`
+const CalendarHeader = styled.div.withConfig({
+  shouldForwardProp: p => !['dayCount'].includes(p),
+})<{ dayCount: number }>`
   position: sticky;
   z-index: 1;
   width: calc(${({ dayCount }) => dayCount === 1 ?
@@ -100,7 +102,9 @@ const HeaderSection = styled.div`
   border-bottom: 3px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
-const PrioritySection = styled.div<{ priorityCount: number }>`
+const PrioritySection = styled.div.withConfig({
+  shouldForwardProp: p => !['priorityCount'].includes(p),
+})<{ priorityCount: number }>`
   width: 100%;
   height: calc(((var(--cell-height) + var(--line-gap)) * ${({ priorityCount }) => priorityCount + 1}) + 3px);
   position: relative;
@@ -130,7 +134,9 @@ const PriorityTip = styled.div`
   color: ${({ theme }) => theme.colors.blue};
 `;
 
-const CalendarBody = styled.div<{ dayCount: number, isMoveMode: number, }>`
+const CalendarBody = styled.div.withConfig({
+  shouldForwardProp: p => !['dayCount', 'isMoveMode'].includes(p),
+})<{ dayCount: number, isMoveMode: number, }>`
   width: calc(${({ dayCount }) => dayCount === 1 ?
   `var(--category-cell-width)` :
   `${dayCount} * (var(--cell-width) + ${dayCount === 1 ? 0 : 1}px)`});
@@ -154,7 +160,9 @@ const SettingCategoryButton = styled.button`
   color: white;
 `;
 
-const DivideLines = styled.div<{ dayCount: number }>`
+const DivideLines = styled.div.withConfig({
+  shouldForwardProp: p => !['dayCount'].includes(p),
+})<{ dayCount: number }>`
   position: absolute;
   left: 0;
   top: -2px;
@@ -169,7 +177,9 @@ const DivideLine = styled.div`
   border-right: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
-const AddScheduleButton = styled.button<{ isOpen: string }>`
+const AddScheduleButton = styled.button.withConfig({
+  shouldForwardProp: p => !['isOpen'].includes(p),
+})<{ isOpen: string }>`
   position: fixed;
   right: 1rem;
   bottom: 1rem;

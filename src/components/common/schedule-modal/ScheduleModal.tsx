@@ -22,7 +22,9 @@ const Header = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.white};
 `;
 
-const Title = styled.div<{ isFinished: number }>`
+const Title = styled.div.withConfig({
+  shouldForwardProp: p => !['isFinished'].includes(p),
+})<{ isFinished: number }>`
   flex-grow: 1;
   font-size: .875rem;
   font-weight: bold;

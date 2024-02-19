@@ -133,7 +133,9 @@ const Pagination = styled.div`
   gap: .5rem;
 `;
 
-const Page = styled.div<{ currentPage: number }>`
+const Page = styled.div.withConfig({
+  shouldForwardProp: p => !['currentPage'].includes(p),
+})<{ currentPage: number }>`
   width: .5rem;
   height: .5rem;
   border-radius: .5rem;

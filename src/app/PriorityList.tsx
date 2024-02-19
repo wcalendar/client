@@ -5,7 +5,9 @@ import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import { DragEvent, DragEventHandler, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Priority } from "@/types";
 
-const Container = styled.div<{ idx: number, priorityCount: number, open: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['idx', 'priorityCount', 'open'].includes(p),
+})<{ idx: number, priorityCount: number, open: number }>`
   --priority-list-width: ${({ theme }) => theme.sizes.calendar.PriorityListWidth.desktop};
   transition: height ease .25s, width ease .25s, box-shadow ease .25s;
 

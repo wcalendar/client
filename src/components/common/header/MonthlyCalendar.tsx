@@ -55,7 +55,9 @@ const Calendar = styled.div`
   grid-template-columns: repeat(4, minmax(0, 1fr));
 `;
 
-const MonthButton = styled.button<{ isCurrent: number; }>`
+const MonthButton = styled.button.withConfig({
+  shouldForwardProp: p => !['isCurrent'].includes(p),
+})<{ isCurrent: number; }>`
   width: 2.5rem;
   height: 2.5rem;
   font-size: .75rem;

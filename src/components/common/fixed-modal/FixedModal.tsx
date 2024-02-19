@@ -3,7 +3,9 @@ import { ModalStatus } from "@/types";
 import { ReactNode, useCallback } from "react";
 import styled from "styled-components";
 
-const Background = styled.div<{ status: string, backgroundColor: 'black' | 'white' }>`
+const Background = styled.div.withConfig({
+  shouldForwardProp: p => !['status', 'backgroundColor'].includes(p),
+})<{ status: string, backgroundColor: 'black' | 'white' }>`
   position: fixed;
   left: 0;
   top: 0;

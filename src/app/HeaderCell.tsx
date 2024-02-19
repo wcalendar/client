@@ -1,7 +1,9 @@
 import { ReactNode } from "react";
 import styled from "styled-components"
 
-const Container = styled.div<{ isCategory: number; }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['isCategory'].includes(p),
+})<{ isCategory: number; }>`
   width: calc(${({ isCategory }) => isCategory ?
   `var(--category-cell-width)` :
   `var(--cell-width) + 1px`});

@@ -15,7 +15,9 @@ const Wrapper = styled.div`
   }
 `;
 
-const Container = styled.div<{ color: CategoryColor, level: number, isFinished: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['color', 'level', 'isFinished'].includes(p),
+})<{ color: CategoryColor, level: number, isFinished: number }>`
   height: var(--cell-height);
   width: calc(100% - 5px);
   background-color: ${({ theme, color, level, isFinished }) => isFinished ? theme.colors.finishedCategory(color) : theme.colors.category(color, level)};
@@ -35,7 +37,9 @@ const Container = styled.div<{ color: CategoryColor, level: number, isFinished: 
   }
 `;
 
-const Text = styled.span<{ isFinished: number }>`
+const Text = styled.span.withConfig({
+  shouldForwardProp: p => !['isFinished'].includes(p),
+})<{ isFinished: number }>`
   flex: auto 0 1;
   height: 100%;
   font-size: .75rem;

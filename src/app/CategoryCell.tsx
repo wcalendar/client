@@ -4,7 +4,9 @@ import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import Tooltip from "./Tooltip";
 import useDevice from "@/hooks/useDevice";
 
-const Container = styled.div<{ lineCount: number, isHovered: number, color: CategoryColor }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['lineCount', 'isHovered', 'color'].includes(p),
+})<{ lineCount: number, isHovered: number, color: CategoryColor }>`
   position: relative;
   width: 100%;
   height: calc(${({ lineCount }) => `(var(--cell-height) * ${lineCount}) + (${lineCount - 1} * var(--line-gap))`});

@@ -29,7 +29,9 @@ const Input = styled.div<{ height: string, disabled: number }>`
   ` : ''}
 `;
 
-const IconWrapper = styled.div<{ isOpen: number, height: string, }>`
+const IconWrapper = styled.div.withConfig({
+  shouldForwardProp: p => !['isOpen', 'height'].includes(p),
+})<{ isOpen: number, height: string, }>`
   position: absolute;
   top: 0;
   right: 0;
