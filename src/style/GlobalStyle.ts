@@ -33,6 +33,8 @@ const GlobalStyle = createGlobalStyle`
 
   button {
     color: ${({ theme }) => theme.colors.black};
+    background: none;
+    border: none;
   }
 
   @keyframes fadeIn {

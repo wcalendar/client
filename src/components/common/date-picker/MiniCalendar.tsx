@@ -38,7 +38,6 @@ const SlideButton = styled.button`
   width: 1.5rem;
   height: 1.5rem;
   background: inherit;
-  border: none;
   cursor: pointer;
 `;
 

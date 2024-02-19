@@ -45,7 +45,6 @@ const CloseButton = styled.button`
   flex-shrink: 0;
   height: 13px;
   margin-left: .25rem;
-  border: none;
   background: white;
   cursor: pointer;
 `;

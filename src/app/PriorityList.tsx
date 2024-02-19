@@ -52,7 +52,6 @@ const MoreButton = styled.button`
   justify-content: flex-end;
   align-items: center;
   font-size: .625rem;
-  border: none;
   cursor: pointer;
   font-weight: bold;
   background: none;

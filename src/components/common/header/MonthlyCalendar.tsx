@@ -39,7 +39,6 @@ const YearControls = styled.div`
 const YearControlButton = styled.button`
   width: 1.5rem;
   height: 1.5rem;
-  border: none;
   background-color: transparent;
   cursor: pointer;
   transition: background-color ease .25s;
@@ -61,7 +60,6 @@ const MonthButton = styled.button.withConfig({
   width: 2.5rem;
   height: 2.5rem;
   font-size: .75rem;
-  border: none;
   border-radius: 1.25rem;
   background-color: transparent;
   color: ${({ theme, isCurrent }) => isCurrent ? theme.colors.blue : theme.colors.gray};

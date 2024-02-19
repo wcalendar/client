@@ -151,7 +151,6 @@ const SettingCategoryButton = styled.button`
   padding: 0 0.5rem;
   height: 1.5rem;
   line-height: 1.5rem;
-  border: none;
   border-radius: 10px;
   cursor: pointer;
 
@@ -187,7 +186,6 @@ const AddScheduleButton = styled.button.withConfig({
   height: 3.375rem;
   background-color: ${({ theme }) => theme.colors.black};
   padding: 0.5rem;
-  border: none;
   border-radius: 2rem;
   cursor: pointer;
   transition: transform 0.25s ease;
@@ -365,6 +363,7 @@ export default function Home() {
       <Calendar>
         <Spinnable isLoading={isCalendarDateLoading}>
           <CategorySide ref={categoryBody}>
+          <button>asdfsdf</button>
             <CalendarHeader dayCount={1}>
               <HeaderSection>
                 <HeaderCell isCategory>

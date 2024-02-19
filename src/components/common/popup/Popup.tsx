@@ -58,7 +58,6 @@ const Buttons = styled.div`
 const Button = styled.button<{ warning: number }>`
   width: auto;
   padding: .5rem .625rem;
-  background: none;
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: 10px;
   font-size: .875rem;

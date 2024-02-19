@@ -68,7 +68,6 @@ const Button = styled.button`
 const AddBaseCategoryButton = styled.button`
   width: 100%;
   height: 1.125rem;
-  border: none;
   border-radius: .25rem;
   margin-top: 1rem;
   margin-bottom: .5rem;
