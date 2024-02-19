@@ -14,7 +14,7 @@ const Container = styled.div`
   position: relative;
 `;
 
-const Selector = styled.div<{ $disabled: number }>`
+const Selector = styled.div<{ disabled: number }>`
   display: inline-block;
   width: auto;
   height: 1.75rem;
@@ -26,7 +26,7 @@ const Selector = styled.div<{ $disabled: number }>`
   user-select: none;
   cursor: pointer;
 
-  ${({ theme, $disabled }) => $disabled ? `
+  ${({ theme, disabled }) => disabled ? `
   cursor: default;
   color: ${theme.colors.gray};
   background: ${theme.colors.gray}40;
@@ -67,7 +67,7 @@ export default function DatePicker({
 
   return (
     <Container ref={datePickerRef}>
-      <Selector $disabled={disabled ? 1 : 0} onClick={handleToggleMiniCalendar}>
+      <Selector disabled={disabled ? 1 : 0} onClick={handleToggleMiniCalendar}>
         {time.toString(value, 'YYYY.MM.DD')}
       </Selector>
       {isMiniCalendarOpen && (

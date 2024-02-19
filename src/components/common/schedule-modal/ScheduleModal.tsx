@@ -22,13 +22,13 @@ const Header = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.white};
 `;
 
-const Title = styled.div<{ $is_finished: number }>`
+const Title = styled.div<{ isFinished: number }>`
   flex-grow: 1;
   font-size: .875rem;
   font-weight: bold;
   overflow-x: hidden;
   overflow-wrap: break-word;
-  ${({ $is_finished }) => $is_finished ? `text-decoration: line-through;` : ''}
+  ${({ isFinished }) => isFinished ? `text-decoration: line-through;` : ''}
 `;
 
 const CheckBox = styled.input`
@@ -165,7 +165,7 @@ export default function ScheduleModal({
   return (
     <FloatingModal mobilePos="center" x={x} y={y} onClose={handleModalClose}>
       <Header>
-        <Title $is_finished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
+        <Title isFinished={schedule.isFinished ? 1 : 0}>{schedule.content}</Title>
         <CheckBox type='checkbox' checked={schedule.isFinished} onChange={handleScheduleFinish} />
         <CloseButton onClick={handleModalClose}>
           <Icon path={mdiClose} />

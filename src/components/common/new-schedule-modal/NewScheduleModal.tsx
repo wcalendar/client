@@ -103,7 +103,7 @@ const Input = styled.input`
   }
 `;
 
-const Interval = styled.div<{ $disabled: number }>`
+const Interval = styled.div<{ disabled: number }>`
   width: 1rem;
   margin: 0 .5rem;
   height: 100%;
@@ -111,7 +111,7 @@ const Interval = styled.div<{ $disabled: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  ${({ theme, $disabled }) => $disabled ? `color: ${theme.colors.gray};` : ''}
+  ${({ theme, disabled }) => disabled ? `color: ${theme.colors.gray};` : ''}
 
   svg {
     color: inherit;
@@ -376,7 +376,7 @@ export default function NewScheduleModal({
             <Line>
               <Label>일시<Required>*</Required></Label>
               <DatePicker value={startDate} onChange={handleStartDateChange} />
-              <Interval $disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
+              <Interval disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
               <DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
               <DesktopDurationWrapper>
                 <div style={{width: '1rem'}} />
