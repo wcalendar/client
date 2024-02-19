@@ -51,11 +51,11 @@ const CategoryName = styled.div.withConfig({
   }
 `;
 
-const Description = styled.div<{ $level: number, $color: CategoryColor }>`
+const Description = styled.div<{ level: number, color: CategoryColor }>`
   width: calc(4rem - 1px);
   height: var(--cell-height);
   line-height: var(--cell-height);
-  background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
+  background-color: ${({ theme, color, level }) => theme.colors.category(color, level)};
   border-radius: 5px;
   padding-left: .5rem;
   overflow: hidden;
@@ -96,7 +96,7 @@ export default function CategoryItem({
         <CategoryName color={color} level={level} isSelected={isSelected ? 1 : 0} onClick={handleClick}>
           {name}
         </CategoryName>
-        <Description $level={level} $color={color} onClick={handleClick}>
+        <Description level={level} color={color} onClick={handleClick}>
           {description}
         </Description>
         {!isVisible && (

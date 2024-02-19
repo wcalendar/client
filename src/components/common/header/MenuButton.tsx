@@ -4,7 +4,9 @@ import styled from "styled-components";
 import Menu from "../menu/Menu";
 import { ModalStatus } from "@/types";
 
-const Container = styled.div<{ $is_open: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['isOpen'].includes(p),
+})<{ isOpen: number }>`
   position: relative;
   width: 1.5rem;
   height: 1.5rem;
@@ -12,7 +14,7 @@ const Container = styled.div<{ $is_open: number }>`
   background-color: white;
   border: none;
   transition: color ease .25s;
-  color: ${({ theme, $is_open }) => $is_open ? theme.colors.blue : theme.colors.black};
+  color: ${({ theme, isOpen }) => isOpen ? theme.colors.blue : theme.colors.black};
 
   &:focus {
     outline: none;
@@ -56,7 +58,7 @@ export default function MenuButton({
   }, []);
 
   return (
-    <Container $is_open={status !== 'closed' ? 1 : 0} onClick={handleClick}>
+    <Container isOpen={status !== 'closed' ? 1 : 0} onClick={handleClick}>
       <Icon path={icon} />
       {status !== 'closed' && (
         <Menu status={status} onAnimationEnd={handleAnimationEnd} onClose={handleClose}>{children}</Menu>

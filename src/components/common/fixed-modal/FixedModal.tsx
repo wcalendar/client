@@ -3,7 +3,9 @@ import { ModalStatus } from "@/types";
 import { ReactNode, useCallback } from "react";
 import styled from "styled-components";
 
-const Background = styled.div<{ $status: string, backgroundColor: 'black' | 'white' }>`
+const Background = styled.div.withConfig({
+  shouldForwardProp: p => !['status', 'backgroundColor'].includes(p),
+})<{ status: string, backgroundColor: 'black' | 'white' }>`
   position: fixed;
   left: 0;
   top: 0;
@@ -14,23 +16,23 @@ const Background = styled.div<{ $status: string, backgroundColor: 'black' | 'whi
   justify-content: center;
   align-items: center;
   background-color: ${({ theme, backgroundColor }) => backgroundColor === 'black' ? theme.colors.black : 'white'};
-  opacity: ${({ $status }) => $status === 'open' ? '.5' : '0'};
-  animation: ${({ $status }) => $status === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
+  opacity: ${({ status }) => status === 'open' ? '.5' : '0'};
+  animation: ${({ status }) => status === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
 `;
 
-const Modal = styled.div<{ $width: string, $status: string }>`
+const Modal = styled.div<{ width: string, status: string }>`
   position: fixed;
   top: 10%;
   left: 50%;
   z-index: 10;
-  transform: ${({ $status }) => $status === 'open' ? 'scale(1)' : 'scale(.97)'} translateX(-50%);
-  max-width: ${({ $width }) => $width};
+  transform: ${({ status }) => status === 'open' ? 'scale(1)' : 'scale(.97)'} translateX(-50%);
+  max-width: ${({ width }) => width};
   width: 98%;
   height: 80vh;
   border-radius: 10px;
   overflow: hidden;
-  opacity: ${({ $status }) => $status === 'open' ? '1' : '0'};
-  animation: ${({ $status }) => $status === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
+  opacity: ${({ status }) => status === 'open' ? '1' : '0'};
+  animation: ${({ status }) => status === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
   background-color: white;
   box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.gray};
   transform-origin: left;
@@ -60,8 +62,8 @@ export default function FixedModal({
 
   return (
     <>
-      <Background $status={status} backgroundColor={backgroundColor} onAnimationEnd={handleAnimationEnd} onClick={onModalClose} />
-      <Modal $status={status} $width={width}>{children}</Modal>
+      <Background status={status} backgroundColor={backgroundColor} onAnimationEnd={handleAnimationEnd} onClick={onModalClose} />
+      <Modal status={status} width={width}>{children}</Modal>
     </>
   );
 }

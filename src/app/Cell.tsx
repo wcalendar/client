@@ -14,10 +14,10 @@ type CellProps = {
   onClick: (categoryId: string, day: number) => void;
 };
 
-const Container = styled.div<{ $start: number, $color: CategoryColor }>`
+const Container = styled.div<{ start: number, color: CategoryColor }>`
   position: absolute;
   top: 0;
-  left: calc(${({ $start }) => `${$start} * (var(--cell-width) + 1px)`});
+  left: calc(${({ start }) => `${start} * (var(--cell-width) + 1px)`});
   height: 100%;
   width: calc((var(--cell-width) + 1px) - 5px);
   margin: 0 2px;
@@ -30,7 +30,7 @@ const Container = styled.div<{ $start: number, $color: CategoryColor }>`
   border-radius: 5px;
 
   &:hover {
-    background: ${({ theme, $color }) => theme.colors.finishedCategory($color)};
+    background: ${({ theme, color }) => theme.colors.finishedCategory(color)};
     color: ${({ theme }) => theme.colors.gray};
   }
 `;
@@ -61,7 +61,7 @@ export default function Cell({
   }
 
   return (
-    <Container $start={start} $color={categoryColor} onMouseOver={handleMouseOver} onMouseOut={onMouseOut} onClick={() => onClick(categoryId, start+1)}>
+    <Container start={start} color={categoryColor} onMouseOver={handleMouseOver} onMouseOut={onMouseOut} onClick={() => onClick(categoryId, start+1)}>
       <IconWrapper>
         <Icon path={mdiPlus} />
       </IconWrapper>

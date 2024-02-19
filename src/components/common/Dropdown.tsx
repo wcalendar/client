@@ -3,51 +3,44 @@ import Icon from "@mdi/react";
 import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-type DropdownProps = {
-  values: string[];
-  selectedIdx: number;
-  onChange: (idx: number) => void;
-  width?: string;
-  height: string;
-  disabled?: boolean;
-}
-
-const Container = styled.div<{ $width?: string, $height: string, $disabled: number }>`
+const Container = styled.div<{ width?: string, height: string, disabled: number }>`
   position: relative;
-  width: ${({ $width }) => $width ? $width : '100%'};
-  height: ${({ $height }) => $height};
-  ${({ $disabled }) => $disabled ? '' : 'cursor: pointer;'}
+  width: ${({ width }) => width ? width : '100%'};
+  height: ${({ height }) => height};
+  ${({ disabled }) => disabled ? '' : 'cursor: pointer;'}
   user-select: none;
   background-color: white;
 `;
 
-const Input = styled.div<{ $height: string, $disabled: number }>`
+const Input = styled.div<{ height: string, disabled: number }>`
   position: relative;
   width: 100%;
-  height: ${({ $height }) => $height};
-  line-height: ${({ $height }) => $height};
+  height: ${({ height }) => height};
+  line-height: ${({ height }) => height};
   font-size: .75rem;
   text-indent: .5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: 5px;
   white-space: pre;
   
-  ${({ $disabled, theme }) => $disabled ? `
+  ${({ disabled, theme }) => disabled ? `
   color: ${theme.colors.gray};
   background: ${theme.colors.gray}40;
   ` : ''}
 `;
 
-const IconWrapper = styled.div<{ $is_open: number, $height: string, }>`
+const IconWrapper = styled.div.withConfig({
+  shouldForwardProp: p => !['isOpen', 'height'].includes(p),
+})<{ isOpen: number, height: string, }>`
   position: absolute;
   top: 0;
   right: 0;
-  width: ${({ $height }) => $height};
-  height: ${({ $height }) => $height};
-  padding: calc(${({ $height }) => $height} / 8);
+  width: ${({ height }) => height};
+  height: ${({ height }) => height};
+  padding: calc(${({ height }) => height} / 8);
   text-indent: 0;
   color: inherit;
-  transform: rotate(${({ $is_open }) => $is_open ? 180 : 0}deg);
+  transform: rotate(${({ isOpen }) => isOpen ? 180 : 0}deg);
   transition: transform ease .25s;
 
   svg {
@@ -90,10 +83,10 @@ const List = styled.div`
   height: auto;
 `;
 
-const ListItem = styled.div<{ $height: string, }>`
+const ListItem = styled.div<{ height: string, }>`
   width: 100%;
-  height: ${({ $height }) => $height};
-  line-height: ${({ $height }) => $height};
+  height: ${({ height }) => height};
+  line-height: ${({ height }) => height};
   font-size: .75rem;
   text-indent: .5rem;
   white-space: pre;
@@ -102,6 +95,15 @@ const ListItem = styled.div<{ $height: string, }>`
     background-color: ${({ theme }) => theme.colors.white};
   }
 `;
+
+interface DropdownProps {
+  values: string[];
+  selectedIdx: number;
+  onChange: (idx: number) => void;
+  width?: string;
+  height: string;
+  disabled?: boolean;
+}
 
 /**
  * @param width 단위까지 포함한 width. 생략하면 100%
@@ -149,17 +151,17 @@ export default function Dropdown({
   }, [onChange]);
 
   return (
-    <Container $width={width} $height={height} $disabled={disabled ? 1 : 0} ref={dropdownRef}>
-      <Input $height={height} onClick={onInputClick} $disabled={disabled ? 1 : 0}>
+    <Container width={width} height={height} disabled={disabled ? 1 : 0} ref={dropdownRef}>
+      <Input height={height} onClick={onInputClick} disabled={disabled ? 1 : 0}>
         {values[selectedIdx]}
-        <IconWrapper $is_open={isListOpen ? 1 : 0} $height={height}><Icon path={mdiChevronDown} /></IconWrapper>
+        <IconWrapper isOpen={isListOpen ? 1 : 0} height={height}><Icon path={mdiChevronDown} /></IconWrapper>
       </Input>
       
       {isListOpen && (
         <ListWrapper>
           <List>
             {values.map((value, i) => (
-              <ListItem key={`li-${i}`} $height={height} onClick={() => handleItemClick(i)}>
+              <ListItem key={`li-${i}`} height={height} onClick={() => handleItemClick(i)}>
                 {value}
               </ListItem>
             ))}

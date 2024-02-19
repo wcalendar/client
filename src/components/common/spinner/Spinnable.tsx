@@ -8,12 +8,12 @@ type SpinnableProps = {
   children: ReactNode;
 }
 
-const SpinnerWrapper = styled.div<{ $height: string }>`
+const SpinnerWrapper = styled.div<{ height: string }>`
   position: absolute;
   top: 0;
   z-index: 20;
   width: 100%;
-  height: ${({ $height }) => $height};
+  height: ${({ height }) => height};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,7 +29,7 @@ export default function Spinnable({
     <>
       {children}
       {isLoading &&
-        <SpinnerWrapper $height={height || '100%'}>
+        <SpinnerWrapper height={height || '100%'}>
           <Spinner />
         </SpinnerWrapper>
       }

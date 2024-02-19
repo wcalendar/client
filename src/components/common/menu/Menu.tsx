@@ -2,14 +2,14 @@ import { ModalStatus } from "@/types";
 import { ReactNode, useEffect, useRef } from "react";
 import styled from "styled-components";
 
-const Container = styled.div<{ $status: ModalStatus }>`
+const Container = styled.div<{ status: ModalStatus }>`
   position: absolute;
   right: 0;
   top: 1.5rem;
   width: max-content;
-  transform: translateY(${({ $status }) => $status === 'open' ? '0%' : '-10%'});
-  opacity: ${({ $status }) => $status === 'open' ? 1 : 0};
-  animation: ${({ $status }) => $status === 'open' ? 'fromUpOpen' : 'fromUpClose'} .25s;
+  transform: translateY(${({ status }) => status === 'open' ? '0%' : '-10%'});
+  opacity: ${({ status }) => status === 'open' ? 1 : 0};
+  animation: ${({ status }) => status === 'open' ? 'fromUpOpen' : 'fromUpClose'} .25s;
   background: white;
   border-radius: 10px;
   overflow: hidden;
@@ -49,7 +49,7 @@ export default function Menu({
   }, []);
 
   return (
-    <Container $status={status} ref={menuRef} onAnimationEnd={onAnimationEnd} onClick={(e) => e.stopPropagation()}>
+    <Container status={status} ref={menuRef} onAnimationEnd={onAnimationEnd} onClick={(e) => e.stopPropagation()}>
       {children}
     </Container>
   );

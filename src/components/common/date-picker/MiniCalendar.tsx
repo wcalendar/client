@@ -65,14 +65,14 @@ const Week = styled.div`
   display: flex;
 `;
 
-const Day = styled.div<{ $is_today: string }>`
+const Day = styled.div<{ isToday: string }>`
   width: 2.5rem;
   height: 2.5rem;
   line-height: 2.5rem;
   text-align: center;
   cursor: pointer;
   user-select: none;
-  ${({ theme, $is_today }) => $is_today === 'true' ? `background-color: ${theme.colors.gray};` : ''}
+  ${({ theme, isToday }) => isToday === 'true' ? `background-color: ${theme.colors.gray};` : ''}
   border-radius: 2rem;
   transition: all ease .25s;
   font-size: .75rem;
@@ -206,7 +206,7 @@ export default function MiniCalendar({
           <Week key={`w-${i}`}>
             {week.map((day, j) => (
               day ? (
-                <Day key={`d-${i}-${j}`} $is_today={(date.year() === year && date.month() === month && date.date() === day) ? 'true' : 'false'} onClick={() => handleDateClick(day)}>
+                <Day key={`d-${i}-${j}`} isToday={(date.year() === year && date.month() === month && date.date() === day) ? 'true' : 'false'} onClick={() => handleDateClick(day)}>
                   {day || ''}
                 </Day>
               ) : (

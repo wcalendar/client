@@ -5,7 +5,9 @@ import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import { DragEvent, DragEventHandler, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Priority } from "@/types";
 
-const Container = styled.div<{ $idx: number, $priority_count: number, $open: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['idx', 'priorityCount', 'open'].includes(p),
+})<{ idx: number, priorityCount: number, open: number }>`
   --priority-list-width: ${({ theme }) => theme.sizes.calendar.PriorityListWidth.desktop};
   transition: height ease .25s, width ease .25s, box-shadow ease .25s;
 
@@ -19,12 +21,12 @@ const Container = styled.div<{ $idx: number, $priority_count: number, $open: num
 
   box-sizing: content-box;
   position: absolute;
-  left: calc((${({ $idx }) => $idx} * (var(--cell-width) + 1px)) + 2px);
-  height: ${({ $open, $priority_count }) => $open ? `calc(((var(--cell-height) + var(--line-gap)) * ${$priority_count + 1}) + 3px)` : '100%'};
-  width: ${({ $open }) => $open ? 'calc(var(--priority-list-width) + 1px - 4px)' : 'calc(var(--cell-width) + 1px - 4px)'};
+  left: calc((${({ idx }) => idx} * (var(--cell-width) + 1px)) + 2px);
+  height: ${({ open, priorityCount }) => open ? `calc(((var(--cell-height) + var(--line-gap)) * ${priorityCount + 1}) + 3px)` : '100%'};
+  width: ${({ open }) => open ? 'calc(var(--priority-list-width) + 1px - 4px)' : 'calc(var(--cell-width) + 1px - 4px)'};
   background: ${({ theme }) => theme.colors.lightBlue};
   
-  ${({ theme, $open }) => $open ? `
+  ${({ theme, open }) => open ? `
     box-shadow: 0 0 2px 1px ${theme.colors.gray};
     border-radius: 5px;
     z-index: 5;
@@ -170,7 +172,7 @@ export default function PriorityList({
   }, [priorityCount, prioritiesSize]);
 
   return (
-    <Container $idx={day} $priority_count={priorityCount} $open={isOpened ? 1 : 0}>
+    <Container idx={day} priorityCount={priorityCount} open={isOpened ? 1 : 0}>
       <List>
         <DropArea
           onDragOver={handleDropAreaDragOver}

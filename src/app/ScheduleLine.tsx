@@ -4,18 +4,11 @@ import { CategoryToRender, ScheduleModalInfo, ScheduleToRender } from "@/types";
 import { CategoryColor } from "@/types";
 import Cell from "./Cell";
 
-type ScheduleLineProps = {
-  categoryToRender: CategoryToRender;
-  onScheduleClick: (info: ScheduleModalInfo) => void;
-  onCellMouseOver: (cateogoryIdx: number) => void;
-  onCellMouseOut: () => void;
-  onCellClick: (categoryId: string, day: number) => void;
-  categoryIdx: number;
-}
-
-const Container = styled.div<{ $line_count: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['lineCount'].includes(p),
+})<{ lineCount: number }>`
   width: 100%;
-  height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
+  height: calc(${({ lineCount }) => `(var(--cell-height) * ${lineCount}) + (${lineCount - 1} * var(--line-gap))`});
   margin-bottom: var(--line-gap);
 `;
 
@@ -27,13 +20,15 @@ const Line = styled.div`
 `;
 
 // box-shadow: 1px 1px 2px .5px ${({ theme }) => theme.colors.black80};
-const ScheduleItem = styled.div<{ $start: number, $end: number, $color: CategoryColor, $level: number, $is_finished: number }>`
+const ScheduleItem = styled.div.withConfig({
+  shouldForwardProp: p => !['start', 'end', 'color', 'level', 'isFinished'].includes(p),
+})<{ start: number, end: number, color: CategoryColor, level: number, isFinished: number }>`
   position: absolute;
   top: 0;
-  left: calc(${({ $start }) => `${$start - 1} * (var(--cell-width) + 1px)`});
+  left: calc(${({ start }) => `${start - 1} * (var(--cell-width) + 1px)`});
   height: 100%;
-  width: calc(${({ $start, $end }) => `(${$end - $start + 1} * (var(--cell-width) + 1px)) - 5px`});
-  background-color: ${({ theme, $color, $level, $is_finished }) => $is_finished ? theme.colors.finishedCategory($color) : theme.colors.category($color, $level)};
+  width: calc(${({ start, end }) => `(${end - start + 1} * (var(--cell-width) + 1px)) - 5px`});
+  background-color: ${({ theme, color, level, isFinished }) => isFinished ? theme.colors.finishedCategory(color) : theme.colors.category(color, level)};
   border-radius: 5px;
   margin-left: 2px;
   margin-right: 2px;
@@ -48,7 +43,9 @@ const ScheduleItem = styled.div<{ $start: number, $end: number, $color: Category
   }
 `;
 
-const ScheduleItemText = styled.span<{ $is_finished: number }>`
+const ScheduleItemText = styled.span.withConfig({
+  shouldForwardProp: p => !['isFinished'].includes(p),
+})<{ isFinished: number }>`
   position: sticky;
   left: 0;
   width: auto;
@@ -61,11 +58,20 @@ const ScheduleItemText = styled.span<{ $is_finished: number }>`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  ${({ $is_finished }) => $is_finished ? `
+  ${({ isFinished }) => isFinished ? `
   text-decoration: line-through;
   opacity: .2;
   ` : '' }
 `;
+
+interface ScheduleLineProps {
+  categoryToRender: CategoryToRender;
+  onScheduleClick: (info: ScheduleModalInfo) => void;
+  onCellMouseOver: (cateogoryIdx: number) => void;
+  onCellMouseOut: () => void;
+  onCellClick: (categoryId: string, day: number) => void;
+  categoryIdx: number;
+}
 
 export default function ScheduleLine({
   categoryToRender,
@@ -110,20 +116,20 @@ export default function ScheduleLine({
   }, [category]);
 
   return (
-    <Container $line_count={lines.length}>
+    <Container lineCount={lines.length}>
       {schedulesByLine.map((line, lineIdx) => (
         <Line key={`${category.id}-${lineIdx}`}>
           {line.map((schedule, scheduleIdx) => schedule ? (
             <ScheduleItem
               key={`s-${schedule.groupCode}-${scheduleIdx}`}
-              $start={schedule.startDayToRender}
-              $end={schedule.endDayToRender}
-              $color={category.color}
-              $level={category.level}
-              $is_finished={schedule.isFinished ? 1 : 0}
+              start={schedule.startDayToRender}
+              end={schedule.endDayToRender}
+              color={category.color}
+              level={category.level}
+              isFinished={schedule.isFinished ? 1 : 0}
               onClick={(e) => handleScheduleClick(e, schedule)}
             >
-              <ScheduleItemText $is_finished={schedule.isFinished ? 1 : 0}>
+              <ScheduleItemText isFinished={schedule.isFinished ? 1 : 0}>
                 {schedule.content}
               </ScheduleItemText>
             </ScheduleItem>

@@ -7,16 +7,6 @@ const tips: string[] = [
   '카테고리 추가/삭제는 해당 월부터 반영됩니다.',
 ];
 
-export default function Tips() {
-  return (
-    <Container>
-      {tips.map(text => (
-        <li key={text}>{text}</li>
-      ))}
-    </Container>
-  );
-}
-
 const Container = styled.ul`
   font-size: .75rem;
   gap: 0.5rem;
@@ -26,3 +16,13 @@ const Container = styled.ul`
     display: none;
   }
 `;
+
+export default function Tips() {
+  return (
+    <Container>
+      {tips.map(text => (
+        <li key={text}>{text}</li>
+      ))}
+    </Container>
+  );
+}

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from "react";
-import axios, { AxiosHeaders } from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { noAuthAPI } from "@/lib/apis";
 

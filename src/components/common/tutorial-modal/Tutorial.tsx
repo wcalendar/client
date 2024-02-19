@@ -97,9 +97,9 @@ const SlideImageBox = styled.div`
   border-radius: 20px;
 `;
 
-const SlideImageContent = styled.div<{ $page: number }>`
+const SlideImageContent = styled.div<{ page: number }>`
   position: absolute;
-  left: calc(var(--image-size) * ${({ $page }) => -$page});
+  left: calc(var(--image-size) * ${({ page }) => -page});
   top: 0;
   display: flex;
   width: calc(var(--image-size) * 5);
@@ -133,12 +133,14 @@ const Pagination = styled.div`
   gap: .5rem;
 `;
 
-const Page = styled.div<{ $current_page: number }>`
+const Page = styled.div.withConfig({
+  shouldForwardProp: p => !['currentPage'].includes(p),
+})<{ currentPage: number }>`
   width: .5rem;
   height: .5rem;
   border-radius: .5rem;
   transition: background-color ease .25s;
-  background-color: ${({ theme, $current_page }) => `${theme.colors.black}${$current_page ? '' : '20'}`};
+  background-color: ${({ theme, currentPage }) => `${theme.colors.black}${currentPage ? '' : '20'}`};
 `;
 
 const DesktopBr = styled.br`
@@ -214,7 +216,7 @@ export default function Tutorial({
             <SlideTitle>{tutorialInfos[page].title}</SlideTitle>
             <SlideDescription>{tutorialInfos[page].description}</SlideDescription>
             <SlideImageBox>
-              <SlideImageContent $page={page}>
+              <SlideImageContent page={page}>
                 <SlideImageWrapper><Image src="/images/tutorial_image_1.png" alt="tutorial_image_1" fill/></SlideImageWrapper>
                 <SlideImageWrapper><Image src="/images/tutorial_image_2.png" alt="tutorial_image_2" fill/></SlideImageWrapper>
                 <SlideImageWrapper><Image src="/images/tutorial_image_3.png" alt="tutorial_image_3" fill/></SlideImageWrapper>
@@ -229,11 +231,11 @@ export default function Tutorial({
                 </SlideButton>
               )}
               <Pagination>
-                <Page $current_page={page === 0 ? 1 : 0} />
-                <Page $current_page={page === 1 ? 1 : 0} />
-                <Page $current_page={page === 2 ? 1 : 0} />
-                <Page $current_page={page === 3 ? 1 : 0} />
-                <Page $current_page={page === 4 ? 1 : 0} />
+                <Page currentPage={page === 0 ? 1 : 0} />
+                <Page currentPage={page === 1 ? 1 : 0} />
+                <Page currentPage={page === 2 ? 1 : 0} />
+                <Page currentPage={page === 3 ? 1 : 0} />
+                <Page currentPage={page === 4 ? 1 : 0} />
               </Pagination>
               {device === 'mobile' && (
                 <SlideButton onClick={handleNextClick}>

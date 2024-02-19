@@ -5,16 +5,6 @@ import Icon from "@mdi/react";
 import { mdiUnfoldMoreHorizontal } from "@mdi/js";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
 
-type PriorityItemProps = {
-  priority: Priority;
-  onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: string, groupCode: string) => void;
-  onDrag: (newX: number, newY:number, priority: Priority) => void;
-  onDragEnd: (e: DragEvent<HTMLDivElement>) => void;
-  onDrop: (day: number, draggableIdx: number, droppableIdx: number) => void;
-  day: number;
-  idx: number;
-}
-
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
@@ -25,10 +15,12 @@ const Wrapper = styled.div`
   }
 `;
 
-const Container = styled.div<{ $color: CategoryColor, $level: number, $is_finished: number }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['color', 'level', 'isFinished'].includes(p),
+})<{ color: CategoryColor, level: number, isFinished: number }>`
   height: var(--cell-height);
   width: calc(100% - 5px);
-  background-color: ${({ theme, $color, $level, $is_finished }) => $is_finished ? theme.colors.finishedCategory($color) : theme.colors.category($color, $level)};
+  background-color: ${({ theme, color, level, isFinished }) => isFinished ? theme.colors.finishedCategory(color) : theme.colors.category(color, level)};
   border-radius: 5px;
   margin-left: 2px;
   margin-right: 2px;
@@ -45,7 +37,9 @@ const Container = styled.div<{ $color: CategoryColor, $level: number, $is_finish
   }
 `;
 
-const Text = styled.span<{ $is_finished: number }>`
+const Text = styled.span.withConfig({
+  shouldForwardProp: p => !['isFinished'].includes(p),
+})<{ isFinished: number }>`
   flex: auto 0 1;
   height: 100%;
   font-size: .75rem;
@@ -56,7 +50,7 @@ const Text = styled.span<{ $is_finished: number }>`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  ${({ $is_finished }) => $is_finished ? `
+  ${({ isFinished }) => isFinished ? `
   text-decoration: line-through;
   opacity: .2;
   ` : '' }
@@ -66,6 +60,16 @@ const IconWrapper = styled.div`
   flex: 1rem 0 0;
   height: 1rem;
 `;
+
+interface PriorityItemProps {
+  priority: Priority;
+  onClick: (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, categoryId: string, groupCode: string) => void;
+  onDrag: (newX: number, newY:number, priority: Priority) => void;
+  onDragEnd: (e: DragEvent<HTMLDivElement>) => void;
+  onDrop: (day: number, draggableIdx: number, droppableIdx: number) => void;
+  day: number;
+  idx: number;
+}
 
 export default function PriorityItem({
   priority,
@@ -167,9 +171,9 @@ export default function PriorityItem({
       ref={wrapperRef}
     >
       <Container
-        $color={color}
-        $level={level}
-        $is_finished={isFinished ? 1 : 0}
+        color={color}
+        level={level}
+        isFinished={isFinished ? 1 : 0}
         onClick={(e) => onClick(e, categoryId, groupCode)}
         draggable
         onDragStart={handleDragStart}
@@ -179,7 +183,7 @@ export default function PriorityItem({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <Text $is_finished={isFinished ? 1 : 0}>
+        <Text isFinished={isFinished ? 1 : 0}>
           {content}
         </Text>
         <IconWrapper>

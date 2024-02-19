@@ -4,17 +4,19 @@ import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import Tooltip from "./Tooltip";
 import useDevice from "@/hooks/useDevice";
 
-const Container = styled.div<{ $line_count: number, $is_hovered: number, $color: CategoryColor }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: p => !['lineCount', 'isHovered', 'color'].includes(p),
+})<{ lineCount: number, isHovered: number, color: CategoryColor }>`
   position: relative;
   width: 100%;
-  height: calc(${({ $line_count }) => `(var(--cell-height) * ${$line_count}) + (${$line_count - 1} * var(--line-gap))`});
+  height: calc(${({ lineCount }) => `(var(--cell-height) * ${lineCount}) + (${lineCount - 1} * var(--line-gap))`});
   margin-bottom: var(--line-gap);
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
   font-size: .75rem;
   user-select: none;
-  ${({ $is_hovered, theme, $color }) => $is_hovered ? `background: ${theme.colors.category($color, 1)}40;` : ''}
+  ${({ isHovered, theme, color }) => isHovered ? `background: ${theme.colors.category(color, 1)}40;` : ''}
   transition: background ease .25s;
 
   --category-name-width: 10.375rem;
@@ -30,11 +32,11 @@ const Container = styled.div<{ $line_count: number, $is_hovered: number, $color:
   }
 `;
 
-const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
-  width: calc(var(--category-name-width) - (${({ $level }) => $level} * var(--category-name-ml)));
+const CategoryName = styled.div<{ level: number, color: CategoryColor }>`
+  width: calc(var(--category-name-width) - (${({ level }) => level} * var(--category-name-ml)));
   height: var(--cell-height);
   line-height: var(--cell-height);
-  background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
+  background-color: ${({ theme, color, level }) => theme.colors.category(color, level)};
   border-radius: 5px;
   margin-right: 1px;
   padding-left: .5rem;
@@ -44,11 +46,11 @@ const CategoryName = styled.div<{ $level: number, $color: CategoryColor }>`
   text-overflow: ellipsis;
 `;
 
-const Description = styled.div<{ $level: number, $color: CategoryColor }>`
+const Description = styled.div<{ level: number, color: CategoryColor }>`
   width: calc(${({ theme }) => theme.sizes.calendar.memoWidth.desktop} - 1px);
   height: var(--cell-height);
   line-height: var(--cell-height);
-  background-color: ${({ theme, $color, $level }) => theme.colors.category($color, $level)};
+  background-color: ${({ theme, color, level }) => theme.colors.category(color, level)};
   border-radius: 5px;
   padding-left: .5rem;
   overflow: hidden;
@@ -118,17 +120,18 @@ export default function CategoryCell({
   }, [tooltipStatus]);
 
   return (
-    <Container $line_count={lineCount} $is_hovered={isHovered ? 1 : 0} $color={color}>
+    <Container lineCount={lineCount} isHovered={isHovered ? 1 : 0} color={color}>
       <CategoryName
         ref={categoryNameRef}
-        $level={level} $color={color}
+        level={level}
+        color={color}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         {name}
       </CategoryName>
-      <Description $level={level} $color={color}>{description}</Description>
+      <Description level={level} color={color}>{description}</Description>
       {tooltipStatus !== 'closed' && (
         <Tooltip status={tooltipStatus} category={category} onAnimationEnd={handleTooltipAnimationEnd} top={tooltipTop} />
       )}

@@ -11,7 +11,7 @@ import time from '@/lib/time';
 import { NewScheduleModalProps } from '../components/common/new-schedule-modal/NewScheduleModal';
 import { ScheduleModalProps } from '@/components/common/schedule-modal/ScheduleModal';
 import { useRouter } from 'next/navigation';
-import { CategoryDto, CategoryModalInfo, NewScheduleModalInfo, ScheduleModalInfo, ScheduleToRender } from '@/types';
+import { CategoryModalInfo, NewScheduleModalInfo, ScheduleModalInfo, ScheduleToRender } from '@/types';
 import { CategoryModalProps } from '@/components/common/category-modal/CategoryModal';
 import Spinnable from '@/components/common/spinner/Spinnable';
 import useDragMove from '@/hooks/useDragMove';
@@ -80,12 +80,14 @@ const ScheduleSide = styled.div`
   overflow-y: auto;
 `;
 
-const CalendarHeader = styled.div<{ $day_count: number }>`
+const CalendarHeader = styled.div.withConfig({
+  shouldForwardProp: p => !['dayCount'].includes(p),
+})<{ dayCount: number }>`
   position: sticky;
   z-index: 1;
-  width: calc(${({ $day_count }) => $day_count === 1 ?
+  width: calc(${({ dayCount }) => dayCount === 1 ?
   `var(--category-cell-width)` :
-  `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
+  `${dayCount} * (var(--cell-width) + ${dayCount === 1 ? 0 : 1}px)`});
   top: 0;
 `;
 
@@ -100,9 +102,11 @@ const HeaderSection = styled.div`
   border-bottom: 3px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
-const PrioritySection = styled.div<{ $priority_count: number }>`
+const PrioritySection = styled.div.withConfig({
+  shouldForwardProp: p => !['priorityCount'].includes(p),
+})<{ priorityCount: number }>`
   width: 100%;
-  height: calc(((var(--cell-height) + var(--line-gap)) * ${({ $priority_count }) => $priority_count + 1}) + 3px);
+  height: calc(((var(--cell-height) + var(--line-gap)) * ${({ priorityCount }) => priorityCount + 1}) + 3px);
   position: relative;
   background: ${({ theme }) => theme.colors.lightBlue};
   border-bottom: 3px solid ${({ theme }) => theme.colors.lightGray};
@@ -130,14 +134,16 @@ const PriorityTip = styled.div`
   color: ${({ theme }) => theme.colors.blue};
 `;
 
-const CalendarBody = styled.div<{ $day_count: number, $is_move_mode: number, }>`
-  width: calc(${({ $day_count }) => $day_count === 1 ?
+const CalendarBody = styled.div.withConfig({
+  shouldForwardProp: p => !['dayCount', 'isMoveMode'].includes(p),
+})<{ dayCount: number, isMoveMode: number, }>`
+  width: calc(${({ dayCount }) => dayCount === 1 ?
   `var(--category-cell-width)` :
-  `${$day_count} * (var(--cell-width) + ${$day_count === 1 ? 0 : 1}px)`});
-  min-height: ${({ $day_count }) => $day_count === 1 ? '100%' : 'calc(100vh - 4.375rem - 2.5rem)'};
+  `${dayCount} * (var(--cell-width) + ${dayCount === 1 ? 0 : 1}px)`});
+  min-height: ${({ dayCount }) => dayCount === 1 ? '100%' : 'calc(100vh - 4.375rem - 2.5rem)'};
   padding-top: var(--line-gap);
   position: relative;
-  ${({ $is_move_mode }) => $is_move_mode ? 'cursor: grab;' : ''}
+  ${({ isMoveMode }) => isMoveMode ? 'cursor: grab;' : ''}
 `;
 
 const SettingCategoryButton = styled.button`
@@ -154,11 +160,13 @@ const SettingCategoryButton = styled.button`
   color: white;
 `;
 
-const DivideLines = styled.div<{ $day_count: number }>`
+const DivideLines = styled.div.withConfig({
+  shouldForwardProp: p => !['dayCount'].includes(p),
+})<{ dayCount: number }>`
   position: absolute;
   left: 0;
   top: -2px;
-  width: calc(${({ $day_count }) => `${$day_count} * (var(--cell-width) + 1px)`});
+  width: calc(${({ dayCount }) => `${dayCount} * (var(--cell-width) + 1px)`});
   height: calc(100% + 2px);
   display: flex;
 `;
@@ -169,7 +177,9 @@ const DivideLine = styled.div`
   border-right: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
-const AddScheduleButton = styled.button<{ $isOpen: string }>`
+const AddScheduleButton = styled.button.withConfig({
+  shouldForwardProp: p => !['isOpen'].includes(p),
+})<{ isOpen: string }>`
   position: fixed;
   right: 1rem;
   bottom: 1rem;
@@ -181,7 +191,7 @@ const AddScheduleButton = styled.button<{ $isOpen: string }>`
   border-radius: 2rem;
   cursor: pointer;
   transition: transform 0.25s ease;
-  transform: rotate(${({ $isOpen }) => ($isOpen === 'true' ? '45' : '0')}deg);
+  transform: rotate(${({ isOpen }) => (isOpen === 'true' ? '45' : '0')}deg);
 `;
 
 const DragImage = styled.div`
@@ -355,7 +365,7 @@ export default function Home() {
       <Calendar>
         <Spinnable isLoading={isCalendarDateLoading}>
           <CategorySide ref={categoryBody}>
-            <CalendarHeader $day_count={1}>
+            <CalendarHeader dayCount={1}>
               <HeaderSection>
                 <HeaderCell isCategory>
                   <SettingCategoryButton onClick={handleMoveCategoryPage}>
@@ -363,14 +373,14 @@ export default function Home() {
                   </SettingCategoryButton>
                 </HeaderCell>
               </HeaderSection>
-              <PrioritySection $priority_count={prioritiesSize}>
+              <PrioritySection priorityCount={prioritiesSize}>
                 <PriorityLabel>
                   일정 우선순위
                   <PriorityTip>{`* Drag&Drop으로 순서 변경이 가능`}</PriorityTip>
                 </PriorityLabel>
               </PrioritySection>
             </CalendarHeader>
-            <CalendarBody $day_count={1} $is_move_mode={0}>
+            <CalendarBody dayCount={1} isMoveMode={0}>
               {categoryToRenderList.map((categoryToRender, i) => (
                 <CategoryCell
                   key={categoryToRender.category.id}
@@ -383,14 +393,14 @@ export default function Home() {
             </CalendarBody>
           </CategorySide>
           <ScheduleSide ref={scheduleBody} onMouseMove={(e) => {if(isMoveMode) e.preventDefault()} }>
-            <CalendarHeader $day_count={daysInMonth}>
+            <CalendarHeader dayCount={daysInMonth}>
               <HeaderSection>
                 {calendarHeaderItems.map(headerItem => (
                   <HeaderCell key={headerItem}>{headerItem}</HeaderCell>
                 ))}
               </HeaderSection>
-              <PrioritySection $priority_count={prioritiesSize}>
-                <DivideLines $day_count={daysInMonth}>
+              <PrioritySection priorityCount={prioritiesSize}>
+                <DivideLines dayCount={daysInMonth}>
                   {Array.from({ length: daysInMonth }, () => null).map(
                     (_, i) => (
                       <DivideLine key={`div${i}`} />
@@ -414,13 +424,13 @@ export default function Home() {
                 {draggedPriority && (<DragImage style={{ left: draggedPriorityX+20, top: draggedPriorityY+10, }} >{draggedPriority.content}</DragImage>)}
               </PrioritySection>
             </CalendarHeader>
-            <CalendarBody $day_count={daysInMonth} $is_move_mode={isMoveMode ? 1 : 0}
+            <CalendarBody dayCount={daysInMonth} isMoveMode={isMoveMode ? 1 : 0}
               onMouseDown={onMouseDown}
               onMouseUp={onMouseUp}
               onMouseMove={onMouseMove}
               onMouseLeave={onMouseUp}
             >
-              <DivideLines $day_count={daysInMonth}>
+              <DivideLines dayCount={daysInMonth}>
                 {Array.from({ length: daysInMonth }, () => null).map(
                   (_, i) => (
                     <DivideLine key={`div${i}`} />
@@ -443,7 +453,7 @@ export default function Home() {
         </Spinnable>
       </Calendar>
       <AddScheduleButton
-        $isOpen={modals[0]?.key === 'newSchedule' ? 'true' : 'false'}
+        isOpen={modals[0]?.key === 'newSchedule' ? 'true' : 'false'}
         onClick={handleOpenNewScheduleModal}
       >
         <Icon path={mdiPlus} color="white" />

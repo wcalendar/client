@@ -55,15 +55,17 @@ const Calendar = styled.div`
   grid-template-columns: repeat(4, minmax(0, 1fr));
 `;
 
-const MonthButton = styled.button<{ $is_current: number; }>`
+const MonthButton = styled.button.withConfig({
+  shouldForwardProp: p => !['isCurrent'].includes(p),
+})<{ isCurrent: number; }>`
   width: 2.5rem;
   height: 2.5rem;
   font-size: .75rem;
   border: none;
   border-radius: 1.25rem;
   background-color: transparent;
-  color: ${({ theme, $is_current }) => $is_current ? theme.colors.blue : theme.colors.gray};
-  font-weight: ${({ $is_current }) => $is_current ? 'bold' : 'normal'};
+  color: ${({ theme, isCurrent }) => isCurrent ? theme.colors.blue : theme.colors.gray};
+  font-weight: ${({ isCurrent }) => isCurrent ? 'bold' : 'normal'};
   cursor: pointer;
   transition: background-color ease .25s, color ease .25s;
 
@@ -112,7 +114,7 @@ export default function MonthlyCalendar({
         {months.map((m, i) => (
           <MonthButton
             key={`monthly-${i}`}
-            $is_current={isCurrent(i) ? 1 : 0}
+            isCurrent={isCurrent(i) ? 1 : 0}
             onClick={() => onChange(time.new(year, i, 1))}
           >
             {m}

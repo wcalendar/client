@@ -1,8 +1,7 @@
 import time from "@/lib/time";
 import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 import useCalendarData from "@/swr/useCalendarData";
-import { Category, CategoryDto, CategoryToRender, Priority, ScheduleDto, ScheduleToRender } from "@/types";
-import { Dayjs } from "dayjs";
+import { Category, CategoryDto, CategoryToRender, Priority, ScheduleToRender } from "@/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function useCalendar() {
