@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 import styled from "styled-components"
 
-const Container = styled.div<{ $is_category: number; }>`
-  width: calc(${({ $is_category }) => $is_category ?
+const Container = styled.div<{ isCategory: number; }>`
+  width: calc(${({ isCategory }) => isCategory ?
   `var(--category-cell-width)` :
   `var(--cell-width) + 1px`});
   height: 100%;
-  border-right: ${({ theme, $is_category }) => $is_category === 0 ? 'none' : `1px solid ${theme.colors.lightGray}`};
+  border-right: ${({ theme, isCategory }) => isCategory === 0 ? 'none' : `1px solid ${theme.colors.lightGray}`};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,7 +22,7 @@ export default function Cell({
   children,
 }: HeaderCellProps) {
   return (
-    <Container $is_category={isCategory ? 1 : 0}>
+    <Container isCategory={isCategory ? 1 : 0}>
       {children}
     </Container>
   )
