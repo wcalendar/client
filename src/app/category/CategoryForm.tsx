@@ -66,13 +66,13 @@ const ColorSelector = styled.div`
   }
 `;
 
-const ColorItem = styled.input<{ $color: CategoryColor }>`
+const ColorItem = styled.input<{ color: CategoryColor }>`
   appearance: none;
 
   &::before {
     display: block;
     content: "";
-    background-color: ${({ theme, $color }) => theme.colors.category($color, 0)};
+    background-color: ${({ theme, color }) => theme.colors.category(color, 0)};
     width: 1.25rem;
     height: 1.25rem;
     border-radius: 4px;
@@ -248,7 +248,7 @@ function CategoryForm({
               key={colorName}
               type='radio'
               value={colorName}
-              $color={colorName}
+              color={colorName}
               disabled={Boolean(!selectedCategory || selectedCategory.level > 0)}
               checked={color === undefined ? false : color === colorName}
               onChange={handleColorChange}
