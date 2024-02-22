@@ -112,14 +112,6 @@ const Interval = styled.div<{ disabled: number }>`
   justify-content: center;
   align-items: center;
   ${({ theme, disabled }) => disabled ? `color: ${theme.colors.gray};` : ''}
-
-  svg {
-    color: inherit;
-  }
-
-  path {
-    color: inherit;
-  }
 `;
 
 const DropDownWrapper = styled.div`
@@ -151,8 +143,6 @@ const DeleteLine = styled.div`
 `;
 
 const DeleteButton = styled.button`
-  background: none;
-  border: none;
   color: inherit;
   font-size: .75rem;
   font-weight: bold;
@@ -171,7 +161,6 @@ const Button = styled.button`
   flex-basis: 50%;
   height: 100%;
   line-height: 4rem;
-  border: none;
   background: white;
   font-size: 1.25rem;
   cursor: pointer;

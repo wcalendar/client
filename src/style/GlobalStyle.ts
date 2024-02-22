@@ -7,11 +7,10 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-
-    color: ${({theme}) => theme.colors.black};
   }
 
   html {
+    color: ${({theme}) => theme.colors.black};
     overflow: hidden;
 
     --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
@@ -26,6 +25,16 @@ const GlobalStyle = createGlobalStyle`
       --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
       --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
     }
+  }
+
+  a {
+    color: ${({ theme }) => theme.colors.black};
+  }
+
+  button {
+    color: ${({ theme }) => theme.colors.black};
+    background: none;
+    border: none;
   }
 
   @keyframes fadeIn {

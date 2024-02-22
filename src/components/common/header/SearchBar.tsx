@@ -20,14 +20,6 @@ const IconWrapper = styled.div`
   right: .5rem;
   top: calc(50% - .75rem);
   color: ${({ theme }) => theme.colors.gray};
-
-  svg {
-    color: inherit;
-  }
-
-  path {
-    color: inherit;
-  }
 `;
 
 interface SearchBarProps {

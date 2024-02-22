@@ -28,8 +28,6 @@ const Header = styled.div`
 const CloseButton = styled.button`
   width: 1.5rem;
   height: 1.5rem;
-  background: none;
-  border: none;
   cursor: pointer;
 `;
 
@@ -52,8 +50,6 @@ const SlideButton = styled.button`
   flex-shrink: 0;
   flex-grow: 0;
   height: 1.5rem;
-  background: none;
-  border: none;
   cursor: pointer;
 `;
 

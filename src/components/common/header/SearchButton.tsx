@@ -10,7 +10,6 @@ const Container = styled.button`
   height: 1.5rem;
   cursor: pointer;
   background-color: white;
-  border: none;
   transition: color ease .25s;
 
   &:focus {
@@ -19,14 +18,6 @@ const Container = styled.button`
 
   &:hover {
     color: ${({ theme }) => theme.colors.blue};
-  }
-
-  svg {
-    color: inherit;
-  }
-
-  path {
-    color: inherit;
   }
 `;
 

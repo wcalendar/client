@@ -42,14 +42,6 @@ const IconWrapper = styled.div.withConfig({
   color: inherit;
   transform: rotate(${({ isOpen }) => isOpen ? 180 : 0}deg);
   transition: transform ease .25s;
-
-  svg {
-    color: inherit;
-  }
-
-  path {
-    color: inherit;
-  }
 `;
 
 const ListWrapper = styled.div`
