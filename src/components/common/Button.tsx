@@ -19,7 +19,7 @@ const Container = styled.button.withConfig({
   border-radius: 8px;
   font-size: ${({ size }) => size === 'small' ? '.9375rem' : (size === 'medium' ? '1.25rem' : '1.375rem')};
   transition: .25s background-color ease;
-  cursor: pointer;
+  cursor: ${({ disabled }) => disabled ? 'default' : 'pointer'};
 
   ${({ disabled, type, theme }) => disabled ? '' : `
   &:hover {
