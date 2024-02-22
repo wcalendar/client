@@ -1,4 +1,5 @@
 import type { StorybookConfig } from "@storybook/nextjs";
+import path from "path";
 
 const config: StorybookConfig = {
   webpackFinal: async (config) => {
@@ -21,7 +22,16 @@ const config: StorybookConfig = {
         test: /\.svg$/,
         use: ['@svgr/webpack']
       }
-    ]
+    ];
+
+    if(!config.resolve) {
+      return config;
+    }
+
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@": path.resolve(__dirname, '../src'),
+    };
     
     return config;
   },
