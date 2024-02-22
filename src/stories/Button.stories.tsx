@@ -15,7 +15,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Butto: Story = {
   args: {
+    width: '200px',
     type: 'white',
-    children: 'asdf'
+    children: <>asdfasdfas</>,
   },
 };
