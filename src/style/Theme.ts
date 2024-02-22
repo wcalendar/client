@@ -19,14 +19,21 @@ const theme = {
   },
 
   colors: {
-    black: '#111111',
+    oldBlack: '#111111',
     black80: `#11111180`,
     blue: '#2b5ee1',
     gray: '#adb5bd',
     lightGray: '#d9d9d9',
-    white: '#ececec',
+    oldWhite: '#ececec',
     lightBlue: '#eaeffc',
     warningRed: '#ff2323',
+
+    // new
+    primary: '#5483FD',
+    primaryHover: '#5483FDCC',
+    black: '#000000',
+    white: '#ffffff',
+    whiteHover: '#0000000D',
 
     category: (color: CategoryColor, level: number) => {
       return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}${level === 0 ? '' : (level === 1 ? 'cc' : '99')}`;

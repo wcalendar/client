@@ -14,7 +14,7 @@ const Container = styled.div.withConfig({
   background-color: white;
   border: none;
   transition: color ease .25s;
-  color: ${({ theme, isOpen }) => isOpen ? theme.colors.blue : theme.colors.black};
+  color: ${({ theme, isOpen }) => isOpen ? theme.colors.blue : theme.colors.oldBlack};
 
   &:focus {
     outline: none;

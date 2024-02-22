@@ -46,7 +46,7 @@ const SubTitle = styled.h2`
 const DivideLine = styled.div`
   width: 100%;
   height: 0;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.black};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.oldBlack};
   margin: 1rem auto;
 `;
 
@@ -67,10 +67,10 @@ const Button = styled.button<{ fill: number }>`
   flex-grow: 1;
   height: 2.625rem;
   background-color: ${({ fill, theme }) => fill ? theme.colors.blue : 'white'};
-  border: 1px solid ${({ fill, theme }) => fill ? theme.colors.blue : theme.colors.black};
+  border: 1px solid ${({ fill, theme }) => fill ? theme.colors.blue : theme.colors.oldBlack};
   border-radius: 10px;
   cursor: pointer;
-  color: ${({ fill, theme }) => fill ? 'white' : theme.colors.black};
+  color: ${({ fill, theme }) => fill ? 'white' : theme.colors.oldBlack};
   font-weight: bold;
 `;
 

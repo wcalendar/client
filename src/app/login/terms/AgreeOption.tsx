@@ -34,7 +34,7 @@ const MoreButton = styled(Link)`
   height: 1.5rem;
   line-height: 1.5rem;
   background-color: white;
-  border: 1px solid ${({ theme }) => theme.colors.black};
+  border: 1px solid ${({ theme }) => theme.colors.oldBlack};
   border-radius: 5px;
   cursor: pointer;
   font-size: .75rem;

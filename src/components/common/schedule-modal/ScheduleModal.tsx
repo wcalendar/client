@@ -19,7 +19,7 @@ const Header = styled.div`
   padding: .75rem;
   display: flex;
   align-items: flex-start;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.white};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.oldWhite};
 `;
 
 const Title = styled.div.withConfig({

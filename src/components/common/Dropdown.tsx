@@ -84,7 +84,7 @@ const ListItem = styled.div<{ height: string, }>`
   white-space: pre;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.white};
+    background-color: ${({ theme }) => theme.colors.oldWhite};
   }
 `;
 

@@ -10,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
-    color: ${({theme}) => theme.colors.black};
+    color: ${({theme}) => theme.colors.oldBlack};
     overflow: hidden;
 
     --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
@@ -28,11 +28,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   a {
-    color: ${({ theme }) => theme.colors.black};
+    color: ${({ theme }) => theme.colors.oldBlack};
   }
 
   button {
-    color: ${({ theme }) => theme.colors.black};
+    color: ${({ theme }) => theme.colors.oldBlack};
     background: none;
     border: none;
   }
