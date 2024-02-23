@@ -1,4 +1,5 @@
-import svgs, { SVGKey } from "@/assets/svgs";
+import Svgs from "@/assets/Svgs";
+import svgs, { SVGKey } from "@/assets/Svgs";
 import React, { ReactNode, SVGProps } from "react";
 import styled from "styled-components";
 
@@ -57,10 +58,9 @@ export default function Button({
   disabled,
   children,
 }: ButtonProps) {
-  const Icon = icon ? svgs[icon] : undefined;
   return (
     <Container width={width} size={size} type={type} disabled={Boolean(disabled)}>
-      {Icon && <Icon color="" />}
+      {icon && <Svgs svgKey={icon} />}
       {children}
     </Container>
   );
