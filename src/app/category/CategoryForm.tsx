@@ -83,12 +83,12 @@ const ColorItem = styled.input<{ color: CategoryColor }>`
 
   &:hover:enabled::before {
     transform: scale(1.1);
-    border: 1px solid ${({ theme }) => theme.colors.black};
+    border: 1px solid ${({ theme }) => theme.colors.oldBlack};
   }
 
   &:checked:enabled::before {
     transform: scale(1.1);
-    border: 1px solid ${({ theme }) => theme.colors.black};
+    border: 1px solid ${({ theme }) => theme.colors.oldBlack};
   }
 
   &:disabled::before {

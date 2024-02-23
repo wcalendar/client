@@ -70,7 +70,7 @@ const SlideDescription = styled.p`
   min-height: 2.5rem;
   line-height: 1.25rem;
   font-size: .875rem;
-  color: ${({ theme }) => theme.colors.black}99;
+  color: ${({ theme }) => theme.colors.oldBlack}99;
   margin-bottom: 1.875rem;
   text-align: center;
 
@@ -136,7 +136,7 @@ const Page = styled.div.withConfig({
   height: .5rem;
   border-radius: .5rem;
   transition: background-color ease .25s;
-  background-color: ${({ theme, currentPage }) => `${theme.colors.black}${currentPage ? '' : '20'}`};
+  background-color: ${({ theme, currentPage }) => `${theme.colors.oldBlack}${currentPage ? '' : '20'}`};
 `;
 
 const DesktopBr = styled.br`

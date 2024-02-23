@@ -17,7 +17,7 @@ const Container = styled.div<{ status: ModalStatus, top: number }>`
   `}
 
   width: 16.875rem;
-  border: 1px solid ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.oldWhite};
   border-radius: 10px;
   background-color: white;
   user-select: none;

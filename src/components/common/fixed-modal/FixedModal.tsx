@@ -15,7 +15,7 @@ const Background = styled.div.withConfig({
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme, backgroundColor }) => backgroundColor === 'black' ? theme.colors.black : 'white'};
+  background-color: ${({ theme, backgroundColor }) => backgroundColor === 'black' ? theme.colors.oldBlack : 'white'};
   opacity: ${({ status }) => status === 'open' ? '.5' : '0'};
   animation: ${({ status }) => status === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
 `;

@@ -121,7 +121,7 @@ const FooterButton = styled.button`
   user-select: none;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.white};
+    background: ${({ theme }) => theme.colors.oldWhite};
   }
 `;
 
