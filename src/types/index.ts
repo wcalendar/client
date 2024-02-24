@@ -13,7 +13,12 @@ export type CategoryColor =
   | 'green'
   | 'blue'
   | 'purple'
-  | 'gray';
+  | 'gray'
+  | 'newRed'
+  | 'newOrange'
+  | 'newGreen'
+  | 'newPurple'
+  | 'newPink';
 
 export type Device = 'mobile' | 'tablet' | 'desktop';
 /**
