@@ -1,6 +1,6 @@
 import { CategoryColor } from "@/types";
 
-type Colors = 'Red' | 'Orange' | 'Yellow' | 'Green' | 'Blue' | 'Purple' | 'Gray';
+type Colors = 'Red' | 'Orange' | 'Yellow' | 'Green' | 'Blue' | 'Purple' | 'Gray' | 'NewRed' | 'NewOrange' | 'NewGreen' | 'NewPink' | 'NewPurple';
 type CategoryColorsKeys = `category${Colors}`;
 const categoryColors: {[key in CategoryColorsKeys]: string} = {
   categoryRed: '#f1b0bc',
@@ -10,6 +10,11 @@ const categoryColors: {[key in CategoryColorsKeys]: string} = {
   categoryBlue: '#a7b6f0',
   categoryPurple: '#c6a6f0',
   categoryGray: '#bbbec2',
+  categoryNewRed: '#FF7676',
+  categoryNewOrange: '#F39843',
+  categoryNewGreen: '#4DD653',
+  categoryNewPurple: '#AE9EED',
+  categoryNewPink: '#F192D1',
 }
 
 const theme = {
@@ -37,6 +42,9 @@ const theme = {
 
     category: (color: CategoryColor, level: number) => {
       return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}${level === 0 ? '' : (level === 1 ? 'cc' : '99')}`;
+    },
+    newCategory: (color: CategoryColor, level: number) => {
+      return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}${level === 0 ? '' : (level === 1 ? '80' : '1A')}`;
     },
     finishedCategory: (color: CategoryColor) => {
       return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}33`;
