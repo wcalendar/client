@@ -15,6 +15,7 @@ export const Default: Story = {
   args: {
     checked: true,
   },
+  /* eslint-disable */
   render: (args) => {
     const [{checked}, updateArgs] = useArgs();
 
@@ -24,4 +25,5 @@ export const Default: Story = {
 
     return <CheckBox {...args} onChange={handleChange} checked={checked} />
   },
+  /* eslint-enable */
 };
