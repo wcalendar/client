@@ -53,6 +53,17 @@ const theme = {
 
   sizes: {
     header: {
+      newHeaderHeight: {
+        mobile: '3.75rem',
+        tablet: '4.5rem',
+        desktop: '4.5rem',
+      },
+      newHeaderVerticalPadding: {
+        mobile: '1.125rem',
+        tablet: '1.5rem',
+        desktop: '1.5rem',
+      },
+      // TODO Delete
       headerHeight: {
         mobile: '5.25rem',
         tablet: '3.125rem',
