@@ -13,15 +13,24 @@ const GlobalStyle = createGlobalStyle`
     color: ${({theme}) => theme.colors.oldBlack};
     overflow: hidden;
 
+    --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.desktop};
+    --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.desktop};
+    
     --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
     --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
 
     @media ${({ theme }) => theme.devices.tablet} {
+      --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.tablet};
+      --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.tablet};
+
       --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
       --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
     }
 
     @media ${({ theme }) => theme.devices.mobile} {
+      --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.mobile};
+      --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.mobile};
+
       --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
       --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
     }
