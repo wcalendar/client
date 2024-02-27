@@ -1,3 +1,5 @@
+'use client';
+
 import Svgs from "@/assets/Svgs";
 import useDevice from "@/hooks/useDevice";
 import styled from "styled-components";
@@ -7,7 +9,7 @@ import { useCallback } from "react";
 import useDev from "@/hooks/useDev";
 import useExceptionPopup from "@/hooks/useExceptionPopup";
 import { usePopup } from "@/providers/PopupProvider/usePopup";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { apis } from "@/lib/apis";
 import { AxiosError } from "axios";
 
@@ -47,6 +49,7 @@ export default function Header() {
   const { isDev } = useDev();
   const device = useDevice();
   const openExceptionPopup = useExceptionPopup();
+  const pathname = usePathname();
   
   const { openPopup, closePopup } = usePopup();
   const router = useRouter();
@@ -113,19 +116,21 @@ export default function Header() {
       <Logo>
         <Svgs svgKey={device === 'mobile' ? 'logoSmall' : 'logoBig'} />
       </Logo>
-      <MenuList>
-        <MenuButton icon="preference" >
-          <MenuItem href='https://wplannerteam.notion.site/a858124ff6254c7e8731e12a022d22d6?pvs=4'>공지사항</MenuItem>
-          <MenuItem href='https://wplannerteam.notion.site/612fd9a4bdee41b2948ea4cfbfcd254a?pvs=4'>사용방법</MenuItem>
-          <MenuItem href='http://pf.kakao.com/_ZcKxaG/chat'>오류제보/문의하기</MenuItem>
-          <MenuItem href='https://wplannerteam.notion.site/Wplanner-4f3faa443e8c4cccb9bbc9d1a27955f4?pvs=4'>이용약관</MenuItem>
-          <MenuItem href='https://wplannerteam.notion.site/Wplanner-954f56204fc948399c35509f30d173b1?pvs=4'>개인정보 취급방침</MenuItem>
-        </MenuButton>
-        <MenuButton icon='myPage'>
-          <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
-          <MenuItem onClick={handleSignOut}>회원탈퇴</MenuItem>
-        </MenuButton>
-      </MenuList>
+      {pathname !== '/login' && (
+        <MenuList>
+          <MenuButton icon="preference" >
+            <MenuItem href='https://wplannerteam.notion.site/a858124ff6254c7e8731e12a022d22d6?pvs=4'>공지사항</MenuItem>
+            <MenuItem href='https://wplannerteam.notion.site/612fd9a4bdee41b2948ea4cfbfcd254a?pvs=4'>사용방법</MenuItem>
+            <MenuItem href='http://pf.kakao.com/_ZcKxaG/chat'>오류제보/문의하기</MenuItem>
+            <MenuItem href='https://wplannerteam.notion.site/Wplanner-4f3faa443e8c4cccb9bbc9d1a27955f4?pvs=4'>이용약관</MenuItem>
+            <MenuItem href='https://wplannerteam.notion.site/Wplanner-954f56204fc948399c35509f30d173b1?pvs=4'>개인정보 취급방침</MenuItem>
+          </MenuButton>
+          <MenuButton icon='myPage'>
+            <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+            <MenuItem onClick={handleSignOut}>회원탈퇴</MenuItem>
+          </MenuButton>
+        </MenuList>
+      )}
     </Container>
   )
 }

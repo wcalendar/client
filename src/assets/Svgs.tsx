@@ -1,3 +1,5 @@
+import MainLogoBigIcon from '@/assets/main_logo_big.svg';
+import MainLogoSmallIcon from '@/assets/main_logo_small.svg';
 import LogoBigIcon from '@/assets/logo_big.svg';
 import LogoSmallIcon from '@/assets/logo_small.svg';
 import MyPageIcon from '@/assets/my_page.svg';
@@ -9,7 +11,7 @@ import SmallCheckBoxClosedIcon from '@/assets/check_box_small_closed.svg';
 import BigCheckBoxOpenIcon from '@/assets/check_box_big_open.svg';
 import BigCheckBoxClosedIcon from '@/assets/check_box_big_closed.svg';
 
-export type SVGKey = 'myPage' | 'union' | 'preference' | 'smallCheckBoxOpen' | 'smallCheckBoxClosed' | 'bigCheckBoxOpen' | 'bigCheckBoxClosed' | 'arrowLeft' | 'logoBig' | 'logoSmall';
+export type SVGKey = 'myPage' | 'union' | 'preference' | 'smallCheckBoxOpen' | 'smallCheckBoxClosed' | 'bigCheckBoxOpen' | 'bigCheckBoxClosed' | 'arrowLeft' | 'logoBig' | 'logoSmall' | 'mainLogoBig' | 'mainLogoSmall';
 
 interface SvgsProps {
   svgKey: SVGKey;
@@ -18,6 +20,8 @@ interface SvgsProps {
 export default function Svgs({
   svgKey,
 }: SvgsProps) {
+  if(svgKey === 'mainLogoBig') return <MainLogoBigIcon />;
+  if(svgKey === 'mainLogoSmall') return <MainLogoSmallIcon />;
   if(svgKey === 'logoBig') return <LogoBigIcon />;
   if(svgKey === 'logoSmall') return <LogoSmallIcon />;
   if(svgKey === 'myPage') return <MyPageIcon />;
