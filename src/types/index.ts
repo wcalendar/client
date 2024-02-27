@@ -213,3 +213,17 @@ export interface PopupInfo {
   description: ReactNode;
   buttons: ButtonInfo[];
 }
+
+export type PopupButtonType = 'primary' | 'cancel' | 'warning';
+
+interface PopupButton {
+  label: string;
+  onClick: () => void;
+  type: PopupButtonType;
+}
+
+export interface NewPopupInfo {
+  title: string;
+  description: ReactNode;
+  buttons: PopupButton[];
+}
