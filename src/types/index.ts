@@ -189,6 +189,18 @@ export interface SearchedScheduleDto {
   scheduleStartDate: string;
   scheduleEndDate: string;
 }
+export interface NewSearchedScheduleDto {
+  categoryNames: string[];
+  categoryColor: CategoryColor;
+  scheduleId: string;
+  scheduleGroupCode: string;
+  scheduleContent: string;
+  isPriority: boolean;
+  isFinished: boolean;
+  scheduleStartDate: string;
+  scheduleEndDate: string;
+  scheduleMemo: string;
+}
 
 // Modal Context 관련 타입들
 export type ModalType = 'schedule' | 'category' | 'newSchedule' | 'search' | 'tutorial';

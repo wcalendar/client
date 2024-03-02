@@ -1,5 +1,5 @@
 import time from "@/lib/time";
-import { CategoryDto, ResDto, ScheduleToRender, SearchedScheduleDto } from "@/types";
+import { CategoryDto, NewSearchedScheduleDto, ResDto, ScheduleToRender, SearchedScheduleDto } from "@/types";
 
 const y = time.now().year();
 const m = time.now().month();
@@ -274,9 +274,85 @@ const searchDummyData: SearchedScheduleDto[] = [
     scheduleEndDate: time.toString(time.new(2024, 1, 4), 'YYYY-MM-DD'),
   },
 ];
+const newSearchDummyData: NewSearchedScheduleDto[] = [
+  {
+    categoryNames: ['Category 1'],
+    categoryColor: 'newRed',
+    scheduleId: 's1',
+    scheduleGroupCode: 'g1',
+    scheduleContent: "Schedule 1 Schedule 1Schedule 1Schedule 1Schedule 1Schedule 1Schedule 1Schedule 1Schedule 1Schedule 1",
+    isFinished: false,
+    isPriority: true,
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 3), 'YYYY-MM-DD'),
+    scheduleMemo: '메모메모',
+  },
+  {
+    categoryNames: ['Category 1'],
+    categoryColor: 'newRed',
+    scheduleId: 's3',
+    scheduleGroupCode: 'g2',
+    scheduleContent: "Schedule 2",
+    isFinished: false,
+    isPriority: true,
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 4), 'YYYY-MM-DD'),
+    scheduleMemo: '',
+  },
+  {
+    categoryNames: ['Category 1'],
+    categoryColor: 'newRed',
+    scheduleId: 's6',
+    scheduleGroupCode: 'g6',
+    scheduleContent: "Schedule 6",
+    isFinished: false,
+    isPriority: true,
+    scheduleStartDate: time.toString(time.new(2024, 1, 3), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 3), 'YYYY-MM-DD'),
+    scheduleMemo: '메모메모',
+  },
+  {
+    categoryNames: ['Category 1', 'Category 2'],
+    categoryColor: 'newRed',
+    scheduleId: 's7',
+    scheduleGroupCode: 'g3',
+    scheduleContent: "Schedule 3",
+    isFinished: false,
+    isPriority: true,
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 3), 'YYYY-MM-DD'),
+    scheduleMemo: '메모메모',
+  },
+  {
+    categoryNames: ['Category 1', 'Category 2'],
+    categoryColor: 'newRed',
+    scheduleId: 's9',
+    scheduleGroupCode: 'g4',
+    scheduleContent: "Schedule 4",
+    isFinished: false,
+    isPriority: true,
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleMemo: '메모메모',
+  },
+  {
+    categoryNames: ['Category 1', 'Category 2', 'Category 3'],
+    categoryColor: 'newRed',
+    scheduleId: 's10',
+    scheduleGroupCode: 'g5',
+    scheduleContent: "Schedule 5",
+    isFinished: false,
+    isPriority: true,
+    scheduleStartDate: time.toString(time.new(2024, 1, 2), 'YYYY-MM-DD'),
+    scheduleEndDate: time.toString(time.new(2024, 1, 4), 'YYYY-MM-DD'),
+    scheduleMemo: '',
+  },
+];
+
 
 export {
   calendarDummyData,
   categoryListDummyData,
   searchDummyData,
+  newSearchDummyData,
 }
