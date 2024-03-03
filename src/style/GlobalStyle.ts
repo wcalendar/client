@@ -15,6 +15,7 @@ const GlobalStyle = createGlobalStyle`
 
     --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.desktop};
     --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.desktop};
+    --new-cell-height: ${({ theme }) => theme.sizes.calendar.newCellHeight.desktop};
     
     --header-height: ${({ theme }) => theme.sizes.header.headerHeight.desktop};
     --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.desktop};
@@ -22,6 +23,7 @@ const GlobalStyle = createGlobalStyle`
     @media ${({ theme }) => theme.devices.tablet} {
       --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.tablet};
       --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.tablet};
+      --new-cell-height: ${({ theme }) => theme.sizes.calendar.newCellHeight.tablet};
 
       --header-height: ${({ theme }) => theme.sizes.header.headerHeight.tablet};
       --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.tablet};
@@ -30,6 +32,7 @@ const GlobalStyle = createGlobalStyle`
     @media ${({ theme }) => theme.devices.mobile} {
       --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.mobile};
       --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.mobile};
+      --new-cell-height: ${({ theme }) => theme.sizes.calendar.newCellHeight.mobile};
 
       --header-height: ${({ theme }) => theme.sizes.header.headerHeight.mobile};
       --header-padding: ${({ theme }) => theme.sizes.header.headerPadding.mobile};
