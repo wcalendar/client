@@ -70,6 +70,19 @@ export interface Category {
   parentId: string | null;
   schedules: ScheduleToRender[];
 }
+export interface NewCategory {
+  id: string;
+  name: string;
+  level: number;
+  color: CategoryColor;
+  startDate: Dayjs;
+  endDate: Dayjs;
+  description: string;
+  isVisible: boolean;
+  parentId: string | null;
+  schedules: ScheduleToRender[];
+  children: NewCategoryToRender[];
+}
 
 export interface CategoryUpdateDto {
   categoryName: string;
@@ -96,6 +109,10 @@ export type ScheduleDto = {
 // 캘린더에 렌더링하기 위한 카테고리 데이터
 export type CategoryToRender = {
   category: Category;
+  lines: (ScheduleToRender | null)[][];
+};
+export type NewCategoryToRender = {
+  category: NewCategory;
   lines: (ScheduleToRender | null)[][];
 };
 
