@@ -7,9 +7,11 @@ const Wrapper = styled.div`
 
 `;
 
-const ChipWrapper = styled.div`
+const ChipWrapper = styled.div.withConfig({
+  shouldForwardProp: p => !['lineCount'].includes(p),
+})<{ lineCount: number }>`
   width: 13.75rem;
-  height: var(--new-cell-height);
+  height: calc((${({ lineCount }) => Math.max(1, lineCount)} * var(--new-cell-height)) + (${({lineCount}) => Math.max(0, lineCount-1)} * .5rem));
   display: flex;
   justify-content: flex-end;
   margin-bottom: .75rem;
@@ -99,25 +101,26 @@ export default function CategoryChip({
   categoryToRender,
 }: CategoryChipProps) {
   const { category, lines } = categoryToRender;
+  const hasChild = category.children.length > 0;
 
   const [isOpen, setOpen] = useState(false);
 
   const handleClick = useCallback(() => {
-    setOpen(!isOpen);
-  }, [isOpen]);
+    if(hasChild) setOpen(!isOpen);
+  }, [hasChild, isOpen]);
 
   return (
     <Wrapper>
-      <ChipWrapper>
+      <ChipWrapper lineCount={lines.length}>
         <Container level={category.level} color={category.color} onClick={handleClick}>
           <Content level={category.level}>
             {category.level > 0 && <Memo color={category.color}>{category.description}</Memo>}
             <Name level={category.level} color={category.color}>{category.name}</Name>
           </Content>
-          {category.level < 2 && <Svgs svgKey={isOpen ? 'arrowDownSmall' : 'arrowRightSmall'}/>}
+          {(category.level < 2 && hasChild) && <Svgs svgKey={isOpen ? 'arrowDownSmall' : 'arrowRightSmall'}/>}
         </Container>
       </ChipWrapper>
-      {category.children.map((child, i) => (
+      {isOpen && category.children.map((child, i) => (
         <CategoryChip key={`category-chip-${child.category.id}-${child.category.level}`} categoryToRender={child} />
       ))}
     </Wrapper>
