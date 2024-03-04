@@ -7,13 +7,14 @@ import UnionIcon from '@/assets/union.svg';
 import PreferenceIcon from '@/assets/preference.svg';
 import SearchIcon from '@/assets/search.svg';
 import ArrowLeftIcon from '@/assets/arrow_left.svg';
+import ArrowRightSmallIcon from '@/assets/arrow_right_small.svg';
 import ArrowDownSmallIcon from '@/assets/arrow_down_small.svg';
 import SmallCheckBoxOpenIcon from '@/assets/check_box_small_open.svg';
 import SmallCheckBoxClosedIcon from '@/assets/check_box_small_closed.svg';
 import BigCheckBoxOpenIcon from '@/assets/check_box_big_open.svg';
 import BigCheckBoxClosedIcon from '@/assets/check_box_big_closed.svg';
 
-export type SVGKey = 'myPage' | 'union' | 'preference' | 'search' | 'smallCheckBoxOpen' | 'smallCheckBoxClosed' | 'bigCheckBoxOpen' | 'bigCheckBoxClosed' | 'arrowLeft' | 'arrowDownSmall' | 'logoBig' | 'logoSmall' | 'mainLogoBig' | 'mainLogoSmall';
+export type SVGKey = 'myPage' | 'union' | 'preference' | 'search' | 'smallCheckBoxOpen' | 'smallCheckBoxClosed' | 'bigCheckBoxOpen' | 'bigCheckBoxClosed' | 'arrowLeft' | 'arrowRightSmall' | 'arrowDownSmall' | 'logoBig' | 'logoSmall' | 'mainLogoBig' | 'mainLogoSmall';
 
 interface SvgsProps {
   svgKey: SVGKey;
@@ -31,6 +32,7 @@ export default function Svgs({
   if(svgKey === 'preference') return <PreferenceIcon />;
   if(svgKey === 'search') return <SearchIcon />;
   if(svgKey === 'arrowLeft') return <ArrowLeftIcon />;
+  if(svgKey === 'arrowRightSmall') return <ArrowRightSmallIcon />;
   if(svgKey === 'arrowDownSmall') return <ArrowDownSmallIcon />;
   if(svgKey === 'bigCheckBoxOpen') return <BigCheckBoxOpenIcon />;
   if(svgKey === 'bigCheckBoxClosed') return <BigCheckBoxClosedIcon />;

@@ -81,6 +81,11 @@ const theme = {
         tablet: '8.625rem',
         desktop: '14.75rem',
       },
+      newCellHeight: {
+        mobile: '2.75rem',
+        tablet: '3rem',
+        desktop: '3rem',
+      },
       cellHeight: {
         mobile: '1.75rem',
         tablet: '1.75rem',
