@@ -1,5 +1,5 @@
 import Svgs from "@/assets/Svgs";
-import svgs, { SVGKey } from "@/assets/Svgs";
+import { SVGKey } from "@/assets/Svgs";
 import React, { ReactNode } from "react";
 import styled from "styled-components";
 
@@ -51,6 +51,7 @@ interface ButtonProps {
   icon?: SVGKey;
   disabled?: boolean;
   children: ReactNode;
+  onClick: () => void;
 }
 
 export default function Button({
@@ -61,9 +62,10 @@ export default function Button({
   icon,
   disabled,
   children,
+  onClick,
 }: ButtonProps) {
   return (
-    <Container width={width} size={size} paddingHorizontal={paddingHorizontal} type={type} disabled={Boolean(disabled)}>
+    <Container onClick={onClick} width={width} size={size} paddingHorizontal={paddingHorizontal} type={type} disabled={Boolean(disabled)}>
       {icon && <Svgs svgKey={icon} />}
       {children}
     </Container>
