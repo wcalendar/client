@@ -22,6 +22,7 @@ export const Default: Story = {
     buttonType: 'big',
     value: time.now(),
   },
+  /* eslint-disable */
   render: (args) => {
     const [{value}, updateArgs] = useArgs<{ value: number }>();
 
@@ -31,4 +32,5 @@ export const Default: Story = {
 
     return <MonthPicker {...args} value={dayjs(value)} onChange={handleChange} />
   },
+  /* eslint-enable */
 }
