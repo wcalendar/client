@@ -20,6 +20,7 @@ const Container = styled.button.withConfig({
   border: ${({ type, theme, disabled }) => type === 'primary' || disabled ? 'none' : `1px solid ${theme.colors.black}33`};
   border-radius: 8px;
   font-size: ${({ size }) => size === 'small' ? '.9375rem' : (size === 'medium' ? '1.25rem' : '1.375rem')};
+  font-weight: bold;
   transition: .25s background-color ease;
   cursor: ${({ disabled }) => disabled ? 'default' : 'pointer'};
 
