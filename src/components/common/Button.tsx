@@ -1,11 +1,11 @@
 import Svgs from "@/assets/Svgs";
 import svgs, { SVGKey } from "@/assets/Svgs";
-import React, { ReactNode, SVGProps } from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 
 const Container = styled.button.withConfig({
-  shouldForwardProp: p => !['width', 'size', 'type', 'disabled'].includes(p),
-})<{ width: string, size: ButtonSize, type: ButtonType, disabled: boolean }>`
+  shouldForwardProp: p => !['width', 'size', 'type', 'disabled', 'paddingHorizontal'].includes(p),
+})<{ width: string, size: ButtonSize, type: ButtonType, disabled: boolean, paddingHorizontal: string }>`
   --color: ${({ type, theme, disabled }) => type === 'primary' ? theme.colors.white : (disabled ? `${theme.colors.black}20` : `${theme.colors.black}cc`)};
 
   display: flex;
@@ -14,6 +14,7 @@ const Container = styled.button.withConfig({
   align-items: center;
   width: ${({ width }) => width};
   height: ${({ size }) => size === 'small' ? '2.5rem' : (size === 'medium' ? '3.75rem' : '4.5rem')};
+  padding: 0 ${({ paddingHorizontal }) => paddingHorizontal};
   background-color: ${({ type, theme, disabled }) => type === 'primary' ? `${theme.colors.primary}${disabled ? '33' : ''}` : (disabled ? `${theme.colors.black}0d` : theme.colors.white)};
   color: var(--color);
   border: ${({ type, theme, disabled }) => type === 'primary' || disabled ? 'none' : `1px solid ${theme.colors.black}33`};
@@ -44,6 +45,7 @@ type ButtonType = 'primary' | 'white';
 interface ButtonProps {
   width?: string;
   size?: ButtonSize;
+  paddingHorizontal?: string;
   type?: ButtonType;
   icon?: SVGKey;
   disabled?: boolean;
@@ -53,13 +55,14 @@ interface ButtonProps {
 export default function Button({
   width = '100%',
   size = 'small',
+  paddingHorizontal = '0',
   type = 'primary',
   icon,
   disabled,
   children,
 }: ButtonProps) {
   return (
-    <Container width={width} size={size} type={type} disabled={Boolean(disabled)}>
+    <Container width={width} size={size} paddingHorizontal={paddingHorizontal} type={type} disabled={Boolean(disabled)}>
       {icon && <Svgs svgKey={icon} />}
       {children}
     </Container>
