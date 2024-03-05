@@ -15,6 +15,7 @@ export const Default: Story = {
   args: {
     calendarMode: 'category',
   },
+  /* eslint-disable */
   render: (args) => {
     const [{calendarMode}, updateArgs] = useArgs<{calendarMode: CalendarMode}>();
 
@@ -24,6 +25,7 @@ export const Default: Story = {
 
     return <CalendarHeader {...args} calendarMode={calendarMode} onCalendarModeChange={handleCalendarModeChange} />
   },
+  /* eslint-enable */
   decorators: [
     (Story) => {
       return <CurrentDateProvider><Story /></CurrentDateProvider>
