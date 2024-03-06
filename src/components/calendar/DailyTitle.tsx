@@ -10,7 +10,7 @@ const Container = styled.div.withConfig({
   flex-direction: column;
   justify-content: center;
   gap: .25rem;
-  width: 15rem;
+  width: var(--new-cell-width);
   height: 4.25rem;
   border-bottom: 4px solid ${({ theme, selected }) => selected ? theme.colors.primary : `${theme.colors.black}1A`};
   user-select: none;
@@ -25,10 +25,6 @@ const Container = styled.div.withConfig({
 
   @media ${({ theme }) => theme.devices.tablet} {
     gap: 0;
-  }
-
-  @media ${({ theme }) => theme.devices.mobile} {
-    width: 10rem;
   }
 `;
 
