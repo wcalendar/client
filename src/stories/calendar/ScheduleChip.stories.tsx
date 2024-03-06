@@ -31,6 +31,7 @@ export const Default: Story = {
   args: {
     schedule: scheduleToRender,
   },
+  /* eslint-disable */
   render: (args) => {
     const [{schedule}, updateArgs] = useArgs<{ schedule: NewScheduleToRender }>();
 
@@ -45,4 +46,5 @@ export const Default: Story = {
 
     return <ScheduleChip schedule={schedule} onFinish={handleFinish} />
   }
+  /* eslint-enable */
 }
