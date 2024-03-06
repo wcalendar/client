@@ -129,6 +129,20 @@ export type ScheduleToRender = {
   startDayToRender: number;
   endDayToRender: number;
 }
+export type NewScheduleToRender = {
+  categoryId: string;
+  categoryColor: CategoryColor;
+  categoryLevel: number;
+  id: string;
+  groupCode: string;
+  content: string;
+  isPriority: boolean;
+  isFinished: boolean;
+  startDate: Dayjs;
+  endDate: Dayjs;
+  startDayToRender: number;
+  endDayToRender: number;
+}
 
 // 우선순위를 렌더링하기 위한 데이터
 export type Priority = {

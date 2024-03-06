@@ -45,7 +45,7 @@ const MemoAlarm = styled.span.withConfig({
   border-radius: .25rem;
   background-color: ${({ color, theme }) => theme.colors.category(color, 0) };
   margin-left: .25rem;
-  vertical-align: top;ㅐㅍ
+  vertical-align: top;
 `;
 
 const Date = styled.div`
