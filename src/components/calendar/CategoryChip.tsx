@@ -93,19 +93,22 @@ const Memo = styled.div.withConfig({
 
 interface CategoryChipProps {
   categoryToRender: NewCategoryToRender;
+  openedCategories: Record<string, boolean>;
+  toggleCategoryOpen: (categoryId: string) => void;
 }
 
 export default function CategoryChip({
   categoryToRender,
+  openedCategories,
+  toggleCategoryOpen,
 }: CategoryChipProps) {
   const { category, lines } = categoryToRender;
   const hasChild = category.children.length > 0;
-
-  const [isOpen, setOpen] = useState(false);
+  const isOpen = openedCategories[category.id];
 
   const handleClick = useCallback(() => {
-    if(hasChild) setOpen(!isOpen);
-  }, [hasChild, isOpen]);
+    if(hasChild) toggleCategoryOpen(category.id);
+  }, [hasChild, category, toggleCategoryOpen]);
 
   return (
     <Wrapper level={category.level}>
@@ -119,7 +122,7 @@ export default function CategoryChip({
         </Container>
       </ChipWrapper>
       {isOpen && category.children.map((child, i) => (
-        <CategoryChip key={`category-chip-${child.category.id}-${child.category.level}`} categoryToRender={child} />
+        <CategoryChip key={`category-chip-${child.category.id}-${child.category.level}`} categoryToRender={child} openedCategories={openedCategories} toggleCategoryOpen={toggleCategoryOpen} />
       ))}
     </Wrapper>
   )

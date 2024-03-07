@@ -9,12 +9,13 @@ export default function useCalendar() {
   const daysInMonth = useMemo(() => currentDate.daysInMonth(), [currentDate]);
 
   const [categoryToRenderList, setCategoryToRenderList] = useState<NewCategoryToRender[]>([]);
+  const [openedCategories, setOpenedCategories] = useState<Record<string, boolean>>({});
   const [prioritiesByDay, setPrioritiesByDay] = useState<Priority[][]>([]);
 
   const { calendarData } = useCalendarData();
 
   // CategoryDto를 CategoryToRender 타입으로 변환해주는 함수
-  const toCategoryRender = useCallback((parentId: string | null, category: CategoryDto, newPriorities: Priority[][]): NewCategoryToRender => {
+  const toCategoryRender = useCallback((parentId: string | null, category: CategoryDto, newPriorities: Priority[][], newOpenedCategories: Record<string, boolean>): NewCategoryToRender => {
     const newCategory: NewCategory = {
       id: category.categoryId,
       name: category.categoryName,
@@ -106,8 +107,10 @@ export default function useCalendar() {
     });
 
     category.children.forEach(child => {
-      newCategory.children.push(toCategoryRender(newCategory.id, child, newPriorities));
+      newCategory.children.push(toCategoryRender(newCategory.id, child, newPriorities, newOpenedCategories));
     })
+
+    newOpenedCategories[category.categoryId] = false;
 
     return {
       category: newCategory,
@@ -124,19 +127,28 @@ export default function useCalendar() {
   const toRenderingData = useCallback((newCategoryList: CategoryDto[]) => {
     const newCategoryToRenderList: NewCategoryToRender[] = [];
     const newPriorities: Priority[][] = Array.from({length: daysInMonth}, () => []);
+    const newOpenedCategories: Record<string, boolean> = {};
 
     newCategoryList.forEach(c0 => {
-      newCategoryToRenderList.push(toCategoryRender(null, c0, newPriorities));
+      newCategoryToRenderList.push(toCategoryRender(null, c0, newPriorities, newOpenedCategories));
     })
 
     newPriorities.forEach(priorityList => priorityList.sort((a, b) => a.priority - b.priority));
     setPrioritiesByDay(newPriorities);
     setCategoryToRenderList(newCategoryToRenderList);
+    setOpenedCategories(newOpenedCategories);
   }, [daysInMonth]);
 
   useEffect(() => {
     if(calendarData) toRenderingData(calendarData);
   }, [calendarData]);
 
-  return { categoryToRenderList, prioritiesByDay, setCategoryToRenderList, setPrioritiesByDay, };
+  const toggleCategoryOpen = useCallback((categoryId: string) => {
+    setOpenedCategories({
+      ...openedCategories,
+      [categoryId]: !openedCategories[categoryId],
+    })
+  }, [openedCategories]);
+
+  return { categoryToRenderList, prioritiesByDay, openedCategories, setCategoryToRenderList, setPrioritiesByDay, toggleCategoryOpen };
 }
