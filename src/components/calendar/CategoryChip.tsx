@@ -6,31 +6,27 @@ import styled from "styled-components";
 const Wrapper = styled.div.withConfig({
   shouldForwardProp: p => !['level'].includes(p),
 })<{ level: number }>`
+  width: var(--new-category-cell-width);
   margin-top: ${({ level }) => level === 0 ? '1.25rem' : '0'};
 `;
 
 const ChipWrapper = styled.div.withConfig({
   shouldForwardProp: p => !['lineCount'].includes(p),
 })<{ lineCount: number }>`
-  width: 13.75rem;
   height: calc((${({ lineCount }) => Math.max(1, lineCount)} * var(--new-cell-height)) + (${({lineCount}) => Math.max(0, lineCount-1)} * .5rem));
   display: flex;
   justify-content: flex-end;
   margin-bottom: .75rem;
-
-  @media ${({ theme }) => theme.devices.mobile} {
-    width: 6.5rem;
-  }
 `;
 
 const Container = styled.div.withConfig({
   shouldForwardProp: p => !['level', 'color'].includes(p),
 })<{ level: number, color: CategoryColor, }>`
+  width: calc(var(--new-category-cell-width) - ${({ level }) => `(${level} * 1.25rem)`});
+  height: 100%;
   display: flex;
   align-items: center;
   gap: .5rem;
-  width: ${({ level }) => level == 0 ? '13.75rem' : (level == 1 ? '12.5rem' : '11.25rem')};
-  height: 100%;
   padding: 0 .75rem;
   user-select: none;
   cursor: pointer;
@@ -53,7 +49,7 @@ const Container = styled.div.withConfig({
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
-    width: ${({ level }) => level == 0 ? '6.5rem' : (level == 1 ? '5.75rem' : '5.25rem')};
+    width: calc(var(--new-category-cell-width) - ${({ level }) => level === 0 ? '0px' : (level === 1) ? '.75rem' : '1.25rem'});
   }
 `;
 

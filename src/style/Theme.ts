@@ -101,6 +101,11 @@ const theme = {
         tablet: '9.125rem',
         desktop: '15.75rem',
       },
+      newCategoryCellWidth: {
+        mobile: '6.5rem',
+        tablet: '13.75rem',
+        desktop: '13.75rem',
+      },
       memoWidth: {
         mobile: '0',
         tablet: '0',
