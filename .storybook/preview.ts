@@ -3,6 +3,10 @@ import { withThemeFromJSXProvider } from '@storybook/addon-themes';
 import theme from '../src/style/Theme';
 import GlobalStyle from '../src/style/GlobalStyle';
 import { ThemeProvider } from "styled-components";
+import { initialize, mswLoader } from "msw-storybook-addon";
+
+// init MSW
+initialize();
 
 const preview: Preview = {
   parameters: {
@@ -17,6 +21,7 @@ const preview: Preview = {
       appDirectory: true,
     },
   },
+  loaders: [mswLoader],
 };
 
 export const decorators = [
