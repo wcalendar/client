@@ -7,6 +7,7 @@ import { Fragment, useEffect, useMemo, useRef } from "react";
 import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 import DailyTitle from "../DailyTitle";
 import ScheduleByCategory from "./ScheduleByCategory";
+import useDragMove from "@/hooks/useDragMove";
 
 const Container = styled.div`
   display: flex;
@@ -63,12 +64,15 @@ const Body = styled.div.withConfig({
   margin: 0 auto;
 `;
 
-const ScheduleSide = styled.div`
+const ScheduleSide = styled.div.withConfig({
+  shouldForwardProp: p => !['isMoveMode'].includes(p),
+})<{ isMoveMode: boolean }>`
   position: relative;
   flex: calc(100% - var(--category-cell-width)) 0 0;
   height: 100%;
   overflow-x: auto;
   overflow-y: auto;
+  ${({ isMoveMode }) => isMoveMode ? 'cursor: grab;' : ''}
 `;
 
 export default function CategoryCalendar() {
@@ -77,6 +81,8 @@ export default function CategoryCalendar() {
 
   const categorySideRef = useRef<HTMLDivElement>(null);
   const scheduleSideRef = useRef<HTMLDivElement>(null);
+
+  const [isMoveMode, onMouseDown, onMouseUp, onMouseMove] = useDragMove(scheduleSideRef);
 
   const calendarHeaderItems = useMemo(() => {
     const daysInMonth = currentDate.daysInMonth();
@@ -123,7 +129,14 @@ export default function CategoryCalendar() {
           ))}
         </Body>
       </CategorySide>
-      <ScheduleSide ref={scheduleSideRef}>
+      <ScheduleSide
+        ref={scheduleSideRef}
+        isMoveMode={isMoveMode}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onMouseMove={onMouseMove}
+        onMouseLeave={onMouseUp}
+      >
         <HeaderRow dayCount={currentDate.daysInMonth()}>
           {calendarHeaderItems.map(item => (
             <DailyTitle key={`dt-${currentDate.year()}-${currentDate.month()}-${item.date}`} date={item.date} day={item.day} selected={false} />

@@ -62,6 +62,7 @@ export default function ScheduleByCategory({
             {line.map((item, i) => item && (
               <ScheduleChip
                 schedule={item}
+                // TODO
                 onFinish={() => {}}
               />
             ))}
