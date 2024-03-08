@@ -16,7 +16,7 @@ const ChipWrapper = styled.div.withConfig({
   height: calc((${({ lineCount }) => Math.max(1, lineCount)} * var(--new-cell-height)) + (${({lineCount}) => Math.max(0, lineCount-1)} * .5rem));
   display: flex;
   justify-content: flex-end;
-  margin-bottom: .75rem;
+  margin-bottom: .5rem;
 `;
 
 const Container = styled.div.withConfig({
