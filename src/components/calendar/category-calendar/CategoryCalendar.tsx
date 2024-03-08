@@ -49,17 +49,29 @@ const HeaderTip = styled.div`
   gap: .625rem;
 `;
 
+const HeaderTipIconWrapper = styled.div`
+  flex: 1.5rem 0 0;
+  height: 1.5rem;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    display: none;
+  }
+`;
+
 const HeaderTipText = styled.div`
   flex-grow: 1;
   font-weight: bold;
   font-size: 1.375rem;
   user-select: none;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    font-size: .9375rem;
+  }
 `;
 
 const Body = styled.div.withConfig({
   shouldForwardProp: p => !['dayCount', 'isMoveMode'].includes(p),
 })<{ dayCount: number, isMoveMode: boolean, }>`
-  width: 13.75rem;
   min-height: ${({ dayCount }) => dayCount === 1 ? '200%' : '100%'};
   margin: 0 auto;
 `;
@@ -118,7 +130,9 @@ export default function CategoryCalendar() {
       <CategorySide ref={categorySideRef}>
         <HeaderRow dayCount={1}>
           <HeaderTip>
-            <Svgs svgKey='category' />
+            <HeaderTipIconWrapper>
+              <Svgs svgKey='category' />
+            </HeaderTipIconWrapper>
             <HeaderTipText>카테고리</HeaderTipText>
             <Svgs svgKey='arrowRight' />
           </HeaderTip>
