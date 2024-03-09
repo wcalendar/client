@@ -61,6 +61,7 @@ export default function ScheduleByCategory({
           <Line key={`line-${category.id}-${i}`}>
             {line.map((item, i) => item && (
               <ScheduleChip
+                key={`schedule-chip-${item.id}`}
                 schedule={item}
                 // TODO
                 onFinish={() => {}}

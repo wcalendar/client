@@ -141,7 +141,7 @@ export const Default: Story = {
     categoryToRender: defaultCategoryToRender,
     openedCategories: defaultOpenedCategories,
   },
-  /** eslint-disable */
+  /* eslint-disable */
   render: (args) => {
     const [{ openedCategories }, updateArgs] = useArgs();
 
@@ -154,7 +154,7 @@ export const Default: Story = {
 
     return <CategoryChip categoryToRender={args.categoryToRender} openedCategories={openedCategories} toggleCategoryOpen={toggleCategoryOpen} />
   },
-  /** eslint-enable */
+  /* eslint-enable */
 }
 
 export const Example: Story = {
@@ -162,7 +162,7 @@ export const Example: Story = {
     categoryToRender: exampleCategoryToRender,
     openedCategories: exampleOpenedCategories,
   },
-  /** eslint-disable */
+  /* eslint-disable */
   render: (args) => {
     const [{ openedCategories }, updateArgs] = useArgs();
 
@@ -175,5 +175,5 @@ export const Example: Story = {
 
     return <CategoryChip categoryToRender={args.categoryToRender} openedCategories={openedCategories} toggleCategoryOpen={toggleCategoryOpen} />
   },
-  /** eslint-enable */
+  /* eslint-enable */
 }

@@ -139,7 +139,7 @@ export default function CategoryCalendar() {
         </HeaderRow>
         <Body dayCount={1} isMoveMode={false}>
           {categoryToRenderList.map(categoryToRender => (
-            <CategoryChip categoryToRender={categoryToRender} openedCategories={openedCategories} toggleCategoryOpen={toggleCategoryOpen} />
+            <CategoryChip key={`category-chip-${categoryToRender.category.id}-${categoryToRender.category.level}`} categoryToRender={categoryToRender} openedCategories={openedCategories} toggleCategoryOpen={toggleCategoryOpen} />
           ))}
         </Body>
       </CategorySide>
