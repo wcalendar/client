@@ -28,33 +28,35 @@ export type SVGKey = 'calendar' | 'calendarSmall' | 'category' | 'myPage' | 'uni
 
 interface SvgsProps {
   svgKey: SVGKey;
+  className?: string;
 }
 
 export default function Svgs({
   svgKey,
+  className,
 }: SvgsProps) {
-  if(svgKey === 'mainLogoBig') return <MainLogoBigIcon />;
-  if(svgKey === 'mainLogoSmall') return <MainLogoSmallIcon />;
-  if(svgKey === 'logoBig') return <LogoBigIcon />;
-  if(svgKey === 'logoSmall') return <LogoSmallIcon />;
-  if(svgKey === 'calendar') return <CalendarIcon />;
-  if(svgKey === 'calendarSmall') return <CalendarSmallIcon />;
-  if(svgKey === 'category') return <CategoryIcon />;
-  if(svgKey === 'myPage') return <MyPageIcon />;
-  if(svgKey === 'union') return <UnionIcon />;
-  if(svgKey === 'preference') return <PreferenceIcon />;
-  if(svgKey === 'search') return <SearchIcon />;
-  if(svgKey === 'move') return <MoveIcon />;
-  if(svgKey === 'arrowLeft') return <ArrowLeftIcon />;
-  if(svgKey === 'arrowLeftSmall') return <ArrowLeftSmallIcon />;
-  if(svgKey === 'arrowRight') return <ArrowRightIcon />;
-  if(svgKey === 'arrowRightSmall') return <ArrowRightSmallIcon />;
-  if(svgKey === 'arrowDown') return <ArrowDownIcon />;
-  if(svgKey === 'arrowDownSmall') return <ArrowDownSmallIcon />;
-  if(svgKey === 'bigCheckBoxOpen') return <BigCheckBoxOpenIcon />;
-  if(svgKey === 'bigCheckBoxClosed') return <BigCheckBoxClosedIcon />;
-  if(svgKey === 'smallCheckBoxOpen') return <SmallCheckBoxOpenIcon />;
-  if(svgKey === 'smallCheckBoxClosed') return <SmallCheckBoxClosedIcon />;
+  if(svgKey === 'mainLogoBig') return <MainLogoBigIcon className={className} />;
+  if(svgKey === 'mainLogoSmall') return <MainLogoSmallIcon className={className} />;
+  if(svgKey === 'logoBig') return <LogoBigIcon className={className} />;
+  if(svgKey === 'logoSmall') return <LogoSmallIcon className={className} />;
+  if(svgKey === 'calendar') return <CalendarIcon className={className} />;
+  if(svgKey === 'calendarSmall') return <CalendarSmallIcon className={className} />;
+  if(svgKey === 'category') return <CategoryIcon className={className} />;
+  if(svgKey === 'myPage') return <MyPageIcon className={className} />;
+  if(svgKey === 'union') return <UnionIcon className={className} />;
+  if(svgKey === 'preference') return <PreferenceIcon className={className} />;
+  if(svgKey === 'search') return <SearchIcon className={className} />;
+  if(svgKey === 'move') return <MoveIcon className={className} />;
+  if(svgKey === 'arrowLeft') return <ArrowLeftIcon className={className} />;
+  if(svgKey === 'arrowLeftSmall') return <ArrowLeftSmallIcon className={className} />;
+  if(svgKey === 'arrowRight') return <ArrowRightIcon className={className} />;
+  if(svgKey === 'arrowRightSmall') return <ArrowRightSmallIcon className={className} />;
+  if(svgKey === 'arrowDown') return <ArrowDownIcon className={className} />;
+  if(svgKey === 'arrowDownSmall') return <ArrowDownSmallIcon className={className} />;
+  if(svgKey === 'bigCheckBoxOpen') return <BigCheckBoxOpenIcon className={className} />;
+  if(svgKey === 'bigCheckBoxClosed') return <BigCheckBoxClosedIcon className={className} />;
+  if(svgKey === 'smallCheckBoxOpen') return <SmallCheckBoxOpenIcon className={className} />;
+  if(svgKey === 'smallCheckBoxClosed') return <SmallCheckBoxClosedIcon className={className} />;
   
   return (<></>);
 }
