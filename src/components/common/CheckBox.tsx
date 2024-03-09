@@ -23,6 +23,10 @@ const CheckboxImage = styled.div.withConfig({
   display: inline-block;
   width: ${({ size }) => size === 'big' ? '1.5rem' : '1.25rem'};
   height: ${({ size }) => size === 'big' ? '1.5rem' : '1.25rem'};
+
+  path {
+    fill: ${({ theme }) => theme.colors.white } !important;
+  }
 `;
 
 type CheckBoxSize = 'big' | 'small';
