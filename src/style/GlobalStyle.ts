@@ -15,6 +15,7 @@ const GlobalStyle = createGlobalStyle`
 
     --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.desktop};
     --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.desktop};
+    --new-category-cell-width: ${({ theme }) => theme.sizes.calendar.newCategoryCellWidth.desktop};
     --new-cell-width: ${({ theme }) => theme.sizes.calendar.newCellWidth.desktop};
     --new-cell-height: ${({ theme }) => theme.sizes.calendar.newCellHeight.desktop};
 
@@ -25,6 +26,7 @@ const GlobalStyle = createGlobalStyle`
     @media ${({ theme }) => theme.devices.tablet} {
       --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.tablet};
       --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.tablet};
+      --new-category-cell-width: ${({ theme }) => theme.sizes.calendar.newCategoryCellWidth.tablet};
       --new-cell-width: ${({ theme }) => theme.sizes.calendar.newCellWidth.tablet};
       --new-cell-height: ${({ theme }) => theme.sizes.calendar.newCellHeight.tablet};
 
@@ -35,6 +37,7 @@ const GlobalStyle = createGlobalStyle`
     @media ${({ theme }) => theme.devices.mobile} {
       --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.mobile};
       --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.mobile};
+      --new-category-cell-width: ${({ theme }) => theme.sizes.calendar.newCategoryCellWidth.mobile};
       --new-cell-width: ${({ theme }) => theme.sizes.calendar.newCellWidth.mobile};
       --new-cell-height: ${({ theme }) => theme.sizes.calendar.newCellHeight.mobile};
 

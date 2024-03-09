@@ -2,6 +2,7 @@ import CategoryChip from "@/components/calendar/CategoryChip";
 import time from "@/lib/time";
 import { NewCategoryToRender } from "@/types";
 import { Meta, StoryObj } from "@storybook/react";
+import { useArgs } from '@storybook/preview-api';
 
 const meta = {
   title: 'Components/Calendar/CategoryChip',
@@ -57,6 +58,12 @@ const defaultCategoryToRender: NewCategoryToRender = {
   },
   lines: [],
 };
+
+const defaultOpenedCategories: Record<string, boolean> = {
+  c1: false,
+  c2: false,
+  c3: false,
+}
 
 const exampleCategoryToRender: NewCategoryToRender = {
   category: {
@@ -122,14 +129,51 @@ const exampleCategoryToRender: NewCategoryToRender = {
   lines: [],
 };
 
+const exampleOpenedCategories: Record<string, boolean> = {
+  c1: false,
+  c2: false,
+  c3: false,
+  c4: false,
+}
+
 export const Default: Story = {
   args: {
     categoryToRender: defaultCategoryToRender,
-  }
+    openedCategories: defaultOpenedCategories,
+  },
+  /* eslint-disable */
+  render: (args) => {
+    const [{ openedCategories }, updateArgs] = useArgs();
+
+    const toggleCategoryOpen = (categoryId: string) => {
+      updateArgs({ openedCategories: {
+        ...openedCategories,
+        [categoryId]: !openedCategories[categoryId]
+      } });
+    }
+
+    return <CategoryChip categoryToRender={args.categoryToRender} openedCategories={openedCategories} toggleCategoryOpen={toggleCategoryOpen} />
+  },
+  /* eslint-enable */
 }
 
 export const Example: Story = {
   args: {
     categoryToRender: exampleCategoryToRender,
-  }
+    openedCategories: exampleOpenedCategories,
+  },
+  /* eslint-disable */
+  render: (args) => {
+    const [{ openedCategories }, updateArgs] = useArgs();
+
+    const toggleCategoryOpen = (categoryId: string) => {
+      updateArgs({ openedCategories: {
+        ...openedCategories,
+        [categoryId]: !openedCategories[categoryId]
+      } });
+    }
+
+    return <CategoryChip categoryToRender={args.categoryToRender} openedCategories={openedCategories} toggleCategoryOpen={toggleCategoryOpen} />
+  },
+  /* eslint-enable */
 }

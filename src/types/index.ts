@@ -113,7 +113,7 @@ export type CategoryToRender = {
 };
 export type NewCategoryToRender = {
   category: NewCategory;
-  lines: (ScheduleToRender | null)[][];
+  lines: (NewScheduleToRender | null)[][];
 };
 
 // 캘린더에 렌더링하기 위한 일정 데이터
