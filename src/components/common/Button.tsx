@@ -41,7 +41,7 @@ const Container = styled.button.withConfig({
 `;
 
 type ButtonSize = 'big' | 'medium' | 'small';
-type ButtonType = 'primary' | 'white';
+export type ButtonType = 'primary' | 'white';
 
 interface ButtonProps {
   width?: string;
