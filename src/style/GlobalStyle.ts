@@ -76,6 +76,30 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
+  @keyframes bottomSheetOpen {
+    from {
+      opacity: 0;
+      transform: translateY(25%) translateX(-50%);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) translateX(-50%);
+    }
+  }
+
+  @keyframes bottomSheetClose {
+    from {
+      opacity: 1;
+      transform: translateY(0) translateX(-50%);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(25%) translateX(-50%);
+    }
+  }
+
   @keyframes scaleIn {
     from {
       opacity: 0;

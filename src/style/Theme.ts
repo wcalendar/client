@@ -31,7 +31,7 @@ const theme = {
     lightGray: '#d9d9d9',
     oldWhite: '#ececec',
     lightBlue: '#eaeffc',
-    warningRed: '#ff2323',
+    warningRed: '#E12B36',
 
     // new
     primary: '#5483FD',
