@@ -1,8 +1,9 @@
 import time from "@/lib/time";
-import { NewScheduleToRender, Priority } from "@/types";
+import { Priority } from "@/types";
 import { Meta, StoryObj } from "@storybook/react";
 import { useArgs } from '@storybook/preview-api';
 import PriorityChip from "@/components/calendar/PriorityChip";
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 
 const meta = {
   title: 'Components/Calendar/PriorityChip',
@@ -27,6 +28,7 @@ const priority: Priority = {
 export const Default: Story = {
   args: {
     priority: priority,
+    index: 0,
   },
   /* eslint-disable */
   render: (args) => {
@@ -41,7 +43,20 @@ export const Default: Story = {
       });
     };
 
-    return <PriorityChip priority={priority} onFinish={onFinish} />
+    return <PriorityChip {...args} priority={priority} onFinish={onFinish} />
   },
   /* eslint-enable */
+  decorators: [
+    (Story) => {
+      return <DragDropContext onDragEnd={() => {}}>
+        <Droppable droppableId='priorityList'>
+          {(provided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              <Story />
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    },
+  ]
 }
