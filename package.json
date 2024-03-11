@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^2.4.1",
+    "@hello-pangea/dnd": "^16.5.0",
     "@mdi/js": "^7.3.67",
     "@mdi/react": "^1.6.1",
     "@next/third-parties": "^14.1.0",
     "@svgr/webpack": "^8.1.0",
+    "@types/react-beautiful-dnd": "^13.1.8",
     "axios": "^1.6.2",
     "dayjs": "^1.11.10",
     "js-cookie": "^3.0.5",
