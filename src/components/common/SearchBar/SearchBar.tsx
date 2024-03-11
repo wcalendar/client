@@ -10,6 +10,10 @@ const Container = styled.div`
   width: 21.25rem;
   height: 2.5rem;
   overflow: visible;
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    width: 100%;
+  }
 `;
 
 const SearchInput = styled.input`
