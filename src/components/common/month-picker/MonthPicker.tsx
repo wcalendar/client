@@ -8,7 +8,7 @@ import styled from "styled-components";
 const Container = styled.div.withConfig({
   shouldForwardProp: p => !['buttonType'].includes(p),
 })<{ buttonType: ButtonType }>`
-  width: 12.5rem;
+  width: 10rem;
   height: 2.5rem;
   display: flex;
   justify-content: ${({ buttonType }) => buttonType === 'big' ? 'center' : 'flex-start'};
@@ -32,7 +32,9 @@ const Calendar = styled.div.withConfig({
 })<{ status: ModalStatus }>`
   position: absolute;
   top: 3.5rem;
-  width: 100%;
+  left: -1.25rem;
+  width: 12.5rem;
+  z-index: 1;
   border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
   border-radius: 12px;
   background-color: ${({ theme }) => theme.colors.white};
