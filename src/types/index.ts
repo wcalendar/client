@@ -1,5 +1,4 @@
 import { NewScheduleModalProps } from "@/components/common/new-schedule-modal/NewScheduleModal";
-import { CategoryModalProps } from "@/components/common/category-modal/CategoryModal";
 import { ScheduleModalProps } from "@/components/common/schedule-modal/ScheduleModal";
 import { SearchModalProps } from "@/components/common/search-modal/SearchModal";
 import { Dayjs } from "dayjs";
@@ -185,13 +184,6 @@ export type ScheduleModalInfo = {
   schedule: ScheduleToRender,
 }
 
-// 캘린더에서 카테고리 클릭했을 때 뜨는 모달 데이터
-export type CategoryModalInfo = {
-  x: number,
-  y: number,
-  category: Category,
-}
-
 // 일정 수정을 위해 모달을 열었을 때 사용되는 데이터
 export interface UpdateScheduleInfo {
   schedule: ScheduleToRender;
@@ -234,11 +226,10 @@ export interface NewSearchedScheduleDto {
 }
 
 // Modal Context 관련 타입들
-export type ModalType = 'schedule' | 'category' | 'newSchedule' | 'search' | 'tutorial';
-export type ModalProps = ( ScheduleModalProps | CategoryModalProps | NewScheduleModalProps | SearchModalProps | TutorialModalProps );
+export type ModalType = 'schedule' | 'newSchedule' | 'search' | 'tutorial';
+export type ModalProps = ( ScheduleModalProps | NewScheduleModalProps | SearchModalProps | TutorialModalProps );
 export type ModalKey =
   | { key: 'schedule'; modalProps: ScheduleModalProps }
-  | { key: 'category'; modalProps: CategoryModalProps }
   | { key: 'newSchedule'; modalProps: NewScheduleModalProps }
   | { key: 'search'; modalProps: SearchModalProps }
   | { key: 'tutorial'; modalProps: TutorialModalProps };

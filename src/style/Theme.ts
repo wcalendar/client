@@ -31,8 +31,9 @@ const theme = {
     primary80: '#769CFD',
     primary50: '#A9C1FE',
     primary20: '#DDE6FF',
+    primary10: '#EEF3FF',
     primary05: '#F6F9FF',
-    primaryHover: '#5483FDCC',
+
     black: '#2F2F2F',
     black50: '#767676',
     black40: '#8E8E8E',
@@ -41,8 +42,8 @@ const theme = {
     black10: '#D4D4D4',
     black05: '#E0E0E0',
     black02: '#E7E7E7',
+
     white: '#ffffff',
-    whiteHover: '#0000000D',
     warningRed: '#E12B36',
     
     category: (color: CategoryColor, level: number) => {
