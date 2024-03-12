@@ -25,7 +25,7 @@ const ModalHeader = styled.div`
   position: relative;
   width: 100%;
   height: 2.5rem;
-  background-color: ${({ theme }) => theme.colors.blue};
+  background-color: ${({ theme }) => theme.colors.primary};
   padding: 0 1rem;
   user-select: none;
 
@@ -90,7 +90,7 @@ const Required = styled.span`
 
 const Input = styled.input`
   flex-basis: calc(100% - 6rem - 3rem);
-  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border: 1px solid ${({ theme }) => theme.colors.black50};
   border-radius: 5px;
   text-indent: .5rem;
 
@@ -111,7 +111,7 @@ const Interval = styled.div<{ disabled: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  ${({ theme, disabled }) => disabled ? `color: ${theme.colors.gray};` : ''}
+  ${({ theme, disabled }) => disabled ? `color: ${theme.colors.black50};` : ''}
 `;
 
 const DropDownWrapper = styled.div`

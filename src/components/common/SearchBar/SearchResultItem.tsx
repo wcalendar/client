@@ -10,11 +10,11 @@ const Container = styled.div`
 
   &:hover {
     border-radius: .5rem;
-    background-color: ${({ theme }) => `${theme.colors.black}0D`};
+    background-color: ${({ theme }) => theme.colors.black05};
   }
 
   &+& {
-    border-top: 1px solid ${({ theme }) => `${theme.colors.black}1A`};
+    border-top: 1px solid ${({ theme }) => theme.colors.black10};
   }
 `;
 
@@ -24,7 +24,7 @@ const Category = styled.div`
   gap: .25rem;
   font-size: .6875rem;
   font-weight: bold;
-  color: ${({ theme }) => `${theme.colors.black}33`};
+  color: ${({ theme }) => theme.colors.black20};
   user-select: none;
   margin-bottom: .5rem;
 `;
@@ -51,7 +51,7 @@ const MemoAlarm = styled.span.withConfig({
 const Date = styled.div`
   font-size: .6875rem;
   user-select: none;
-  color: ${({ theme }) => `${theme.colors.black}80`};
+  color: ${({ theme }) => theme.colors.black50};
 `;
 
 interface SearchResultItemProps {

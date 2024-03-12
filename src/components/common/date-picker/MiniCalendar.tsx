@@ -15,7 +15,7 @@ const Container = styled.div`
   left: 0;
   top: 1.75rem;
   padding: .25rem;
-  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border: 1px solid ${({ theme }) => theme.colors.black50};
   background-color: white;
   z-index: 1;
   animation-duration: .25s;
@@ -71,13 +71,13 @@ const Day = styled.div<{ isToday: string }>`
   text-align: center;
   cursor: pointer;
   user-select: none;
-  ${({ theme, isToday }) => isToday === 'true' ? `background-color: ${theme.colors.gray};` : ''}
+  ${({ theme, isToday }) => isToday === 'true' ? `background-color: ${theme.colors.black50};` : ''}
   border-radius: 2rem;
   transition: all ease .25s;
   font-size: .75rem;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blue};
+    background-color: ${({ theme }) => theme.colors.primary};
     color: white;
   }
 
@@ -115,13 +115,13 @@ const FooterButton = styled.button`
   line-height: 1.75rem;
   text-align: center;
   background: white;
-  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border: 1px solid ${({ theme }) => theme.colors.black50};
   border-radius: 5px;
   cursor: pointer;
   user-select: none;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.oldWhite};
+    background: ${({ theme }) => theme.colors.white};
   }
 `;
 

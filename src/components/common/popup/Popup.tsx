@@ -27,9 +27,9 @@ const Container = styled.div`
   overflow: hidden;
   overflow-y: auto;
   background-color: white;
-  box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.gray};
+  box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.black50};
   transform-origin: left;
-  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border: 1px solid ${({ theme }) => theme.colors.black20};
   padding: 1rem;
 `;
 
@@ -58,7 +58,7 @@ const Buttons = styled.div`
 const Button = styled.button<{ warning: number }>`
   width: auto;
   padding: .5rem .625rem;
-  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border: 1px solid ${({ theme }) => theme.colors.black50};
   border-radius: 10px;
   font-size: .875rem;
   line-height: .875rem;

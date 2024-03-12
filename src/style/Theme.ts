@@ -3,6 +3,7 @@ import { CategoryColor } from "@/types";
 type Colors = 'Red' | 'Orange' | 'Yellow' | 'Green' | 'Blue' | 'Purple' | 'Gray' | 'NewRed' | 'NewOrange' | 'NewGreen' | 'NewPink' | 'NewPurple';
 type CategoryColorsKeys = `category${Colors}`;
 const categoryColors: {[key in CategoryColorsKeys]: string} = {
+  // old (~v1.0.0)
   categoryRed: '#f1b0bc',
   categoryOrange: '#efb9a6',
   categoryYellow: '#ecd095',
@@ -10,6 +11,8 @@ const categoryColors: {[key in CategoryColorsKeys]: string} = {
   categoryBlue: '#a7b6f0',
   categoryPurple: '#c6a6f0',
   categoryGray: '#bbbec2',
+
+  // new 
   categoryNewRed: '#FF7676',
   categoryNewOrange: '#F39843',
   categoryNewGreen: '#4DD653',
@@ -23,27 +26,26 @@ const theme = {
     tablet: '(max-width: 1024px)',
   },
 
-  colors: {
-    oldBlack: '#111111',
-    black80: `#11111180`,
-    blue: '#2b5ee1',
-    gray: '#adb5bd',
-    lightGray: '#d9d9d9',
-    oldWhite: '#ececec',
-    lightBlue: '#eaeffc',
-    warningRed: '#E12B36',
-
-    // new
+  colors: {    
     primary: '#5483FD',
+    primary80: '#769CFD',
+    primary50: '#A9C1FE',
+    primary20: '#DDE6FF',
+    primary05: '#F6F9FF',
     primaryHover: '#5483FDCC',
-    black: '#000000',
+    black: '#2F2F2F',
+    black50: '#767676',
+    black40: '#8E8E8E',
+    black20: '#BDBDBD',
+    black12: '#D7D7D7',
+    black10: '#D4D4D4',
+    black05: '#E0E0E0',
+    black02: '#E7E7E7',
     white: '#ffffff',
     whiteHover: '#0000000D',
-
+    warningRed: '#E12B36',
+    
     category: (color: CategoryColor, level: number) => {
-      return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}${level === 0 ? '' : (level === 1 ? 'cc' : '99')}`;
-    },
-    newCategory: (color: CategoryColor, level: number) => {
       return `${categoryColors[`category${`${color.charAt(0).toUpperCase()}${color.slice(1)}` as Colors}`]}${level === 0 ? '' : (level === 1 ? '80' : '1A')}`;
     },
     finishedCategory: (color: CategoryColor) => {

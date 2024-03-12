@@ -11,7 +11,7 @@ const Container = styled.div.withConfig({
   height: var(--new-cell-height);
   padding: 0 .5rem;
   border-radius: 8px;
-  background-color: ${({ theme, color, isFinished }) => isFinished ? `${theme.colors.black}0D` : theme.colors.newCategory(color, 2)};
+  background-color: ${({ theme, color, isFinished }) => isFinished ? theme.colors.black05 : theme.colors.category(color, 2)};
   transition: background-color .25s ease;
   display: flex;
   gap: .25rem;
@@ -26,7 +26,7 @@ const Content = styled.div.withConfig({
   max-width: calc(100% - 2.25rem);
   font-size: .9375rem;
   line-height: .9375rem;
-  color: ${({ color, theme, isFinished }) => isFinished ? `${theme.colors.black}80` : theme.colors.newCategory(color, 0)};
+  color: ${({ color, theme, isFinished }) => isFinished ? theme.colors.black50 : theme.colors.category(color, 0)};
   ${({ isFinished }) => isFinished ? 'text-decoration: line-through;' : ''}
   transition: color .25s ease;
   overflow: hidden;
@@ -46,7 +46,7 @@ const MemoAlarm = styled.div.withConfig({
   height: .25rem;
   border-radius: .25rem;
   transition: background-color .25s ease;
-  background-color: ${({ color, theme, isFinished }) => isFinished ? `${theme.colors.black}80` : theme.colors.newCategory(color, 0)};
+  background-color: ${({ color, theme, isFinished }) => isFinished ? theme.colors.black50 : theme.colors.category(color, 0)};
 `;
 
 

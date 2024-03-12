@@ -23,7 +23,7 @@ const SearchInput = styled.input`
   padding-left: .75rem;
   padding-right: 2.75rem;
   border-radius: .5rem;
-  border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+  border: 1px solid ${({ theme }) => theme.colors.black20};
 
   &:focus {
     outline: none;
@@ -38,7 +38,7 @@ const SearchIconWrapper = styled.div`
   height: 1.25rem;
 
   path {
-    fill: ${({ theme }) => `${theme.colors.black}33`};
+    fill: ${({ theme }) => theme.colors.black20};
   }
 `;
 
@@ -51,8 +51,8 @@ const SearchListWrapper = styled.div.withConfig({
   width: 100%;
   height: 16.25rem;
   border-radius: .5rem;
-  border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
-  box-shadow: 4px 4px 12px 0 ${({ theme }) => `${theme.colors.black}1F`};
+  border: 1px solid ${({ theme }) => theme.colors.black20};
+  box-shadow: 4px 4px 12px 0 ${({ theme }) => theme.colors.black12};
   padding: .75rem;
   overflow-y: auto;
   transform: translateY(${({ status }) => status === 'open' ? '0%' : '-10%'});
@@ -67,7 +67,7 @@ const NoResult = styled.div`
   justify-content: center;
   align-items: center;
   font-size: .9375rem;
-  color: ${({ theme }) => `${theme.colors.black}80`};
+  color: ${({ theme }) => theme.colors.black50};
   user-select: none;
 `;
 

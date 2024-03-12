@@ -15,7 +15,7 @@ const Background = styled.div.withConfig({
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme, backgroundColor }) => backgroundColor === 'black' ? theme.colors.oldBlack : 'white'};
+  background-color: ${({ theme, backgroundColor }) => backgroundColor === 'black' ? theme.colors.black : 'white'};
   opacity: ${({ status }) => status === 'open' ? '.5' : '0'};
   animation: ${({ status }) => status === 'open' ? 'fadeIn' : 'fadeOut'} .25s;
 `;
@@ -34,9 +34,9 @@ const Modal = styled.div<{ width: string, status: string }>`
   opacity: ${({ status }) => status === 'open' ? '1' : '0'};
   animation: ${({ status }) => status === 'open' ? 'scaleIn' : 'scaleOut'} .25s;
   background-color: white;
-  box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.gray};
+  box-shadow: 0px 2px 4px 1px ${({ theme }) => theme.colors.black50};
   transform-origin: left;
-  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border: 1px solid ${({ theme }) => theme.colors.black20};
 `;
 
 interface FixedModalsProps {

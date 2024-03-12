@@ -12,15 +12,15 @@ const Container = styled.div.withConfig({
   gap: .25rem;
   width: var(--new-cell-width);
   height: 4.25rem;
-  border-bottom: 4px solid ${({ theme, selected }) => selected ? theme.colors.primary : `${theme.colors.black}1A`};
+  border-bottom: 4px solid ${({ theme, selected }) => selected ? theme.colors.primary : theme.colors.black10};
   user-select: none;
   cursor: pointer;
   background-color: ${({ theme }) => theme.colors.white};
   transition: background-color .25s ease, border-bottom .25s ease;
   
   &:hover {
-    background-color: ${({ theme }) => `${theme.colors.primary}0D`};
-    border-bottom: 4px solid ${({ theme }) => `${theme.colors.primary}80`};
+    background-color: ${({ theme }) => theme.colors.primary05};
+    border-bottom: 4px solid ${({ theme }) => theme.colors.primary50};
   }
 
   @media ${({ theme }) => theme.devices.tablet} {
@@ -33,7 +33,7 @@ const Day = styled.div.withConfig({
 })<{ selected: boolean }>`
   flex: 1rem 0 0;
   font-size: .8125rem;
-  color: ${({ theme, selected }) => `${selected ? theme.colors.primary : theme.colors.black}80`};
+  color: ${({ theme, selected }) => `${selected ? theme.colors.primary : theme.colors.black50}`};
   text-align: center;
   transition: color .25s ease;
 

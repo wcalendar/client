@@ -19,7 +19,7 @@ const Header = styled.div`
   padding: .75rem;
   display: flex;
   align-items: flex-start;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.oldWhite};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.white};
 `;
 
 const Title = styled.div.withConfig({
@@ -67,7 +67,7 @@ const Label = styled.div`
   height: 1rem;
   line-height: 1rem;
   font-size: .75rem;
-  color: ${({ theme }) => theme.colors.gray};
+  color: ${({ theme }) => theme.colors.black20};
 `;
 
 const Value = styled.div`
@@ -83,7 +83,7 @@ const ButtonBox = styled.div`
 `;
 
 const Button = styled.button`
-  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border: 1px solid ${({ theme }) => theme.colors.black50};
   border-radius: 10px;
   padding: 0 .5rem;
   height: 1.875rem;

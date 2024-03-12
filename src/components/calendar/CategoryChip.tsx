@@ -32,12 +32,12 @@ const Container = styled.div.withConfig({
   cursor: pointer;
 
   ${({ theme, level, color }) => level === 0 ? `
-  border-bottom: 2px solid ${theme.colors.newCategory(color, 0)};
+  border-bottom: 2px solid ${theme.colors.category(color, 0)};
   ` : (level === 1 ? `
-  background-color: ${theme.colors.newCategory(color, 2)};
+  background-color: ${theme.colors.category(color, 2)};
   border-radius: 8px;
   ` : `
-  border-left: 2px solid ${`${theme.colors.newCategory(color, 0)}80`};
+  border-left: 2px solid ${`${theme.colors.category(color, 0)}80`};
   `)}
 
   svg {
@@ -45,7 +45,7 @@ const Container = styled.div.withConfig({
   }
 
   path {
-    fill: ${({ theme, color }) => theme.colors.newCategory(color, 0)};
+    fill: ${({ theme, color }) => theme.colors.category(color, 0)};
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
@@ -70,7 +70,7 @@ const Name = styled.div.withConfig({
   width: 100%;
   font-size: ${({ level }) => level === 0 ? '1.125rem' : '.9375rem'};
   font-weight: bold;
-  color: ${({ theme, color }) => theme.colors.newCategory(color, 0)};
+  color: ${({ theme, color }) => theme.colors.category(color, 0)};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -85,7 +85,7 @@ const Memo = styled.div.withConfig({
 })<{ color: CategoryColor }>`
   width: 100%;
   font-size: .6375rem;
-  color: ${({ theme, color }) => theme.colors.newCategory(color, 0)};
+  color: ${({ theme, color }) => theme.colors.category(color, 0)};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

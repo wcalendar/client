@@ -21,15 +21,15 @@ const Selector = styled.div<{ disabled: number }>`
   line-height: 1.75rem;
   padding: 0 .5rem;
   font-size: .75rem;
-  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border: 1px solid ${({ theme }) => theme.colors.black50};
   border-radius: 5px;
   user-select: none;
   cursor: pointer;
 
   ${({ theme, disabled }) => disabled ? `
   cursor: default;
-  color: ${theme.colors.gray};
-  background: ${theme.colors.gray}40;
+  color: ${theme.colors.black50};
+  background: ${theme.colors.black10};
   ` : ''}
 `;
 

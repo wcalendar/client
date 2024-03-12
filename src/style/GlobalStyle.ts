@@ -10,8 +10,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
-    color: ${({theme}) => theme.colors.oldBlack};
-    overflow: hidden;
+    color: ${({theme}) => theme.colors.black};
 
     --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.desktop};
     --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.desktop};

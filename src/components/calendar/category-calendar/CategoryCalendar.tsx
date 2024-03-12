@@ -25,7 +25,7 @@ const Container = styled.div`
 const CategorySide = styled.div`
   flex: var(--category-cell-width) 0 0;
   height: 100%;
-  border-right: 2px solid ${({ theme }) => `${theme.colors.black}33`};
+  border-right: 2px solid ${({ theme }) => theme.colors.black20};
   overflow: hidden;
 `;
 

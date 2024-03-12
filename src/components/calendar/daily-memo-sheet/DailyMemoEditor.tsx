@@ -13,7 +13,7 @@ const Container = styled.div`
 
   .ql-toolbar {
     height: 2.75rem;
-    border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+    border: 1px solid ${({ theme }) => theme.colors.black20};
     border-radius: .75rem .75rem 0 0;
     padding: .5625rem .5rem;
   }
@@ -35,7 +35,7 @@ const Container = styled.div`
 
   .ql-container {
     height: calc(100% - 2.75rem);
-    border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+    border: 1px solid ${({ theme }) => theme.colors.black20};
     border-radius: 0 0 .75rem .75rem;
   }
 
