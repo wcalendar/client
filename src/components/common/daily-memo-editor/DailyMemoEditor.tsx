@@ -10,12 +10,29 @@ const Container = styled.div`
   }
 
   .ql-toolbar {
+    height: 2.75rem;
     border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
     border-radius: .75rem .75rem 0 0;
+    padding: .5625rem .5rem;
+  }
+
+  .ql-toolbar .ql-formats {
+    margin-right: 5px;
+  }
+
+  .ql-toolbar button {
+    width: 24px;
+    padding: 3px 3px;
+  }
+
+  .ql-toolbar button:hover, ql-toolbar button:focus, .ql-toolbar button.ql-active,
+  .ql-toolbar .ql-picker-label:hover, .ql-toolbar .ql-picker-label.ql-active,
+  .ql-toolbar .ql-picker-item:hover, .ql-toolbar .ql-picker-item.ql-selected {
+    color: ${({ theme }) => theme.colors.primary};
   }
 
   .ql-container {
-    height: 100%;
+    height: calc(100% - 2.75rem);
     border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
     border-radius: 0 0 .75rem .75rem;
   }
