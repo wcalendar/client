@@ -1,6 +1,8 @@
 import styled from "styled-components";
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import('react-quill'));
 
 const Container = styled.div`
   height: 100%;

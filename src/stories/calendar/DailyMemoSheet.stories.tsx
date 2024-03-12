@@ -1,4 +1,4 @@
-import DailyMemoSheet from "@/components/common/daily-memo-editor/DailyMemoSheet";
+import DailyMemoSheet from "@/components/calendar/daily-memo-sheet/DailyMemoSheet";
 import { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
