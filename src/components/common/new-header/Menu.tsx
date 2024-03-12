@@ -15,7 +15,7 @@ const Container = styled.div<{ status: ModalStatus }>`
   overflow: hidden;
   z-index: 10;
   padding: .75rem 0;
-  box-shadow: 4px 4px 12px 0 ${({ theme }) => `${theme.colors.black}1F`};
+  box-shadow: 4px 4px 12px 0 ${({ theme }) => theme.colors.black12};
   cursor: default;
 `;
 

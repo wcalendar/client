@@ -13,14 +13,13 @@ import useExceptionPopup from "@/hooks/useExceptionPopup";
 import useCalendarData from "@/swr/useCalendarData";
 
 const Container = styled.div`
-  padding: 1.5rem;
-
-  @media ${({ theme }) => theme.devices.mobile} {
-    padding: 1.25rem;
-  }
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const SubTitle = styled.div`
+  flex: 1.25rem 0 0;
   margin-bottom: .25rem;
   font-size: .9375rem;
   font-weight: bold;
@@ -32,11 +31,23 @@ const SubTitle = styled.div`
 `;
 
 const Title = styled.div`
+  flex: 1.5rem 0 0;
   margin-bottom: 1.25rem;
   font-size: 1.375rem;
   font-weight: bold;
 
   @media ${({ theme }) => theme.devices.mobile} {
+    display: none;
+  }
+`;
+
+const ListWrapper = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
     display: none;
   }
 `;
@@ -93,18 +104,20 @@ export default function PrioritySheet({
       <Title>
         {time.toString(date, 'YYYY. MM. DD')}
       </Title>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId='priorityList'>
-          {(provided) => (
-            <List {...provided.droppableProps}  ref={provided.innerRef}>
-              {priorities.map((priority, i) => (
-                <PriorityChip key={`pc-${priority.scheduleId}}`} priority={priority} onFinish={() => {}} index={i} />
-              ))}
-              {provided.placeholder}
-            </List>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <ListWrapper>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId='priorityList'>
+            {(provided) => (
+              <List {...provided.droppableProps}  ref={provided.innerRef}>
+                {priorities.map((priority, i) => (
+                  <PriorityChip key={`pc-${priority.scheduleId}}`} priority={priority} onFinish={() => {}} index={i} />
+                ))}
+                {provided.placeholder}
+              </List>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </ListWrapper>
     </Container>
   );
 }

@@ -10,8 +10,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
-    color: ${({theme}) => theme.colors.oldBlack};
-    overflow: hidden;
+    color: ${({theme}) => theme.colors.black};
 
     --new-header-height: ${({ theme }) => theme.sizes.header.newHeaderHeight.desktop};
     --new-header-vertical-padding: ${({ theme }) => theme.sizes.header.newHeaderVerticalPadding.desktop};
@@ -47,11 +46,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   a {
-    color: ${({ theme }) => theme.colors.oldBlack};
+    color: ${({ theme }) => theme.colors.black};
   }
 
   button {
-    color: ${({ theme }) => theme.colors.oldBlack};
+    color: ${({ theme }) => theme.colors.black};
     background: none;
     border: none;
   }

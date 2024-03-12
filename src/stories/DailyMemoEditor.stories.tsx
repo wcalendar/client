@@ -1,4 +1,4 @@
-import DailyMemoEditor from "@/components/common/daily-memo-editor/DailyMemoEditor";
+import DailyMemoEditor from "@/components/calendar/daily-memo-sheet/DailyMemoEditor";
 import { Meta, StoryObj } from "@storybook/react";
 import { useArgs } from '@storybook/preview-api';
 

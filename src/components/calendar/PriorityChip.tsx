@@ -13,17 +13,17 @@ const Container = styled.div.withConfig({
   display: flex;
   gap: .25rem;
   align-items: center;
-  background-color: ${({ theme, color, isFinished }) => isFinished ? `${theme.colors.black}0D` : theme.colors.newCategory(color, 2)};
+  background-color: ${({ theme, color, isFinished }) => isFinished ? theme.colors.black05 : theme.colors.category(color, 2)};
   cursor: pointer;
   flex-direction: row;
-  ${({ theme, isDragging }) => isDragging ? `box-shadow: 4px 4px 12px 0 ${theme.colors.black}1F;` : ''}
+  ${({ theme, isDragging }) => isDragging ? `box-shadow: 4px 4px 12px 0 ${theme.colors.black12};` : ''}
 
   .move {
     cursor: grab;
   }
 
   .move path {
-    fill: ${({ theme, color }) => theme.colors.newCategory(color, 0)};
+    fill: ${({ theme, color }) => theme.colors.category(color, 0)};
   }
 
   @media ${({ theme }) => theme.devices.mobile} {
@@ -41,7 +41,7 @@ const Content = styled.div.withConfig({
 })<{ color: CategoryColor, isFinished: boolean }>`
   flex-grow: 1;
   font-size: .9375rem;
-  color: ${({ theme, color, isFinished }) => isFinished ? `${theme.colors.black}80` : theme.colors.newCategory(color, 0)};
+  color: ${({ theme, color, isFinished }) => isFinished ? theme.colors.black50 : theme.colors.category(color, 0)};
   ${({ isFinished }) => isFinished ? 'text-decoration: line-through;' : ''}
   user-select: none;
 `;

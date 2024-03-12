@@ -17,6 +17,7 @@ import ArrowRightIcon from '@/assets/arrow_right.svg';
 import ArrowRightSmallIcon from '@/assets/arrow_right_small.svg';
 import ArrowDownSmallIcon from '@/assets/arrow_down_small.svg';
 import ArrowDownIcon from '@/assets/arrow_down.svg';
+import DoubleArrowRightIcon from '@/assets/double_arrow_right.svg'
 import SmallCheckBoxOpenIcon from '@/assets/check_box_small_open.svg';
 import SmallCheckBoxClosedIcon from '@/assets/check_box_small_closed.svg';
 import BigCheckBoxOpenIcon from '@/assets/check_box_big_open.svg';
@@ -24,7 +25,7 @@ import BigCheckBoxClosedIcon from '@/assets/check_box_big_closed.svg';
 
 export type SVGKey = 'calendar' | 'calendarSmall' | 'category' | 'myPage' | 'union' | 'preference' | 'search' | 'move' | 'menu' |
 'smallCheckBoxOpen' | 'smallCheckBoxClosed' | 'bigCheckBoxOpen' | 'bigCheckBoxClosed' |
-'arrowLeft' | 'arrowLeftSmall' | 'arrowRight' | 'arrowRightSmall' | 'arrowDownSmall' | 'arrowDown' |
+'arrowLeft' | 'arrowLeftSmall' | 'arrowRight' | 'arrowRightSmall' | 'arrowDownSmall' | 'arrowDown' | 'doubleArrowRight' |
 'logoBig' | 'logoSmall' | 'mainLogoBig' | 'mainLogoSmall';
 
 interface SvgsProps {
@@ -55,6 +56,7 @@ export default function Svgs({
   if(svgKey === 'arrowRightSmall') return <ArrowRightSmallIcon className={className} />;
   if(svgKey === 'arrowDown') return <ArrowDownIcon className={className} />;
   if(svgKey === 'arrowDownSmall') return <ArrowDownSmallIcon className={className} />;
+  if(svgKey === 'doubleArrowRight') return <DoubleArrowRightIcon className={className} />;
   if(svgKey === 'bigCheckBoxOpen') return <BigCheckBoxOpenIcon className={className} />;
   if(svgKey === 'bigCheckBoxClosed') return <BigCheckBoxClosedIcon className={className} />;
   if(svgKey === 'smallCheckBoxOpen') return <SmallCheckBoxOpenIcon className={className} />;

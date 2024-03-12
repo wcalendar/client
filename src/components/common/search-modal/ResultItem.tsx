@@ -13,7 +13,7 @@ const Container = styled.div`
   border-radius: 5px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.lightGray};
+    background-color: ${({ theme }) => theme.colors.black20};
   }
 `;
 

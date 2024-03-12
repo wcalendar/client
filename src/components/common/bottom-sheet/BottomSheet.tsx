@@ -17,7 +17,7 @@ const Background = styled.div.withConfig({
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => `${theme.colors.black}80`};
+  background-color: ${({ theme }) => theme.colors.black50};
   opacity: ${({ status }) => status === 'open' ? '.5' : '0'};
   animation: ${({ status }) => status === 'open' ? 'fadeIn' : 'fadeOut'} .25s ease-out;
 `;
@@ -71,7 +71,7 @@ const MobileBar = styled.div`
     height: .5rem;
     border-radius: 10px;
     margin: 0 auto;
-    background-color: ${({ theme }) => `${theme.colors.black}33`};
+    background-color: ${({ theme }) => theme.colors.black20};
   }
 `;
 
@@ -98,7 +98,7 @@ const Footer = styled.div`
   flex: 4.5rem 0 0;
   padding: 0 2rem;
   gap: .75rem;
-  border-top: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+  border-top: 1px solid ${({ theme }) => theme.colors.black20};
 
   @media ${({ theme }) => theme.devices.mobile} {
     flex-direction: column;

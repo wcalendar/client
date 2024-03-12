@@ -35,11 +35,11 @@ const Calendar = styled.div.withConfig({
   left: -1.25rem;
   width: 12.5rem;
   z-index: 1;
-  border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+  border: 1px solid ${({ theme }) => theme.colors.black20};
   border-radius: 12px;
   background-color: ${({ theme }) => theme.colors.white};
   padding: 1rem;
-  box-shadow: 4px 4px 12px 0 ${({ theme }) => `${theme.colors.black}1F`};
+  box-shadow: 4px 4px 12px 0 ${({ theme }) => theme.colors.black12};
   cursor: default;
   transform: translateY(${({ status }) => status === 'open' ? '0%' : '-10%'});
   opacity: ${({ status }) => status === 'open' ? 1 : 0};
@@ -50,7 +50,7 @@ const CalendarTitle = styled.div`
   display: flex;
   justify-content: space-between;
   height: 2rem;
-  border-bottom: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.black20}};
   margin-bottom: .5rem;
 `;
 
@@ -96,7 +96,7 @@ const MonthButton = styled.button.withConfig({
   &:hover {
     color: ${theme.colors.primary};
     font-weight: bold;
-    background-color: ${theme.colors.primary}0D;
+    background-color: ${theme.colors.primary05};
   }
   ` : ''}
 `;

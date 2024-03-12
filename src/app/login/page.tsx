@@ -16,7 +16,7 @@ const Container = styled.main`
   width: 37.5rem;
   height: 34.375rem;
   padding: 7.5rem 3.125rem;
-  border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+  border: 1px solid ${({ theme }) => theme.colors.black20};
   border-radius: 20px;
 
   @media ${({ theme }) => theme.devices.mobile} {
@@ -57,7 +57,7 @@ const Description = styled.p`
   font-size: 1.25rem;
   font-weight: normal;
   margin-top: 1.25rem;
-  color: ${({ theme }) => `${theme.colors.black}80`};
+  color: ${({ theme }) => theme.colors.black50};
   user-select: none;
 
   @media ${({ theme }) => theme.devices.mobile} {
@@ -76,7 +76,7 @@ const ButtonBox = styled.div`
 const ButtonDescription = styled.p`
   text-align: center;
   font-size: .9375rem;
-  color: ${({ theme }) => `${theme.colors.black}80`};
+  color: ${({ theme }) => theme.colors.black50};
   user-select: none;
   margin-bottom: .5rem;
 `;

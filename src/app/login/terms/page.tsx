@@ -20,7 +20,7 @@ const Container = styled.main`
 `;
 
 const Title = styled.h1`
-  color: ${({ theme }) => theme.colors.blue};
+  color: ${({ theme }) => theme.colors.primary};
   font-weight: bold;
   text-align: center;
   font-size: 3.125rem;
@@ -46,7 +46,7 @@ const SubTitle = styled.h2`
 const DivideLine = styled.div`
   width: 100%;
   height: 0;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.oldBlack};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.black};
   margin: 1rem auto;
 `;
 
@@ -66,11 +66,11 @@ const Buttons = styled.div`
 const Button = styled.button<{ fill: number }>`
   flex-grow: 1;
   height: 2.625rem;
-  background-color: ${({ fill, theme }) => fill ? theme.colors.blue : 'white'};
-  border: 1px solid ${({ fill, theme }) => fill ? theme.colors.blue : theme.colors.oldBlack};
+  background-color: ${({ fill, theme }) => fill ? theme.colors.primary : 'white'};
+  border: 1px solid ${({ fill, theme }) => fill ? theme.colors.primary : theme.colors.black};
   border-radius: 10px;
   cursor: pointer;
-  color: ${({ fill, theme }) => fill ? 'white' : theme.colors.oldBlack};
+  color: ${({ fill, theme }) => fill ? 'white' : theme.colors.black};
   font-weight: bold;
 `;
 

@@ -19,13 +19,13 @@ const Input = styled.div<{ height: string, disabled: number }>`
   line-height: ${({ height }) => height};
   font-size: .75rem;
   text-indent: .5rem;
-  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border: 1px solid ${({ theme }) => theme.colors.black50};
   border-radius: 5px;
   white-space: pre;
   
   ${({ disabled, theme }) => disabled ? `
-  color: ${theme.colors.gray};
-  background: ${theme.colors.gray}40;
+  color: ${theme.colors.black50};
+  background: ${theme.colors.black20};
   ` : ''}
 `;
 
@@ -50,7 +50,7 @@ const ListWrapper = styled.div`
   max-height: 500%;
   position: absolute;
   left: 0;
-  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border: 1px solid ${({ theme }) => theme.colors.black50};
   border-radius: 5px;
   overflow-y: auto;
   background-color: white;
@@ -84,7 +84,7 @@ const ListItem = styled.div<{ height: string, }>`
   white-space: pre;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.oldWhite};
+    background-color: ${({ theme }) => theme.colors.white};
   }
 `;
 

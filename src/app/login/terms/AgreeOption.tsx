@@ -15,7 +15,7 @@ const Container = styled.div`
 const IconWrapper = styled.div<{ checked: number }>`
   flex: 1.125rem 0 0;
   height: 1.125rem;
-  color: ${({ checked, theme }) => checked ? theme.colors.blue : theme.colors.gray};
+  color: ${({ checked, theme }) => checked ? theme.colors.primary : theme.colors.black50};
   cursor: pointer;
   transition: color .25s ease;
 `;
@@ -34,7 +34,7 @@ const MoreButton = styled(Link)`
   height: 1.5rem;
   line-height: 1.5rem;
   background-color: white;
-  border: 1px solid ${({ theme }) => theme.colors.oldBlack};
+  border: 1px solid ${({ theme }) => theme.colors.black};
   border-radius: 5px;
   cursor: pointer;
   font-size: .75rem;

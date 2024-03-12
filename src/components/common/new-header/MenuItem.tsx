@@ -17,11 +17,11 @@ const buttonStyle = css`
   transition: background-color .25s ease;
 
   &+& {
-    border-top: 1px solid ${({ theme }) => `${theme.colors.black}1A`};
+    border-top: 1px solid ${({ theme }) => theme.colors.black10};
   }
 
   &:hover {
-    background-color: ${({ theme }) => `${theme.colors.black}0D`};
+    background-color: ${({ theme }) => theme.colors.black05};
   }
 `;
 

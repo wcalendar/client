@@ -21,7 +21,7 @@ const Container = styled.div.withConfig({
   }
 
   path {
-    fill: ${({ theme }) => `${theme.colors.black}CC`};
+    fill: ${({ theme }) => theme.colors.black};
   }
 
   &:focus {
@@ -29,7 +29,7 @@ const Container = styled.div.withConfig({
   }
 
   &:hover {
-    color: ${({ theme }) => theme.colors.blue};
+    color: ${({ theme }) => theme.colors.primary};
   }
 `;
 

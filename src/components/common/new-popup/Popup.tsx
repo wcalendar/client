@@ -42,7 +42,7 @@ const Description = styled.div`
 
 const Footer = styled.div`
   display: flex;
-  border-top: 1px solid ${({ theme }) => `${theme.colors.black}1A`};
+  border-top: 1px solid ${({ theme }) => theme.colors.black10};
   height: 3.25rem;
 `;
   
@@ -51,12 +51,12 @@ const Button = styled.button.withConfig({
 })<{ type: PopupButtonType }>`
   flex-grow: 1;
   cursor: pointer;
-  color: ${({ type, theme }) => type === 'primary' ? theme.colors.primary : (type === 'cancel') ? `${theme.colors.black}80` : theme.colors.warningRed};
+  color: ${({ type, theme }) => type === 'primary' ? theme.colors.primary : (type === 'cancel') ? theme.colors.black50 : theme.colors.warningRed};
   font-size: 1.125rem;
   font-weight: ${({ type }) => type === 'primary' ? 'bold' : 'normal'};
 
   &+& {
-    border-left: 1px solid ${({ theme }) => `${theme.colors.black}1A`};
+    border-left: 1px solid ${({ theme }) => theme.colors.black10};
   }
 `;
 

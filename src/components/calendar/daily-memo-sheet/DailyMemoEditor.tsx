@@ -1,6 +1,8 @@
 import styled from "styled-components";
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import('react-quill'));
 
 const Container = styled.div`
   height: 100%;
@@ -11,7 +13,7 @@ const Container = styled.div`
 
   .ql-toolbar {
     height: 2.75rem;
-    border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+    border: 1px solid ${({ theme }) => theme.colors.black20};
     border-radius: .75rem .75rem 0 0;
     padding: .5625rem .5rem;
   }
@@ -33,7 +35,7 @@ const Container = styled.div`
 
   .ql-container {
     height: calc(100% - 2.75rem);
-    border: 1px solid ${({ theme }) => `${theme.colors.black}33`};
+    border: 1px solid ${({ theme }) => theme.colors.black20};
     border-radius: 0 0 .75rem .75rem;
   }
 

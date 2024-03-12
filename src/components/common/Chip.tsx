@@ -6,8 +6,8 @@ const Container = styled.div.withConfig({
 })<{ width: string, color: CategoryColor, bold: boolean }>`
   width: ${({ width }) => width};
   height: 1.25rem;
-  background-color: ${({ theme, color }) => theme.colors.newCategory(color, 2)};
-  color: ${({ theme, color }) => theme.colors.newCategory(color, 0)};
+  background-color: ${({ theme, color }) => theme.colors.category(color, 2)};
+  color: ${({ theme, color }) => theme.colors.category(color, 0)};
   font-size: .6875rem;
   line-height: 1.25rem;
   font-weight: ${({ bold }) => bold ? 'bold' : 'normal'};

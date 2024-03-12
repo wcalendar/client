@@ -1,13 +1,13 @@
 
 import Svgs from "@/assets/Svgs";
-import useCalendar from "@/hooks/useCalendar";
 import styled from "styled-components";
 import CategoryChip from "../CategoryChip";
-import { Fragment, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 import DailyTitle from "../DailyTitle";
 import ScheduleByCategory from "./ScheduleByCategory";
 import useDragMove from "@/hooks/useDragMove";
+import { NewCategoryToRender } from "@/types";
 
 const Container = styled.div`
   display: flex;
@@ -25,7 +25,7 @@ const Container = styled.div`
 const CategorySide = styled.div`
   flex: var(--category-cell-width) 0 0;
   height: 100%;
-  border-right: 2px solid ${({ theme }) => `${theme.colors.black}33`};
+  border-right: 2px solid ${({ theme }) => theme.colors.black20};
   overflow: hidden;
 `;
 
@@ -87,8 +87,21 @@ const ScheduleSide = styled.div.withConfig({
   ${({ isMoveMode }) => isMoveMode ? 'cursor: grab;' : ''}
 `;
 
-export default function CategoryCalendar() {
-  const { categoryToRenderList, openedCategories, toggleCategoryOpen, } = useCalendar();
+interface CategoryCalendarProps {
+  categoryToRenderList: NewCategoryToRender[];
+  openedCategories: Record<string, boolean>;
+  toggleCategoryOpen: (categoryId: string) => void;
+  selectedDate?: number;
+  onDateSelect: (value: number) => void;
+}
+
+export default function CategoryCalendar({
+  categoryToRenderList,
+  openedCategories,
+  toggleCategoryOpen,
+  selectedDate,
+  onDateSelect,
+}: CategoryCalendarProps) {
   const { currentDate } = useCurrentDate();
 
   const categorySideRef = useRef<HTMLDivElement>(null);
@@ -123,8 +136,6 @@ export default function CategoryCalendar() {
     }
   }, []);
 
-  console.log(openedCategories);
-
   return (
     <Container>
       <CategorySide ref={categorySideRef}>
@@ -153,7 +164,7 @@ export default function CategoryCalendar() {
       >
         <HeaderRow dayCount={currentDate.daysInMonth()}>
           {calendarHeaderItems.map(item => (
-            <DailyTitle key={`dt-${currentDate.year()}-${currentDate.month()}-${item.date}`} date={item.date} day={item.day} selected={false} />
+            <DailyTitle key={`dt-${currentDate.year()}-${currentDate.month()}-${item.date}`} date={item.date} day={item.day} selected={selectedDate === item.date} onClick={() => onDateSelect(item.date)} />
           ))}
         </HeaderRow>
         <Body dayCount={currentDate.daysInMonth()} isMoveMode={false}>
