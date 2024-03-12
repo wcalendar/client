@@ -13,7 +13,11 @@ import useExceptionPopup from "@/hooks/useExceptionPopup";
 import useCalendarData from "@/swr/useCalendarData";
 
 const Container = styled.div`
+  padding: 1.5rem;
 
+  @media ${({ theme }) => theme.devices.mobile} {
+    padding: 1.25rem;
+  }
 `;
 
 const SubTitle = styled.div`
@@ -21,12 +25,20 @@ const SubTitle = styled.div`
   font-size: .9375rem;
   font-weight: bold;
   color: ${({ theme }) => theme.colors.primary};
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    display: none;
+  }
 `;
 
 const Title = styled.div`
   margin-bottom: 1.25rem;
   font-size: 1.375rem;
   font-weight: bold;
+
+  @media ${({ theme }) => theme.devices.mobile} {
+    display: none;
+  }
 `;
 
 const List = styled.div`
