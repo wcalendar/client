@@ -46,11 +46,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   a {
-    color: ${({ theme }) => theme.colors.oldBlack};
+    color: ${({ theme }) => theme.colors.black};
   }
 
   button {
-    color: ${({ theme }) => theme.colors.oldBlack};
+    color: ${({ theme }) => theme.colors.black};
     background: none;
     border: none;
   }
