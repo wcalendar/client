@@ -1,14 +1,13 @@
 
 import Svgs from "@/assets/Svgs";
-import useCalendar from "@/hooks/useCalendar";
 import styled from "styled-components";
 import CategoryChip from "../CategoryChip";
-import { Fragment, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 import DailyTitle from "../DailyTitle";
 import ScheduleByCategory from "./ScheduleByCategory";
 import useDragMove from "@/hooks/useDragMove";
-import { Dayjs } from "dayjs";
+import { NewCategoryToRender } from "@/types";
 
 const Container = styled.div`
   display: flex;
@@ -89,15 +88,20 @@ const ScheduleSide = styled.div.withConfig({
 `;
 
 interface CategoryCalendarProps {
+  categoryToRenderList: NewCategoryToRender[];
+  openedCategories: Record<string, boolean>;
+  toggleCategoryOpen: (categoryId: string) => void;
   selectedDate?: number;
   onDateSelect: (value: number) => void;
 }
 
 export default function CategoryCalendar({
+  categoryToRenderList,
+  openedCategories,
+  toggleCategoryOpen,
   selectedDate,
   onDateSelect,
 }: CategoryCalendarProps) {
-  const { categoryToRenderList, openedCategories, toggleCategoryOpen, } = useCalendar();
   const { currentDate } = useCurrentDate();
 
   const categorySideRef = useRef<HTMLDivElement>(null);
@@ -131,8 +135,6 @@ export default function CategoryCalendar({
       scheduleSideBody.removeEventListener('scroll', handleScheduleSideScroll);
     }
   }, []);
-
-  console.log(openedCategories);
 
   return (
     <Container>
