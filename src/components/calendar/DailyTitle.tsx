@@ -72,15 +72,17 @@ interface DailyTitleProps {
   date: number;
   day: number;
   selected: boolean;
+  onClick: () => void;
 }
 
 export default function DailyTitle({
   date,
   day,
   selected,
+  onClick,
 }: DailyTitleProps) {
   return (
-    <Container selected={selected}>
+    <Container selected={selected} onClick={onClick}>
       <Day selected={selected}>{days[day]}요일</Day>
       <Date selected={selected}>{date < 10 && '0'}{date}</Date>
       <IconWrapper>

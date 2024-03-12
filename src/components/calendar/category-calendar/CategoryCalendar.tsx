@@ -8,6 +8,7 @@ import { useCurrentDate } from "@/providers/CurrentDateProvider/useCurrentDate";
 import DailyTitle from "../DailyTitle";
 import ScheduleByCategory from "./ScheduleByCategory";
 import useDragMove from "@/hooks/useDragMove";
+import { Dayjs } from "dayjs";
 
 const Container = styled.div`
   display: flex;
@@ -87,7 +88,15 @@ const ScheduleSide = styled.div.withConfig({
   ${({ isMoveMode }) => isMoveMode ? 'cursor: grab;' : ''}
 `;
 
-export default function CategoryCalendar() {
+interface CategoryCalendarProps {
+  selectedDate?: number;
+  onDateSelect: (value: number) => void;
+}
+
+export default function CategoryCalendar({
+  selectedDate,
+  onDateSelect,
+}: CategoryCalendarProps) {
   const { categoryToRenderList, openedCategories, toggleCategoryOpen, } = useCalendar();
   const { currentDate } = useCurrentDate();
 
@@ -153,7 +162,7 @@ export default function CategoryCalendar() {
       >
         <HeaderRow dayCount={currentDate.daysInMonth()}>
           {calendarHeaderItems.map(item => (
-            <DailyTitle key={`dt-${currentDate.year()}-${currentDate.month()}-${item.date}`} date={item.date} day={item.day} selected={false} />
+            <DailyTitle key={`dt-${currentDate.year()}-${currentDate.month()}-${item.date}`} date={item.date} day={item.day} selected={selectedDate === item.date} onClick={() => onDateSelect(item.date)} />
           ))}
         </HeaderRow>
         <Body dayCount={currentDate.daysInMonth()} isMoveMode={false}>
