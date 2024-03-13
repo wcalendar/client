@@ -5,11 +5,11 @@ import AppModal from '@/components/common/app-modal/AppModal';
 import { ModalProvider } from '@/providers/ModalProvider/ModalProvider';
 import PopupProvider from '@/providers/PopupProvider/PopupProvider';
 import AppPopup from '@/components/common/app-popup/AppPopup';
-import Header from '@/components/common/header/Header';
 import { CurrentDateProvider } from '@/providers/CurrentDateProvider/CurrentDateProvider';
 import SWRConfigProvider from '@/lib/SWRConfigProvider';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import AmplitudeProvider from '@/providers/AmplitudeProvider/AmplitudeProvider';
+import Header from '@/components/common/new-header/Header';
 
 const roboto = Roboto({
   weight: ['400', '700'],

@@ -14,7 +14,7 @@ const Container = styled.span`
     position: absolute;
     inset: 0px;
     border-radius: 50%;
-    border: 5px solid ${({ theme }) => theme.colors.blue};
+    border: 5px solid ${({ theme }) => theme.colors.primary};
     animation: prixClipFix 4s linear infinite;
   }
 

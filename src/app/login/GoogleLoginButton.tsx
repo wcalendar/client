@@ -2,7 +2,7 @@ import styles from './GoogleLoginButton.module.css';
 
 export default function GoogleLoginButton() {
   return (
-    <button className={styles['gsi-material-button']} style={{ width: '100%', height: '52px', }}>
+    <button className={styles['gsi-material-button']} style={{ width: '100%', height: '60px', }}>
       <div className={styles['gsi-material-button-state']}></div>
       <div className={styles['gsi-material-button-content-wrapper']}>
         <div className={styles['gsi-material-button-icon']}>

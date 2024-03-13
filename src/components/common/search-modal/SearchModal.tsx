@@ -13,7 +13,7 @@ const Input = styled.input`
   height: 3.75rem;
   line-height: 3.75rem;
   border: none;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.black20};
   font-size: .875rem;
   font-weight: bold;
   text-indent: 1rem;
@@ -31,7 +31,7 @@ const IconWrapper = styled.div`
   height: 1.5rem;
 
   path {
-    color: ${({ theme }) => theme.colors.gray};
+    color: ${({ theme }) => theme.colors.black50};
   }
 `;
 

@@ -32,7 +32,7 @@ authAPI.interceptors.request.use((config) => {
 
 export const fetchers = {
   getCalendarData: ([url, isDev, year, month]: [string, boolean, number, number]) => {
-    if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(calendarDummyData[0].resultBody));
+    if(isDev) return new Promise<CategoryDto[]>((resolve) => resolve(calendarDummyData[month].resultBody));
     else return authAPI.get<ResDto<CategoryDto[]>>(`${url}/${year}/${month+1}`).then(res => res.data.resultBody);
   },
   getCategories: ([url, isDev, year, month]: [string, boolean, number, number]) => {

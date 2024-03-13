@@ -7,7 +7,13 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  argTypes: {},
+  argTypes: {
+    children: {
+      control: {
+        type: 'text',
+      },
+    },
+  },
 } satisfies Meta<typeof Button>;
 
 export default meta;
@@ -15,8 +21,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    width: '200px',
     type: 'white',
-    children: <>asdfasdfas</>,
+    children: 'Button',
+  },
+  render: (args) => {
+    return <Button {...{...args, children: undefined}}>{args.children}</Button>
   },
 };
