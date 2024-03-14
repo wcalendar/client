@@ -1,17 +1,20 @@
 'use client';
 
 import Svgs from '@/assets/Svgs';
-import CalendarHeader, { CalendarMode } from '@/components/calendar/CalendarHeader';
+import BigCalendar from '@/components/bigCalendar';
+import CalendarHeader, {
+  CalendarMode,
+} from '@/components/calendar/CalendarHeader';
 import PrioritySheet from '@/components/calendar/PrioritySheet';
 import CategoryCalendar from '@/components/calendar/category-calendar/CategoryCalendar';
 import DailyMemoSheet from '@/components/calendar/daily-memo-sheet/DailyMemoSheet';
 import useCalendar from '@/hooks/useCalendar';
+import useDevice from '@/hooks/useDevice';
 import time from '@/lib/time';
 import { useCurrentDate } from '@/providers/CurrentDateProvider/useCurrentDate';
+import { Dayjs } from 'dayjs';
 import { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { Dayjs } from 'dayjs';
-import useDevice from '@/hooks/useDevice';
 
 const Container = styled.div`
   width: 100%;
@@ -74,7 +77,12 @@ const DailyMemoSheetSection = styled.div`
 
 export default function Home() {
   const device = useDevice();
-  const { categoryToRenderList, openedCategories, prioritiesByDay, toggleCategoryOpen, } = useCalendar();
+  const {
+    categoryToRenderList,
+    openedCategories,
+    prioritiesByDay,
+    toggleCategoryOpen,
+  } = useCalendar();
   const { currentDate } = useCurrentDate();
 
   const [calendarMode, setCalendarMode] = useState<CalendarMode>('category');
@@ -84,9 +92,12 @@ export default function Home() {
     setCalendarMode(value);
   }, []);
 
-  const handleDateSelect = useCallback((value: number) => {
-    setSelectedDate(time.new(currentDate.year(), currentDate.month(), value));
-  }, [currentDate]);
+  const handleDateSelect = useCallback(
+    (value: number) => {
+      setSelectedDate(time.new(currentDate.year(), currentDate.month(), value));
+    },
+    [currentDate],
+  );
 
   const handleCloseButtonClick = useCallback(() => {
     setSelectedDate(undefined);
@@ -94,29 +105,44 @@ export default function Home() {
 
   return (
     <Container>
-      <CalendarHeader calendarMode={calendarMode} onCalendarModeChange={handelCalendarModeChange} />
+      <CalendarHeader
+        calendarMode={calendarMode}
+        onCalendarModeChange={handelCalendarModeChange}
+      />
       <Body>
-        <CalendarSection>
-          <CategoryCalendar
-            categoryToRenderList={categoryToRenderList}
-            openedCategories={openedCategories}
-            toggleCategoryOpen={toggleCategoryOpen}
-            selectedDate={selectedDate?.date()}
-            onDateSelect={handleDateSelect}
-          />
-        </CalendarSection>
-        {(device !== 'tablet' && device !== 'mobile') && selectedDate && (
-          <Side>
-            <CloseButton onClick={handleCloseButtonClick}>
-              <Svgs svgKey='doubleArrowRight' />
-            </CloseButton>
-            <PrioritySheetSection>
-              <PrioritySheet date={selectedDate} priorities={prioritiesByDay[selectedDate.date()-1]} />
-            </PrioritySheetSection>
-            <DailyMemoSheetSection>
-              <DailyMemoSheet />
-            </DailyMemoSheetSection>
-          </Side>
+        {calendarMode === 'category' ? (
+          <>
+            <CalendarSection>
+              <CategoryCalendar
+                categoryToRenderList={categoryToRenderList}
+                openedCategories={openedCategories}
+                toggleCategoryOpen={toggleCategoryOpen}
+                selectedDate={selectedDate?.date()}
+                onDateSelect={handleDateSelect}
+              />
+            </CalendarSection>
+
+            {device !== 'tablet' && device !== 'mobile' && selectedDate && (
+              <Side>
+                <CloseButton onClick={handleCloseButtonClick}>
+                  <Svgs svgKey="doubleArrowRight" />
+                </CloseButton>
+                <PrioritySheetSection>
+                  <PrioritySheet
+                    date={selectedDate}
+                    priorities={prioritiesByDay[selectedDate.date() - 1]}
+                  />
+                </PrioritySheetSection>
+                <DailyMemoSheetSection>
+                  <DailyMemoSheet />
+                </DailyMemoSheetSection>
+              </Side>
+            )}
+          </>
+        ) : (
+          <CalendarSection>
+            <BigCalendar />
+          </CalendarSection>
         )}
       </Body>
     </Container>
