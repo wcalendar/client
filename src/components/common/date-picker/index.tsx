@@ -149,7 +149,7 @@ export default function DatePicker({
     }
     result.push(firstWeek);
 
-    let weeks = 1;
+    let weeks = 0;
     while(true) {
       const week = [];
       let start = (7-firstDay) + (weeks * 7);
@@ -166,21 +166,25 @@ export default function DatePicker({
     return result;
   }, [currentDate]);
 
+  const handleCurrentDateChange = useCallback((direction: number) => {
+    setCurrentDate(currentDate.add(direction, 'month'));
+  }, [currentDate]);
+
   const handleDateItemClick = useCallback((date: Dayjs) => {
     setSelectedDate(time.toString(date, 'YYYY. MM. DD'));
   }, []);
 
   return (
     <Container width={width}>
-      <input name={name} type='text' value={selectedDate} onChange={() => {}} />
+      <input name={name} type='hidden' value={selectedDate} onChange={() => {}} />
       <Input>
         <InputText notSelected={!Boolean(selectedDate)}>{selectedDate || 'yyyy. mm. dd'}</InputText>
       </Input>
       <Calendar>
         <CalendarHeader>
-          <CalendarHeaderButton><Svgs svgKey="arrowLeftSmall" /></CalendarHeaderButton>
+          <CalendarHeaderButton onClick={() => handleCurrentDateChange(-1)}><Svgs svgKey="arrowLeftSmall" /></CalendarHeaderButton>
           <CalendarHeaderTitle>{time.toString(currentDate, 'YYYY. MM')}</CalendarHeaderTitle>
-          <CalendarHeaderButton><Svgs svgKey="arrowRightSmall" /></CalendarHeaderButton>
+          <CalendarHeaderButton onClick={() => handleCurrentDateChange(1)}><Svgs svgKey="arrowRightSmall" /></CalendarHeaderButton>
         </CalendarHeader>
         <Days>
           {['일', '월', '화', '수', '목', '금', '토'].map((day, i) => (
