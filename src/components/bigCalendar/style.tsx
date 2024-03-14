@@ -24,4 +24,10 @@ export const BigCalendarContainer = styled.div`
     justify-content: center;
   }
 }
+.rbc-date-cell {
+  text-align: left;
+}
+.rbc-off-range-bg {
+  background: transparent
+}
 `
