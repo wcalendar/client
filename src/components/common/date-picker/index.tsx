@@ -109,16 +109,23 @@ const DateItem = styled.button.withConfig({
     color: ${theme.colors.primary};
   }
   `}
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.black10};
+    color: ${({ theme }) => theme.colors.black50};
+  }
 `;
 
 interface DatePickerProps {
   width?: string;
+  name?: string;
   min?: Dayjs;
   max?: Dayjs;
 }
 
 export default function DatePicker({
   width = '100%',
+  name,
   min,
   max,
 }: DatePickerProps) {
@@ -163,11 +170,9 @@ export default function DatePicker({
     setSelectedDate(time.toString(date, 'YYYY. MM. DD'));
   }, []);
 
-  console.log(selectedDateObj);
-
   return (
     <Container width={width}>
-      <input type='text' value={selectedDate} onChange={() => {}} />
+      <input name={name} type='text' value={selectedDate} onChange={() => {}} />
       <Input>
         <InputText notSelected={!Boolean(selectedDate)}>{selectedDate || 'yyyy. mm. dd'}</InputText>
       </Input>
@@ -184,16 +189,22 @@ export default function DatePicker({
         </Days>
         {calendarData.map((week, i) => (
           <Dates key={`dp-week-${currentDate.year()}-${currentDate.month()}-${i}`}>
-            {week.map((date, i) => (
-              <DateItem
-                key={`dp-date-${date.year()}-${date.month()}-${date.date()}`}
-                day={i}
-                selected={Boolean(selectedDateObj && selectedDateObj.isSame(date))} onClick={() => handleDateItemClick(date)}
-                isCurrentMonth={date.month() === currentDate.month()}
-              >
-                {date.date() < 10 ? `0${date.date()}` : date.date()}
-              </DateItem>
-            ))}
+            {week.map((date, i) => {
+              const isInvalid = min ? (max ? !(date.isAfter(min) && date.isBefore(max)) : !date.isAfter(min)) : max ? !date.isBefore(max) : false;
+
+              return (
+                <DateItem
+                  key={`dp-date-${date.year()}-${date.month()}-${date.date()}`}
+                  onClick={() => handleDateItemClick(date)}
+                  day={i}
+                  selected={Boolean(selectedDateObj && selectedDateObj.isSame(date))}
+                  isCurrentMonth={date.month() === currentDate.month()}
+                  disabled={isInvalid}
+                >
+                  {date.date() < 10 ? `0${date.date()}` : date.date()}
+                </DateItem>
+              )
+            })}
           </Dates>
         ))}
       </Calendar>
