@@ -1,7 +1,8 @@
 import Svgs from "@/assets/Svgs";
 import time from "@/lib/time";
+import { ModalStatus } from "@/types";
 import { Dayjs } from "dayjs";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div.withConfig({
@@ -33,7 +34,18 @@ const InputText = styled.div.withConfig({
   color: ${({ theme, notSelected }) => notSelected ? theme.colors.black50 : theme.colors.black};  
 `;
 
-const Calendar = styled.div`
+const IconWrapper = styled.div`
+  flex: 1.5rem 0 0;
+  height: 1.5rem;
+
+  path {
+    fill: ${({ theme }) => theme.colors.black50};
+  }
+`;
+
+const Calendar = styled.div.withConfig({
+  shouldForwardProp: p => !['status'].includes(p),
+})<{ status: ModalStatus }>`
   position: absolute;
   top: 3rem;
   padding: 1rem;
@@ -43,6 +55,9 @@ const Calendar = styled.div`
   border-radius: 12px;
   box-shadow: 4px 4px 12px 0 ${({ theme }) => theme.colors.black12};
   user-select: none;
+  transform: ${({ status }) => status === 'open' ? 'translateY(0)' : 'translateY(-10%)'} ;
+  opacity: ${({ status }) => status === 'open' ? '1' : '0'};
+  animation: ${({ status }) => status === 'open' ? 'fromUpOpen' : 'fromUpClose'} .25s;
 `;
 
 const CalendarHeader = styled.div`
@@ -129,8 +144,26 @@ export default function DatePicker({
   min,
   max,
 }: DatePickerProps) {
+  const inputRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+  const [calendarStatus, setCalendarStatus] = useState<ModalStatus>('closed');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [currentDate, setCurrentDate] = useState<Dayjs>(time.new(time.now().year(), time.now().month(), 1));
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if(inputRef.current && !inputRef.current.contains(e.target as Node) && calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
+        setCalendarStatus('closing');
+      }
+    }
+
+    document.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    }
+  }, []);
 
   const selectedDateObj = useMemo(() => {
     if(selectedDate === '') return undefined;
@@ -166,52 +199,65 @@ export default function DatePicker({
     return result;
   }, [currentDate]);
 
+  const handleInputClick = useCallback(() => {
+    setCalendarStatus('open');
+  }, []);
+
+  const handleCalendarAnimationEnd = useCallback(() => {
+    if(calendarStatus === 'closing') setCalendarStatus('closed');
+  }, [calendarStatus]);
+
+
   const handleCurrentDateChange = useCallback((direction: number) => {
     setCurrentDate(currentDate.add(direction, 'month'));
   }, [currentDate]);
 
   const handleDateItemClick = useCallback((date: Dayjs) => {
     setSelectedDate(time.toString(date, 'YYYY. MM. DD'));
+    setCalendarStatus('closing');
   }, []);
 
   return (
     <Container width={width}>
       <input name={name} type='hidden' value={selectedDate} onChange={() => {}} />
-      <Input>
+      <Input ref={inputRef} onClick={handleInputClick}>
         <InputText notSelected={!Boolean(selectedDate)}>{selectedDate || 'yyyy. mm. dd'}</InputText>
+        <IconWrapper><Svgs svgKey={calendarStatus === 'closed' ? 'arrowDown' : 'arrowUp'} /></IconWrapper>
       </Input>
-      <Calendar>
-        <CalendarHeader>
-          <CalendarHeaderButton onClick={() => handleCurrentDateChange(-1)}><Svgs svgKey="arrowLeftSmall" /></CalendarHeaderButton>
-          <CalendarHeaderTitle>{time.toString(currentDate, 'YYYY. MM')}</CalendarHeaderTitle>
-          <CalendarHeaderButton onClick={() => handleCurrentDateChange(1)}><Svgs svgKey="arrowRightSmall" /></CalendarHeaderButton>
-        </CalendarHeader>
-        <Days>
-          {['일', '월', '화', '수', '목', '금', '토'].map((day, i) => (
-            <DayItem key={`dp-day-item-${i}`} day={i}>{day}</DayItem>
-          ))}
-        </Days>
-        {calendarData.map((week, i) => (
-          <Dates key={`dp-week-${currentDate.year()}-${currentDate.month()}-${i}`}>
-            {week.map((date, i) => {
-              const isInvalid = min ? (max ? !(date.isAfter(min) && date.isBefore(max)) : !date.isAfter(min)) : max ? !date.isBefore(max) : false;
+      {calendarStatus !== 'closed' && (
+        <Calendar ref={calendarRef} status={calendarStatus} onAnimationEnd={handleCalendarAnimationEnd}>
+          <CalendarHeader>
+            <CalendarHeaderButton onClick={() => handleCurrentDateChange(-1)}><Svgs svgKey="arrowLeftSmall" /></CalendarHeaderButton>
+            <CalendarHeaderTitle>{time.toString(currentDate, 'YYYY. MM')}</CalendarHeaderTitle>
+            <CalendarHeaderButton onClick={() => handleCurrentDateChange(1)}><Svgs svgKey="arrowRightSmall" /></CalendarHeaderButton>
+          </CalendarHeader>
+          <Days>
+            {['일', '월', '화', '수', '목', '금', '토'].map((day, i) => (
+              <DayItem key={`dp-day-item-${i}`} day={i}>{day}</DayItem>
+            ))}
+          </Days>
+          {calendarData.map((week, i) => (
+            <Dates key={`dp-week-${currentDate.year()}-${currentDate.month()}-${i}`}>
+              {week.map((date, i) => {
+                const isInvalid = min ? (max ? !(date.isAfter(min) && date.isBefore(max)) : !date.isAfter(min)) : max ? !date.isBefore(max) : false;
 
-              return (
-                <DateItem
-                  key={`dp-date-${date.year()}-${date.month()}-${date.date()}`}
-                  onClick={() => handleDateItemClick(date)}
-                  day={i}
-                  selected={Boolean(selectedDateObj && selectedDateObj.isSame(date))}
-                  isCurrentMonth={date.month() === currentDate.month()}
-                  disabled={isInvalid}
-                >
-                  {date.date() < 10 ? `0${date.date()}` : date.date()}
-                </DateItem>
-              )
-            })}
-          </Dates>
-        ))}
-      </Calendar>
+                return (
+                  <DateItem
+                    key={`dp-date-${date.year()}-${date.month()}-${date.date()}`}
+                    onClick={() => handleDateItemClick(date)}
+                    day={i}
+                    selected={Boolean(selectedDateObj && selectedDateObj.isSame(date))}
+                    isCurrentMonth={date.month() === currentDate.month()}
+                    disabled={isInvalid}
+                  >
+                    {date.date() < 10 ? `0${date.date()}` : date.date()}
+                  </DateItem>
+                )
+              })}
+            </Dates>
+          ))}
+        </Calendar>
+      )}
     </Container>
   );
 }
