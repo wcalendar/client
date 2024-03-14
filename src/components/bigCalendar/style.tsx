@@ -3,31 +3,63 @@ import styled from "styled-components";
 export const BigCalendarContainer = styled.div`
   padding: 24px;
 
-  .rbc-calendar {
+  .fc-direction-ltr{ 
+    border-radius: 12px;
+    overflow: hidden
+  }
+
+  table {
     border-radius:12px;
-    overflow: hidden;
-    >div {
-      border: none;
+  }
+
+  thead {
+    height: 48px;
+
+    thead {
+      background-color: #0000000D;
+      th {
+        > div {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center
+        }
+      }
     }
+
+    .fc-day-sun {
+      a {
+        color: #E12B36;
+      }
+    }
+
+    .fc-day-sat {
+      a {
+        color: #5483FD;
+      }
+    }
+
   }
 
-.rbc-month-header {
-  height: 48px;
-  background: #F2F2F2;
+  tbody {
+
+    td {
+      > div {
+        padding: 8px;
+      }
+    }
+
+
+  }
+  .fc-day-today {
+    /* background-color: green !important; */
+  }
   
-
-  .rbc-header  {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .fc-col-header-cell.fc-day {
+    /* background: green; */
   }
-}
-.rbc-date-cell {
-  text-align: left;
-}
-.rbc-off-range-bg {
-  background: transparent
-}
+
+  .fc .fc-daygrid-day-top {
+    flex-direction: initial;
+  }
 `
