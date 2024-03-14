@@ -33,7 +33,7 @@ const Selector = styled.div<{ disabled: number }>`
   ` : ''}
 `;
 
-export default function DatePicker({
+export default function _DatePicker({
   value,
   onChange,
   disabled,
