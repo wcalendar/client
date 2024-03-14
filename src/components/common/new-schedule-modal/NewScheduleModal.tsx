@@ -1,6 +1,6 @@
 import Dropdown from "@/components/common/Dropdown";
 import RadioButton from "@/components/common/RadioButton";
-import DatePicker from "@/components/common/date-picker/DatePicker";
+import _DatePicker from "@/components/common/date-picker/DatePicker";
 import time from "@/lib/time";
 import { mdiMinus } from "@mdi/js";
 import Icon from "@mdi/react";
@@ -364,9 +364,9 @@ export default function NewScheduleModal({
             </Line>
             <Line>
               <Label>일시<Required>*</Required></Label>
-              <DatePicker value={startDate} onChange={handleStartDateChange} />
+              <_DatePicker value={startDate} onChange={handleStartDateChange} />
               <Interval disabled={isDuration ? 0 : 1} ><Icon path={mdiMinus} /></Interval>
-              <DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
+              <_DatePicker value={endDate} onChange={handleEndDateChange} disabled={!isDuration} />
               <DesktopDurationWrapper>
                 <div style={{width: '1rem'}} />
                 <RadioButton label="하루 일정" checked={!isDuration} onChange={() => handleDurationChange(false)} />
