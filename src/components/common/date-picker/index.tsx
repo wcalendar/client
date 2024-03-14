@@ -166,7 +166,7 @@ export default function DatePicker({
   }, []);
 
   const selectedDateObj = useMemo(() => {
-    if(selectedDate === '') return undefined;
+    if(!selectedDate) return undefined;
 
     const splited = selectedDate.split(". ").map(str => parseInt(str));
     return time.new(splited[0], splited[1]-1, splited[2]);
