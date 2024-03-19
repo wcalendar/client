@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^2.4.1",
+    "@fullcalendar/core": "^6.1.11",
+    "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/react": "^6.1.11",
     "@hello-pangea/dnd": "^16.5.0",
     "@mdi/js": "^7.3.67",
     "@mdi/react": "^1.6.1",
