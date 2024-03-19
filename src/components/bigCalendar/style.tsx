@@ -63,9 +63,6 @@ export const BigCalendarContainer = styled.div`
 
 
   }
-  .fc-day-today {
-    /* background-color: green !important; */
-  }
 
   .fc .fc-daygrid-day.fc-day-today {
     background-color: transparent !important;
@@ -84,9 +81,6 @@ export const BigCalendarContainer = styled.div`
     }
   }
   
-  .fc-col-header-cell.fc-day {
-    /* background: green; */
-  }
 
   .fc .fc-daygrid-day-top {
     flex-direction: initial;
