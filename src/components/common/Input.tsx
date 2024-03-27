@@ -45,6 +45,7 @@ interface InputProps {
   onChange: (value: string) => void;
   disabled?: boolean;
   description?: string;
+  name?: string;
 }
 
 export default function Input({
@@ -54,6 +55,7 @@ export default function Input({
   onChange,
   disabled,
   description,
+  name,
 }: InputProps) {
   const handleChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback((e) => {
     const textarea = (e.target as HTMLTextAreaElement);
@@ -70,7 +72,7 @@ export default function Input({
 
   return (
     <Container width={width} >
-      <TextInput value={value} placeholder={placeholder} rows={1} wrap='on' onChange={handleChange} disabled={disabled} />
+      <TextInput name={name} value={value} placeholder={placeholder} rows={1} wrap='on' onChange={handleChange} disabled={disabled} />
       {description && (
         <Description>
           *{description}
